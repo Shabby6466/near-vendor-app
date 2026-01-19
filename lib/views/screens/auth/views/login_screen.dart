@@ -7,7 +7,6 @@ import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/login_cubit/login_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/views/sign_up_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
-import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';

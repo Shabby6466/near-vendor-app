@@ -109,20 +109,6 @@ class HomeScreen extends StatelessWidget {
             ),
           ],
         ),
-        // bottomNavigationBar: Padding(
-        //   padding: EdgeInsets.only(
-        //     right: AppSpacing.screenWidth(context) * 0.5,
-        //     left: AppSpacing.screenWidth(context) * 0.05,
-        //     bottom: AppSpacing.screenHeight(context) * 0.06,
-        //   ),
-        //   child: Container(
-        //     height: AppSpacing.screenHeight(context) * 0.08,
-        //     decoration: BoxDecoration(
-        //       borderRadius: BorderRadius.circular(45),
-        //       color: ColorName.primary,
-        //     ),
-        //   ),
-        // ),
       ),
     );
   }

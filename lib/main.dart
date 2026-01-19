@@ -6,7 +6,6 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/gen/fonts.gen.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
-import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
 import 'package:upgrader/upgrader.dart';
 
@@ -138,7 +137,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         // child: CurrentUserStorage.getUserAuthToken() != null
         //     ? const MainScreen()
         //     : const WelcomeScreen(),
-        child: const MainScreen(),
+        child: const WelcomeScreen(),
       ),
     );
   }
