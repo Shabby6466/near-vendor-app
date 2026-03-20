@@ -5,6 +5,7 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
+import 'package:nearvendorapp/views/screens/home/view/product_details_screen.dart';
 
 class ShopGrid extends StatelessWidget {
   const ShopGrid({super.key});
@@ -53,7 +54,17 @@ class ShopGrid extends StatelessWidget {
             itemCount: shops.length,
             itemBuilder: (context, index) {
               final shop = shops[index];
-              return ShopCard(shop: shop);
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductDetailsScreen(shop: shop),
+                    ),
+                  );
+                },
+                child: ShopCard(shop: shop),
+              );
             },
           );
         }

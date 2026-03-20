@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
 
 class CustomBottomBar extends StatelessWidget {
   final int currentIndex;
@@ -64,7 +64,9 @@ class CustomBottomBar extends StatelessWidget {
         Positioned(
           top: -30,
           child: GestureDetector(
-            onTap: () => onTap(1),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen()));
+            },
             child: Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(

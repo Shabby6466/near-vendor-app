@@ -8,6 +8,8 @@ import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart'
 import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
+import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
+import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -35,11 +37,49 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
-                    child: Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white.withValues(alpha: 0.9)),
-                      child: AppTextField(prefixIcon: Assets.icons.searchIcon.svg(), hint: 'Search'),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const SearchScreen()),
+                        );
+                      },
+                    child: Stack(
+                      children: [
+                        AbsorbPointer(
+                          child: Container(
+                            width: double.infinity,
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white.withValues(alpha: 0.9)),
+                            child: AppTextField(
+                              prefixIcon: Assets.icons.searchIcon.svg(),
+                              hint: 'Search',
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 12,
+                          top: 0,
+                          bottom: 0,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(builder: (context) => const VisualSearchScreen()),
+                                  );
+                                },
+                                child: const Icon(Icons.camera_enhance_outlined, color: Colors.black54),
+                              ),
+                              const SizedBox(width: 8),
+                              const Icon(Icons.mic_none, color: Colors.black54),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
+                  ),
                   ),
                   SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                   Padding(
