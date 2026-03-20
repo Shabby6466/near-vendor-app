@@ -15,39 +15,78 @@ class CustomBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(
-        right: AppSpacing.screenWidth(context) * 0.56,
-        left: AppSpacing.screenWidth(context) * 0.05,
-        bottom: AppSpacing.screenHeight(context) * 0.04,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: ColorName.primary,
-          borderRadius: BorderRadius.circular(40),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 5),
-            ),
-          ],
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.bottomCenter,
+      children: [
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: 10,vertical: 15),
+          decoration: BoxDecoration(
+            color: ColorName.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _BottomBarItem(
+                isActive: currentIndex == 0,
+                icon: Assets.icons.homeIcon.svg(),
+                onTap: () => onTap(0),
+              ),
+              _BottomBarItem(
+                isActive: currentIndex == 1,
+                icon: Assets.icons.mapIcon.svg(),
+                onTap: () => onTap(1),
+              ),
+              SizedBox(
+                height: 50,
+                width: 50,
+              ),
+              _BottomBarItem(
+                isActive: currentIndex == 1,
+                icon: Assets.icons.profileIcon.svg(),
+                onTap: () => onTap(1),
+              ),
+              _BottomBarItem(
+                isActive: currentIndex == 1,
+                icon: Assets.icons.profileIcon.svg(),
+                onTap: () => onTap(1),
+              ),
+            ],
+          ),
         ),
-        child: Row(
-          children: [
-            _BottomBarItem(
-              isActive: currentIndex == 0,
-              icon: Assets.icons.homeIcon.svg(),
-              onTap: () => onTap(0),
+        Positioned(
+          top: -30,
+          child: GestureDetector(
+            onTap: () => onTap(1),
+            child: Container(
+              padding: EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: ColorName.primary,
+                shape: BoxShape.circle,
+                border: BoxBorder.all(
+                  color: currentIndex == 1 ? ColorName.secondary : Colors.transparent,
+                  width: 2
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: ColorName.primary.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Assets.icons.searchIcon.svg(),
             ),
-            _BottomBarItem(
-              isActive: currentIndex == 1,
-              icon: Assets.icons.profileIcon.svg(),
-              onTap: () => onTap(1),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -82,10 +121,10 @@ class _BottomBarItem extends StatelessWidget {
           ),
           child: ColorFiltered(
             colorFilter: ColorFilter.mode(
-              isActive ? Colors.white : Colors.white.withValues(alpha: 0.6),
+              isActive ? ColorName.primary : Colors.grey.withValues(alpha: 0.6),
               BlendMode.srcIn,
             ),
-            child: SizedBox(height: 35, width: 25, child: icon),
+            child: SizedBox(height: 30, width: 30, child: icon),
           ),
         ),
       ),

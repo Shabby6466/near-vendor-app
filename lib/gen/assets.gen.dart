@@ -45,6 +45,9 @@ class $AssetsIconsGen {
   SvgGenImage get locationMarker =>
       const SvgGenImage('assets/icons/location_marker.svg');
 
+  /// File path: assets/icons/map_icon.svg
+  SvgGenImage get mapIcon => const SvgGenImage('assets/icons/map_icon.svg');
+
   /// File path: assets/icons/near_vendor_Text.svg
   SvgGenImage get nearVendorText =>
       const SvgGenImage('assets/icons/near_vendor_Text.svg');
@@ -67,6 +70,7 @@ class $AssetsIconsGen {
     hearts,
     homeIcon,
     locationMarker,
+    mapIcon,
     nearVendorText,
     nearVendorBlueText,
     profileIcon,

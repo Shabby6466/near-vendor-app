@@ -21,7 +21,7 @@ class HomeScreen extends StatelessWidget {
         bgColor: ColorName.white,
         body: Stack(
           children: [
-            Image.asset(Assets.images.nearVendorRightCut.path),
+            Opacity(opacity: 0.45, child: Image.asset(Assets.images.nearVendorRightCut.path)),
             SafeArea(
               bottom: false,
               child: Column(
@@ -29,43 +29,25 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.mediumHorizontalSpacing(context),
-                    ),
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: Assets.icons.nearVendorBlueText.svg(),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+                    child: Align(alignment: Alignment.bottomRight, child: Assets.icons.nearVendorBlueText.svg()),
                   ),
                   SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.mediumHorizontalSpacing(context),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
                     child: Container(
                       width: double.infinity,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.white.withValues(alpha: 0.9),
-                      ),
-                      child: AppTextField(
-                        prefixIcon: Assets.icons.searchIcon.svg(),
-                        hint: 'Search',
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.white.withValues(alpha: 0.9)),
+                      child: AppTextField(prefixIcon: Assets.icons.searchIcon.svg(), hint: 'Search'),
                     ),
                   ),
                   SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.mediumHorizontalSpacing(context),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
                     child: Container(
                       width: double.infinity,
                       height: AppSpacing.screenHeight(context) * 0.2,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: ColorName.primary,
-                      ),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: ColorName.primary),
                       child: Center(child: Text('Advertisement')),
                     ),
                   ),
@@ -74,31 +56,19 @@ class HomeScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Assets.icons.locationMarker.svg(),
-                      SizedBox(
-                        width: AppSpacing.smallHorizontalSpacing(context) * 0.5,
-                      ),
+                      SizedBox(width: AppSpacing.smallHorizontalSpacing(context) * 0.5),
                       Text(
                         'Location',
-                        style: TextStyle(
-                          color: ColorName.primary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: TextStyle(color: ColorName.primary, fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
                   SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.mediumHorizontalSpacing(context),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
                     child: Text(
-                      'Best Vendors Near You!',
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Colors.black,
-                        fontSize: 24,
-                        fontWeight: FontWeight.w900,
-                      ),
+                      'Best Products Near You!',
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(color: Colors.black, fontSize: 24, fontWeight: FontWeight.w900),
                     ),
                   ),
                   SizedBox(height: AppSpacing.smallVerticalSpacing(context)),

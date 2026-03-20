@@ -19,8 +19,8 @@ class OnboardingBtns extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(
-          vertical: AppSpacing.mediumVerticalSpacing(context) * 0.75,
-          horizontal: AppSpacing.mediumHorizontalSpacing(context) * 0.9,
+          vertical: AppSpacing.mediumVerticalSpacing(context) * 0.9,
+          horizontal: AppSpacing.mediumHorizontalSpacing(context) * 2.9,
         ),
         decoration: BoxDecoration(
           color: ColorName.secondary.shade400,

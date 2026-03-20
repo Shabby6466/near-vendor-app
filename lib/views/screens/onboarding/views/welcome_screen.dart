@@ -3,6 +3,7 @@ import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/widget/onboaring_btns.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
@@ -78,7 +79,7 @@ class WelcomeScreen extends StatelessWidget {
               OnboardingBtns(
                 btnText: 'Let\'s explore',
                 onTap: () {
-                  AppNavigator.push(context, const LoginScreen());
+                  AppNavigator.push(context, const MainScreen());
                 },
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(12),
