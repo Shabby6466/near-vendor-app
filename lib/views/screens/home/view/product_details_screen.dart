@@ -78,10 +78,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: const BoxDecoration(
-                      color: ColorName.primary,
+                      color: ColorName.white,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 20),
+                    child: const Icon(Icons.arrow_back_ios_new, color: ColorName.primary, size: 20),
                   ),
                 ),
                 Row(
@@ -265,13 +265,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 width: double.infinity,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(24),
-                  border: Border.all(color: ColorName.primary, width: 2),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(22),
                   child: FlutterMap(
                     options: const MapOptions(
-                      initialCenter: LatLng(33.6844, 73.0479), // Islamabad example coordinate
+                      initialCenter: LatLng(33.6844, 73.0479),
                       initialZoom: 13.0,
                     ),
                     children: [

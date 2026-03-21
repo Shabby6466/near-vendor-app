@@ -5,6 +5,7 @@ import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:nearvendorapp/views/screens/profile/view/profile_screen.dart';
+import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -18,7 +19,7 @@ class MainScreen extends StatelessWidget {
           return Scaffold(
             extendBody: true,
             backgroundColor: ColorName.white,
-            body: [HomeScreen(), ProfileScreen()].elementAt(currentIndex),
+            body: [HomeScreen(),SearchScreen(), ProfileScreen()].elementAt(currentIndex),
             bottomNavigationBar: CustomBottomBar(
               currentIndex: currentIndex,
               onTap: (index) =>

@@ -17,7 +17,7 @@ class ShopDetailsScreen extends StatelessWidget {
       body: Stack(
         children: [
           SingleChildScrollView(
-            padding: EdgeInsets.only(bottom: 100), // Space for the FAB
+            padding: EdgeInsets.only(bottom: 100),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
 
 class CustomBottomBar extends StatelessWidget {
   final int currentIndex;
@@ -42,31 +41,29 @@ class CustomBottomBar extends StatelessWidget {
               _BottomBarItem(
                 isActive: currentIndex == 1,
                 icon: Assets.icons.mapIcon.svg(),
-                onTap: () => onTap(1),
+                onTap: () => onTap(2),
               ),
               SizedBox(
                 height: 50,
                 width: 50,
               ),
               _BottomBarItem(
-                isActive: currentIndex == 1,
+                isActive: currentIndex == 3,
                 icon: Assets.icons.profileIcon.svg(),
-                onTap: () => onTap(1),
+                onTap: () => onTap(2),
               ),
               _BottomBarItem(
-                isActive: currentIndex == 1,
+                isActive: currentIndex == 4,
                 icon: Assets.icons.profileIcon.svg(),
-                onTap: () => onTap(1),
+                onTap: () => onTap(2),
               ),
             ],
           ),
         ),
         Positioned(
           top: -30,
-          child: GestureDetector(
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const SearchScreen()));
-            },
+          child: InkWell(
+            onTap: () => onTap(1),
             child: Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(

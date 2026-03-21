@@ -20,35 +20,21 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          // Background UI / Watermark
-          Positioned(
-            bottom: 0,
-            right: 0,
-            child: Opacity(
-              opacity: 0.45,
-              child: Image.asset(Assets.images.nearVendorRightCut.path),
-            ),
-          ),
-          
-          SafeArea(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildHeader(context),
-                SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-                _buildSearchBar(context),
-                SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-                _buildFilterChips(context),
-                SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
-                _buildRecentSearchHeader(),
-                SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
-                _buildRecentSearchList(),
-              ],
-            ),
-          ),
-        ],
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildHeader(context),
+            SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+            _buildSearchBar(context),
+            SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+            _buildFilterChips(context),
+            SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+            _buildRecentSearchHeader(),
+            SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
+            _buildRecentSearchList(),
+          ],
+        ),
       ),
       bottomNavigationBar: CustomBottomBar(
         currentIndex: 0,
@@ -60,52 +46,36 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget _buildHeader(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context), vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          GestureDetector(
-            onTap: () {
-              // Usually a bottom sheet for location
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child:
+      GestureDetector(
+        onTap: () {
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Row(
-                  children: [
-                    const Text(
-                      'Current Location',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.keyboard_arrow_down, size: 16, color: Colors.grey),
-                  ],
-                ),
                 const Text(
-                  'NYC, USA',
+                  'Current Location',
                   style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: ColorName.primary,
+                    fontSize: 12,
+                    color: Colors.grey,
                   ),
                 ),
+                const SizedBox(width: 4),
+                const Icon(Icons.keyboard_arrow_down, size: 16, color: Colors.grey),
               ],
             ),
-          ),
-          GestureDetector(
-            onTap: () {},
-            child: Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent.shade100.withValues(alpha: 0.3),
-                shape: BoxShape.circle,
+            const Text(
+              'NYC, USA',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: ColorName.primary,
               ),
-              child: const Icon(Icons.favorite_border, color: Colors.black),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
