@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/widget/onboaring_btns.dart';
+import 'package:nearvendorapp/views/screens/vendor/onboarding/screens/vendor_onboarding_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
 class WelcomeScreen extends StatelessWidget {
@@ -66,10 +70,17 @@ class WelcomeScreen extends StatelessWidget {
             children: [
               OnboardingBtns(
                 btnText: 'Be a Vendor',
+                color: ColorName.primary,
+                textColor: Colors.white,
                 onTap: () {
-                  AppNavigator.push(context, const LoginScreen());
+                  final isVendor = context.read<SessionCubit>().state.isVendor;
+                  if (isVendor) {
+                    AppNavigator.push(context, const VendorDashboardScreen());
+                  } else {
+                    AppNavigator.push(context, const VendorOnboardingScreen());
+                  }
                 },
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                   bottomLeft: Radius.circular(12),
@@ -78,10 +89,12 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(width: AppSpacing.mediumHorizontalSpacing(context)),
               OnboardingBtns(
                 btnText: 'Let\'s explore',
+                color: ColorName.secondary.shade400,
+                textColor: Colors.black,
                 onTap: () {
                   AppNavigator.push(context, const MainScreen());
                 },
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),
                   topRight: Radius.circular(12),
                   bottomRight: Radius.circular(12),

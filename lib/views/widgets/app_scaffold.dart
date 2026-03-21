@@ -5,8 +5,10 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 class AppScaffold extends StatelessWidget {
   final Widget? body;
   final AppBar? appBar;
-  final MaterialColor? bgColor;
+  final Color? bgColor;
   final Widget? bottomNavigationBar;
+  final Widget? floatingActionButton;
+  final FloatingActionButtonLocation? floatingActionButtonLocation;
   // final AssetGenImage? backgroundImage;
   final bool extendBodyBehindAppBar;
   final bool extendBody;
@@ -18,6 +20,8 @@ class AppScaffold extends StatelessWidget {
     this.bgColor,
     // this.backgroundImage,
     this.bottomNavigationBar,
+    this.floatingActionButton,
+    this.floatingActionButtonLocation,
     this.extendBodyBehindAppBar = false,
     this.extendBody = true,
   });
@@ -42,6 +46,8 @@ class AppScaffold extends StatelessWidget {
             extendBodyBehindAppBar: extendBodyBehindAppBar,
             extendBody: extendBody,
             bottomNavigationBar: bottomNavigationBar,
+            floatingActionButton: floatingActionButton,
+            floatingActionButtonLocation: floatingActionButtonLocation,
           ),
         ],
       ),

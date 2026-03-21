@@ -6,8 +6,12 @@ class OnboardingBtns extends StatelessWidget {
   final String btnText;
   final VoidCallback onTap;
   final BorderRadiusGeometry? borderRadius;
+  final Color? color;
+  final Color? textColor;
   const OnboardingBtns({
     super.key,
+    this.color,
+    this.textColor,
     required this.btnText,
     required this.onTap,
     this.borderRadius,
@@ -23,13 +27,13 @@ class OnboardingBtns extends StatelessWidget {
           horizontal: AppSpacing.mediumHorizontalSpacing(context) * 2.9,
         ),
         decoration: BoxDecoration(
-          color: ColorName.secondary.shade400,
+          color: color ?? ColorName.secondary.shade400,
           borderRadius: borderRadius,
         ),
         child: Text(
           btnText,
           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-            color: Colors.black,
+            color: textColor ?? Colors.black,
             fontWeight: FontWeight.w400,
           ),
         ),

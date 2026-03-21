@@ -18,5 +18,9 @@ class SessionCubit extends Cubit<SessionState> {
     emit(const SessionState(status: AuthStatus.unauthenticated));
   }
 
+  void setVendorStatus(bool isVendor) {
+    emit(state.copyWith(isVendor: isVendor));
+  }
+
   bool get isAuthenticated => state.status == AuthStatus.authenticated;
 }

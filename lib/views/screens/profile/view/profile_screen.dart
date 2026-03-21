@@ -4,10 +4,13 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
+import 'package:nearvendorapp/views/screens/vendor/onboarding/screens/vendor_onboarding_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -48,6 +51,20 @@ class ProfileScreen extends StatelessWidget {
                         newOfferAlerts: state.newOfferAlerts,
                         onRadiusChanged: (value) => context.read<ProfileCubit>().updateRadius(value),
                         onAlertsToggled: (value) => context.read<ProfileCubit>().toggleOfferAlerts(value),
+                      ),
+                      SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+                      ProfileMenuItem(
+                        icon: Icons.storefront_outlined,
+                        title: 'Merchant Console',
+                        subtitle: 'Manage your business and products',
+                        onTap: () {
+                          final isVendor = context.read<SessionCubit>().state.isVendor;
+                          if (isVendor) {
+                            AppNavigator.push(context, const VendorDashboardScreen());
+                          } else {
+                            AppNavigator.push(context, const VendorOnboardingScreen());
+                          }
+                        },
                       ),
                       SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                       ProfileMenuItem(
