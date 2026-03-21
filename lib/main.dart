@@ -65,22 +65,23 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         ),
         fontFamily: FontFamily.poppins,
         textTheme: const TextTheme(
-          headlineLarge: TextStyle(fontSize: 27, fontWeight: FontWeight.bold),
-          headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
-          bodyMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-          bodySmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+          headlineLarge: TextStyle(fontSize: 27, fontWeight: FontWeight.bold,color: Colors.black),
+          headlineMedium: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,color: Colors.black),
+          headlineSmall: TextStyle(fontSize: 18, fontWeight: FontWeight.w400,color: Colors.black),
+          bodyMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w400,color: Colors.black),
+          bodySmall: TextStyle(fontSize: 14, fontWeight: FontWeight.w400,color: Colors.black),
         ),
         dividerTheme: const DividerThemeData(color: ColorName.primary),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: ColorName.secondary.shade400,
-            foregroundColor: Colors.black,
+            backgroundColor: ColorName.primary.shade400,
+            foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
             textStyle: Theme.of(
               context,
-            ).textTheme.bodySmall?.copyWith(color: Colors.black),
+            ).textTheme.bodySmall?.copyWith(color: Colors.black,fontSize: 15),
             padding: const EdgeInsets.symmetric(vertical: 16.0),
           ),
         ),

@@ -24,13 +24,13 @@ class AppBottomSheet {
       builder: (context) => ClipRRect(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          filter: ImageFilter.blur(sigmaX: 20.1, sigmaY: 20.1),
           child: Material(
             color: Colors.transparent,
             child: Container(
               padding: padding,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: ColorName.primary.withValues(alpha: 0.7),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(22),
                 ),
@@ -44,6 +44,7 @@ class AppBottomSheet {
                 padding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom,
                 ),
+
                 child: child,
               ),
             ),
@@ -55,7 +56,7 @@ class AppBottomSheet {
 
   static Future<T?> showScrollableBottomSheet<T>({
     required BuildContext context,
-    double minChildSize = 0.5,
+    double minChildSize = 0.8,
     Widget Function(BuildContext context, ScrollController scrollController)? builder,
     bool isDismissible = true,
     bool showScrollHandle = true,
@@ -81,19 +82,20 @@ class AppBottomSheet {
                   top: Radius.circular(22),
                 ),
                 child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  filter: ImageFilter.blur(sigmaX: 20.1, sigmaY: 20.1),
                   child: Material(
                     color: Colors.transparent,
+
                     child: Container(
                       padding: showScrollHandle
                           ? EdgeInsets.symmetric(
-                              vertical: AppSpacing.mediumVerticalSpacing(
-                                context,
-                              ),
-                            )
+                        vertical: AppSpacing.mediumVerticalSpacing(
+                          context,
+                        ),
+                      )
                           : EdgeInsets.zero,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: ColorName.primary.withValues(alpha: 0.7),
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(22),
                         ),
@@ -110,7 +112,7 @@ class AppBottomSheet {
                               width: MediaQuery.of(context).size.width * 0.1,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                color: Colors.grey.withValues(alpha: 0.3),
+                                color: Colors.white.withValues(alpha: 0.3),
                               ),
                             ),
                           if (builder != null) Flexible(child: builder(context, scrollController)),
@@ -178,7 +180,7 @@ class AppBottomSheet {
           ElevatedButton(
             onPressed: onConfirm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: confirmButtonColor ?? ColorName.primary,
+              backgroundColor: confirmButtonColor,
             ),
             child: Text(confirmButtonText),
           ),
