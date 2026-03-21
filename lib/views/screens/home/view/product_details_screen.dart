@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
@@ -36,11 +35,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Center(
               child: Text(
                 'NearVendor',
-                style: TextStyle(
-                  color: ColorName.primary,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w900,
-                ),
+                style: TextStyle(color: ColorName.primary, fontSize: 32, fontWeight: FontWeight.w900),
               ),
             ),
             SizedBox(height: AppSpacing.mediumVerticalSpacing(context) * 2),
@@ -60,16 +55,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           child: Image.network(
             widget.shop.image,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                const Center(child: Icon(Icons.image, size: 50, color: Colors.grey)),
+            errorBuilder: (context, error, stackTrace) => const Center(child: Icon(Icons.image, size: 50, color: Colors.grey)),
           ),
         ),
         SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: AppSpacing.mediumHorizontalSpacing(context),
-              vertical: 8.0,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context), vertical: 8.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -77,10 +68,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: ColorName.white,
-                      shape: BoxShape.circle,
-                    ),
+                    decoration: const BoxDecoration(color: ColorName.white, shape: BoxShape.circle),
                     child: const Icon(Icons.arrow_back_ios_new, color: ColorName.primary, size: 20),
                   ),
                 ),
@@ -94,33 +82,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Icon(
-                          _isLiked ? Icons.favorite : Icons.favorite_border,
-                          color: _isLiked ? Colors.red : Colors.black26,
-                          size: 24,
-                        ),
+                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                        child: Icon(_isLiked ? Icons.favorite : Icons.favorite_border, color: _isLiked ? Colors.red : Colors.black26, size: 24),
                       ),
                     ),
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ShopDetailsScreen(shop: widget.shop),
-                          ),
-                        );
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ShopDetailsScreen(shop: widget.shop)));
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                        ),
+                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                         child: const Icon(Icons.store, color: Colors.black26, size: 24),
                       ),
                     ),
@@ -138,21 +111,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 5),
-                ),
-              ],
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 5))],
             ),
             child: const Text(
               '92,000 PKR',
-              style: TextStyle(
-                color: ColorName.primary,
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: TextStyle(color: ColorName.primary, fontWeight: FontWeight.bold, fontSize: 16),
             ),
           ),
         ),
@@ -171,11 +134,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             children: [
               Text(
                 'Ad Posted At: 10:35 pm - 14/08/2025',
-                style: TextStyle(
-                  color: Colors.grey.shade600,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontWeight: FontWeight.w500),
               ),
               Row(
                 children: [
@@ -184,10 +143,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       margin: const EdgeInsets.only(left: 4),
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: i == 0 ? ColorName.primary : Colors.grey.shade400,
-                      ),
+                      decoration: BoxDecoration(shape: BoxShape.circle, color: i == 0 ? ColorName.primary : Colors.grey.shade400),
                     ),
                 ],
               ),
@@ -200,11 +156,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               Expanded(
                 child: Text(
                   widget.shop.name,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
                 ),
               ),
               const SizedBox(width: 16),
@@ -214,12 +166,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
           const Text(
             '#8 x 2 1/2 Inch Stainless Steel Wood Screw, 200 Count\n#8 x 2 1/2 Inch Stainless Steel Wood Screw, 200 Count',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.black87,
-              height: 1.5,
-              fontWeight: FontWeight.w500,
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.black87, height: 1.5, fontWeight: FontWeight.w500),
           ),
         ],
       ),
@@ -236,20 +183,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             children: [
               const Text(
                 'Shop Location',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
               ),
               const SizedBox(width: 8),
               Text(
                 '5 KMs Away',
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade500,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade500, fontWeight: FontWeight.w500),
               ),
             ],
           ),
@@ -263,23 +202,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               Container(
                 height: 250,
                 width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(22),
-                  child: FlutterMap(
-                    options: const MapOptions(
-                      initialCenter: LatLng(33.6844, 73.0479),
-                      initialZoom: 13.0,
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.nearvendorapp.app',
-                      ),
-                    ],
-                  ),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
+                child: ShopLocationWidget(
+                  longitude: widget.shop.longitude ?? 0,
+                  latitude: widget.shop.latitude ?? 0,
+                  shopName: widget.shop.name,
+                  shopAddress: widget.shop.location ?? '',
                 ),
               ),
               Positioned(
@@ -287,17 +215,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 left: 16,
                 right: 16,
                 child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
+                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 5))],
                   ),
                   child: Row(
                     children: [
@@ -313,19 +235,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           children: [
                             const Text(
                               'Rana Faraz Asad',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
+                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
                             ),
-                            Text(
-                              'i10 khokha',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
+                            Text('i10 khokha', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
                           ],
                         ),
                       ),

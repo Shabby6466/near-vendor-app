@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/models/data_models/shops.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/view/all_reviews_screen.dart';
@@ -491,34 +492,6 @@ class ShopDetailsScreen extends StatelessWidget {
   }
 
   Widget _buildShopAds(BuildContext context) {
-    // We will use dummy ShopModels to populate a Grid that looks like Shop Ads
-    final adModels = [
-      ShopModel(
-        name: 'Product',
-        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400',
-        category: 'Food',
-        location: '5 KMs Away', // We will trick `ShopCard` to show location string
-      ),
-      ShopModel(
-        name: 'Product',
-        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400',
-        category: 'Food',
-        location: '5 KMs Away',
-      ),
-      ShopModel(
-        name: 'Product',
-        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400',
-        category: 'Food',
-        location: '5 KMs Away',
-      ),
-      ShopModel(
-        name: 'Product',
-        image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&q=80&w=400',
-        category: 'Food',
-        location: '5 KMs Away',
-      ),
-    ];
-
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
       child: Column(
@@ -556,9 +529,9 @@ class ShopDetailsScreen extends StatelessWidget {
               mainAxisSpacing: 16,
               childAspectRatio: 0.8,
             ),
-            itemCount: adModels.length,
+            itemCount: ShopsData.dummyShops.length,
             itemBuilder: (context, index) {
-              return ShopAdCard(shop: adModels[index]);
+              return ShopAdCard(shop: ShopsData.dummyShops[index]);
             },
           ),
         ],

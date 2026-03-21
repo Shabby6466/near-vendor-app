@@ -3,11 +3,15 @@ class ShopModel {
   String image;
   String category;
   String? location;
+  double? latitude;
+  double? longitude;
 
   ShopModel({
     required this.name,
     required this.image,
     required this.category,
+    required this.latitude,
+    required this.longitude,
     this.location,
   });
 
@@ -26,6 +30,8 @@ class ShopModel {
       image: json['image']?.toString() ?? '',
       category: json['category']?.toString() ?? '',
       location: json['location']?.toString(),
+      latitude: double.tryParse(json['latitude']?.toString() ?? ''),
+      longitude: double.tryParse(json['longitude']?.toString() ?? ''),
     );
   }
 
