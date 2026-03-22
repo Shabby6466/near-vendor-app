@@ -1,7 +1,7 @@
 class ApiConstants {
   ApiConstants._();
 
-  static const String baseUrl = 'https://';
+  static const String baseUrl = 'https://api.nearvendor.pro/';
 
   ///AUTH
   static const String sendOTP = 'auth/send-otp';
