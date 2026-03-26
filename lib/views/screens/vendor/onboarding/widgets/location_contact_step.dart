@@ -44,6 +44,12 @@ class LocationContactStep extends StatelessWidget {
                 keyboardType: TextInputType.number,
                 onChanged: (val) => context.read<OnboardingCubit>().updateLocationContact(cnic: val),
               ),
+              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+              _buildLabel(context, 'Tax ID'),
+              AppTextField(
+                hint: 'e.g. 1234567-8',
+                onChanged: (val) => context.read<OnboardingCubit>().updateLocationContact(taxId: val),
+              ),
             ],
           ),
         );

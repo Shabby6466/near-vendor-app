@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/cubit/onboarding_cubit.dart';
@@ -64,6 +65,7 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
           BlocListener<OnboardingCubit, OnboardingState>(
             listenWhen: (p, c) => !p.isSuccess && c.isSuccess,
             listener: (context, state) {
+              context.read<SessionCubit>().setVendorStatus(true);
               AppNavigator.pushReplacement(context, const VendorDashboardScreen());
             },
           ),

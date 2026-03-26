@@ -26,17 +26,17 @@ class VerificationLaunchStep extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Please upload your business documents to verify your account and accept our vendor terms to go live.',
+                'Please upload your cnic to verify your account and accept our vendor terms to go live.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey,
                     ),
               ),
               SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
-              _buildLabel(context, 'Store Image'),
-              const Text('Store Banner / Image', style: TextStyle(color: Colors.grey, fontSize: 12)),
+              _buildLabel(context, 'CNIC Image'),
+              const Text('CNIC Front or Back Image', style: TextStyle(color: Colors.grey, fontSize: 12)),
               const SizedBox(height: 12),
               GestureDetector(
-                onTap: () => context.read<OnboardingCubit>().pickStoreImage(),
+                onTap: () => context.read<OnboardingCubit>().pickCnicImage(),
                 child: Container(
                   height: 160,
                   width: double.infinity,
@@ -45,10 +45,10 @@ class VerificationLaunchStep extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: Colors.blue.withValues(alpha: 0.2), style: BorderStyle.solid),
                   ),
-                  child: state.storeImagePath != null
+                  child: state.cnicImagePath != null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(16),
-                          child: Image.file(File(state.storeImagePath!), fit: BoxFit.cover),
+                          child: Image.file(File(state.cnicImagePath!), fit: BoxFit.cover),
                         )
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -56,7 +56,7 @@ class VerificationLaunchStep extends StatelessWidget {
                             const Icon(Icons.cloud_upload_outlined, size: 40, color: Colors.blue),
                             const SizedBox(height: 8),
                             const Text('Tap to upload or drag and drop', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w500)),
-                            Text('PDF, JPG or PNG (max. 5MB)', style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
+                            Text('JPG or PNG (max. 5MB)', style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
                           ],
                         ),
                 ),

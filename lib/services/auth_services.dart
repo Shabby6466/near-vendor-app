@@ -86,8 +86,8 @@ class AuthServices {
   Future<GenericApiResponse>register(RegisterInput input) async{
    try {
       final Map<String, dynamic> data = input.toJson();
-      debugPrint('ChangePassword Token: ${CurrentUserStorage.getUserAuthToken()}');
-      final response = await Server.post(ApiConstants.changePassword, data: data);
+      debugPrint('Register Token: ${CurrentUserStorage.getUserAuthToken()}');
+      final response = await Server.post(ApiConstants.registerVendor, data: data);
       print('response inside-> $response');
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {

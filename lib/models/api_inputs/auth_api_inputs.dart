@@ -105,15 +105,14 @@ final String supportContact;
 final String cnic;
 final String cnicImageUrl;
 
-Map<String, dynamic> toJson(){
-  return{
-  'businessName':businessName,
- 'businessCategory': businessCategory,
- 'taxId': taxId,
- 'supportContact': supportContact,
- ' cnic':cnic,
- 'cnicImageUrl': cnicImageUrl,
-  };
-
-}
+  Map<String, dynamic> toJson() {
+    return {
+      'businessName': businessName,
+      'businessCategory': businessCategory,
+      'taxId': taxId,
+      'supportContact': supportContact,
+      'cnic': cnic,
+      'cnicImageUrl': cnicImageUrl,
+    };
+  }
 }

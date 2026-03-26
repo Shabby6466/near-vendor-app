@@ -114,6 +114,11 @@ class Server {
             return client;
           },
         );
+        dio.interceptors.add(LogInterceptor(
+          requestBody: true,
+          responseBody: true,
+          logPrint: (obj) => debugPrint(obj.toString()),
+        ));
         if (headers != null) {
           for (final String key in headers.keys) {
             dio.options.headers[key] = headers[key];

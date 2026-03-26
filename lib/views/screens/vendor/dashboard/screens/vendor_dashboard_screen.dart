@@ -6,10 +6,15 @@ import 'package:nearvendorapp/views/screens/vendor/add_product/screens/add_produ
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
 class VendorDashboardScreen extends StatelessWidget {
-  const VendorDashboardScreen({super.key});
+  final bool isShopCreated;
+  const VendorDashboardScreen({super.key, this.isShopCreated = false});
 
   @override
   Widget build(BuildContext context) {
+    if (!isShopCreated) {
+      return _buildNoShopState(context);
+    }
+
     return AppScaffold(
       bgColor: Colors.white,
       appBar: AppBar(
@@ -56,6 +61,55 @@ class VendorDashboardScreen extends StatelessWidget {
         onPressed: () => AppNavigator.push(context, const AddProductScreen()),
         backgroundColor: ColorName.primary,
         child: const Icon(Icons.add, color: Colors.white),
+      ),
+    );
+  }
+
+  Widget _buildNoShopState(BuildContext context) {
+    return AppScaffold(
+      bgColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Merchant Console', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.storefront, size: 80, color: ColorName.primary),
+              const SizedBox(height: 24),
+              Text(
+                'No Shop Found',
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              const Text(
+                'You haven\'t created any shops yet. Create your first shop to start selling on NearVendor.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey, fontSize: 16),
+              ),
+              const SizedBox(height: 40),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Navigate to shop creation screen (to be implemented)
+                    // Currently, we might go back to onboarding if that's the flow
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: ColorName.primary,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  ),
+                  child: const Text('Create My First Shop', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

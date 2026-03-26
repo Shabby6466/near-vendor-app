@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
+import 'package:nearvendorapp/services/auth_services.dart';
 
 part 'onboarding_state.dart';
 
@@ -16,19 +19,20 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     ));
   }
 
-  void updateLocationContact({String? address, String? phone, String? email, String? cnic}) {
+  void updateLocationContact({String? address, String? phone, String? email, String? cnic, String? taxId}) {
     emit(state.copyWith(
       address: address,
       phoneNumber: phone,
       email: email,
       cnicNo: cnic,
+      taxId: taxId,
     ));
   }
 
-  Future<void> pickStoreImage() async {
+  Future<void> pickCnicImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      emit(state.copyWith(storeImagePath: image.path));
+      emit(state.copyWith(cnicImagePath: image.path));
     }
   }
 
@@ -54,8 +58,31 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   Future<void> launchStore() async {
     emit(state.copyWith(isSubmitting: true));
-    // Simulate API call
-    await Future.delayed(const Duration(seconds: 2));
-    emit(state.copyWith(isSubmitting: false, isSuccess: true));
+
+    final input = RegisterInput(
+      businessName: state.businessName,
+      businessCategory: state.category,
+      taxId: state.taxId,
+      supportContact: state.phoneNumber,
+      cnic: state.cnicNo,
+      cnicImageUrl: state.cnicImagePath ?? '', // Placeholder or local path
+    );
+
+    try {
+      final response = await AuthServices().register(input);
+      debugPrint('Registration Status: ${response.status}');
+      debugPrint('Registration Message: ${response.message}');
+      
+      if (response.status == 200 || response.status == 201) {
+        emit(state.copyWith(isSubmitting: false, isSuccess: true));
+      } else {
+        emit(state.copyWith(isSubmitting: false));
+        // Handle error (e.g., show snackbar)
+        debugPrint('Registration failed with status ${response.status}: ${response.message}');
+      }
+    } catch (e) {
+      debugPrint('Registration error: $e');
+      emit(state.copyWith(isSubmitting: false));
+    }
   }
 }
