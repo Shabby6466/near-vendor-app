@@ -209,7 +209,7 @@ class Server {
       refreshDio.options.headers['Authorization'] = 'Bearer $refreshToken';
 
       final refreshResponse = await refreshDio.get(
-        ApiConstants.refreshToken,
+        'ApiConstants.refreshToken',
       );
 
       final refreshJson = refreshResponse.data;

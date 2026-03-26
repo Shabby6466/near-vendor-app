@@ -11,6 +11,7 @@ import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart'
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/screens/vendor_onboarding_screen.dart';
+import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -66,6 +67,14 @@ class ProfileScreen extends StatelessWidget {
                           }
                         },
                       ),
+                      ProfileMenuItem(
+                        icon: Icons.lock_outline,
+                        title: 'Change Password',
+                        subtitle: 'Update your security credentials',
+                        onTap: () {
+                          AppNavigator.push(context, const ChangePasswordScreen());
+                        },
+                      ),
                       SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                       ProfileMenuItem(
                         icon: Icons.settings_input_component_outlined,
@@ -73,9 +82,9 @@ class ProfileScreen extends StatelessWidget {
                         subtitle: 'Customize what you hear from us',
                         onTap: () {},
                       ),
-                      SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+
                       _buildLogoutButton(context),
-                      SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                      SizedBox(height: 100),
                     ],
                   ),
                 ),
@@ -92,7 +101,7 @@ class ProfileScreen extends StatelessWidget {
   Widget _buildLogoutButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        AppNavigator.pushReplacement(context, const LoginScreen());
+        context.read<SessionCubit>().logout();
       },
       child: Container(
         width: double.infinity,

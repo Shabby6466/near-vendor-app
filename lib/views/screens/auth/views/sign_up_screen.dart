@@ -21,7 +21,10 @@ class SignUpScreen extends StatelessWidget {
       child: BlocConsumer<SignupCubit, SignupState>(
         listener: (context, state) {
           if (state is SignupSuccess) {
-            AppNavigator.push(context, const VerificationCodeScreen());
+            AppNavigator.push(
+              context,
+              VerificationCodeScreen(email: state.email),
+            );
           }
         },
         builder: (context, state) {
@@ -56,6 +59,15 @@ class SignUpScreen extends StatelessWidget {
                             child: Column(
                               children: [
                                 AuthTextFieldWidget(
+                                  label: 'full name',
+                                  controller: cubit.fullNameController,
+                                ),
+                                SizedBox(
+                                  height: AppSpacing.smallVerticalSpacing(
+                                    context,
+                                  ),
+                                ),
+                                AuthTextFieldWidget(
                                   label: 'email',
                                   controller: cubit.emailController,
                                 ),
@@ -66,6 +78,7 @@ class SignUpScreen extends StatelessWidget {
                                 ),
                                 AuthTextFieldWidget(
                                   label: 'password',
+                                  isPassword: true,
                                   controller: cubit.passwordController,
                                 ),
                                 SizedBox(
@@ -76,6 +89,7 @@ class SignUpScreen extends StatelessWidget {
 
                                 AuthTextFieldWidget(
                                   label: 'confirm password',
+                                  isPassword: true,
                                   controller: cubit.confirmPasswordController,
                                 ),
                               ],

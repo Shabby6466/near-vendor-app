@@ -17,7 +17,7 @@ class LocationContactStep extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Location & Contact',
+                'Vendor Details',
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -25,54 +25,24 @@ class LocationContactStep extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Pin your business location and provide contact details so customers can find you.',
+                'Provide your business phone and CNIC details for verification.',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: Colors.grey,
                     ),
               ),
               SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: Colors.grey.shade200,
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(Icons.location_on, size: 48, color: Colors.blue),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Tap and hold the pin to adjust your location',
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-              _buildLabel(context, 'Business Address'),
+              _buildLabel(context, 'Business Phone No.'),
               AppTextField(
-                hint: '123 Commerce St, Suite 101',
-                prefixIcon: const Icon(Icons.home_outlined),
-                onChanged: (val) => context.read<OnboardingCubit>().updateLocationContact(address: val),
-              ),
-              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-              _buildLabel(context, 'Business Phone Number'),
-              AppTextField(
-                hint: '+1 (555) 000-0000',
+                hint: '+92 3XX XXXXXXX',
                 keyboardType: TextInputType.phone,
                 onChanged: (val) => context.read<OnboardingCubit>().updateLocationContact(phone: val),
               ),
               SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-              _buildLabel(context, 'Support Email'),
+              _buildLabel(context, 'CNIC No.'),
               AppTextField(
-                hint: 'contact@yourbusiness.com',
-                prefixIcon: const Icon(Icons.email_outlined),
-                keyboardType: TextInputType.emailAddress,
-                onChanged: (val) => context.read<OnboardingCubit>().updateLocationContact(email: val),
+                hint: 'XXXXX-XXXXXXX-X',
+                keyboardType: TextInputType.number,
+                onChanged: (val) => context.read<OnboardingCubit>().updateLocationContact(cnic: val),
               ),
             ],
           ),

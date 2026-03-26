@@ -9,19 +9,19 @@ class OnboardingCubit extends Cubit<OnboardingState> {
 
   OnboardingCubit() : super(const OnboardingState());
 
-  void updateBusinessInfo({String? name, String? category, String? description}) {
+  void updateBusinessInfo({String? name, String? category}) {
     emit(state.copyWith(
       businessName: name,
       category: category,
-      description: description,
     ));
   }
 
-  void updateLocationContact({String? address, String? phone, String? email}) {
+  void updateLocationContact({String? address, String? phone, String? email, String? cnic}) {
     emit(state.copyWith(
       address: address,
       phoneNumber: phone,
       email: email,
+      cnicNo: cnic,
     ));
   }
 

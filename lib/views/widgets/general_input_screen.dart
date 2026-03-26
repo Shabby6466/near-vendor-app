@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
@@ -76,6 +77,8 @@ class GeneralPinScreen extends StatelessWidget {
                 MaterialPageRoute(builder: (context) => widget as Widget),
               );
             }
+          } else if (state is GeneralPinFailure) {
+            AppAlerts.showErrorSnackBar(context, state.message);
           }
         },
         builder: (context, state) {
@@ -159,9 +162,11 @@ class GeneralPinScreen extends StatelessWidget {
                   padding: AppSpacing.bottomNavigationPadding(context),
                   child: AppElevatedButton(
                     onPressed: isButtonEnabled
-                        ? () {
-                            AppNavigator.push(context, const MainScreen());
-                          }
+                        ? () => onPinSubmitted(
+                              cubit.codeController.text,
+                              email,
+                              cubit,
+                            )
                         : null,
                     text: buttonText,
                     isEnabled: isButtonEnabled,

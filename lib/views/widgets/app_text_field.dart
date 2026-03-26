@@ -140,6 +140,7 @@ class _AppTextFieldState extends State<AppTextField> {
                                   _obscureText
                                       ? Icons.visibility_off
                                       : Icons.visibility,
+                                  color: Colors.black54,
                                 ),
                               )
                             : widget.suffixIcon,

@@ -36,7 +36,10 @@ class CurrentUserStorage {
   static Future<void> storeUserAuthToken(String token,
       String? refreshToken,) async {
     try {
-      _userBox.put(HiveKeys.currentUserAuthTokenKey, token);
+      await _userBox.put(HiveKeys.currentUserAuthTokenKey, token);
+      if (refreshToken != null) {
+        await _userBox.put(HiveKeys.currentUserRefreshTokenKey, refreshToken);
+      }
     } catch (e) {
       debugPrint('Error storing user data: $e');
     }
@@ -56,5 +59,14 @@ class CurrentUserStorage {
       defaultValue: null,
     )
     as String?;
+  }
+  static Future<void> clearUserData() async {
+    try {
+      await _userBox.delete(HiveKeys.currentUserKey);
+      await _userBox.delete(HiveKeys.currentUserAuthTokenKey);
+      await _userBox.delete(HiveKeys.currentUserRefreshTokenKey);
+    } catch (e) {
+      debugPrint('Error clearing user data: $e');
+    }
   }
 }

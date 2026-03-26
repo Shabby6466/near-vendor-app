@@ -61,20 +61,6 @@ class BusinessInfoStep extends StatelessWidget {
                 ),
               ),
               SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-              _buildLabel(context, 'Business Description'),
-              AppTextField(
-                hint: 'Briefly describe what your business offers...',
-                isMultiline: true,
-                onChanged: (val) => context.read<OnboardingCubit>().updateBusinessInfo(description: val),
-              ),
-              const SizedBox(height: 4),
-              Align(
-                alignment: Alignment.centerRight,
-                child: Text(
-                  '0/500 characters',
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(color: Colors.grey),
-                ),
-              ),
             ],
           ),
         );

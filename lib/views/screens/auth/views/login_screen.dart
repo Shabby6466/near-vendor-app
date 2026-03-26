@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/login_cubit/login_cubit.dart';
@@ -22,7 +24,10 @@ class LoginScreen extends StatelessWidget {
       child: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
+            context.read<SessionCubit>().setAuthenticated('User');
             AppNavigator.push(context, const MainScreen());
+          } else if (state is LoginFailure) {
+            AppAlerts.showErrorSnackBar(context, state.message);
           }
         },
         builder: (context, state) {
@@ -55,14 +60,15 @@ class LoginScreen extends StatelessWidget {
                           Spacer(),
                           AuthTextFieldWidget(
                             label: 'email',
-                            controller: TextEditingController(),
+                            controller: cubit.emailController,
                           ),
                           SizedBox(
                             height: AppSpacing.smallVerticalSpacing(context),
                           ),
                           AuthTextFieldWidget(
                             label: 'password',
-                            controller: TextEditingController(),
+                            isPassword: true,
+                            controller: cubit.passwordController,
                           ),
                           SizedBox(
                             height: AppSpacing.largeVerticalSpacing(context),

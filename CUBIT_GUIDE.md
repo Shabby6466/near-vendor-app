@@ -95,7 +95,7 @@ final class GeneralPinFailure extends GeneralPinState {
 
 **Usage in widgets:**
 ```dart
-BlocBuilder<GeneralPinCubit, GeneralPinState>(
+BlocBuilder<GeneralPinCubit, GeneralPinState> (
   builder: (context, state) {
     if (state is GeneralPinLoading) {
       return CircularProgressIndicator();

@@ -62,3 +62,64 @@ class Data {
     return map;
   }
 }
+
+
+class VerifyOtpResponse extends BaseApiResponse {
+  String? token;
+  User? user;
+  bool? mustChangePassword;
+
+  VerifyOtpResponse({
+    super.message,
+    super.status,
+    this.token,
+    this.user,
+    this.mustChangePassword,
+  });
+
+  VerifyOtpResponse.fromJson(dynamic json) : super.fromJson(json) {
+    if (json is Map) {
+      token = json["token"] as String?;
+      mustChangePassword = json["mustChangePassword"] as bool?;
+      user = json["user"] != null ? User.fromJson(json["user"]) : null;
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = super.toJson();
+    map["token"] = token;
+    map["mustChangePassword"] = mustChangePassword;
+    map["user"] = user?.toJson();
+    return map;
+  }
+}
+
+class LoginResponse extends BaseApiResponse{
+  String? token;
+  User? user;
+
+
+  LoginResponse({
+    super.message,
+    this.token,
+    this.user,
+
+});
+  LoginResponse.fromJson(dynamic json) : super.fromJson(json) {
+    if (json is Map) {
+      token = json["token"] as String?;
+      user = json["user"] != null ? User.fromJson(json["user"]) : null;
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = super.toJson();
+    map["token"] = token;
+    map["user"] = user?.toJson();
+    return map;
+  }
+
+}
+

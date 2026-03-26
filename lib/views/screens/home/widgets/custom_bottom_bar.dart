@@ -17,8 +17,8 @@ class CustomBottomBar extends StatelessWidget {
   });
 
   void _onItemTapped(BuildContext context, int index) {
-    // Indices that require authentication: Chat (3) and Profile (4)
-    const protectedIndices = [3];
+    // Indices that require authentication: Profile (4)
+    const protectedIndices = [4];
 
     if (protectedIndices.contains(index)) {
       final sessionState = context.read<SessionCubit>().state;

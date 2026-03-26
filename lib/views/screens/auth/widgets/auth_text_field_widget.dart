@@ -5,10 +5,12 @@ import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 class AuthTextFieldWidget extends StatelessWidget {
   final String label;
   final TextEditingController controller;
+  final bool isPassword;
   const AuthTextFieldWidget({
     super.key,
     required this.label,
     required this.controller,
+    this.isPassword = false,
   });
 
   @override
@@ -29,6 +31,7 @@ class AuthTextFieldWidget extends StatelessWidget {
             child: AppTextField(
               controller: controller,
               hint: label,
+              isPassword: isPassword,
               contentPadding: EdgeInsets.zero,
             ),
           ),

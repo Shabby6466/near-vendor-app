@@ -16,5 +16,9 @@ final class LoginSuccess extends LoginState {
 }
 
 final class LoginFailure extends LoginState {
-  const LoginFailure();
+  const LoginFailure(this.message);
+  final String message;
+
+  @override
+  List<Object> get props => [message];
 }

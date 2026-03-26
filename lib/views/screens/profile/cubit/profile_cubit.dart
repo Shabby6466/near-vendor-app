@@ -1,8 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 part 'profile_state.dart';
+
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ImagePicker _picker = ImagePicker();
@@ -13,12 +15,12 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   void _loadProfile() {
     emit(ProfileLoading());
-    // Simulate loading data from a repository or local storage
-    // In a real app, this would come from a User repository
-    emit(const ProfileSuccess(
-      userName: 'Elena Rodriguez',
-      userLocation: 'Brooklyn, New York',
-      profileImagePath: null, // Initially no custom image
+    final user = CurrentUserStorage.getCurrentUser();
+    
+    emit(ProfileSuccess(
+      userName: user?.fullName ?? 'Guest User',
+      userLocation: user?.email ?? 'No email provided',
+      profileImagePath: null,
       discoveryRadius: 5.0,
       newOfferAlerts: true,
     ));

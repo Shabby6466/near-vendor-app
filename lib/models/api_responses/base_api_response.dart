@@ -29,7 +29,9 @@ abstract class BaseApiResponse {
   }
 
   void _paseData(Map json) {
-    _status = json["statusCode"] as int?;
+    _status = json["statusCode"] != null
+        ? int.tryParse(json["statusCode"].toString())
+        : null;
     _message = json["message"] as String?;
     if (_message == null && json.keys.contains('errors')) {
       if (json['errors'] is List && (json['errors'] as List).isNotEmpty) {
