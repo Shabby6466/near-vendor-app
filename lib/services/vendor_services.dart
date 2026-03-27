@@ -53,6 +53,24 @@ class VendorServices {
     }
   }
 
+  Future<List<ShopResponse>> getMyShops() async {
+    try {
+      final response = await Server.get(ApiConstants.getMyShops);
+      if (response.data is List) {
+        return (response.data as List)
+            .map((e) => ShopResponse.fromJson(e as Map<String, dynamic>))
+            .toList();
+      } else if (response.data is Map && response.data['shops'] is List) {
+        return (response.data['shops'] as List)
+            .map((e) => ShopResponse.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
+      return [];
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   GenericApiResponse _handleError(dynamic e) {
     if (e is DioException) {
       if (e.response?.data != null && e.response?.data is Map) {
