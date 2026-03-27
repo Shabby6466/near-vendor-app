@@ -45,20 +45,24 @@ class VerificationLaunchStep extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(color: Colors.blue.withValues(alpha: 0.2), style: BorderStyle.solid),
                   ),
-                  child: state.cnicImagePath != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
-                          child: Image.file(File(state.cnicImagePath!), fit: BoxFit.cover),
-                        )
-                      : Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.cloud_upload_outlined, size: 40, color: Colors.blue),
-                            const SizedBox(height: 8),
-                            const Text('Tap to upload or drag and drop', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w500)),
-                            Text('JPG or PNG (max. 5MB)', style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
-                          ],
-                        ),
+                  child: state.isUploadingImage
+                      ? const Center(child: CircularProgressIndicator())
+                      : state.cnicImagePath != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: state.cnicImagePath!.startsWith('http')
+                                  ? Image.network(state.cnicImagePath!, fit: BoxFit.cover)
+                                  : Image.file(File(state.cnicImagePath!), fit: BoxFit.cover),
+                            )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.cloud_upload_outlined, size: 40, color: Colors.blue),
+                                const SizedBox(height: 8),
+                                const Text('Tap to upload or drag and drop', style: TextStyle(color: Colors.blue, fontWeight: FontWeight.w500)),
+                                Text('JPG or PNG (max. 5MB)', style: TextStyle(color: Colors.grey.shade400, fontSize: 12)),
+                              ],
+                            ),
                 ),
               ),
               SizedBox(height: AppSpacing.largeVerticalSpacing(context)),

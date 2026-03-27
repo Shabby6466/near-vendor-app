@@ -37,7 +37,28 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   Future<void> pickCnicImage() async {
     final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
     if (image != null) {
-      emit(state.copyWith(cnicImagePath: image.path));
+      emit(state.copyWith(cnicImagePath: image.path, isUploadingImage: true));
+      
+      try {
+        final uploadResponse = await AuthServices().uploadMedia(image.path);
+        // Check for common success codes or if a URL was returned (indicating success)
+        if (uploadResponse.status == 200 || 
+            uploadResponse.status == 201 || 
+            (uploadResponse.url != null && uploadResponse.url!.isNotEmpty)) {
+          emit(state.copyWith(
+            cnicImagePath: uploadResponse.url ?? image.path,
+            isUploadingImage: false,
+          ));
+          debugPrint('Image uploaded successfully: ${uploadResponse.url}');
+        } else {
+          emit(state.copyWith(
+            isUploadingImage: false,
+            errorMessage: 'Upload failed (${uploadResponse.status}): ${uploadResponse.message}',
+          ));
+        }
+      } catch (e) {
+        emit(state.copyWith(isUploadingImage: false, errorMessage: e.toString()));
+      }
     }
   }
 
@@ -62,34 +83,37 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   }
 
   Future<void> launchStore() async {
-    emit(state.copyWith(isSubmitting: true));
-
-    final input = RegisterInput(
-      businessName: state.businessName,
-      businessCategory: state.category,
-      taxId: state.taxId,
-      supportContact: state.phoneNumber,
-      cnic: state.cnicNo,
-      cnicImageUrl: state.cnicImagePath ?? '', // Placeholder or local path
-    );
+    emit(state.copyWith(isSubmitting: true, errorMessage: null));
 
     try {
+      // 2. Register Vendor
+      final input = RegisterInput(
+        businessName: state.businessName,
+        businessCategory: state.category,
+        taxId: state.taxId,
+        supportContact: state.phoneNumber,
+        cnic: state.cnicNo,
+        cnicImageUrl: state.cnicImagePath ?? '',
+      );
+
+      debugPrint('Hitting Register API with input: ${input.toJson()}');
       final response = await AuthServices().registerVendor(input);
       debugPrint('Registration Status: ${response.status}');
       debugPrint('Registration Message: ${response.message}');
 
-      if (response.status == 200 || response.status == 201) {
+      if (response.status == 200 || 
+          response.status == 201 || 
+          (response.message?.toLowerCase().contains('already exists') ?? false)) {
         emit(state.copyWith(isSubmitting: false, isSuccess: true));
       } else {
-        emit(state.copyWith(isSubmitting: false));
-        // Handle error (e.g., show snackbar)
-        debugPrint(
-          'Registration failed with status ${response.status}: ${response.message}',
-        );
+        emit(state.copyWith(
+          isSubmitting: false,
+          errorMessage: response.message ?? 'Registration failed',
+        ));
       }
     } catch (e) {
       debugPrint('Registration error: $e');
-      emit(state.copyWith(isSubmitting: false));
+      emit(state.copyWith(isSubmitting: false, errorMessage: e.toString()));
     }
   }
 }

@@ -5,7 +5,8 @@ class ProfileMenuItem extends StatelessWidget {
   final Widget? leading;
   final String title;
   final String subtitle;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
+  final Widget? trailing;
 
   const ProfileMenuItem({
     super.key,
@@ -13,7 +14,8 @@ class ProfileMenuItem extends StatelessWidget {
     this.leading,
     required this.title,
     required this.subtitle,
-    required this.onTap,
+    this.onTap,
+    this.trailing,
   });
 
   @override
@@ -66,10 +68,10 @@ class ProfileMenuItem extends StatelessWidget {
             ),
           ),
         ),
-        trailing: Icon(
+        trailing: trailing ?? Icon(
           Icons.chevron_right_rounded, 
           size: 20, 
-          color: theme.iconTheme.color?.withOpacity(0.3),
+          color: theme.iconTheme.color?.withValues(alpha: 0.3),
         ),
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

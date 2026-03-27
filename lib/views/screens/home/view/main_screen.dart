@@ -9,14 +9,15 @@ import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 
 class MainScreen extends StatelessWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+  const MainScreen({super.key, this.initialIndex = 0});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => MainScreenCubit(0))],
+      providers: [BlocProvider(create: (context) => MainScreenCubit(initialIndex))],
       child: BlocBuilder<MainScreenCubit, int>(
         builder: (context, currentIndex) {
           return Scaffold(

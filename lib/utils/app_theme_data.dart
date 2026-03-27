@@ -6,7 +6,7 @@ class AppThemeData {
   AppThemeData._();
 
   // --- BRAND COLORS ---
-  static const Color emerald = Color(0xFF34C759);
+  static const Color vendorAccent = Color(0xFFFFC107); // Vibrant Yellow
   static const Color obsidian = Color(0xFF0C0C11);
   static const Color midnight = Color(0xFF171D25);
   static const Color darkGrey = Color(0xFF1C1C23);
@@ -73,22 +73,22 @@ class AppThemeData {
         ),
       );
 
-  // --- VENDOR THEMES (Emerald Signature) ---
+  // --- VENDOR THEMES (Yellow Signature) ---
   static ThemeData get vendorLightTheme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.light,
-        primaryColor: emerald,
+        primaryColor: vendorAccent,
         fontFamily: _fontFamily,
-        scaffoldBackgroundColor: const Color(0xFFF2F9F3), // Subtle emerald tint
+        scaffoldBackgroundColor: const Color(0xFFFFFDF5), // Subtle yellow tint
         appBarTheme: _appBarTheme.copyWith(
           foregroundColor: const Color(0xFF1D1D1F),
         ),
         cardColor: Colors.white,
-        dividerColor: const Color(0xFFE8F3EA),
+        dividerColor: const Color(0xFFFFF8D6),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: emerald,
+          seedColor: vendorAccent,
           brightness: Brightness.light,
-          primary: emerald,
+          primary: vendorAccent,
           secondary: ColorName.primary,
           surfaceTint: Colors.white,
         ),
@@ -97,7 +97,7 @@ class AppThemeData {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: emerald,
+            backgroundColor: vendorAccent,
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -108,7 +108,7 @@ class AppThemeData {
   static ThemeData get vendorDarkTheme => ThemeData(
         useMaterial3: true,
         brightness: Brightness.dark,
-        primaryColor: emerald,
+        primaryColor: vendorAccent,
         fontFamily: _fontFamily,
         scaffoldBackgroundColor: obsidian,
         appBarTheme: _appBarTheme.copyWith(
@@ -117,10 +117,10 @@ class AppThemeData {
         cardColor: const Color(0xFF16161D),
         dividerColor: Colors.white.withOpacity(0.05),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: emerald,
+          seedColor: vendorAccent,
           brightness: Brightness.dark,
-          primary: emerald,
-          secondary: const Color(0xFF30D158),
+          primary: vendorAccent,
+          secondary: const Color(0xFFFFD54F),
           surface: const Color(0xFF16161D),
         ),
         inputDecorationTheme: _inputDecorationTheme.copyWith(
@@ -128,7 +128,7 @@ class AppThemeData {
         ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            backgroundColor: emerald,
+            backgroundColor: vendorAccent,
             foregroundColor: Colors.white,
             elevation: 0,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

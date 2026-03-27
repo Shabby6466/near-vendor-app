@@ -55,13 +55,13 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       ],
       child: BlocBuilder<SessionCubit, SessionState>(
         builder: (context, state) {
-          final isVendor = state.isVendor;
+          final isApprovedVendor = state.isVendor && state.vendorStatus == 'APPROVED';
           return MaterialApp(
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.system,
-            theme: isVendor ? AppThemeData.vendorLightTheme : AppThemeData.normalLightTheme,
-            darkTheme: isVendor ? AppThemeData.vendorDarkTheme : AppThemeData.normalDarkTheme,
+            theme: isApprovedVendor ? AppThemeData.vendorLightTheme : AppThemeData.normalLightTheme,
+            darkTheme: isApprovedVendor ? AppThemeData.vendorDarkTheme : AppThemeData.normalDarkTheme,
             home: UpgradeAlert(
               upgrader: Upgrader(
                 minAppVersion: '0.0.0',

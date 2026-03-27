@@ -47,6 +47,15 @@ class SessionCubit extends Cubit<SessionState> {
       try {
         final response = await AuthServices().getMe();
         if (response.user != null) {
+          String? vendorStatus;
+          final statusResponse = await AuthServices().getVendorStatus();
+          if (statusResponse.vendorStatus != null) {
+            vendorStatus = statusResponse.vendorStatus;
+          } else if (response.user?.role?.toUpperCase() == 'VENDOR') {
+            vendorStatus = 'APPROVED';
+          }
+          final bool isVendor = (response.user?.role?.toUpperCase() == 'VENDOR') || (statusResponse.vendorStatus != null);
+
           String? cityName;
           if (response.user?.lastKnownLatitude != null && response.user?.lastKnownLongitude != null) {
             cityName = await _getCityName(response.user!.lastKnownLatitude!, response.user!.lastKnownLongitude!);
@@ -61,12 +70,13 @@ class SessionCubit extends Cubit<SessionState> {
               status: AuthStatus.authenticated,
               user: response.user,
               userName: response.user?.fullName,
-              isVendor: response.user?.role?.toUpperCase() == 'VENDOR',
+              isVendor: isVendor,
               hasOnboarded: hasOnboarded,
               photoUrl: response.user?.photoUrl,
               latitude: response.user?.lastKnownLatitude,
               longitude: response.user?.lastKnownLongitude,
               cityName: cityName,
+              vendorStatus: vendorStatus,
             ),
           );
         }
@@ -101,11 +111,29 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<void> logout() async {
     await CurrentUserStorage.clearUserData();
-    emit(state.copyWith(status: AuthStatus.guest, userName: 'Guest User'));
+    emit(const SessionState(status: AuthStatus.guest, userName: 'Guest User'));
+  }
+
+  Future<void> refreshVendorStatus() async {
+    if (state.isVendor) {
+      final response = await AuthServices().getVendorStatus();
+      if (response.vendorStatus != null) {
+        emit(state.copyWith(vendorStatus: response.vendorStatus));
+      } else {
+        emit(state.copyWith(vendorStatus: 'PENDING'));
+      }
+    }
   }
 
   void setVendorStatus(bool isVendor) {
-    emit(state.copyWith(isVendor: isVendor));
+    if (state.user != null) {
+      state.user!.role = isVendor ? 'VENDOR' : 'USER';
+      CurrentUserStorage.storeUserData(state.user!);
+    }
+    emit(state.copyWith(isVendor: isVendor, clearVendorStatus: isVendor));
+    if (isVendor) {
+      refreshVendorStatus();
+    }
   }
 
   void setOnboarded() {

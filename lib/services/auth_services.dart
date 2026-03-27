@@ -6,6 +6,8 @@ import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:nearvendorapp/models/api_responses/media_upload_response.dart';
+import 'package:nearvendorapp/models/api_responses/vendor_status_response.dart';
 
 class AuthServices {
   AuthServices();
@@ -109,6 +111,22 @@ class AuthServices {
     }
   }
 
+  Future<VendorStatusResponse> getVendorStatus() async {
+    try {
+      final response = await Server.get(ApiConstants.getVendorStatus);
+      return VendorStatusResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return VendorStatusResponse.fromJson(e.response?.data);
+        } else {
+          return VendorStatusResponse(message: e.message);
+        }
+      }
+      return VendorStatusResponse(message: e.toString());
+    }
+  }
+
   Future<MeResponse> getMe() async {
     try {
       final response = await Server.get(ApiConstants.getMe);
@@ -144,8 +162,31 @@ class AuthServices {
       return GenericApiResponse(message: e.toString());
     }
   }
+
+  Future<MediaUploadResponse> uploadMedia(String filePath) async {
+    try {
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(filePath),
+      });
+      final response = await Server.post(
+        ApiConstants.uploadMedia,
+        data: formData,
+      );
+      return MediaUploadResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return MediaUploadResponse.fromJson(e.response?.data);
+        } else {
+          return MediaUploadResponse(message: e.message);
+        }
+      }
+      return MediaUploadResponse(message: e.toString());
+    }
+  }
 }
-  // Future<GenericApiResponse> refreshToken() async {
+
+// Future<GenericApiResponse> refreshToken() async {
   //   try {
   //     final refreshToken = CurrentUserStorage.getUserRefreshAuthToken();
   //     if (refreshToken == null) {

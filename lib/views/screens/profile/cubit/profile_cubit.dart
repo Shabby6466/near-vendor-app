@@ -38,17 +38,23 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
-        // 1. Upload image
+        // 1. Set uploading state
+        emit(currentState.copyWith(isUploadingImage: true));
+        // 2. Upload image
         final String? uploadedUrl = await MediaServices.uploadImage(File(image.path));
         if (uploadedUrl != null) {
-          // 2. Update profile
+          // 3. Update profile
           await sessionCubit.updateUserProfile(UpdateUserInput(photoUrl: uploadedUrl));
-          // 3. Update local state
-          emit(currentState.copyWith(photoUrl: uploadedUrl));
+          // 4. Update local state
+          emit(currentState.copyWith(photoUrl: uploadedUrl, isUploadingImage: false));
+        } else {
+          emit(currentState.copyWith(isUploadingImage: false));
         }
       }
     } catch (e) {
-      // Handle error if needed
+      if (state is ProfileSuccess) {
+        emit((state as ProfileSuccess).copyWith(isUploadingImage: false));
+      }
     }
   }
 
