@@ -9,7 +9,13 @@ sealed class ShopFormState extends Equatable {
 
 final class ShopFormInitial extends ShopFormState {}
 
-final class ShopFormLoading extends ShopFormState {}
+final class ShopFormLoading extends ShopFormState {
+  final String? message;
+  const ShopFormLoading({this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
 
 final class ShopFormSuccess extends ShopFormState {
   final Shop? shop;

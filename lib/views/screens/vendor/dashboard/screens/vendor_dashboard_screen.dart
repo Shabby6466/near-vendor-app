@@ -7,7 +7,7 @@ import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_c
 import 'package:nearvendorapp/views/screens/vendor/widgets/shop_card.dart';
 import 'package:nearvendorapp/views/screens/vendor/widgets/shop_form_bottom_sheet.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/screens/item_management_screen.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/shop_details/screens/shop_details_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 
@@ -28,7 +28,7 @@ class VendorDashboardScreen extends StatelessWidget {
           children: [
             Column(
               children: [
-                const SizedBox(height: 240), // Space for glass header
+                const SizedBox(height: 240),
                 Expanded(
                   child: BlocBuilder<VendorShopCubit, VendorShopState>(
                     builder: (context, state) {
@@ -70,9 +70,15 @@ class VendorDashboardScreen extends StatelessWidget {
             icon: const Icon(Icons.add_rounded, size: 24),
             label: const Text(
               'New Shop',
-              style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w600, fontSize: 15),
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+              ),
             ),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
           ),
         ),
       ),
@@ -90,9 +96,12 @@ class VendorDashboardScreen extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.fromLTRB(28, topPadding + 16, 28, 28),
           decoration: BoxDecoration(
-            color: theme.cardColor.withOpacity(isDark ? 0.7 : 0.85),
+            color: theme.cardColor.withValues(alpha: isDark ? 0.7 : 0.85),
             border: Border(
-              bottom: BorderSide(color: theme.dividerColor.withOpacity(0.1), width: 1),
+              bottom: BorderSide(
+                color: theme.dividerColor.withValues(alpha: 0.1),
+                width: 1,
+              ),
             ),
           ),
           child: Column(
@@ -109,7 +118,9 @@ class VendorDashboardScreen extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 14,
-                          color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: 0.5,
+                          ),
                           fontWeight: FontWeight.w400,
                         ),
                       ),
@@ -130,7 +141,7 @@ class VendorDashboardScreen extends StatelessWidget {
                       shape: BoxShape.circle,
                       boxShadow: [
                         BoxShadow(
-                          color: theme.primaryColor.withOpacity(0.15),
+                          color: theme.primaryColor.withValues(alpha: 0.15),
                           blurRadius: 15,
                           spreadRadius: 2,
                         ),
@@ -141,8 +152,14 @@ class VendorDashboardScreen extends StatelessWidget {
                       backgroundColor: theme.cardColor,
                       child: CircleAvatar(
                         radius: 23,
-                        backgroundColor: theme.primaryColor.withOpacity(0.1),
-                        child: Icon(Icons.person_rounded, color: theme.primaryColor, size: 26),
+                        backgroundColor: theme.primaryColor.withValues(
+                          alpha: 0.1,
+                        ),
+                        child: Icon(
+                          Icons.person_rounded,
+                          color: theme.primaryColor,
+                          size: 26,
+                        ),
                       ),
                     ),
                   ),
@@ -169,16 +186,31 @@ class VendorDashboardScreen extends StatelessWidget {
 
         return Row(
           children: [
-            _buildInfoCard(context, 'Active Shops', activeShops.toString(), const Color(0xFF34C759)),
+            _buildInfoCard(
+              context,
+              'Active Shops',
+              activeShops.toString(),
+              const Color(0xFF34C759),
+            ),
             const SizedBox(width: 16),
-            _buildInfoCard(context, 'Total Shops', totalShops.toString(), Theme.of(context).primaryColor),
+            _buildInfoCard(
+              context,
+              'Total Shops',
+              totalShops.toString(),
+              Theme.of(context).primaryColor,
+            ),
           ],
         );
       },
     );
   }
 
-  Widget _buildInfoCard(BuildContext context, String title, String value, Color accentColor) {
+  Widget _buildInfoCard(
+    BuildContext context,
+    String title,
+    String value,
+    Color accentColor,
+  ) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -188,10 +220,13 @@ class VendorDashboardScreen extends StatelessWidget {
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: accentColor.withOpacity(isDark ? 0.3 : 0.1), width: 1.5),
+          border: Border.all(
+            color: accentColor.withValues(alpha: isDark ? 0.3 : 0.1),
+            width: 1.5,
+          ),
           boxShadow: [
             BoxShadow(
-              color: accentColor.withOpacity(isDark ? 0.1 : 0.04),
+              color: accentColor.withValues(alpha: isDark ? 0.1 : 0.04),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -202,7 +237,11 @@ class VendorDashboardScreen extends StatelessWidget {
             Positioned(
               right: -10,
               top: -10,
-              child: Icon(Icons.circle, color: accentColor.withOpacity(0.03), size: 60),
+              child: Icon(
+                Icons.circle,
+                color: accentColor.withValues(alpha: 0.03),
+                size: 60,
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -215,7 +254,9 @@ class VendorDashboardScreen extends StatelessWidget {
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 12,
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                      color: theme.textTheme.bodySmall?.color?.withValues(
+                        alpha: 0.5,
+                      ),
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -248,7 +289,9 @@ class VendorDashboardScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.05)),
+            border: Border.all(
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.05),
+            ),
           ),
           child: const ShimmerEffect(),
         ),
@@ -269,17 +312,15 @@ class VendorDashboardScreen extends StatelessWidget {
           builder: (context, value, child) {
             return Transform.translate(
               offset: Offset(0, 20 * (1 - value)),
-              child: Opacity(
-                opacity: value,
-                child: child,
-              ),
+              child: Opacity(opacity: value, child: child),
             );
           },
           child: ShopCard(
             shop: shop,
             onEdit: () => _showShopForm(context, shop: shop),
             onDelete: () => _confirmDelete(context, shop),
-            onTap: () => AppNavigator.push(context, ItemManagementScreen(shop: shop)),
+            onTap: () =>
+                AppNavigator.push(context, ShopDetailsScreen(shop: shop)),
           ),
         );
       },
@@ -307,26 +348,46 @@ class VendorDashboardScreen extends StatelessWidget {
         child: AlertDialog(
           backgroundColor: theme.cardColor,
           elevation: 0,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
           contentPadding: const EdgeInsets.fromLTRB(28, 32, 28, 24),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: Colors.red.shade50.withOpacity(0.1), shape: BoxShape.circle),
-                child: Icon(Icons.delete_outline_rounded, color: Colors.red.shade600, size: 32),
+                decoration: BoxDecoration(
+                  color: Colors.red.shade50.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.delete_outline_rounded,
+                  color: Colors.red.shade600,
+                  size: 32,
+                ),
               ),
               const SizedBox(height: 24),
               Text(
                 'Remove Shop?',
-                style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w700, color: theme.textTheme.titleLarge?.color),
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: theme.textTheme.titleLarge?.color,
+                ),
               ),
               const SizedBox(height: 12),
               Text(
                 'Are you sure you want to delete "${shop.shopName}"? This cannot be undone.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6)),
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: theme.textTheme.bodyMedium?.color?.withValues(
+                    alpha: 0.6,
+                  ),
+                ),
               ),
               const SizedBox(height: 32),
               Row(
@@ -334,7 +395,15 @@ class VendorDashboardScreen extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () => AppNavigator.pop(context),
-                      child: Text('Cancel', style: TextStyle(color: theme.textTheme.bodySmall?.color?.withOpacity(0.4), fontWeight: FontWeight.w600)),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: 0.4,
+                          ),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -348,10 +417,15 @@ class VendorDashboardScreen extends StatelessWidget {
                         backgroundColor: Colors.red.shade600,
                         foregroundColor: Colors.white,
                         elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      child: const Text('Delete', style: TextStyle(fontWeight: FontWeight.w700)),
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(fontWeight: FontWeight.w700),
+                      ),
                     ),
                   ),
                 ],
@@ -375,21 +449,37 @@ class VendorDashboardScreen extends StatelessWidget {
               height: 160,
               width: 160,
               decoration: BoxDecoration(
-                color: theme.primaryColor.withOpacity(0.05),
+                color: theme.primaryColor.withValues(alpha: 0.05),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.store_mall_directory_rounded, size: 80, color: theme.primaryColor),
+              child: Icon(
+                Icons.store_mall_directory_rounded,
+                size: 80,
+                color: theme.primaryColor,
+              ),
             ),
             const SizedBox(height: 40),
             Text(
               'No Shops Yet',
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 24, fontWeight: FontWeight.w700, color: theme.textTheme.titleLarge?.color),
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: theme.textTheme.titleLarge?.color,
+              ),
             ),
             const SizedBox(height: 12),
             Text(
               'Start your journey by launching your first digital retail space.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 15, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6), height: 1.5),
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 15,
+                color: theme.textTheme.bodyMedium?.color?.withValues(
+                  alpha: 0.6,
+                ),
+                height: 1.5,
+              ),
             ),
             const SizedBox(height: 48),
             ElevatedButton(
@@ -397,14 +487,23 @@ class VendorDashboardScreen extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.primaryColor,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 18,
+                ),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
                 elevation: 10,
-                shadowColor: theme.primaryColor.withOpacity(0.3),
+                shadowColor: theme.primaryColor.withValues(alpha: 0.3),
               ),
               child: const Text(
                 'Establish First Shop',
-                style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w700, fontSize: 16),
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
               ),
             ),
           ],
@@ -425,19 +524,36 @@ class VendorDashboardScreen extends StatelessWidget {
             const SizedBox(height: 24),
             Text(
               'Connection Lost',
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 20, fontWeight: FontWeight.w700, color: theme.textTheme.titleLarge?.color),
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: theme.textTheme.titleLarge?.color,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6)),
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 14,
+                color: theme.textTheme.bodyMedium?.color?.withValues(
+                  alpha: 0.6,
+                ),
+              ),
             ),
             const SizedBox(height: 32),
             TextButton.icon(
               onPressed: () => context.read<VendorShopCubit>().fetchShops(),
               icon: const Icon(Icons.refresh_rounded),
-              label: const Text('Try Again', style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w700)),
+              label: const Text(
+                'Try Again',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               style: TextButton.styleFrom(foregroundColor: theme.primaryColor),
             ),
           ],
@@ -454,7 +570,8 @@ class _OffsetFloatingActionButtonLocation extends FloatingActionButtonLocation {
 
   @override
   Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
-    final Offset standardOffset = FloatingActionButtonLocation.centerFloat.getOffset(scaffoldGeometry);
+    final Offset standardOffset = FloatingActionButtonLocation.centerFloat
+        .getOffset(scaffoldGeometry);
     return standardOffset + offset;
   }
 }

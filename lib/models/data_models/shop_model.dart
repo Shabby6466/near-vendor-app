@@ -53,8 +53,8 @@ class Shop extends Equatable {
       shopContactPhone: json['shopContactPhone'] as String? ?? '',
       whatsappNumber: json['whatsappNumber'] as String? ?? '',
       storeEmail: json['storeEmail'] as String? ?? '',
-      coverImageUrl: json['coverImageUrl'] as String?,
-      storeLogoUrl: json['storeLogoUrl'] as String?,
+      coverImageUrl: json['coverImageUrl'] as String? ?? json['shopImageUrl'] as String?,
+      storeLogoUrl: json['storeLogoUrl'] as String? ?? json['shopLogoUrl'] as String?,
       isActive: json['isActive'] as bool? ?? true,
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
@@ -75,8 +75,8 @@ class Shop extends Equatable {
       'shopContactPhone': shopContactPhone,
       'whatsappNumber': whatsappNumber,
       'storeEmail': storeEmail,
-      'coverImageUrl': coverImageUrl,
-      'storeLogoUrl': storeLogoUrl,
+      'shopImageUrl': coverImageUrl,
+      'shopLogoUrl': storeLogoUrl,
       'isActive': isActive,
     };
   }

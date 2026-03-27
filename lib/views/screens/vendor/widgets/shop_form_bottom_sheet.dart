@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/api_inputs/shop_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
@@ -30,8 +32,10 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
   late final TextEditingController _phoneController;
   late final TextEditingController _whatsappController;
   late final TextEditingController _emailController;
-  late final TextEditingController _logoController;
-  late final TextEditingController _coverController;
+  
+  File? _logoFile;
+  File? _coverFile;
+  final _picker = ImagePicker();
 
   final Map<String, String> _operatingHours = {
     'mon': '09:00-18:00',
@@ -56,8 +60,6 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
     _phoneController = TextEditingController(text: s?.shopContactPhone);
     _whatsappController = TextEditingController(text: s?.whatsappNumber);
     _emailController = TextEditingController(text: s?.storeEmail);
-    _logoController = TextEditingController(text: s?.storeLogoUrl);
-    _coverController = TextEditingController(text: s?.coverImageUrl);
     
     if (s != null) {
       _operatingHours.addAll(s.operatingHours.cast<String, String>());
@@ -75,8 +77,6 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
     _phoneController.dispose();
     _whatsappController.dispose();
     _emailController.dispose();
-    _logoController.dispose();
-    _coverController.dispose();
     super.dispose();
   }
 
@@ -99,10 +99,12 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
         shopContactPhone: _phoneController.text,
         whatsappNumber: _whatsappController.text,
         storeEmail: _emailController.text,
-        storeLogoUrl: _logoController.text,
-        coverImageUrl: _coverController.text,
       );
-      context.read<ShopFormCubit>().createShop(input);
+      context.read<ShopFormCubit>().createShop(
+        input, 
+        logoFile: _logoFile, 
+        coverFile: _coverFile
+      );
     } else {
       final input = UpdateShopInput(
         vendorId: vendorId,
@@ -116,11 +118,15 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
         shopContactPhone: _phoneController.text,
         whatsappNumber: _whatsappController.text,
         storeEmail: _emailController.text,
-        storeLogoUrl: _logoController.text,
-        coverImageUrl: _coverController.text,
+        storeLogoUrl: widget.shop?.storeLogoUrl,
+        coverImageUrl: widget.shop?.coverImageUrl,
         isActive: widget.shop?.isActive,
       );
-      context.read<ShopFormCubit>().updateShop(input);
+      context.read<ShopFormCubit>().updateShop(
+        input, 
+        logoFile: _logoFile, 
+        coverFile: _coverFile
+      );
     }
   }
 
@@ -197,10 +203,32 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
                                   ),
                                 ),
                                 const SizedBox(height: 40),
-                                
-                                _buildSectionTitle(context, 'BRANDING & MEDIA'),
-                                _buildMediaField(context, 'Store Logo', _logoController, Icons.insert_photo_rounded),
-                                _buildMediaField(context, 'Cover Photo', _coverController, Icons.wallpaper_rounded),
+                                                                _buildSectionTitle(context, 'BRANDING & MEDIA'),
+                                 Row(
+                                   children: [
+                                     Expanded(
+                                       child: _buildMediaField(
+                                         context, 
+                                         'Store Logo', 
+                                         _logoFile, 
+                                         widget.shop?.storeLogoUrl,
+                                         () => _pickImage(true),
+                                         false
+                                       ),
+                                     ),
+                                     const SizedBox(width: 16),
+                                     Expanded(
+                                       child: _buildMediaField(
+                                         context, 
+                                         'Cover Photo', 
+                                         _coverFile, 
+                                         widget.shop?.coverImageUrl,
+                                         () => _pickImage(false),
+                                         true
+                                       ),
+                                     ),
+                                   ],
+                                 ),
                                 
                                 const SizedBox(height: 24),
                                 _buildSectionTitle(context, 'CORE INFORMATION'),
@@ -256,6 +284,19 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
     );
   }
 
+  Future<void> _pickImage(bool isLogo) async {
+    final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+    if (image != null) {
+      setState(() {
+        if (isLogo) {
+          _logoFile = File(image.path);
+        } else {
+          _coverFile = File(image.path);
+        }
+      });
+    }
+  }
+
   Widget _buildCustomField(
     BuildContext context,
     TextEditingController controller, 
@@ -300,13 +341,73 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
     );
   }
 
-  Widget _buildMediaField(BuildContext context, String label, TextEditingController controller, IconData icon) {
+  Widget _buildMediaField(
+    BuildContext context, 
+    String label, 
+    File? file, 
+    String? networkUrl, 
+    VoidCallback onTap,
+    bool isWide,
+  ) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildCustomField(context, controller, label, icon),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w600,
+              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+            ),
+          ),
+          const SizedBox(height: 12),
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: 100,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
+                borderRadius: BorderRadius.circular(18),
+                border: Border.all(
+                  color: theme.dividerColor.withOpacity(0.1),
+                  width: 1,
+                ),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(18),
+                child: file != null
+                    ? Image.file(file, fit: BoxFit.cover)
+                    : (networkUrl != null && networkUrl.isNotEmpty)
+                        ? Image.network(networkUrl, fit: BoxFit.cover)
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_photo_alternate_outlined,
+                                color: theme.primaryColor.withOpacity(0.5),
+                                size: 28,
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Select',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  fontFamily: 'Poppins',
+                                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.4),
+                                ),
+                              ),
+                            ],
+                          ),
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -337,10 +438,24 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         ),
         child: isLoading
-            ? const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                    width: 20,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    state.message ?? 'Processing...',
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               )
             : Text(
                 widget.shop == null ? 'Launch Business' : 'Update Profile',
