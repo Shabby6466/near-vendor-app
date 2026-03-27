@@ -65,9 +65,29 @@ class CurrentUserStorage {
       await _userBox.delete(HiveKeys.currentUserKey);
       await _userBox.delete(HiveKeys.currentUserAuthTokenKey);
       await _userBox.delete(HiveKeys.currentUserRefreshTokenKey);
+      await _userBox.delete(HiveKeys.vendorStatusKey);
     } catch (e) {
       debugPrint('Error clearing user data: $e');
     }
+  }
+
+  static Future<void> storeVendorStatus(String? status) async {
+    try {
+      if (status != null) {
+        await _userBox.put(HiveKeys.vendorStatusKey, status);
+      } else {
+        await _userBox.delete(HiveKeys.vendorStatusKey);
+      }
+    } catch (e) {
+      debugPrint('Error storing vendor status: $e');
+    }
+  }
+
+  static String? getVendorStatus() {
+    return _userBox.get(
+      HiveKeys.vendorStatusKey,
+      defaultValue: null,
+    ) as String?;
   }
 
   static Future<void> setHasOnboarded(bool value) async {

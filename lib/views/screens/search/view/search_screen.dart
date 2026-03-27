@@ -27,8 +27,9 @@ class _SearchScreenState extends State<SearchScreen> {
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
+          physics: const BouncingScrollPhysics(),
+          padding: EdgeInsets.zero,
           children: [
             _buildHeader(context),
             SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
@@ -39,6 +40,7 @@ class _SearchScreenState extends State<SearchScreen> {
             _buildRecentSearchHeader(context),
             SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
             _buildRecentSearchList(context),
+            SizedBox(height: AppSpacing.extraLargeVerticalSpacing(context)),
           ],
         ),
       ),
@@ -78,8 +80,9 @@ class _SearchScreenState extends State<SearchScreen> {
                           'Current Location',
                           style: TextStyle(
                             fontSize: 12,
-                            color: theme.textTheme.bodySmall?.color
-                                ?.withOpacity(0.5),
+                            color: theme.textTheme.bodySmall?.color?.withValues(
+                              alpha: 0.5,
+                            ),
                             fontFamily: 'Poppins',
                             fontWeight: FontWeight.w500,
                           ),
@@ -138,27 +141,27 @@ class _SearchScreenState extends State<SearchScreen> {
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
           border: isDark
-              ? Border.all(color: theme.dividerColor.withOpacity(0.1))
+              ? Border.all(color: theme.dividerColor.withValues(alpha: 0.1))
               : Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withValues(alpha: 0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
         ),
         child: TextField(
-          autofocus: true,
+          autofocus: false,
           style: const TextStyle(fontFamily: 'Poppins'),
           decoration: InputDecoration(
             hintText: 'Search Item',
             hintStyle: TextStyle(
-              color: theme.textTheme.bodySmall?.color?.withOpacity(0.4),
+              color: theme.textTheme.bodySmall!.color!.withValues(alpha: 0.4),
             ),
             prefixIcon: Icon(
               Icons.search,
-              color: theme.iconTheme.color?.withOpacity(0.5),
+              color: theme.iconTheme.color?.withValues(alpha: 0.5),
             ),
             suffixIcon: Row(
               mainAxisSize: MainAxisSize.min,
@@ -174,13 +177,13 @@ class _SearchScreenState extends State<SearchScreen> {
                   },
                   child: Icon(
                     Icons.camera_alt_outlined,
-                    color: theme.iconTheme.color?.withOpacity(0.5),
+                    color: theme.iconTheme.color?.withValues(alpha: 0.5),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Icon(
                   Icons.mic_none,
-                  color: theme.iconTheme.color?.withOpacity(0.5),
+                  color: theme.iconTheme.color?.withValues(alpha: 0.5),
                 ),
                 const SizedBox(width: 16),
               ],
@@ -238,7 +241,7 @@ class _SearchScreenState extends State<SearchScreen> {
                     color: isSelected
                         ? theme.primaryColor
                         : (isDark
-                              ? theme.dividerColor.withOpacity(0.1)
+                              ? theme.dividerColor.withValues(alpha: 0.1)
                               : Colors.grey.shade200),
                   ),
                 ),
@@ -250,7 +253,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         size: 16,
                         color: isSelected
                             ? Colors.white
-                            : theme.iconTheme.color?.withOpacity(0.7),
+                            : theme.iconTheme.color?.withValues(alpha: 0.7),
                       ),
                       const SizedBox(width: 8),
                     ],
@@ -322,12 +325,14 @@ class _SearchScreenState extends State<SearchScreen> {
                       fit: BoxFit.cover,
                       width: double.infinity,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: theme.dividerColor.withOpacity(0.05),
+                        color: theme.dividerColor.withValues(alpha: 0.05),
                         child: Center(
                           child: Icon(
                             Icons.map,
                             size: 40,
-                            color: theme.iconTheme.color?.withOpacity(0.2),
+                            color: theme.iconTheme.color?.withValues(
+                              alpha: 0.2,
+                            ),
                           ),
                         ),
                       ),
@@ -348,7 +353,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   'NYC, USA',
                   style: TextStyle(
                     fontSize: 14,
-                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                    color: theme.textTheme.bodySmall?.color?.withValues(
+                      alpha: 0.5,
+                    ),
                     fontFamily: 'Poppins',
                   ),
                 ),
@@ -387,7 +394,9 @@ class _ProfileHeader extends StatelessWidget {
                   Text(
                     'Hello',
                     style: TextStyle(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                      color: theme.textTheme.bodySmall?.color?.withValues(
+                        alpha: 0.5,
+                      ),
                       fontSize: 11,
                       fontFamily: 'Poppins',
                     ),
@@ -409,7 +418,7 @@ class _ProfileHeader extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: theme.primaryColor.withOpacity(0.2),
+                    color: theme.primaryColor.withValues(alpha: 0.2),
                     width: 1.5,
                   ),
                 ),

@@ -9,7 +9,11 @@ import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/shop_form_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/categories_cubit.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/categories_state.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
+import 'package:latlong2/latlong.dart';
 
 class ShopFormBottomSheet extends StatefulWidget {
   final Shop? shop;
@@ -134,8 +138,11 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocProvider(
-      create: (context) => ShopFormCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ShopFormCubit()),
+        BlocProvider(create: (context) => CategoriesCubit()..fetchCategories()),
+      ],
       child: BlocConsumer<ShopFormCubit, ShopFormState>(
         listener: (context, state) {
           if (state is ShopFormSuccess) {
@@ -233,19 +240,13 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
                                 const SizedBox(height: 24),
                                 _buildSectionTitle(context, 'CORE INFORMATION'),
                                 _buildCustomField(context, _nameController, 'Business Name', Icons.storefront_rounded),
-                                _buildCustomField(context, _categoryController, 'Industry / Category', Icons.work_outline_rounded),
+                                _buildCategoryDropdownField(context),
                                 _buildCustomField(context, _regNumberController, 'Tax / Reg Number', Icons.verified_user_outlined),
                                 
                                 const SizedBox(height: 24),
                                 _buildSectionTitle(context, 'CONTACT & REACH'),
                                 _buildCustomField(context, _addressController, 'Physical Address', Icons.location_on_outlined),
-                                Row(
-                                  children: [
-                                    Expanded(child: _buildCustomField(context, _latController, 'Latitude', Icons.map_outlined)),
-                                    const SizedBox(width: 16),
-                                    Expanded(child: _buildCustomField(context, _longController, 'Longitude', Icons.map_outlined)),
-                                  ],
-                                ),
+                                _buildLocationPickerField(context),
                                 _buildCustomField(context, _phoneController, 'Contact Phone', Icons.phone_iphone_rounded),
                                 _buildCustomField(context, _whatsappController, 'WhatsApp Business (Optional)', Icons.chat_bubble_outline_rounded, isRequired: false),
                                 _buildCustomField(context, _emailController, 'Support Email', Icons.mail_outline_rounded),
@@ -295,6 +296,86 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
         }
       });
     }
+  }
+
+  Widget _buildCategoryDropdownField(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return BlocBuilder<CategoriesCubit, CategoriesState>(
+      builder: (context, state) {
+        List<String> categories = [];
+        bool isLoading = false;
+
+        if (state is CategoriesLoaded) {
+          categories = state.categories;
+        } else if (state is CategoriesLoading) {
+          isLoading = true;
+        }
+
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 20),
+          child: DropdownButtonFormField<String>(
+            value: (categories.contains(_categoryController.text))
+                ? _categoryController.text
+                : null,
+            style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                color: Colors.black),
+            dropdownColor: theme.cardColor,
+            decoration: InputDecoration(
+              prefixIcon: Icon(Icons.work_outline_rounded,
+                  color: theme.iconTheme.color?.withOpacity(0.3), size: 22),
+              hintText: isLoading ? 'Loading categories...' : 'Industry / Category',
+              hintStyle: TextStyle(
+                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.4),
+                  fontWeight: FontWeight.w400),
+              filled: true,
+              fillColor: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(color: theme.primaryColor, width: 1.5),
+              ),
+              errorStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 12),
+            ),
+            items: categories.map((String category) {
+              return DropdownMenuItem<String>(
+                value: category,
+                child: Text(category,
+                    style: TextStyle(
+                        color: theme.textTheme.bodyLarge?.color,
+                        fontFamily: 'Poppins')),
+              );
+            }).toList(),
+            onChanged: isLoading
+                ? null
+                : (String? newValue) {
+                    setState(() {
+                      _categoryController.text = newValue ?? '';
+                    });
+                  },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select a category';
+              }
+              return null;
+            },
+          ),
+        );
+      },
+    );
   }
 
   Widget _buildCustomField(
@@ -466,6 +547,72 @@ class _ShopFormBottomSheetState extends State<ShopFormBottomSheet> {
                   letterSpacing: -0.5,
                 ),
               ),
+      ),
+    );
+  }
+
+  Widget _buildLocationPickerField(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 20),
+      child: InkWell(
+        onTap: () async {
+          final LatLng? result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const LocationPickerScreen()),
+          );
+          if (result != null) {
+            setState(() {
+              _latController.text = result.latitude.toStringAsFixed(6);
+              _longController.text = result.longitude.toStringAsFixed(6);
+            });
+          }
+        },
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
+            borderRadius: BorderRadius.circular(18),
+          ),
+          child: Row(
+            children: [
+              Icon(Icons.map_outlined,
+                  color: theme.iconTheme.color?.withOpacity(0.3), size: 22),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Shop Location',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 12,
+                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      _latController.text.isEmpty || _longController.text.isEmpty
+                          ? 'Tap to select location'
+                          : '${_latController.text}, ${_longController.text}',
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right_rounded,
+                  color: theme.iconTheme.color?.withOpacity(0.3)),
+            ],
+          ),
+        ),
       ),
     );
   }

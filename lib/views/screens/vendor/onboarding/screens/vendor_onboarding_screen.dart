@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/cubit/onboarding_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/widgets/business_info_step.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/widgets/location_contact_step.dart';
@@ -72,7 +70,8 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
             },
           ),
           BlocListener<OnboardingCubit, OnboardingState>(
-            listenWhen: (p, c) => p.errorMessage != c.errorMessage && c.errorMessage != null,
+            listenWhen: (p, c) =>
+                p.errorMessage != c.errorMessage && c.errorMessage != null,
             listener: (context, state) {
               AppAlerts.showErrorSnackBar(context, state.errorMessage!);
             },
@@ -95,7 +94,9 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
                 ),
                 title: Text(
                   'Vendor Onboarding',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 elevation: 0,
                 backgroundColor: Colors.white,
@@ -156,9 +157,14 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
                 style: OutlinedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   side: BorderSide(color: Colors.grey.shade300),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                child: const Text('Back', style: TextStyle(color: Colors.black)),
+                child: const Text(
+                  'Back',
+                  style: TextStyle(color: Colors.black),
+                ),
               ),
             ),
             const SizedBox(width: 16),
@@ -166,7 +172,9 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
           Expanded(
             flex: 2,
             child: AppElevatedButton(
-              isEnabled: state.currentStep == OnboardingStep.verification ? state.termsAccepted : true,
+              isEnabled: state.currentStep == OnboardingStep.verification
+                  ? state.termsAccepted
+                  : true,
               isLoading: state.isSubmitting,
               onPressed: () {
                 if (state.currentStep == OnboardingStep.verification) {
@@ -175,7 +183,9 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
                   context.read<OnboardingCubit>().nextStep();
                 }
               },
-              text: state.currentStep == OnboardingStep.verification ? 'Launch My Store' : 'Next Step →',
+              text: state.currentStep == OnboardingStep.verification
+                  ? 'Launch My Store'
+                  : 'Next Step →',
             ),
           ),
         ],

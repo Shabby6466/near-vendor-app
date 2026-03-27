@@ -17,6 +17,7 @@ class SessionCubit extends Cubit<SessionState> {
     final token = CurrentUserStorage.getUserAuthToken();
     final user = CurrentUserStorage.getCurrentUser();
     final hasOnboarded = CurrentUserStorage.getHasOnboarded();
+    final vendorStatus = CurrentUserStorage.getVendorStatus();
 
     if (token != null) {
       if (user != null) {
@@ -34,12 +35,13 @@ class SessionCubit extends Cubit<SessionState> {
             status: AuthStatus.authenticated,
             user: user,
             userName: user.fullName,
-            isVendor: user.role?.toUpperCase() == 'VENDOR',
+            isVendor: (user.role?.toUpperCase() == 'VENDOR') || (vendorStatus != null),
             hasOnboarded: hasOnboarded,
             photoUrl: user.photoUrl,
             latitude: user.lastKnownLatitude,
             longitude: user.lastKnownLongitude,
             cityName: cityName,
+            vendorStatus: vendorStatus,
           ),
         );
       }
@@ -65,6 +67,7 @@ class SessionCubit extends Cubit<SessionState> {
             response.user!.cityName = cityName;
           }
           await CurrentUserStorage.storeUserData(response.user);
+          await CurrentUserStorage.storeVendorStatus(vendorStatus);
           emit(
             state.copyWith(
               status: AuthStatus.authenticated,
@@ -103,6 +106,7 @@ class SessionCubit extends Cubit<SessionState> {
       longitude: user?.lastKnownLongitude,
       cityName: user?.cityName,
     ));
+    refreshVendorStatus();
   }
 
   void setGuest() {
@@ -115,13 +119,19 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   Future<void> refreshVendorStatus() async {
-    if (state.isVendor) {
-      final response = await AuthServices().getVendorStatus();
-      if (response.vendorStatus != null) {
-        emit(state.copyWith(vendorStatus: response.vendorStatus));
-      } else {
-        emit(state.copyWith(vendorStatus: 'PENDING'));
-      }
+    final response = await AuthServices().getVendorStatus();
+    if (response.vendorStatus != null) {
+      await CurrentUserStorage.storeVendorStatus(response.vendorStatus);
+      emit(state.copyWith(
+        vendorStatus: response.vendorStatus,
+        isVendor: (state.user?.role?.toUpperCase() == 'VENDOR') || (response.vendorStatus != null),
+      ));
+    } else {
+      await CurrentUserStorage.storeVendorStatus('PENDING');
+      emit(state.copyWith(
+        vendorStatus: 'PENDING',
+        isVendor: state.user?.role?.toUpperCase() == 'VENDOR',
+      ));
     }
   }
 

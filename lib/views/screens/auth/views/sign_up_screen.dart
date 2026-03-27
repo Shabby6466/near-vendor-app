@@ -56,7 +56,8 @@ class SignUpScreen extends StatelessWidget {
                     colorBlendMode: BlendMode.darken,
                   ),
                   SafeArea(
-                    child: Padding(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
                       padding: AppSpacing.bottomNavigationPadding(context),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -75,7 +76,9 @@ class SignUpScreen extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const Spacer(),
+                          SizedBox(
+                            height: AppSpacing.extraLargeVerticalSpacing(context),
+                          ),
                           Form(
                             key: cubit.formKey,
                             child: Column(

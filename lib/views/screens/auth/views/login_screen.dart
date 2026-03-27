@@ -47,7 +47,8 @@ class LoginScreen extends StatelessWidget {
                     colorBlendMode: BlendMode.darken,
                   ),
                   SafeArea(
-                    child: Padding(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
                       padding: AppSpacing.bottomNavigationPadding(context),
                       child: Column(
                         mainAxisSize: MainAxisSize.max,
@@ -67,7 +68,9 @@ class LoginScreen extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const Spacer(),
+                          SizedBox(
+                            height: AppSpacing.extraLargeVerticalSpacing(context),
+                          ),
                           AuthTextFieldWidget(
                             label: 'email',
                             controller: cubit.emailController,

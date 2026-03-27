@@ -1,5 +1,4 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
-import 'package:nearvendorapp/utils/generic_api_response.dart';
 
 class VendorStatusResponse extends BaseApiResponse {
   String? vendorStatus;

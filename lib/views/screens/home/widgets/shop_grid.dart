@@ -15,14 +15,18 @@ class ShopGrid extends StatelessWidget {
     return BlocBuilder<HomeScreenCubit, HomeScreenState>(
       builder: (context, state) {
         if (state is HomeScreenLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return const SliverFillRemaining(
+            child: Center(child: CircularProgressIndicator()),
+          );
         }
 
         if (state is HomeScreenFailure) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text('Error: ${state.message}'),
+          return SliverFillRemaining(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text('Error: ${state.message}'),
+              ),
             ),
           );
         }
@@ -30,46 +34,52 @@ class ShopGrid extends StatelessWidget {
         if (state is HomeScreenSuccess) {
           final shops = state.shops;
           if (shops.isEmpty) {
-            return const Center(
-              child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: Text('No vendors found in this category'),
+            return const SliverFillRemaining(
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(20.0),
+                  child: Text('No vendors found in this category'),
+                ),
               ),
             );
           }
 
-          return GridView.builder(
+          return SliverPadding(
             padding: EdgeInsets.only(
               left: AppSpacing.mediumHorizontalSpacing(context),
               right: AppSpacing.mediumHorizontalSpacing(context),
               top: 16,
               bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
             ),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: shops.length,
-            itemBuilder: (context, index) {
-              final shop = shops[index];
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductDetailsScreen(shop: shop),
-                    ),
+            sliver: SliverGrid(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                childAspectRatio: 0.8,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final shop = shops[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ProductDetailsScreen(shop: shop),
+                        ),
+                      );
+                    },
+                    child: ShopCard(shop: shop),
                   );
                 },
-                child: ShopCard(shop: shop),
-              );
-            },
+                childCount: shops.length,
+              ),
+            ),
           );
         }
 
-        return const SizedBox.shrink();
+        return const SliverToBoxAdapter(child: SizedBox.shrink());
       },
     );
   }
