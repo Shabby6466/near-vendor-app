@@ -1,7 +1,7 @@
 class ApiConstants {
   ApiConstants._();
 
-  static const String baseUrl = 'http://10.0.2.2:3837/';
+  static const String baseUrl = 'https://api.nearvendor.pro/s';
 
   ///AUTH
   static const String createUser = 'api/auth/create';
@@ -15,7 +15,7 @@ class ApiConstants {
   static const String updateShopProfile = 'api/shops/update';
   static const String deleteShop = 'api/shops/delete';
   static const String getMyShops = 'api/shops/me/shops';
-  
+
   ///ITEMS
   static const String createItem = 'api/item/create';
   static const String updateItem = 'api/item/update/'; // Append {id}

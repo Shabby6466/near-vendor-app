@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
