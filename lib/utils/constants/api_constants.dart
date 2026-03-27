@@ -1,7 +1,7 @@
 class ApiConstants {
   ApiConstants._();
 
-  static const String baseUrl = 'https://api.nearvendor.pro/s';
+  static const String baseUrl = 'https://api.nearvendor.pro/';
 
   ///AUTH
   static const String createUser = 'api/auth/create';
