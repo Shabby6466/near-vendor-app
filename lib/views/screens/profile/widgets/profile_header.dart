@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 
 class ProfileHeader extends StatelessWidget {
@@ -20,6 +19,8 @@ class ProfileHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Column(
       children: [
         SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
@@ -27,6 +28,10 @@ class ProfileHeader extends StatelessWidget {
           child: SvgPicture.asset(
             'assets/icons/near_vendor_blue_text.svg',
             height: 40,
+            colorFilter: ColorFilter.mode(
+              theme.primaryColor,
+              BlendMode.srcIn,
+            ),
           ),
         ),
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context) * 2),
@@ -37,12 +42,15 @@ class ProfileHeader extends StatelessWidget {
               height: 120,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.grey.shade200, width: 2),
+                border: Border.all(
+                  color: theme.primaryColor.withOpacity(0.2), 
+                  width: 3,
+                ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
+                    color: theme.primaryColor.withOpacity(0.1),
+                    blurRadius: 20,
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
@@ -59,15 +67,22 @@ class ProfileHeader extends StatelessWidget {
               ),
             ),
             Positioned(
-              bottom: 0,
-              right: 0,
+              bottom: 4,
+              right: 4,
               child: GestureDetector(
                 onTap: onEditProfile,
                 child: Container(
                   padding: const EdgeInsets.all(8),
-                  decoration: const BoxDecoration(
-                    color: ColorName.primary,
+                  decoration: BoxDecoration(
+                    color: theme.primaryColor,
                     shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
                   child: const Icon(
                     Icons.edit,
@@ -82,24 +97,28 @@ class ProfileHeader extends StatelessWidget {
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
         Text(
           userName,
-          style: const TextStyle(
-            fontSize: 24,
+          style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            fontFamily: 'Poppins',
           ),
         ),
-        SizedBox(height: 4),
+        const SizedBox(height: 4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.location_on_outlined, color: ColorName.primary, size: 16),
+            Icon(
+              Icons.location_on_rounded, 
+              color: theme.primaryColor, 
+              size: 18,
+            ),
             const SizedBox(width: 4),
             Text(
               userLocation,
               style: TextStyle(
                 fontSize: 14,
-                color: ColorName.primary,
-                fontWeight: FontWeight.w500,
+                color: theme.primaryColor,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Poppins',
               ),
             ),
           ],

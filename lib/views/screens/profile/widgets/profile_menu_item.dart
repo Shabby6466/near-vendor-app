@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 
 class ProfileMenuItem extends StatelessWidget {
   final IconData? icon;
@@ -19,47 +18,61 @@ class ProfileMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade100),
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: theme.dividerColor.withOpacity(0.05),
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
       child: ListTile(
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         leading: leading ??
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: ColorName.secondary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                color: theme.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: ColorName.primary, size: 24),
+              child: Icon(icon, color: theme.primaryColor, size: 22),
             ),
         title: Text(
           title,
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-            fontSize: 14,
+          style: theme.textTheme.bodyLarge?.copyWith(
             fontWeight: FontWeight.bold,
+            fontSize: 14,
+            fontFamily: 'Poppins',
           ),
         ),
-        subtitle: Text(
-          subtitle,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            fontSize: 12,
-            color: Colors.grey.shade600,
+        subtitle: Padding(
+          padding: const EdgeInsets.only(top: 4),
+          child: Text(
+            subtitle,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+              fontSize: 12,
+              fontFamily: 'Poppins',
+            ),
           ),
         ),
-        trailing: const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+        trailing: Icon(
+          Icons.chevron_right_rounded, 
+          size: 20, 
+          color: theme.iconTheme.color?.withOpacity(0.3),
+        ),
         onTap: onTap,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
   }

@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/cubit/general_pin_cubit.dart';
@@ -28,10 +25,10 @@ class GeneralPinScreen extends StatelessWidget {
 
   const GeneralPinScreen({
     super.key,
-    required this.title,
-    required this.subtitle,
-    required this.email,
-    required this.buttonText,
+    this.title = '',
+    this.subtitle = '',
+    this.email = '',
+    this.buttonText = '',
     required this.onPinSubmitted,
     this.onPinChanged,
     this.icon,
@@ -42,23 +39,29 @@ class GeneralPinScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
-      textStyle: const TextStyle(
+      textStyle: TextStyle(
         fontSize: 20,
-        color: Colors.black,
+        color: theme.textTheme.titleLarge?.color,
         fontWeight: FontWeight.w600,
+        fontFamily: 'Poppins',
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).inputDecorationTheme.fillColor,
+        color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: theme.dividerColor.withOpacity(0.1),
+        ),
       ),
     );
 
     final focusedPinTheme = defaultPinTheme.copyWith(
       decoration: defaultPinTheme.decoration?.copyWith(
-        border: Border.all(color: ColorName.primary),
+        border: Border.all(color: theme.primaryColor, width: 2),
       ),
     );
 
@@ -91,7 +94,11 @@ class GeneralPinScreen extends StatelessWidget {
           return LoadingScreenView(
             isLoading: state is GeneralPinLoading,
             child: AppScaffold(
-              appBar: AppBar(),
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                iconTheme: theme.iconTheme,
+              ),
               body: Padding(
                 padding: AppSpacing.screenPadding(context),
                 child: SingleChildScrollView(
@@ -101,13 +108,18 @@ class GeneralPinScreen extends StatelessWidget {
                       SizedBox(
                         height: AppSpacing.mediumVerticalSpacing(context),
                       ),
-                      icon ?? Assets.icons.nearVendorText.svg(),
+                      icon ?? Assets.icons.nearVendorText.svg(
+                        colorFilter: ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
+                      ),
                       SizedBox(
                         height: AppSpacing.largeVerticalSpacing(context),
                       ),
                       Text(
                         title,
-                        style: Theme.of(context).textTheme.headlineLarge,
+                        style: theme.textTheme.headlineLarge?.copyWith(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       SizedBox(
                         height: AppSpacing.smallVerticalSpacing(context),
@@ -115,17 +127,17 @@ class GeneralPinScreen extends StatelessWidget {
                       RichText(
                         text: TextSpan(
                           text: subtitle,
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: Colors.white.withValues(alpha: 0.7),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                                fontFamily: 'Poppins',
                               ),
                           children: [
                             TextSpan(
-                              text: email,
-                              style: Theme.of(context).textTheme.bodyMedium
-                                  ?.copyWith(
-                                    color: ColorName.primary,
+                              text: ' $email',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.primaryColor,
                                     fontWeight: FontWeight.bold,
+                                    fontFamily: 'Poppins',
                                   ),
                             ),
                           ],
@@ -147,8 +159,8 @@ class GeneralPinScreen extends StatelessWidget {
                           },
                           cursor: Container(
                             height: 20,
-                            width: 1,
-                            color: ColorName.primary,
+                            width: 2,
+                            color: theme.primaryColor,
                           ),
                         ),
                       ),
@@ -171,14 +183,6 @@ class GeneralPinScreen extends StatelessWidget {
                     text: buttonText,
                     isEnabled: isButtonEnabled,
                   ),
-                  // ElevatedButton(
-                  //   onPressed: isButtonEnabled
-                  //       ? () {
-                  //           AppNavigator.push(context, const HomeScreen());
-                  //         }
-                  //       : null,
-                  //   child: Text(buttonText),
-                  // ),
                 ),
               ),
             ),

@@ -30,7 +30,7 @@ class VerificationCodeScreen extends StatelessWidget {
             await CurrentUserStorage.storeUserData(response.user);
             await CurrentUserStorage.storeUserAuthToken(response.token!, null);
             if (context.mounted) {
-              context.read<SessionCubit>().setAuthenticated(response.user?.fullName ?? 'User');
+              context.read<SessionCubit>().setAuthenticated(response.user);
             }
           }
           cubit.onSuccess();

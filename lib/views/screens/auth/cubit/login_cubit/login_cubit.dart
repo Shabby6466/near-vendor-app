@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
+import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 
@@ -31,7 +32,7 @@ class LoginCubit extends Cubit<LoginState> {
         await CurrentUserStorage.storeUserData(response.user);
         await CurrentUserStorage.storeUserAuthToken(response.token!, null);
       }
-      emit(const LoginSuccess());
+      emit(LoginSuccess(user: response.user));
     } else {
       emit(LoginFailure(response.message ?? 'Login failed'));
     }

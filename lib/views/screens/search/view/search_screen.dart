@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
+import 'package:nearvendorapp/views/screens/profile/view/profile_screen.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -18,8 +21,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,67 +35,98 @@ class _SearchScreenState extends State<SearchScreen> {
             SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
             _buildFilterChips(context),
             SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
-            _buildRecentSearchHeader(),
+            _buildRecentSearchHeader(context),
             SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
-            _buildRecentSearchList(),
+            _buildRecentSearchList(context),
           ],
         ),
-      ),
-      bottomNavigationBar: CustomBottomBar(
-        currentIndex: 0,
-        onTap: (index) {},
       ),
     );
   }
 
   Widget _buildHeader(BuildContext context) {
+    final theme = Theme.of(context);
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context), vertical: 8.0),
-      child:
-      GestureDetector(
-        onTap: () {
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+        vertical: 12.0,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          // Location Section
+          GestureDetector(
+            onTap: () {
+              HapticFeedback.lightImpact();
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Current Location',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                  ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Current Location',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.keyboard_arrow_down_rounded, 
+                      size: 16, 
+                      color: theme.primaryColor.withOpacity(0.5),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 4),
-                const Icon(Icons.keyboard_arrow_down, size: 16, color: Colors.grey),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.location_on_rounded, 
+                      size: 16, 
+                      color: theme.primaryColor,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'NYC, USA',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: theme.textTheme.titleMedium?.color,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
-            const Text(
-              'NYC, USA',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: ColorName.primary,
-              ),
-            ),
-          ],
-        ),
+          ),
+
+          // Profile Section (Moved from Home)
+          const _ProfileHeader(),
+        ],
       ),
     );
   }
 
   Widget _buildSearchBar(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade300),
+          border: isDark ? Border.all(color: theme.dividerColor.withOpacity(0.1)) : Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: Colors.black.withOpacity(0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -98,10 +134,11 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
         child: TextField(
           autofocus: true,
+          style: const TextStyle(fontFamily: 'Poppins'),
           decoration: InputDecoration(
             hintText: 'Search Item',
-            hintStyle: TextStyle(color: Colors.grey.shade400),
-            prefixIcon: const Icon(Icons.search, color: Colors.black),
+            hintStyle: TextStyle(color: theme.textTheme.bodySmall?.color?.withOpacity(0.4)),
+            prefixIcon: Icon(Icons.search, color: theme.iconTheme.color?.withOpacity(0.5)),
             suffixIcon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -112,10 +149,10 @@ class _SearchScreenState extends State<SearchScreen> {
                       MaterialPageRoute(builder: (context) => const VisualSearchScreen()),
                     );
                   },
-                  child: const Icon(Icons.camera_alt_outlined, color: Colors.black54),
+                  child: Icon(Icons.camera_alt_outlined, color: theme.iconTheme.color?.withOpacity(0.5)),
                 ),
                 const SizedBox(width: 12),
-                const Icon(Icons.mic_none, color: Colors.black54),
+                Icon(Icons.mic_none, color: theme.iconTheme.color?.withOpacity(0.5)),
                 const SizedBox(width: 16),
               ],
             ),
@@ -128,6 +165,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildFilterChips(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
@@ -156,22 +196,23 @@ class _SearchScreenState extends State<SearchScreen> {
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: BoxDecoration(
-                  color: isSelected ? ColorName.primary : Colors.white,
+                  color: isSelected ? theme.primaryColor : theme.cardColor,
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isSelected ? ColorName.primary : Colors.grey.shade300,
+                    color: isSelected ? theme.primaryColor : (isDark ? theme.dividerColor.withOpacity(0.1) : Colors.grey.shade200),
                   ),
                 ),
                 child: Row(
                   children: [
                     if (icon != null) ...[
-                      Icon(icon, size: 16, color: isSelected ? Colors.white : Colors.black87),
+                      Icon(icon, size: 16, color: isSelected ? Colors.white : theme.iconTheme.color?.withOpacity(0.7)),
                       const SizedBox(width: 8),
                     ],
                     Text(
                       filter,
                       style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.black87,
+                        fontFamily: 'Poppins',
+                        color: isSelected ? Colors.white : theme.textTheme.bodyMedium?.color,
                         fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                       ),
                     ),
@@ -185,21 +226,23 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 
-  Widget _buildRecentSearchHeader() {
+  Widget _buildRecentSearchHeader(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
-      child: const Text(
+      child: Text(
         'Recent Search',
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
-          color: ColorName.primary,
+          color: Theme.of(context).primaryColor,
+          fontFamily: 'Poppins',
         ),
       ),
     );
   }
 
-  Widget _buildRecentSearchList() {
+  Widget _buildRecentSearchList(BuildContext context) {
+    final theme = Theme.of(context);
     return SizedBox(
       height: 250,
       child: ListView.separated(
@@ -222,12 +265,11 @@ class _SearchScreenState extends State<SearchScreen> {
                     borderRadius: BorderRadius.circular(20),
                     child: Image.network(
                       imageUrl,
-                      // Placeholder reference image
                       fit: BoxFit.cover,
                       width: double.infinity,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: Colors.grey.shade200,
-                        child: const Center(child: Icon(Icons.map, size: 40, color: Colors.grey)),
+                        color: theme.dividerColor.withOpacity(0.05),
+                        child: Center(child: Icon(Icons.map, size: 40, color: theme.iconTheme.color?.withOpacity(0.2))),
                       ),
                     ),
                   ),
@@ -235,17 +277,19 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(height: 12),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: ColorName.primary,
+                    color: theme.primaryColor,
+                    fontFamily: 'Poppins',
                   ),
                 ),
                 Text(
                   'NYC, USA',
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                    fontFamily: 'Poppins',
                   ),
                 ),
               ],
@@ -256,3 +300,77 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
+
+class _ProfileHeader extends StatelessWidget {
+  const _ProfileHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return BlocBuilder<SessionCubit, SessionState>(
+      builder: (context, state) {
+        final String name = state.userName ?? 'Guest';
+
+        return GestureDetector(
+          onTap: () {
+            HapticFeedback.lightImpact();
+            AppNavigator.push(context, const ProfileScreen());
+          },
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    'Hello,',
+                    style: TextStyle(
+                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                      fontSize: 11,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
+                  Text(
+                    name,
+                    style: TextStyle(
+                      color: theme.textTheme.titleMedium?.color,
+                      fontSize: 13,
+                      fontFamily: 'Poppins',
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(width: 10),
+              Container(
+                padding: const EdgeInsets.all(2),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: theme.primaryColor.withOpacity(0.2),
+                    width: 1.5,
+                  ),
+                ),
+                child: CircleAvatar(
+                  radius: 18,
+                  backgroundColor: theme.primaryColor.withOpacity(0.1),
+                  child: Assets.icons.profileIcon.svg(
+                    height: 18,
+                    width: 18,
+                    colorFilter: ColorFilter.mode(
+                      theme.primaryColor,
+                      BlendMode.srcIn,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+

@@ -13,20 +13,25 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   OnboardingCubit() : super(const OnboardingState());
 
   void updateBusinessInfo({String? name, String? category}) {
-    emit(state.copyWith(
-      businessName: name,
-      category: category,
-    ));
+    emit(state.copyWith(businessName: name, category: category));
   }
 
-  void updateLocationContact({String? address, String? phone, String? email, String? cnic, String? taxId}) {
-    emit(state.copyWith(
-      address: address,
-      phoneNumber: phone,
-      email: email,
-      cnicNo: cnic,
-      taxId: taxId,
-    ));
+  void updateLocationContact({
+    String? address,
+    String? phone,
+    String? email,
+    String? cnic,
+    String? taxId,
+  }) {
+    emit(
+      state.copyWith(
+        address: address,
+        phoneNumber: phone,
+        email: email,
+        cnicNo: cnic,
+        taxId: taxId,
+      ),
+    );
   }
 
   Future<void> pickCnicImage() async {
@@ -69,16 +74,18 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     );
 
     try {
-      final response = await AuthServices().register(input);
+      final response = await AuthServices().registerVendor(input);
       debugPrint('Registration Status: ${response.status}');
       debugPrint('Registration Message: ${response.message}');
-      
+
       if (response.status == 200 || response.status == 201) {
         emit(state.copyWith(isSubmitting: false, isSuccess: true));
       } else {
         emit(state.copyWith(isSubmitting: false));
         // Handle error (e.g., show snackbar)
-        debugPrint('Registration failed with status ${response.status}: ${response.message}');
+        debugPrint(
+          'Registration failed with status ${response.status}: ${response.message}',
+        );
       }
     } catch (e) {
       debugPrint('Registration error: $e');

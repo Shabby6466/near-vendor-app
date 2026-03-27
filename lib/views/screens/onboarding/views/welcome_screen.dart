@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
@@ -14,17 +13,13 @@ import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 
-  // void _openSignInScreen(BuildContext context) {
-  //   AppNavigator.push(context, const SignInScreen());
-  // }
-  //
-  // void _openSignUpScreen(BuildContext context) {
-  //   AppNavigator.push(context, const SignUpEmailScreen());
-  // }
-
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return AppScaffold(
+      bgColor: theme.scaffoldBackgroundColor,
       body: Center(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,11 +27,19 @@ class WelcomeScreen extends StatelessWidget {
           children: [
             Align(
               alignment: Alignment.topLeft,
-              child: Assets.icons.hearts.svg(),
+              child: Opacity(
+                opacity: isDark ? 0.3 : 1.0,
+                child: Assets.icons.hearts.svg(),
+              ),
             ),
             Align(
               alignment: Alignment.topCenter,
-              child: Assets.icons.everythingNearYouText.svg(),
+              child: Assets.icons.everythingNearYouText.svg(
+                colorFilter: ColorFilter.mode(
+                  theme.primaryColor,
+                  BlendMode.srcIn,
+                ),
+              ),
             ),
             SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
             Align(
@@ -44,16 +47,21 @@ class WelcomeScreen extends StatelessWidget {
               child: Text(
                 'Nearvendor brings everything\nnear you!',
                 textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: Colors.white),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
+            const Spacer(),
             Align(
               alignment: Alignment.topRight,
               child: Image.asset(
                 width: AppSpacing.screenWidth(context) * 0.7,
                 Assets.images.nearVendorSideCut.path,
+                color: isDark ? theme.primaryColor.withOpacity(0.3) : null,
+                colorBlendMode: isDark ? BlendMode.srcIn : null,
               ),
             ),
           ],
@@ -70,7 +78,7 @@ class WelcomeScreen extends StatelessWidget {
             children: [
               OnboardingBtns(
                 btnText: 'Be a Vendor',
-                color: ColorName.primary,
+                color: theme.primaryColor,
                 textColor: Colors.white,
                 onTap: () {
                   final isVendor = context.read<SessionCubit>().state.isVendor;
@@ -89,8 +97,8 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(width: AppSpacing.mediumHorizontalSpacing(context)),
               OnboardingBtns(
                 btnText: 'Let\'s explore',
-                color: ColorName.secondary.shade400,
-                textColor: Colors.black,
+                color: theme.colorScheme.secondary.withOpacity(0.2),
+                textColor: theme.textTheme.bodyLarge?.color ?? Colors.black,
                 onTap: () {
                   AppNavigator.push(context, const MainScreen());
                 },

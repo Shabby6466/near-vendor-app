@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/signup_cubit/signup_cubit.dart';
@@ -16,6 +15,9 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return BlocProvider(
       create: (context) => SignupCubit(),
       child: BlocConsumer<SignupCubit, SignupState>(
@@ -33,27 +35,35 @@ class SignUpScreen extends StatelessWidget {
             isLoading: state is SignupLoading,
             child: AppScaffold(
               body: Stack(
+                fit: StackFit.expand,
                 children: [
-                  Image.asset(Assets.images.itemsArt.path, fit: BoxFit.cover),
+                  Image.asset(
+                    Assets.images.itemsArt.path, 
+                    fit: BoxFit.cover,
+                    color: isDark ? Colors.black.withOpacity(0.6) : Colors.black.withOpacity(0.3),
+                    colorBlendMode: BlendMode.darken,
+                  ),
                   SafeArea(
                     child: Padding(
                       padding: AppSpacing.bottomNavigationPadding(context),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Assets.icons.nearVendorText.svg(),
+                          Assets.icons.nearVendorText.svg(
+                            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                          ),
                           SizedBox(
                             height: AppSpacing.mediumVerticalSpacing(context),
                           ),
                           Text(
                             'Create Account to get started',
-                            style: Theme.of(context).textTheme.headlineSmall
-                                ?.copyWith(color: Colors.white),
+                            style: theme.textTheme.headlineSmall?.copyWith(
+                              color: Colors.white,
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                          SizedBox(
-                            height: AppSpacing.largeVerticalSpacing(context),
-                          ),
-                          Spacer(),
+                          const Spacer(),
                           Form(
                             key: cubit.formKey,
                             child: Column(
@@ -63,18 +73,14 @@ class SignUpScreen extends StatelessWidget {
                                   controller: cubit.fullNameController,
                                 ),
                                 SizedBox(
-                                  height: AppSpacing.smallVerticalSpacing(
-                                    context,
-                                  ),
+                                  height: AppSpacing.smallVerticalSpacing(context),
                                 ),
                                 AuthTextFieldWidget(
                                   label: 'email',
                                   controller: cubit.emailController,
                                 ),
                                 SizedBox(
-                                  height: AppSpacing.smallVerticalSpacing(
-                                    context,
-                                  ),
+                                  height: AppSpacing.smallVerticalSpacing(context),
                                 ),
                                 AuthTextFieldWidget(
                                   label: 'password',
@@ -82,11 +88,8 @@ class SignUpScreen extends StatelessWidget {
                                   controller: cubit.passwordController,
                                 ),
                                 SizedBox(
-                                  height: AppSpacing.smallVerticalSpacing(
-                                    context,
-                                  ),
+                                  height: AppSpacing.smallVerticalSpacing(context),
                                 ),
-
                                 AuthTextFieldWidget(
                                   label: 'confirm password',
                                   isPassword: true,
@@ -95,7 +98,6 @@ class SignUpScreen extends StatelessWidget {
                               ],
                             ),
                           ),
-
                           SizedBox(
                             height: AppSpacing.largeVerticalSpacing(context),
                           ),
@@ -113,8 +115,11 @@ class SignUpScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                'Don\'t have an account? ',
-                                style: Theme.of(context).textTheme.bodySmall,
+                                'Already have an account? ',
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: Colors.white.withOpacity(0.7),
+                                  fontFamily: 'Poppins',
+                                ),
                               ),
                               TextButton(
                                 onPressed: () {
@@ -122,8 +127,11 @@ class SignUpScreen extends StatelessWidget {
                                 },
                                 child: Text(
                                   'Sign In',
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(color: ColorName.secondary),
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.primaryColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: 'Poppins',
+                                  ),
                                 ),
                               ),
                             ],

@@ -8,6 +8,7 @@ import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 enum ApiType {
   get,
@@ -23,12 +24,14 @@ class Server {
   static Future<Response> get(
     String url, {
     Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
   }) {
     return _call(
       url,
       apiType: ApiType.get,
       headers: headers,
+      queryParameters: queryParameters,
       cancelToken: cancelToken,
     );
   }
@@ -97,6 +100,7 @@ class Server {
     String url, {
     required ApiType apiType,
     dynamic data,
+    Map<String, dynamic>? queryParameters,
     Map<String, String>? headers,
     CancelToken? cancelToken,
     bool retried = false,
@@ -114,10 +118,14 @@ class Server {
             return client;
           },
         );
-        dio.interceptors.add(LogInterceptor(
+        dio.interceptors.add(PrettyDioLogger(
+          requestHeader: true,
           requestBody: true,
+          responseHeader: true,
           responseBody: true,
-          logPrint: (obj) => debugPrint(obj.toString()),
+          error: true,
+          compact: true,
+          maxWidth: 90,
         ));
         if (headers != null) {
           for (final String key in headers.keys) {
@@ -141,7 +149,11 @@ class Server {
         final Response response;
         switch (apiType) {
           case ApiType.get:
-            response = await dio.get(url, cancelToken: cancelToken);
+            response = await dio.get(
+              url,
+              queryParameters: queryParameters,
+              cancelToken: cancelToken,
+            );
           case ApiType.post:
             response = await dio.post(
               url,
@@ -174,6 +186,7 @@ class Server {
                 url,
                 apiType: apiType,
                 data: data,
+                queryParameters: queryParameters,
                 headers: headers,
                 cancelToken: cancelToken,
                 retried: true,

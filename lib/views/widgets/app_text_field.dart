@@ -63,13 +63,15 @@ class _AppTextFieldState extends State<AppTextField> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
           onTap: widget.onTap,
-          customBorder: Theme.of(context).inputDecorationTheme.border,
+          customBorder: theme.inputDecorationTheme.border,
           child: IgnorePointer(
             ignoring: widget.onTap != null,
             child: TextFormField(
@@ -87,65 +89,61 @@ class _AppTextFieldState extends State<AppTextField> {
               validator: widget.validator,
               textInputAction: widget.textInputAction,
               onFieldSubmitted: widget.onFieldSubmitted,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(color: Colors.black),
-              decoration:
-                  InputDecoration(
-                        contentPadding: widget.contentPadding,
-                        hintStyle: TextStyle(
-                          color:
-                              widget.hintColor ??
-                              Colors.black.withValues(alpha: 0.5),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                fontFamily: 'Poppins',
+              ),
+              decoration: InputDecoration(
+                contentPadding: widget.contentPadding,
+                hintStyle: TextStyle(
+                  color: widget.hintColor ?? theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                  fontFamily: 'Poppins',
+                ),
+              ).applyDefaults(theme.inputDecorationTheme).copyWith(
+                focusedBorder: widget.isMultiline
+                    ? OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      )
+                    : null,
+                enabledBorder: widget.isMultiline
+                    ? OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      )
+                    : null,
+                disabledBorder: widget.isMultiline
+                    ? OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide.none,
+                      )
+                    : null,
+                hintText: widget.hint,
+                prefix: widget.prefix,
+                prefixIcon: widget.prefixIcon != null
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 10,
+                        ),
+                        child: widget.prefixIcon,
+                      )
+                    : null,
+                suffixIcon: widget.isPassword
+                    ? IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _obscureText = !_obscureText;
+                          });
+                        },
+                        icon: Icon(
+                          _obscureText
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          color: theme.iconTheme.color?.withOpacity(0.5),
                         ),
                       )
-                      .applyDefaults(Theme.of(context).inputDecorationTheme)
-                      .copyWith(
-                        focusedBorder: widget.isMultiline
-                            ? OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )
-                            : null,
-                        enabledBorder: widget.isMultiline
-                            ? OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )
-                            : null,
-                        disabledBorder: widget.isMultiline
-                            ? OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )
-                            : null,
-                        hintText: widget.hint,
-                        prefix: widget.prefix,
-                        prefixIcon: widget.prefixIcon != null
-                            ? Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                ),
-                                child: widget.prefixIcon,
-                              )
-                            : null,
-                        suffixIcon: widget.isPassword
-                            ? IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureText = !_obscureText;
-                                  });
-                                },
-                                icon: Icon(
-                                  _obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: Colors.black54,
-                                ),
-                              )
-                            : widget.suffixIcon,
-                        errorMaxLines: 2,
-                      ),
+                    : widget.suffixIcon,
+                errorMaxLines: 2,
+              ),
             ),
           ),
         ),

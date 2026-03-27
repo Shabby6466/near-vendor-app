@@ -120,6 +120,28 @@ class LoginResponse extends BaseApiResponse{
     map["user"] = user?.toJson();
     return map;
   }
+}
 
+class MeResponse extends BaseApiResponse {
+  User? user;
+
+  MeResponse({
+    super.message,
+    super.status,
+    this.user,
+  });
+
+  MeResponse.fromJson(dynamic json) : super.fromJson(json) {
+    if (json is Map) {
+      user = User.fromJson(json);
+    }
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> map = super.toJson();
+    map["user"] = user?.toJson();
+    return map;
+  }
 }
 

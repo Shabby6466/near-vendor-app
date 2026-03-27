@@ -12,7 +12,11 @@ final class LoginInitial extends LoginState {}
 final class LoginLoading extends LoginState {}
 
 final class LoginSuccess extends LoginState {
-  const LoginSuccess();
+  final User? user;
+  const LoginSuccess({this.user});
+
+  @override
+  List<Object> get props => [user ?? ''];
 }
 
 final class LoginFailure extends LoginState {

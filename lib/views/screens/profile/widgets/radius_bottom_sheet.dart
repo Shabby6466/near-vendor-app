@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 
 class RadiusBottomSheet extends StatefulWidget {
@@ -27,23 +26,25 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
         Text(
           'Discovery Radius',
-            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-            fontSize: 18,
+          style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
+            fontFamily: 'Poppins',
           ),
         ),
         SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
         Text(
           'Find vendors within ${_currentRadius.toInt()} miles',
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey.shade600,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+            fontFamily: 'Poppins',
           ),
         ),
         SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
@@ -52,8 +53,8 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
           min: 1,
           max: 50,
           divisions: 49,
-          activeColor: ColorName.primary,
-          inactiveColor: ColorName.primary.withValues(alpha: 0.1),
+          activeColor: theme.primaryColor,
+          inactiveColor: theme.primaryColor.withOpacity(0.1),
           label: '${_currentRadius.toInt()} mi',
           onChanged: (value) {
             setState(() {

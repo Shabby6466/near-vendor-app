@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/radius_bottom_sheet.dart';
@@ -20,29 +19,32 @@ class DiscoverySettings extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Discovery Settings',
-          style: TextStyle(
-            fontSize: 18,
+          style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            color: Colors.black,
+            fontFamily: 'Poppins',
           ),
         ),
         SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
         Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.grey.shade100),
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: theme.dividerColor.withOpacity(0.05),
+            ),
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 5),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
               ),
             ],
           ),
@@ -50,14 +52,15 @@ class DiscoverySettings extends StatelessWidget {
             children: [
               _buildSettingItem(
                 context,
-                icon: Icons.location_searching,
+                icon: Icons.location_searching_rounded,
                 title: 'Discovery Radius',
                 subtitle: 'Find vendors within ${radius.toInt()} miles',
                 trailing: Text(
                   '${radius.toInt()} mi',
-                  style: const TextStyle(
-                    color: ColorName.primary,
+                  style: TextStyle(
+                    color: theme.primaryColor,
                     fontWeight: FontWeight.bold,
+                    fontFamily: 'Poppins',
                   ),
                 ),
                 onTap: () {
@@ -70,16 +73,17 @@ class DiscoverySettings extends StatelessWidget {
                   );
                 },
               ),
-              const Divider(),
+              Divider(height: 32, color: theme.dividerColor.withOpacity(0.1)),
               _buildSettingItem(
                 context,
-                icon: Icons.notifications_none,
+                icon: Icons.notifications_active_outlined,
                 title: 'New Offer Alerts',
                 subtitle: 'Notifications from nearby shops',
                 trailing: Switch(
                   value: newOfferAlerts,
                   onChanged: onAlertsToggled,
-                  activeThumbColor: ColorName.primary,
+                  activeColor: theme.primaryColor,
+                  activeTrackColor: theme.primaryColor.withOpacity(0.3),
                 ),
               ),
             ],
@@ -97,37 +101,43 @@ class DiscoverySettings extends StatelessWidget {
     required Widget trailing,
     VoidCallback? onTap,
   }) {
+    final theme = Theme.of(context);
+    
     return InkWell(
       onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        padding: const EdgeInsets.symmetric(vertical: 4.0),
         child: Row(
           children: [
             Container(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: ColorName.secondary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+                color: theme.primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: ColorName.primary, size: 24),
+              child: Icon(icon, color: theme.primaryColor, size: 22),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: 16),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     title,
-                    style: const TextStyle(
-                      fontSize: 14,
+                    style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
                     ),
                   ),
+                  const SizedBox(height: 2),
                   Text(
                     subtitle,
-                    style: TextStyle(
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
                       fontSize: 12,
-                      color: Colors.grey.shade600,
+                      fontFamily: 'Poppins',
                     ),
                   ),
                 ],
