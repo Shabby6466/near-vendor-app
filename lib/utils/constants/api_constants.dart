@@ -1,7 +1,10 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class ApiConstants {
   ApiConstants._();
 
-  static const String baseUrl = 'https://api.nearvendor.pro/';
+  static String get baseUrl =>
+      dotenv.env['BASE_URL'] ?? 'http://127.0.0.1:3837';
 
   ///AUTH
   static const String createUser = 'api/auth/create';

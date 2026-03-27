@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 
@@ -17,13 +18,62 @@ class SignupCubit extends Cubit<SignupState> {
 
   Future<void> handleSignup() async {
     emit(SignupLoading());
+
+    // Request Location Permissions
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      emit(SignupRequiresManualLocation());
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        emit(SignupRequiresManualLocation());
+        return;
+      }
+    }
+    
+    if (permission == LocationPermission.deniedForever) {
+      emit(SignupRequiresManualLocation());
+      return;
+    }
+
+    double lat = 0.0;
+    double lng = 0.0;
+
+    try {
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.medium,
+        timeLimit: const Duration(seconds: 10),
+      );
+      lat = position.latitude;
+      lng = position.longitude;
+    } catch (e) {
+      emit(SignupRequiresManualLocation());
+      return;
+    }
+
+    await _submitSignup(lat, lng);
+  }
+
+  Future<void> handleSignupWithLocation(double lat, double lng) async {
+    emit(SignupLoading());
+    await _submitSignup(lat, lng);
+  }
+
+  Future<void> _submitSignup(double lat, double lng) async {
     final response = await AuthServices().createUser(
       CreateUserInput(
         fullName: fullNameController.text,
         email: emailController.text,
         password: passwordController.text,
-        latitude: 44.4,
-        longitude: 44.4,
+        latitude: lat,
+        longitude: lng,
         role: UserRoles.BUYER,
       ),
     );

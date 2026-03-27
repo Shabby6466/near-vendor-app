@@ -11,11 +11,13 @@ import 'package:upgrader/upgrader.dart';
 
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await HiveManager.init();
+    await dotenv.load(fileName: ".env");
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

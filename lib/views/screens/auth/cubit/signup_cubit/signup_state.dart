@@ -26,3 +26,5 @@ final class SignupFailure extends SignupState {
   @override
   List<Object> get props => [message];
 }
+
+final class SignupRequiresManualLocation extends SignupState {}

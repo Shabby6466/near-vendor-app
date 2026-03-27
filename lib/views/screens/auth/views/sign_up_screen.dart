@@ -10,6 +10,9 @@ import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 
+import 'package:latlong2/latlong.dart';
+import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
+
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
@@ -21,7 +24,16 @@ class SignUpScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => SignupCubit(),
       child: BlocConsumer<SignupCubit, SignupState>(
-        listener: (context, state) {
+        listener: (context, state) async {
+          if (state is SignupRequiresManualLocation) {
+            final LatLng? result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const LocationPickerScreen()),
+            );
+            if (result != null) {
+              context.read<SignupCubit>().handleSignupWithLocation(result.latitude, result.longitude);
+            }
+          }
           if (state is SignupSuccess) {
             AppNavigator.push(
               context,
