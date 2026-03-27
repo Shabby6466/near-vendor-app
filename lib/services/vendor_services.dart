@@ -10,7 +10,10 @@ class VendorServices {
   Future<GenericApiResponse> vendorUpdate(UpdateVendorInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-      final response = await Server.patch(ApiConstants.updateVendor, data: data);
+      final response = await Server.patch(
+        ApiConstants.updateVendor,
+        data: data,
+      );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return _handleError(e);
@@ -30,7 +33,10 @@ class VendorServices {
   Future<ShopResponse> updateShop(UpdateShopInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-      final response = await Server.patch(ApiConstants.updateShopProfile, data: data);
+      final response = await Server.patch(
+        ApiConstants.updateShopProfile,
+        data: data,
+      );
       return ShopResponse.fromJson(response.data);
     } catch (e) {
       rethrow;
@@ -44,18 +50,6 @@ class VendorServices {
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return _handleError(e);
-    }
-  }
-
-  Future<List<ShopResponse>> getMyShops() async {
-    try {
-      final response = await Server.get(ApiConstants.getMyShops);
-      if (response.data is List) {
-        return (response.data as List).map((e) => ShopResponse.fromJson(e)).toList();
-      }
-      return [];
-    } catch (e) {
-      rethrow;
     }
   }
 

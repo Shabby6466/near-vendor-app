@@ -36,7 +36,10 @@ class ItemServices {
   Future<ItemResponse> updateItem(UpdateItemInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-      final response = await Server.put('${ApiConstants.updateItem}${input.id}', data: data);
+      final response = await Server.put(
+        '${ApiConstants.updateItem}${input.id}',
+        data: data,
+      );
       return ItemResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
@@ -79,8 +82,7 @@ class ItemServices {
   Future<ItemListResponse> getItemsByShopId(String shopId) async {
     try {
       final response = await Server.get(
-        ApiConstants.getItemsByShopId,
-        queryParameters: {'shopId': shopId},
+        '${ApiConstants.getItemsByShop}/$shopId',
       );
       return ItemListResponse.fromJson(response.data);
     } catch (e) {

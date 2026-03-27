@@ -30,20 +30,20 @@ class CreateShopInput {
   });
 
   Map<String, dynamic> toJson() => {
-        'vendorId': vendorId,
-        'shopName': shopName,
-        'businessCategory': businessCategory,
-        'registrationNumber': registrationNumber,
-        'shopAddress': shopAddress,
-        'operatingHours': operatingHours,
-        'shopLongitude': shopLongitude,
-        'shopLatitude': shopLatitude,
-        'shopContactPhone': shopContactPhone,
-        'whatsappNumber': whatsappNumber,
-        'storeEmail': storeEmail,
-        'coverImageUrl': coverImageUrl,
-        'storeLogoUrl': storeLogoUrl,
-      };
+    'vendorId': vendorId,
+    'shopName': shopName,
+    'businessCategory': businessCategory,
+    'registrationNumber': registrationNumber,
+    'shopAddress': shopAddress,
+    'operatingHours': operatingHours,
+    'shopLongitude': shopLongitude,
+    'shopLatitude': shopLatitude,
+    'shopContactPhone': shopContactPhone,
+    'whatsappNumber': whatsappNumber,
+    'storeEmail': storeEmail,
+    'shopImageUrl': coverImageUrl,
+    'shopLogoUrl': storeLogoUrl,
+  };
 }
 
 class UpdateShopInput {
@@ -83,7 +83,8 @@ class UpdateShopInput {
     final Map<String, dynamic> data = {'vendorId': vendorId};
     if (shopName != null) data['shopName'] = shopName;
     if (businessCategory != null) data['businessCategory'] = businessCategory;
-    if (registrationNumber != null) data['registrationNumber'] = registrationNumber;
+    if (registrationNumber != null)
+      data['registrationNumber'] = registrationNumber;
     if (shopAddress != null) data['shopAddress'] = shopAddress;
     if (operatingHours != null) data['operatingHours'] = operatingHours;
     if (shopLongitude != null) data['shopLongitude'] = shopLongitude;
@@ -91,8 +92,8 @@ class UpdateShopInput {
     if (shopContactPhone != null) data['shopContactPhone'] = shopContactPhone;
     if (whatsappNumber != null) data['whatsappNumber'] = whatsappNumber;
     if (storeEmail != null) data['storeEmail'] = storeEmail;
-    if (coverImageUrl != null) data['coverImageUrl'] = coverImageUrl;
-    if (storeLogoUrl != null) data['storeLogoUrl'] = storeLogoUrl;
+    if (coverImageUrl != null) data['shopImageUrl'] = coverImageUrl;
+    if (storeLogoUrl != null) data['shopLogoUrl'] = storeLogoUrl;
     if (isActive != null) data['isActive'] = isActive;
     return data;
   }

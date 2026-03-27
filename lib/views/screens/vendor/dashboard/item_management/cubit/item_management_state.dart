@@ -27,7 +27,13 @@ final class ItemManagementFailure extends ItemManagementState {
   List<Object?> get props => [message];
 }
 
-final class ItemActionLoading extends ItemManagementState {}
+final class ItemActionLoading extends ItemManagementState {
+  final String? message;
+  const ItemActionLoading({this.message});
+
+  @override
+  List<Object?> get props => [message];
+}
 
 final class ItemActionSuccess extends ItemManagementState {
   final String message;
