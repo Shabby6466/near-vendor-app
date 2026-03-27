@@ -26,5 +26,5 @@ class ApiConstants {
   static const String createItem = 'api/item/create';
   static const String updateItem = 'api/item/update/';
   static const String deleteItem = 'api/item/delete/';
-  static const String getItemsByShopId = 'api/item/get-all-by-shop-id';
+  static const String getItemsByShop = 'api/item/get-all-by-shop';
 }
