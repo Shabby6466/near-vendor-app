@@ -116,3 +116,29 @@ final String cnicImageUrl;
     };
   }
 }
+
+class UpdateUserInput {
+  UpdateUserInput({
+    this.fullName,
+    this.phone,
+    this.photoUrl,
+    this.longitude,
+    this.latitude,
+  });
+
+  final String? fullName;
+  final String? phone;
+  final String? photoUrl;
+  final double? longitude;
+  final double? latitude;
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    if (fullName != null) data['fullName'] = fullName;
+    if (phone != null) data['phone'] = phone;
+    if (photoUrl != null) data['photoUrl'] = photoUrl;
+    if (longitude != null) data['longitude'] = longitude;
+    if (latitude != null) data['latitude'] = latitude;
+    return data;
+  }
+}

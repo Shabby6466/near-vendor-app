@@ -23,7 +23,7 @@ class ProfileScreen extends StatelessWidget {
     final theme = Theme.of(context);
     
     return BlocProvider(
-      create: (context) => ProfileCubit(),
+      create: (context) => ProfileCubit(context.read<SessionCubit>()),
       child: AppScaffold(
         bgColor: theme.scaffoldBackgroundColor,
         body: BlocBuilder<ProfileCubit, ProfileState>(
@@ -54,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
                             ProfileHeader(
                               userName: state.userName,
                               userLocation: state.userLocation,
-                              profileImagePath: state.profileImagePath,
+                              photoUrl: state.photoUrl,
                               onEditProfile: () => context
                                   .read<ProfileCubit>()
                                   .pickImageFromGallery(),

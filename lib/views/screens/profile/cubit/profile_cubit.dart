@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
+import 'package:nearvendorapp/services/media_services.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 part 'profile_state.dart';
@@ -8,8 +12,9 @@ part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
   final ImagePicker _picker = ImagePicker();
+  final SessionCubit sessionCubit;
 
-  ProfileCubit() : super(ProfileInitial()) {
+  ProfileCubit(this.sessionCubit) : super(ProfileInitial()) {
     _loadProfile();
   }
 
@@ -20,7 +25,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ProfileSuccess(
       userName: user?.fullName ?? 'Guest User',
       userLocation: user?.email ?? 'No email provided',
-      profileImagePath: null,
+      photoUrl: user?.photoUrl,
       discoveryRadius: 5.0,
       newOfferAlerts: true,
     ));
@@ -33,7 +38,14 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
-        emit(currentState.copyWith(profileImagePath: image.path));
+        // 1. Upload image
+        final String? uploadedUrl = await MediaServices.uploadImage(File(image.path));
+        if (uploadedUrl != null) {
+          // 2. Update profile
+          await sessionCubit.updateUserProfile(UpdateUserInput(photoUrl: uploadedUrl));
+          // 3. Update local state
+          emit(currentState.copyWith(photoUrl: uploadedUrl));
+        }
       }
     } catch (e) {
       // Handle error if needed

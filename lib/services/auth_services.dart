@@ -124,6 +124,26 @@ class AuthServices {
       return MeResponse(message: e.toString());
     }
   }
+
+  Future<GenericApiResponse> updateUser(UpdateUserInput input) async {
+    try {
+      final Map<String, dynamic> data = input.toJson();
+      final response = await Server.patch(
+        ApiConstants.updateUser,
+        data: data,
+      );
+      return GenericApiResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
+      return GenericApiResponse(message: e.toString());
+    }
+  }
 }
   // Future<GenericApiResponse> refreshToken() async {
   //   try {

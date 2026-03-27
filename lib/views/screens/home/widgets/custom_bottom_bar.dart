@@ -61,15 +61,14 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final barHeight = _isDragging ? 66.0 : 64.0;
+    final barHeight = _isDragging ? 66.0 : 65.0;
 
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
         final bool isVendor = state.isVendor;
-
         return SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
             child: AnimatedScale(
               scale: _isDragging ? 1.01 : 1.0,
               duration: const Duration(milliseconds: 600),
@@ -87,28 +86,49 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                           final itemWidth = totalWidth / 4;
                           final bool isNavSelected = widget.currentIndex < 4;
                           final baseDropletWidth = itemWidth - 16;
-                          final velocityStretch = (_velocity * 0.8).clamp(0.0, 30.0);
-                          final dropletWidth = baseDropletWidth + velocityStretch;
+                          final velocityStretch = (_velocity * 0.8).clamp(
+                            0.0,
+                            30.0,
+                          );
+                          final dropletWidth =
+                              baseDropletWidth + velocityStretch;
 
-                          final targetLeft = (widget.currentIndex * itemWidth) + 8 - (velocityStretch / 2);
+                          final targetLeft =
+                              (widget.currentIndex * itemWidth) +
+                              8 -
+                              (velocityStretch / 2);
                           final currentLeft = _isDragging
-                              ? (_dragX - (dropletWidth / 2)).clamp(8.0, totalWidth - dropletWidth - 8.0)
+                              ? (_dragX - (dropletWidth / 2)).clamp(
+                                  8.0,
+                                  totalWidth - dropletWidth - 8.0,
+                                )
                               : targetLeft;
 
                           return GestureDetector(
-                            onHorizontalDragUpdate: (details) => _handleDragUpdate(details.localPosition, totalWidth),
+                            onHorizontalDragUpdate: (details) =>
+                                _handleDragUpdate(
+                                  details.localPosition,
+                                  totalWidth,
+                                ),
                             onHorizontalDragEnd: (_) => _handleDragEnd(),
-                            onTapDown: (details) => _handleDragUpdate(details.localPosition, totalWidth),
+                            onTapDown: (details) => _handleDragUpdate(
+                              details.localPosition,
+                              totalWidth,
+                            ),
                             onTapUp: (_) => _handleDragEnd(),
                             child: Stack(
                               children: [
                                 if (isNavSelected)
                                   AnimatedPositioned(
-                                    duration: _isDragging ? Duration.zero : const Duration(milliseconds: 600),
-                                    curve: _isDragging ? Curves.linear : Curves.elasticOut,
+                                    duration: _isDragging
+                                        ? Duration.zero
+                                        : const Duration(milliseconds: 600),
+                                    curve: _isDragging
+                                        ? Curves.linear
+                                        : Curves.elasticOut,
                                     left: currentLeft,
-                                    top: 8,
-                                    bottom: 8,
+                                    top: 5,
+                                    bottom: 5,
                                     width: dropletWidth,
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -116,18 +136,30 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                                           center: const Alignment(-0.4, -0.4),
                                           radius: 1.0,
                                           colors: [
-                                            (isDark ? Colors.white : theme.primaryColor).withOpacity(.25),
-                                            (isDark ? Colors.white : theme.primaryColor).withOpacity(.05),
+                                            (isDark
+                                                    ? Colors.white
+                                                    : theme.primaryColor)
+                                                .withValues(alpha: .25),
+                                            (isDark
+                                                    ? Colors.white
+                                                    : theme.primaryColor)
+                                                .withValues(alpha: .05),
                                           ],
                                         ),
                                         borderRadius: BorderRadius.circular(24),
                                         border: Border.all(
-                                          color: (isDark ? Colors.white : theme.primaryColor).withOpacity(.2),
+                                          color:
+                                              (isDark
+                                                      ? Colors.white
+                                                      : theme.primaryColor)
+                                                  .withValues(alpha: .2),
                                           width: 0.5,
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(0.1),
+                                            color: Colors.black.withOpacity(
+                                              0.1,
+                                            ),
                                             blurRadius: 10,
                                             offset: const Offset(0, 4),
                                           ),
@@ -204,8 +236,8 @@ class _NavButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final color = isActive 
-        ? (isDark ? Colors.white : theme.primaryColor) 
+    final color = isActive
+        ? (isDark ? Colors.white : theme.primaryColor)
         : (isDark ? Colors.white.withOpacity(0.4) : Colors.grey.shade400);
 
     return Expanded(
@@ -272,10 +304,7 @@ class _VendorConsoleButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(height / 2),
       isDark: isDark,
       border: isActive
-          ? Border.all(
-              color: activeColor.withOpacity(0.5),
-              width: 2,
-            )
+          ? Border.all(color: activeColor.withOpacity(0.5), width: 2)
           : null,
       child: InkWell(
         onTap: onTap,
@@ -289,7 +318,11 @@ class _VendorConsoleButton extends StatelessWidget {
             ),
             child: Icon(
               isActive ? Icons.store : Icons.store_outlined,
-              color: isActive ? activeColor : (isDark ? Colors.white.withOpacity(0.4) : Colors.grey.shade400),
+              color: isActive
+                  ? activeColor
+                  : (isDark
+                        ? Colors.white.withOpacity(0.4)
+                        : Colors.grey.shade400),
               size: 24,
             ),
           ),
@@ -329,16 +362,26 @@ class _GlassContainer extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Container(
             decoration: BoxDecoration(
-              color: (isDark ? const Color(0xFF171D25) : Colors.white).withOpacity(0.85),
+              color: (isDark ? const Color(0xFF171D25) : Colors.white)
+                  .withOpacity(0.85),
               borderRadius: borderRadius,
-              border: border ?? Border.all(color: (isDark ? Colors.white : Colors.black).withOpacity(0.05), width: 0.5),
-              boxShadow: isDark ? null : [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+              border:
+                  border ??
+                  Border.all(
+                    color: (isDark ? Colors.white : Colors.black).withOpacity(
+                      0.05,
+                    ),
+                    width: 0.5,
+                  ),
+              boxShadow: isDark
+                  ? null
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
             ),
             child: child,
           ),

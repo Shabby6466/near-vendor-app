@@ -11,6 +11,9 @@ class User {
   bool? _isActive;
   DateTime? _deletedAt;
   String? _id;
+  String? _photoUrl;
+  String? _phone;
+  String? _cityName;
 
 
   String? get id => _id;
@@ -24,6 +27,10 @@ class User {
   bool? get mustChangePassword=> _mustChangePassword;
   bool? get isActive => _isActive;
   DateTime? get deletedAt => _deletedAt;
+  String? get photoUrl => _photoUrl;
+  String? get phone => _phone;
+  String? get cityName => _cityName;
+  set cityName(String? value) => _cityName = value;
 
   User({
     String? fullName,
@@ -37,6 +44,9 @@ class User {
     bool?isActive,
     DateTime?deletedAt,
     String?id,
+    String?photoUrl,
+    String?phone,
+    String? cityName,
 
   }) {
     _id = id;
@@ -50,6 +60,9 @@ class User {
     _mustChangePassword=mustChangePassword;
     _isActive = isActive;
     _deletedAt = deletedAt;
+    _photoUrl = photoUrl;
+    _phone = phone;
+    _cityName = cityName;
   }
 
   User.fromJson(dynamic json) {
@@ -60,15 +73,18 @@ class User {
       _role = json["role"] as String?;
       _lastKnownLatitude = json["lastKnownLatitude"] != null
           ? double.tryParse(json["lastKnownLatitude"].toString())
-          : null;
+          : (json["latitude"] != null ? double.tryParse(json["latitude"].toString()) : null);
       _lastKnownLongitude = json["lastKnownLongitude"] != null
           ? double.tryParse(json["lastKnownLongitude"].toString())
-          : null;
+          : (json["longitude"] != null ? double.tryParse(json["longitude"].toString()) : null);
       _createdAt = json["createdAt"] != null ? DateTime.tryParse(json["createdAt"].toString()) : null;
       _updatedAt = json["updatedAt"] != null ? DateTime.tryParse(json["updatedAt"].toString()) : null;
       _mustChangePassword = json["mustChangePassword"] as bool?;
       _isActive = json["isActive"] as bool?;
       _deletedAt = json["deletedAt"] != null ? DateTime.tryParse(json["deletedAt"].toString()) : null;
+      _photoUrl = json["photoUrl"] as String?;
+      _phone = json["phone"] as String?;
+      _cityName = json["cityName"] as String?;
     }
   }
 
@@ -85,6 +101,9 @@ class User {
     map["mustChangePassword"] = _mustChangePassword;
     map["isActive"] = _isActive;
     map["deletedAt"] = _deletedAt?.toIso8601String();
+    map["photoUrl"] = _photoUrl;
+    map["phone"] = _phone;
+    map["cityName"] = _cityName;
     return map;
   }
 }

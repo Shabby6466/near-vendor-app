@@ -97,10 +97,11 @@ class WelcomeScreen extends StatelessWidget {
               SizedBox(width: AppSpacing.mediumHorizontalSpacing(context)),
               OnboardingBtns(
                 btnText: 'Let\'s explore',
-                color: theme.colorScheme.secondary.withOpacity(0.2),
+                color: theme.colorScheme.secondary.withValues(alpha: 0.2),
                 textColor: theme.textTheme.bodyLarge?.color ?? Colors.black,
                 onTap: () {
-                  AppNavigator.push(context, const MainScreen());
+                  context.read<SessionCubit>().setOnboarded();
+                  AppNavigator.pushReplacement(context, const MainScreen());
                 },
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(12),

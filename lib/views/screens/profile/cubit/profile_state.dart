@@ -14,14 +14,14 @@ class ProfileLoading extends ProfileState {}
 class ProfileSuccess extends ProfileState {
   final String userName;
   final String userLocation;
-  final String? profileImagePath;
+  final String? photoUrl;
   final double discoveryRadius;
   final bool newOfferAlerts;
 
   const ProfileSuccess({
     required this.userName,
     required this.userLocation,
-    this.profileImagePath,
+    this.photoUrl,
     required this.discoveryRadius,
     required this.newOfferAlerts,
   });
@@ -29,14 +29,14 @@ class ProfileSuccess extends ProfileState {
   ProfileSuccess copyWith({
     String? userName,
     String? userLocation,
-    String? profileImagePath,
+    String? photoUrl,
     double? discoveryRadius,
     bool? newOfferAlerts,
   }) {
     return ProfileSuccess(
       userName: userName ?? this.userName,
       userLocation: userLocation ?? this.userLocation,
-      profileImagePath: profileImagePath ?? this.profileImagePath,
+      photoUrl: photoUrl ?? this.photoUrl,
       discoveryRadius: discoveryRadius ?? this.discoveryRadius,
       newOfferAlerts: newOfferAlerts ?? this.newOfferAlerts,
     );
@@ -46,7 +46,7 @@ class ProfileSuccess extends ProfileState {
   List<Object?> get props => [
         userName,
         userLocation,
-        profileImagePath,
+        photoUrl,
         discoveryRadius,
         newOfferAlerts,
       ];

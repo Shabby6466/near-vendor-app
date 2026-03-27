@@ -1,19 +1,19 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String userName;
   final String userLocation;
-  final String? profileImagePath;
+  final String? photoUrl;
   final VoidCallback onEditProfile;
 
   const ProfileHeader({
     super.key,
     required this.userName,
     required this.userLocation,
-    this.profileImagePath,
+    this.photoUrl,
     required this.onEditProfile,
   });
 
@@ -54,16 +54,9 @@ class ProfileHeader extends StatelessWidget {
                   ),
                 ],
               ),
-              child: ClipOval(
-                child: profileImagePath != null
-                    ? Image.file(
-                        File(profileImagePath!),
-                        fit: BoxFit.cover,
-                      )
-                    : Image.network(
-                        'https://i.pravatar.cc/150?img=11',
-                        fit: BoxFit.cover,
-                      ),
+              child: CircularCachedNetworkImage(
+                imageUrl: photoUrl,
+                size: 120,
               ),
             ),
             Positioned(

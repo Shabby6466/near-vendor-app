@@ -58,6 +58,9 @@ class VendorDashboardScreen extends StatelessWidget {
             ),
           ],
         ),
+        floatingActionButtonLocation: const _OffsetFloatingActionButtonLocation(
+          offset: Offset(0, -90),
+        ),
         floatingActionButton: Builder(
           builder: (context) => FloatingActionButton.extended(
             onPressed: () => _showShopForm(context),
@@ -255,7 +258,7 @@ class VendorDashboardScreen extends StatelessWidget {
 
   Widget _buildShopList(BuildContext context, List<Shop> shops) {
     return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(28, 20, 28, 100),
+      padding: const EdgeInsets.fromLTRB(28, 20, 28, 120),
       physics: const BouncingScrollPhysics(),
       itemCount: shops.length,
       itemBuilder: (context, index) {
@@ -441,5 +444,17 @@ class VendorDashboardScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _OffsetFloatingActionButtonLocation extends FloatingActionButtonLocation {
+  final Offset offset;
+
+  const _OffsetFloatingActionButtonLocation({required this.offset});
+
+  @override
+  Offset getOffset(ScaffoldPrelayoutGeometry scaffoldGeometry) {
+    final Offset standardOffset = FloatingActionButtonLocation.centerFloat.getOffset(scaffoldGeometry);
+    return standardOffset + offset;
   }
 }

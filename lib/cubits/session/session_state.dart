@@ -7,28 +7,48 @@ class SessionState extends Equatable {
   final User? user;
   final String? userName;
   final bool isVendor;
+  final bool hasOnboarded;
+  final String? photoUrl;
+  final double? latitude;
+  final double? longitude;
+  final String? cityName;
 
   const SessionState({
     this.status = AuthStatus.unauthenticated,
     this.user,
     this.userName,
     this.isVendor = false,
+    this.hasOnboarded = false,
+    this.photoUrl,
+    this.latitude,
+    this.longitude,
+    this.cityName,
   });
 
   @override
-  List<Object?> get props => [status, user, userName, isVendor];
+  List<Object?> get props => [status, user, userName, isVendor, hasOnboarded, photoUrl, latitude, longitude, cityName];
 
   SessionState copyWith({
     AuthStatus? status,
     User? user,
     String? userName,
     bool? isVendor,
+    bool? hasOnboarded,
+    String? photoUrl,
+    double? latitude,
+    double? longitude,
+    String? cityName,
   }) {
     return SessionState(
       status: status ?? this.status,
       user: user ?? this.user,
       userName: userName ?? this.userName,
       isVendor: isVendor ?? this.isVendor,
+      hasOnboarded: hasOnboarded ?? this.hasOnboarded,
+      photoUrl: photoUrl ?? this.photoUrl,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
+      cityName: cityName ?? this.cityName,
     );
   }
 }

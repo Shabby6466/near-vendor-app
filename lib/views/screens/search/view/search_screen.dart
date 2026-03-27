@@ -7,6 +7,7 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile/view/profile_screen.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
+import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -51,64 +52,75 @@ class _SearchScreenState extends State<SearchScreen> {
         horizontal: AppSpacing.mediumHorizontalSpacing(context),
         vertical: 12.0,
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          // Location Section
-          GestureDetector(
-            onTap: () {
-              HapticFeedback.lightImpact();
-            },
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Current Location',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
-                        fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      Icons.keyboard_arrow_down_rounded, 
-                      size: 16, 
-                      color: theme.primaryColor.withOpacity(0.5),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.location_on_rounded, 
-                      size: 16, 
-                      color: theme.primaryColor,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      'NYC, USA',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: theme.textTheme.titleMedium?.color,
-                        fontFamily: 'Poppins',
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+      child: BlocBuilder<SessionCubit, SessionState>(
+        builder: (context, state) {
+          final locationText =
+              state.cityName ??
+              (state.latitude != null && state.longitude != null
+                  ? '${state.latitude!.toStringAsFixed(4)}, ${state.longitude!.toStringAsFixed(4)}'
+                  : 'Select Location');
 
-          // Profile Section (Moved from Home)
-          const _ProfileHeader(),
-        ],
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  context.read<SessionCubit>().updateLocation();
+                },
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Current Location',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: theme.textTheme.bodySmall?.color
+                                ?.withOpacity(0.5),
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.keyboard_arrow_down_rounded,
+                          size: 16,
+                          color: theme.primaryColor.withValues(alpha: .5),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.location_on_rounded,
+                          size: 16,
+                          color: theme.primaryColor,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          locationText,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: theme.textTheme.titleMedium?.color,
+                            fontFamily: 'Poppins',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+
+              // Profile Section (Moved from Home)
+              const _ProfileHeader(),
+            ],
+          );
+        },
       ),
     );
   }
@@ -118,12 +130,16 @@ class _SearchScreenState extends State<SearchScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: isDark ? Border.all(color: theme.dividerColor.withOpacity(0.1)) : Border.all(color: Colors.grey.shade200),
+          border: isDark
+              ? Border.all(color: theme.dividerColor.withOpacity(0.1))
+              : Border.all(color: Colors.grey.shade200),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.03),
@@ -137,8 +153,13 @@ class _SearchScreenState extends State<SearchScreen> {
           style: const TextStyle(fontFamily: 'Poppins'),
           decoration: InputDecoration(
             hintText: 'Search Item',
-            hintStyle: TextStyle(color: theme.textTheme.bodySmall?.color?.withOpacity(0.4)),
-            prefixIcon: Icon(Icons.search, color: theme.iconTheme.color?.withOpacity(0.5)),
+            hintStyle: TextStyle(
+              color: theme.textTheme.bodySmall?.color?.withOpacity(0.4),
+            ),
+            prefixIcon: Icon(
+              Icons.search,
+              color: theme.iconTheme.color?.withOpacity(0.5),
+            ),
             suffixIcon: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -146,13 +167,21 @@ class _SearchScreenState extends State<SearchScreen> {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const VisualSearchScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const VisualSearchScreen(),
+                      ),
                     );
                   },
-                  child: Icon(Icons.camera_alt_outlined, color: theme.iconTheme.color?.withOpacity(0.5)),
+                  child: Icon(
+                    Icons.camera_alt_outlined,
+                    color: theme.iconTheme.color?.withOpacity(0.5),
+                  ),
                 ),
                 const SizedBox(width: 12),
-                Icon(Icons.mic_none, color: theme.iconTheme.color?.withOpacity(0.5)),
+                Icon(
+                  Icons.mic_none,
+                  color: theme.iconTheme.color?.withOpacity(0.5),
+                ),
                 const SizedBox(width: 16),
               ],
             ),
@@ -170,7 +199,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
       child: Row(
         children: filters.map((filter) {
           final isSelected = selectedFilter == filter;
@@ -185,7 +216,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 if (filter == 'Camera Search') {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const VisualSearchScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const VisualSearchScreen(),
+                    ),
                   );
                 } else {
                   setState(() {
@@ -194,26 +227,43 @@ class _SearchScreenState extends State<SearchScreen> {
                 }
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: isSelected ? theme.primaryColor : theme.cardColor,
                   borderRadius: BorderRadius.circular(24),
                   border: Border.all(
-                    color: isSelected ? theme.primaryColor : (isDark ? theme.dividerColor.withOpacity(0.1) : Colors.grey.shade200),
+                    color: isSelected
+                        ? theme.primaryColor
+                        : (isDark
+                              ? theme.dividerColor.withOpacity(0.1)
+                              : Colors.grey.shade200),
                   ),
                 ),
                 child: Row(
                   children: [
                     if (icon != null) ...[
-                      Icon(icon, size: 16, color: isSelected ? Colors.white : theme.iconTheme.color?.withOpacity(0.7)),
+                      Icon(
+                        icon,
+                        size: 16,
+                        color: isSelected
+                            ? Colors.white
+                            : theme.iconTheme.color?.withOpacity(0.7),
+                      ),
                       const SizedBox(width: 8),
                     ],
                     Text(
                       filter,
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        color: isSelected ? Colors.white : theme.textTheme.bodyMedium?.color,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+                        color: isSelected
+                            ? Colors.white
+                            : theme.textTheme.bodyMedium?.color,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.w500,
                       ),
                     ),
                   ],
@@ -228,7 +278,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
   Widget _buildRecentSearchHeader(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
       child: Text(
         'Recent Search',
         style: TextStyle(
@@ -246,7 +298,9 @@ class _SearchScreenState extends State<SearchScreen> {
     return SizedBox(
       height: 250,
       child: ListView.separated(
-        padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+        padding: EdgeInsets.symmetric(
+          horizontal: AppSpacing.mediumHorizontalSpacing(context),
+        ),
         scrollDirection: Axis.horizontal,
         itemCount: 2,
         separatorBuilder: (context, index) => const SizedBox(width: 16),
@@ -269,7 +323,13 @@ class _SearchScreenState extends State<SearchScreen> {
                       width: double.infinity,
                       errorBuilder: (context, error, stackTrace) => Container(
                         color: theme.dividerColor.withOpacity(0.05),
-                        child: Center(child: Icon(Icons.map, size: 40, color: theme.iconTheme.color?.withOpacity(0.2))),
+                        child: Center(
+                          child: Icon(
+                            Icons.map,
+                            size: 40,
+                            color: theme.iconTheme.color?.withOpacity(0.2),
+                          ),
+                        ),
                       ),
                     ),
                   ),
@@ -307,7 +367,7 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
         final String name = state.userName ?? 'Guest';
@@ -325,7 +385,7 @@ class _ProfileHeader extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    'Hello,',
+                    'Hello',
                     style: TextStyle(
                       color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
                       fontSize: 11,
@@ -353,10 +413,10 @@ class _ProfileHeader extends StatelessWidget {
                     width: 1.5,
                   ),
                 ),
-                child: CircleAvatar(
-                  radius: 18,
-                  backgroundColor: theme.primaryColor.withOpacity(0.1),
-                  child: Assets.icons.profileIcon.svg(
+                child: CircularCachedNetworkImage(
+                  imageUrl: state.photoUrl,
+                  size: 36,
+                  placeholder: Assets.icons.profileIcon.svg(
                     height: 18,
                     width: 18,
                     colorFilter: ColorFilter.mode(
@@ -373,4 +433,3 @@ class _ProfileHeader extends StatelessWidget {
     );
   }
 }
-

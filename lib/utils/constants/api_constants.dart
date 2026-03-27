@@ -4,7 +4,8 @@ class ApiConstants {
   ApiConstants._();
 
   static String get baseUrl =>
-      dotenv.env['BASE_URL'] ?? 'http://127.0.0.1:3837';
+      dotenv.env['BASE_URL'] ?? 'http://10.0.2.2:3837/';
+  // static String baseurl = 'http://10.0.2.2:3837';
 
   ///AUTH
   static const String createUser = 'api/auth/create';
@@ -12,6 +13,8 @@ class ApiConstants {
   static const String login = 'api/auth/login';
   static const String changePassword = 'api/users/change-password';
   static const String getMe = 'api/users/me';
+  static const String updateUser = 'api/users/update';
+  static const String uploadMedia = 'api/media/upload-simple';
   static const String registerVendor = 'api/vendor/register';
   static const String updateVendor = 'api/vendor/update';
   static const String createShop = 'api/shops/create';
@@ -21,7 +24,7 @@ class ApiConstants {
 
   ///ITEMS
   static const String createItem = 'api/item/create';
-  static const String updateItem = 'api/item/update/'; // Append {id}
-  static const String deleteItem = 'api/item/delete/'; // Append {id}
+  static const String updateItem = 'api/item/update/';
+  static const String deleteItem = 'api/item/delete/';
   static const String getItemsByShopId = 'api/item/get-all-by-shop-id';
 }

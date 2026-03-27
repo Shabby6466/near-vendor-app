@@ -72,7 +72,7 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
               dialogStyle: Platform.isIOS
                   ? UpgradeDialogStyle.cupertino
                   : UpgradeDialogStyle.material,
-              child: state.status == AuthStatus.authenticated
+              child: (state.status == AuthStatus.authenticated || state.hasOnboarded)
                   ? const MainScreen()
                   : const WelcomeScreen(),
             ),

@@ -69,4 +69,19 @@ class CurrentUserStorage {
       debugPrint('Error clearing user data: $e');
     }
   }
+
+  static Future<void> setHasOnboarded(bool value) async {
+    try {
+      await _userBox.put(HiveKeys.hasOnboardedKey, value);
+    } catch (e) {
+      debugPrint('Error storing onboarding status: $e');
+    }
+  }
+
+  static bool getHasOnboarded() {
+    return _userBox.get(
+      HiveKeys.hasOnboardedKey,
+      defaultValue: false,
+    ) as bool;
+  }
 }
