@@ -136,33 +136,7 @@ class VendorDashboardScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: theme.primaryColor.withValues(alpha: 0.15),
-                          blurRadius: 15,
-                          spreadRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: CircleAvatar(
-                      radius: 26,
-                      backgroundColor: theme.cardColor,
-                      child: CircleAvatar(
-                        radius: 23,
-                        backgroundColor: theme.primaryColor.withValues(
-                          alpha: 0.1,
-                        ),
-                        child: Icon(
-                          Icons.person_rounded,
-                          color: theme.primaryColor,
-                          size: 26,
-                        ),
-                      ),
-                    ),
-                  ),
+
                 ],
               ),
               const SizedBox(height: 32),

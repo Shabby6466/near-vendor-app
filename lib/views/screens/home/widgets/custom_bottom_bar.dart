@@ -65,7 +65,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
 
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
-        final bool isVendor = state.isVendor;
+        final bool isVendor = state.isVendor && state.vendorStatus == 'APPROVED';
         return SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),

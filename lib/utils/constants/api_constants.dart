@@ -16,6 +16,7 @@ class ApiConstants {
   static const String updateUser = 'api/users/update';
   static const String uploadMedia = 'api/media/upload-simple';
   static const String registerVendor = 'api/vendor/register';
+  static const String getVendorStatus = 'api/vendor/me/status';
   static const String updateVendor = 'api/vendor/update';
   static const String createShop = 'api/shops/create';
   static const String updateShopProfile = 'api/shops/update';

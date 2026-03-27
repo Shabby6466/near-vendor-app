@@ -17,6 +17,7 @@ class ProfileSuccess extends ProfileState {
   final String? photoUrl;
   final double discoveryRadius;
   final bool newOfferAlerts;
+  final bool isUploadingImage;
 
   const ProfileSuccess({
     required this.userName,
@@ -24,6 +25,7 @@ class ProfileSuccess extends ProfileState {
     this.photoUrl,
     required this.discoveryRadius,
     required this.newOfferAlerts,
+    this.isUploadingImage = false,
   });
 
   ProfileSuccess copyWith({
@@ -32,6 +34,7 @@ class ProfileSuccess extends ProfileState {
     String? photoUrl,
     double? discoveryRadius,
     bool? newOfferAlerts,
+    bool? isUploadingImage,
   }) {
     return ProfileSuccess(
       userName: userName ?? this.userName,
@@ -39,6 +42,7 @@ class ProfileSuccess extends ProfileState {
       photoUrl: photoUrl ?? this.photoUrl,
       discoveryRadius: discoveryRadius ?? this.discoveryRadius,
       newOfferAlerts: newOfferAlerts ?? this.newOfferAlerts,
+      isUploadingImage: isUploadingImage ?? this.isUploadingImage,
     );
   }
 
@@ -49,6 +53,7 @@ class ProfileSuccess extends ProfileState {
         photoUrl,
         discoveryRadius,
         newOfferAlerts,
+        isUploadingImage,
       ];
 }
 

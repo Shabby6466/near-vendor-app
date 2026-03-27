@@ -50,81 +50,107 @@ class ProfileScreen extends StatelessWidget {
                           const SizedBox(height: 20),
                           if (isGuest)
                             const _GuestAuthBanner()
-                          else
+                          else ...[
                             ProfileHeader(
                               userName: state.userName,
                               userLocation: state.userLocation,
                               photoUrl: state.photoUrl,
+                              isUploadingImage: state.isUploadingImage,
                               onEditProfile: () => context
                                   .read<ProfileCubit>()
                                   .pickImageFromGallery(),
                             ),
-                          SizedBox(
-                            height: AppSpacing.largeVerticalSpacing(context),
-                          ),
-                          DiscoverySettings(
-                            radius: state.discoveryRadius,
-                            newOfferAlerts: state.newOfferAlerts,
-                            onRadiusChanged: (value) => context
-                                .read<ProfileCubit>()
-                                .updateRadius(value),
-                            onAlertsToggled: (value) => context
-                                .read<ProfileCubit>()
-                                .toggleOfferAlerts(value),
-                          ),
-                          SizedBox(
-                            height: AppSpacing.mediumVerticalSpacing(context),
-                          ),
-                          ProfileMenuItem(
-                            icon: Icons.storefront_outlined,
-                            title: 'Merchant Console',
-                            subtitle: sessionState.isVendor
-                                ? 'Manage your shop and offers'
-                                : 'Become a vendor and start selling',
-                            onTap: () {
-                              if (sessionState.isVendor) {
+                            SizedBox(
+                              height: AppSpacing.largeVerticalSpacing(context),
+                            ),
+                            DiscoverySettings(
+                              radius: state.discoveryRadius,
+                              newOfferAlerts: state.newOfferAlerts,
+                              onRadiusChanged: (value) => context
+                                  .read<ProfileCubit>()
+                                  .updateRadius(value),
+                              onAlertsToggled: (value) => context
+                                  .read<ProfileCubit>()
+                                  .toggleOfferAlerts(value),
+                            ),
+                            SizedBox(
+                              height: AppSpacing.mediumVerticalSpacing(context),
+                            ),
+                            if (sessionState.isVendor)
+                              ProfileMenuItem(
+                                icon: Icons.storefront_outlined,
+                                title: 'Merchant Console',
+                                subtitle: 'Vendor Account Status',
+                                trailing: sessionState.vendorStatus == null
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: sessionState.vendorStatus == 'APPROVED' 
+                                              ? Colors.green.withValues(alpha: 0.1) 
+                                              : theme.dividerColor.withValues(alpha: 0.1),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Text(
+                                          sessionState.vendorStatus ?? 'PENDING',
+                                          style: TextStyle(
+                                            color: sessionState.vendorStatus == 'APPROVED' 
+                                                ? Colors.green 
+                                                : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 12,
+                                            fontFamily: 'Poppins',
+                                          ),
+                                        ),
+                                      ),
+                              )
+                            else
+                              ProfileMenuItem(
+                                icon: Icons.storefront_outlined,
+                                title: 'Merchant Console',
+                                subtitle: 'Become a vendor and start selling',
+                                onTap: () {
+                                  AppNavigator.push(
+                                    context,
+                                    const VendorOnboardingScreen(),
+                                  );
+                                },
+                              ),
+                            ProfileMenuItem(
+                              icon: Icons.lock_outline,
+                              title: 'Change Password',
+                              subtitle: 'Update your security credentials',
+                              onTap: () {
                                 AppNavigator.push(
                                   context,
-                                  const VendorDashboardScreen(),
+                                  const ChangePasswordScreen(),
                                 );
-                              } else {
-                                AppNavigator.push(
-                                  context,
-                                  const VendorOnboardingScreen(),
-                                );
-                              }
-                            },
-                          ),
-                          ProfileMenuItem(
-                            icon: Icons.lock_outline,
-                            title: 'Change Password',
-                            subtitle: 'Update your security credentials',
-                            onTap: () {
-                              AppNavigator.push(
-                                context,
-                                const ChangePasswordScreen(),
-                              );
-                            },
-                          ),
-                          SizedBox(
-                            height: AppSpacing.mediumVerticalSpacing(context),
-                          ),
-                          ProfileMenuItem(
-                            icon: Icons.settings_input_component_outlined,
-                            title: 'Notification Preferences',
-                            subtitle: 'Manage how you receive updates',
-                            onTap: () {},
-                          ),
-                          ProfileMenuItem(
-                            icon: Icons.help_outline,
-                            title: 'Help & Support',
-                            subtitle: 'FAQs and contact information',
-                            onTap: () {},
-                          ),
-                          SizedBox(
-                            height: AppSpacing.largeVerticalSpacing(context),
-                          ),
-                          if (!isGuest) _buildLogoutButton(context),
+                              },
+                            ),
+                            SizedBox(
+                              height: AppSpacing.mediumVerticalSpacing(context),
+                            ),
+                            ProfileMenuItem(
+                              icon: Icons.settings_input_component_outlined,
+                              title: 'Notification Preferences',
+                              subtitle: 'Manage how you receive updates',
+                              onTap: () {},
+                            ),
+                            ProfileMenuItem(
+                              icon: Icons.help_outline,
+                              title: 'Help & Support',
+                              subtitle: 'FAQs and contact information',
+                              onTap: () {},
+                            ),
+                            SizedBox(
+                              height: AppSpacing.largeVerticalSpacing(context),
+                            ),
+                            _buildLogoutButton(context),
+                          ],
                           const SizedBox(height: 100),
                         ],
                       );
@@ -184,23 +210,21 @@ class _GuestAuthBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            theme.primaryColor.withOpacity(0.8),
-            theme.primaryColor,
-          ],
-        ),
+        color: theme.cardColor,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: theme.dividerColor.withValues(alpha: 0.1),
+        ),
         boxShadow: [
           BoxShadow(
-            color: theme.primaryColor.withOpacity(0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 15,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -209,26 +233,30 @@ class _GuestAuthBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: theme.primaryColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.person_outline, color: Colors.white, size: 40),
+            child: Icon(Icons.person_outline, color: theme.primaryColor, size: 40),
           ),
           const SizedBox(height: 16),
-          const Text(
+          Text(
             'Unlock the Full Experience!',
             style: TextStyle(
-              color: Colors.white,
+              color: theme.textTheme.titleLarge?.color,
               fontSize: 20,
               fontWeight: FontWeight.bold,
               fontFamily: 'Poppins',
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Join our community to shop, sell, and connect with top vendors.',
             textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white70, fontSize: 13, fontFamily: 'Poppins'),
+            style: TextStyle(
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7), 
+              fontSize: 13, 
+              fontFamily: 'Poppins',
+            ),
           ),
           const SizedBox(height: 24),
           Row(
@@ -237,8 +265,8 @@ class _GuestAuthBanner extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () => AppNavigator.push(context, const LoginScreen()),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: theme.primaryColor,
+                    backgroundColor: theme.primaryColor,
+                    foregroundColor: Colors.white,
                     elevation: 0,
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -253,9 +281,9 @@ class _GuestAuthBanner extends StatelessWidget {
                 child: OutlinedButton(
                   onPressed: () => AppNavigator.push(context, const SignUpScreen()),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.white,
+                    foregroundColor: theme.primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: const BorderSide(color: Colors.white, width: 1.5),
+                    side: BorderSide(color: theme.primaryColor, width: 1.5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

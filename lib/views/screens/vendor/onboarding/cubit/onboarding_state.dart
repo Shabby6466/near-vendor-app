@@ -15,6 +15,8 @@ class OnboardingState extends Equatable {
   final bool termsAccepted;
   final bool isSubmitting;
   final bool isSuccess;
+  final bool isUploadingImage;
+  final String? errorMessage;
 
   const OnboardingState({
     this.currentStep = OnboardingStep.businessInfo,
@@ -29,6 +31,8 @@ class OnboardingState extends Equatable {
     this.termsAccepted = false,
     this.isSubmitting = false,
     this.isSuccess = false,
+    this.isUploadingImage = false,
+    this.errorMessage,
   });
 
   @override
@@ -45,6 +49,8 @@ class OnboardingState extends Equatable {
         termsAccepted,
         isSubmitting,
         isSuccess,
+        isUploadingImage,
+        errorMessage,
       ];
 
   OnboardingState copyWith({
@@ -60,6 +66,8 @@ class OnboardingState extends Equatable {
     bool? termsAccepted,
     bool? isSubmitting,
     bool? isSuccess,
+    bool? isUploadingImage,
+    String? errorMessage,
   }) {
     return OnboardingState(
       currentStep: currentStep ?? this.currentStep,
@@ -74,6 +82,8 @@ class OnboardingState extends Equatable {
       termsAccepted: termsAccepted ?? this.termsAccepted,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isSuccess: isSuccess ?? this.isSuccess,
+      isUploadingImage: isUploadingImage ?? this.isUploadingImage,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

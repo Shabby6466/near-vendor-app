@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/cubit/onboarding_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/widgets/business_info_step.dart';
@@ -9,6 +10,7 @@ import 'package:nearvendorapp/views/screens/vendor/onboarding/widgets/location_c
 import 'package:nearvendorapp/views/screens/vendor/onboarding/widgets/step_progress_indicator.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/widgets/verification_launch_step.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 
 class VendorOnboardingScreen extends StatefulWidget {
   const VendorOnboardingScreen({super.key});
@@ -66,7 +68,13 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
             listenWhen: (p, c) => !p.isSuccess && c.isSuccess,
             listener: (context, state) {
               context.read<SessionCubit>().setVendorStatus(true);
-              AppNavigator.pushReplacement(context, const VendorDashboardScreen());
+              AppNavigator.pop(context);
+            },
+          ),
+          BlocListener<OnboardingCubit, OnboardingState>(
+            listenWhen: (p, c) => p.errorMessage != c.errorMessage && c.errorMessage != null,
+            listener: (context, state) {
+              AppAlerts.showErrorSnackBar(context, state.errorMessage!);
             },
           ),
         ],
@@ -159,6 +167,7 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
             flex: 2,
             child: AppElevatedButton(
               isEnabled: state.currentStep == OnboardingStep.verification ? state.termsAccepted : true,
+              isLoading: state.isSubmitting,
               onPressed: () {
                 if (state.currentStep == OnboardingStep.verification) {
                   context.read<OnboardingCubit>().launchStore();

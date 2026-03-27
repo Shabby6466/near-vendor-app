@@ -20,6 +20,7 @@ class User {
   String? get fullName => _fullName;
   String? get email => _email;
   String? get role => _role;
+  set role(String? value) => _role = value;
   double? get lastKnownLatitude => _lastKnownLatitude;
   double? get lastKnownLongitude => _lastKnownLongitude;
   DateTime? get createdAt => _createdAt;

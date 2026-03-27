@@ -12,6 +12,7 @@ class SessionState extends Equatable {
   final double? latitude;
   final double? longitude;
   final String? cityName;
+  final String? vendorStatus;
 
   const SessionState({
     this.status = AuthStatus.unauthenticated,
@@ -23,10 +24,22 @@ class SessionState extends Equatable {
     this.latitude,
     this.longitude,
     this.cityName,
+    this.vendorStatus,
   });
 
   @override
-  List<Object?> get props => [status, user, userName, isVendor, hasOnboarded, photoUrl, latitude, longitude, cityName];
+  List<Object?> get props => [
+        status,
+        user,
+        userName,
+        isVendor,
+        hasOnboarded,
+        photoUrl,
+        latitude,
+        longitude,
+        cityName,
+        vendorStatus,
+      ];
 
   SessionState copyWith({
     AuthStatus? status,
@@ -38,6 +51,8 @@ class SessionState extends Equatable {
     double? latitude,
     double? longitude,
     String? cityName,
+    String? vendorStatus,
+    bool clearVendorStatus = false,
   }) {
     return SessionState(
       status: status ?? this.status,
@@ -49,6 +64,7 @@ class SessionState extends Equatable {
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       cityName: cityName ?? this.cityName,
+      vendorStatus: clearVendorStatus ? null : (vendorStatus ?? this.vendorStatus),
     );
   }
 }
