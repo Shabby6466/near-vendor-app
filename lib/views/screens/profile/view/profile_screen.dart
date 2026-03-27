@@ -9,7 +9,6 @@ import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/screens/vendor_onboarding_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
@@ -21,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return BlocProvider(
       create: (context) => ProfileCubit(context.read<SessionCubit>()),
       child: AppScaffold(
@@ -29,11 +28,18 @@ class ProfileScreen extends StatelessWidget {
         body: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {
-              return Center(child: CircularProgressIndicator(color: theme.primaryColor));
+              return Center(
+                child: CircularProgressIndicator(color: theme.primaryColor),
+              );
             }
 
             if (state is ProfileFailure) {
-              return Center(child: Text(state.error, style: const TextStyle(fontFamily: 'Poppins')));
+              return Center(
+                child: Text(
+                  state.error,
+                  style: const TextStyle(fontFamily: 'Poppins'),
+                ),
+              );
             }
 
             if (state is ProfileSuccess) {
@@ -85,22 +91,42 @@ class ProfileScreen extends StatelessWidget {
                                     ? const SizedBox(
                                         width: 20,
                                         height: 20,
-                                        child: CircularProgressIndicator(strokeWidth: 2),
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
                                       )
                                     : Container(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
                                         decoration: BoxDecoration(
-                                          color: sessionState.vendorStatus == 'APPROVED' 
-                                              ? Colors.green.withValues(alpha: 0.1) 
-                                              : theme.dividerColor.withValues(alpha: 0.1),
-                                          borderRadius: BorderRadius.circular(12),
+                                          color:
+                                              sessionState.vendorStatus ==
+                                                  'APPROVED'
+                                              ? Colors.green.withValues(
+                                                  alpha: 0.1,
+                                                )
+                                              : theme.dividerColor.withValues(
+                                                  alpha: 0.1,
+                                                ),
+                                          borderRadius: BorderRadius.circular(
+                                            12,
+                                          ),
                                         ),
                                         child: Text(
-                                          sessionState.vendorStatus ?? 'PENDING',
+                                          sessionState.vendorStatus ??
+                                              'PENDING',
                                           style: TextStyle(
-                                            color: sessionState.vendorStatus == 'APPROVED' 
-                                                ? Colors.green 
-                                                : theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                                            color:
+                                                sessionState.vendorStatus ==
+                                                    'APPROVED'
+                                                ? Colors.green
+                                                : theme
+                                                      .textTheme
+                                                      .bodyMedium
+                                                      ?.color
+                                                      ?.withValues(alpha: 0.6),
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                             fontFamily: 'Poppins',
@@ -180,13 +206,17 @@ class ProfileScreen extends StatelessWidget {
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.red.withOpacity(0.2), width: 1),
+          border: Border.all(color: Colors.red.withValues(alpha: 0.2), width: 1),
           borderRadius: BorderRadius.circular(16),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.logout, color: theme.iconTheme.color?.withOpacity(0.7), size: 20),
+            Icon(
+              Icons.logout,
+              color: theme.iconTheme.color?.withValues(alpha: 0.7),
+              size: 20,
+            ),
             const SizedBox(width: 8),
             Text(
               'Logout',
@@ -210,16 +240,14 @@ class _GuestAuthBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-    
+    // final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: theme.dividerColor.withValues(alpha: 0.1),
-        ),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.05),
@@ -236,7 +264,11 @@ class _GuestAuthBanner extends StatelessWidget {
               color: theme.primaryColor.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(Icons.person_outline, color: theme.primaryColor, size: 40),
+            child: Icon(
+              Icons.person_outline,
+              color: theme.primaryColor,
+              size: 40,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
@@ -253,8 +285,8 @@ class _GuestAuthBanner extends StatelessWidget {
             'Join our community to shop, sell, and connect with top vendors.',
             textAlign: TextAlign.center,
             style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7), 
-              fontSize: 13, 
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+              fontSize: 13,
               fontFamily: 'Poppins',
             ),
           ),
@@ -263,7 +295,8 @@ class _GuestAuthBanner extends StatelessWidget {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () => AppNavigator.push(context, const LoginScreen()),
+                  onPressed: () =>
+                      AppNavigator.push(context, const LoginScreen()),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: theme.primaryColor,
                     foregroundColor: Colors.white,
@@ -273,13 +306,20 @@ class _GuestAuthBanner extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Login', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                  child: const Text(
+                    'Login',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton(
-                  onPressed: () => AppNavigator.push(context, const SignUpScreen()),
+                  onPressed: () =>
+                      AppNavigator.push(context, const SignUpScreen()),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: theme.primaryColor,
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -288,7 +328,13 @@ class _GuestAuthBanner extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text('Register', style: TextStyle(fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
+                  child: const Text(
+                    'Register',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontFamily: 'Poppins',
+                    ),
+                  ),
                 ),
               ),
             ],

@@ -31,22 +31,21 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
     HapticFeedback.selectionClick();
   }
 
-  void _handleDragUpdate(Offset localPosition, double totalWidth) {
+  void _handleInteraction(Offset localPosition, double totalWidth, {required bool isDragging}) {
     final itemWidth = totalWidth / 4;
     final newDragX = localPosition.dx.clamp(8.0, totalWidth - 8.0);
-    final currentVelocity = (newDragX - _lastDragX).abs();
+    final currentVelocity = isDragging ? (newDragX - _lastDragX).abs() : 0.0;
 
     setState(() {
-      _isDragging = true;
+      _isDragging = isDragging;
       _dragX = newDragX;
-      _velocity = _velocity * 0.8 + currentVelocity * 0.2;
+      _velocity = isDragging ? (_velocity * 0.8 + currentVelocity * 0.2) : 0.0;
       _lastDragX = newDragX;
     });
 
-    int dragIndex = (newDragX / itemWidth).floor().clamp(0, 3);
-
-    if (dragIndex != widget.currentIndex) {
-      _onItemTapped(dragIndex);
+    int index = (newDragX / itemWidth).floor().clamp(0, 3);
+    if (index != widget.currentIndex) {
+      _onItemTapped(index);
     }
   }
 
@@ -105,15 +104,19 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                               : targetLeft;
 
                           return GestureDetector(
+                            onHorizontalDragStart: (_) =>
+                                setState(() => _isDragging = true),
                             onHorizontalDragUpdate: (details) =>
-                                _handleDragUpdate(
+                                _handleInteraction(
                                   details.localPosition,
                                   totalWidth,
+                                  isDragging: true,
                                 ),
                             onHorizontalDragEnd: (_) => _handleDragEnd(),
-                            onTapDown: (details) => _handleDragUpdate(
+                            onTapDown: (details) => _handleInteraction(
                               details.localPosition,
                               totalWidth,
+                              isDragging: false,
                             ),
                             onTapUp: (_) => _handleDragEnd(),
                             child: Stack(
@@ -157,7 +160,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                                         ),
                                         boxShadow: [
                                           BoxShadow(
-                                            color: Colors.black.withOpacity(
+                                            color: Colors.black.withValues(alpha:
                                               0.1,
                                             ),
                                             blurRadius: 10,
@@ -238,7 +241,7 @@ class _NavButton extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final color = isActive
         ? (isDark ? Colors.white : theme.primaryColor)
-        : (isDark ? Colors.white.withOpacity(0.4) : Colors.grey.shade400);
+        : (isDark ? Colors.white.withValues(alpha: 0.4) : Colors.grey.shade400);
 
     return Expanded(
       child: Column(
@@ -304,7 +307,7 @@ class _VendorConsoleButton extends StatelessWidget {
       borderRadius: BorderRadius.circular(height / 2),
       isDark: isDark,
       border: isActive
-          ? Border.all(color: activeColor.withOpacity(0.5), width: 2)
+          ? Border.all(color: activeColor.withValues(alpha: 0.5), width: 2)
           : null,
       child: InkWell(
         onTap: onTap,
@@ -314,14 +317,14 @@ class _VendorConsoleButton extends StatelessWidget {
             padding: const EdgeInsets.all(2),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(color: activeColor.withOpacity(0.2), width: 1),
+              border: Border.all(color: activeColor.withValues(alpha: 0.2), width: 1),
             ),
             child: Icon(
               isActive ? Icons.store : Icons.store_outlined,
               color: isActive
                   ? activeColor
                   : (isDark
-                        ? Colors.white.withOpacity(0.4)
+                        ? Colors.white.withValues(alpha: 0.4)
                         : Colors.grey.shade400),
               size: 24,
             ),
@@ -363,12 +366,12 @@ class _GlassContainer extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               color: (isDark ? const Color(0xFF171D25) : Colors.white)
-                  .withOpacity(0.85),
+                  .withValues(alpha: 0.85),
               borderRadius: borderRadius,
               border:
                   border ??
                   Border.all(
-                    color: (isDark ? Colors.white : Colors.black).withOpacity(
+                    color: (isDark ? Colors.white : Colors.black).withValues(alpha:
                       0.05,
                     ),
                     width: 0.5,
@@ -377,7 +380,7 @@ class _GlassContainer extends StatelessWidget {
                   ? null
                   : [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -408,13 +411,13 @@ class _DropletShine extends StatelessWidget {
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
-              Colors.white.withOpacity(0.4),
-              Colors.white.withOpacity(0.1),
+              Colors.white.withValues(alpha: 0.4),
+              Colors.white.withValues(alpha: 0.1),
             ],
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               blurRadius: 4,
               spreadRadius: 0.5,
             ),

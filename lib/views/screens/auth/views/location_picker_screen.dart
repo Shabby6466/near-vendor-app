@@ -15,7 +15,10 @@ class LocationPickerScreen extends StatefulWidget {
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
   final MapController _mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
-  LatLng _selectedLocation = const LatLng(33.667306, 73.075177); // Default fallback
+  LatLng _selectedLocation = const LatLng(
+    33.667306,
+    73.075177,
+  ); // Default fallback
   bool _isLoading = false;
 
   @override
@@ -56,8 +59,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       List<Location> locations = await locationFromAddress(query);
       if (locations.isNotEmpty) {
         setState(() {
-          _selectedLocation =
-              LatLng(locations.first.latitude, locations.first.longitude);
+          _selectedLocation = LatLng(
+            locations.first.latitude,
+            locations.first.longitude,
+          );
         });
         _mapController.move(_selectedLocation, 15.0);
       }
@@ -65,7 +70,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       debugPrint('Error searching location: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location not found. Please try again.')),
+          const SnackBar(
+            content: Text('Location not found. Please try again.'),
+          ),
         );
       }
     } finally {
@@ -97,7 +104,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
               onPositionChanged: (position, hasGesture) {
                 if (hasGesture) {
                   setState(() {
-                    _selectedLocation = position.center!;
+                    _selectedLocation = position.center;
                   });
                 }
               },
@@ -121,7 +128,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                 borderRadius: BorderRadius.circular(12),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 10,
                     offset: const Offset(0, 4),
                   ),
@@ -138,8 +145,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     onPressed: _searchLocation,
                   ),
                   border: InputBorder.none,
-                  contentPadding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
                 ),
                 onSubmitted: (_) => _searchLocation(),
               ),
