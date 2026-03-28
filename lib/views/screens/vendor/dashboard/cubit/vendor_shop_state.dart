@@ -9,7 +9,13 @@ sealed class VendorShopState extends Equatable {
 
 final class VendorShopInitial extends VendorShopState {}
 
-final class VendorShopLoading extends VendorShopState {}
+final class VendorShopLoading extends VendorShopState {
+  final List<Shop>? shops;
+  const VendorShopLoading({this.shops});
+
+  @override
+  List<Object> get props => shops != null ? [shops!] : [];
+}
 
 final class VendorShopSuccess extends VendorShopState {
   final List<Shop> shops;

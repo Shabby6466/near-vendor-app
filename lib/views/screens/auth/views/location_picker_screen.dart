@@ -3,7 +3,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+
+import 'dart:async';
+import 'package:nearvendorapp/services/location_service.dart';
 
 class LocationPickerScreen extends StatefulWidget {
   const LocationPickerScreen({super.key});
@@ -15,16 +17,48 @@ class LocationPickerScreen extends StatefulWidget {
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
   final MapController _mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
+  final LocationService _locationService = LocationService();
+  Timer? _debounce;
+  List<LocationSuggestion> _suggestions = [];
+  
   LatLng _selectedLocation = const LatLng(
     33.667306,
     73.075177,
   ); // Default fallback
+  bool _isSearching = false;
   bool _isLoading = false;
 
   @override
   void dispose() {
     _searchController.dispose();
+    _debounce?.cancel();
     super.dispose();
+  }
+
+  void _onSearchChanged(String query) {
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 500), () async {
+      if (query.length > 2) {
+        setState(() => _isSearching = true);
+        final suggestions = await _locationService.getSuggestions(query);
+        setState(() {
+          _suggestions = suggestions;
+          _isSearching = false;
+        });
+      } else {
+        setState(() => _suggestions = []);
+      }
+    });
+  }
+
+  void _selectSuggestion(LocationSuggestion suggestion) {
+    setState(() {
+      _selectedLocation = suggestion.location;
+      _suggestions = [];
+      _searchController.text = suggestion.displayName;
+    });
+    _mapController.move(_selectedLocation, 15.0);
+    FocusScope.of(context).unfocus();
   }
 
   Future<void> _getCurrentLocation() async {
@@ -54,29 +88,39 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     final query = _searchController.text.trim();
     if (query.isEmpty) return;
 
-    setState(() => _isLoading = true);
+    setState(() {
+      _isLoading = true;
+      _isSearching = true;
+    });
+
     try {
-      List<Location> locations = await locationFromAddress(query);
-      if (locations.isNotEmpty) {
-        setState(() {
-          _selectedLocation = LatLng(
-            locations.first.latitude,
-            locations.first.longitude,
-          );
-        });
-        _mapController.move(_selectedLocation, 15.0);
-      }
-    } catch (e) {
-      debugPrint('Error searching location: $e');
-      if (mounted) {
+      final suggestions = await _locationService.getSuggestions(query);
+      setState(() {
+        _suggestions = suggestions;
+        _isSearching = false;
+        _isLoading = false;
+      });
+
+      if (suggestions.isEmpty && mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Location not found. Please try again.'),
+            content: Text('No matching locations found.'),
           ),
         );
       }
-    } finally {
-      setState(() => _isLoading = false);
+    } catch (e) {
+      debugPrint('Error searching location: $e');
+      setState(() {
+        _isSearching = false;
+        _isLoading = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Error searching location. Please try again.'),
+          ),
+        );
+      }
     }
   }
 
@@ -117,41 +161,93 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
               ),
             ],
           ),
-          // Search Bar
+          // Search Bar & Suggestions
           Positioned(
             top: 20,
             left: 20,
             right: 20,
-            child: Container(
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search Location...',
-                  hintStyle: const TextStyle(fontFamily: 'Poppins'),
-                  prefixIcon: const Icon(Icons.search),
-                  suffixIcon: IconButton(
-                    icon: const Icon(Icons.arrow_forward),
-                    onPressed: _searchLocation,
-                  ),
-                  border: InputBorder.none,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: _onSearchChanged,
+                    decoration: InputDecoration(
+                      hintText: 'Search Location...',
+                      hintStyle: const TextStyle(fontFamily: 'Poppins'),
+                      prefixIcon: const Icon(Icons.search),
+                      suffixIcon: _isSearching
+                          ? const Padding(
+                              padding: EdgeInsets.all(12.0),
+                              child: SizedBox(
+                                width: 20,
+                                height: 20,
+                                child: CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                            )
+                          : IconButton(
+                              icon: const Icon(Icons.arrow_forward),
+                              onPressed: _searchLocation,
+                            ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                    ),
+                    onSubmitted: (_) => _searchLocation(),
                   ),
                 ),
-                onSubmitted: (_) => _searchLocation(),
-              ),
+                if (_suggestions.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    decoration: BoxDecoration(
+                      color: theme.cardColor,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.1),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    constraints: const BoxConstraints(maxHeight: 300),
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      itemCount: _suggestions.length,
+                      separatorBuilder: (context, index) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final suggestion = _suggestions[index];
+                        return ListTile(
+                          leading: const Icon(Icons.location_on_outlined, size: 20),
+                          title: Text(
+                            suggestion.displayName,
+                            style: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 14,
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          onTap: () => _selectSuggestion(suggestion),
+                        );
+                      },
+                    ),
+                  ),
+              ],
             ),
           ),
           // My Location Button

@@ -31,7 +31,10 @@ class SignUpScreen extends StatelessWidget {
               MaterialPageRoute(builder: (_) => const LocationPickerScreen()),
             );
             if (result != null) {
-              context.read<SignupCubit>().handleSignupWithLocation(result.latitude, result.longitude);
+              context.read<SignupCubit>().handleSignupWithLocation(
+                result.latitude,
+                result.longitude,
+              );
             }
           }
           if (state is SignupSuccess) {
@@ -50,9 +53,11 @@ class SignUpScreen extends StatelessWidget {
                 fit: StackFit.expand,
                 children: [
                   Image.asset(
-                    Assets.images.itemsArt.path, 
+                    Assets.images.itemsArt.path,
                     fit: BoxFit.cover,
-                    color: isDark ? Colors.black.withOpacity(0.6) : Colors.black.withOpacity(0.3),
+                    color: isDark
+                        ? Colors.black.withValues(alpha: (0.6))
+                        : Colors.black.withValues(alpha: (0.3)),
                     colorBlendMode: BlendMode.darken,
                   ),
                   SafeArea(
@@ -63,7 +68,10 @@ class SignUpScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Assets.icons.nearVendorText.svg(
-                            colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
                           ),
                           SizedBox(
                             height: AppSpacing.mediumVerticalSpacing(context),
@@ -77,7 +85,9 @@ class SignUpScreen extends StatelessWidget {
                             ),
                           ),
                           SizedBox(
-                            height: AppSpacing.extraLargeVerticalSpacing(context),
+                            height: AppSpacing.extraLargeVerticalSpacing(
+                              context,
+                            ),
                           ),
                           Form(
                             key: cubit.formKey,
@@ -88,14 +98,18 @@ class SignUpScreen extends StatelessWidget {
                                   controller: cubit.fullNameController,
                                 ),
                                 SizedBox(
-                                  height: AppSpacing.smallVerticalSpacing(context),
+                                  height: AppSpacing.smallVerticalSpacing(
+                                    context,
+                                  ),
                                 ),
                                 AuthTextFieldWidget(
                                   label: 'email',
                                   controller: cubit.emailController,
                                 ),
                                 SizedBox(
-                                  height: AppSpacing.smallVerticalSpacing(context),
+                                  height: AppSpacing.smallVerticalSpacing(
+                                    context,
+                                  ),
                                 ),
                                 AuthTextFieldWidget(
                                   label: 'password',
@@ -103,7 +117,9 @@ class SignUpScreen extends StatelessWidget {
                                   controller: cubit.passwordController,
                                 ),
                                 SizedBox(
-                                  height: AppSpacing.smallVerticalSpacing(context),
+                                  height: AppSpacing.smallVerticalSpacing(
+                                    context,
+                                  ),
                                 ),
                                 AuthTextFieldWidget(
                                   label: 'confirm password',
@@ -132,7 +148,7 @@ class SignUpScreen extends StatelessWidget {
                               Text(
                                 'Already have an account? ',
                                 style: theme.textTheme.bodySmall?.copyWith(
-                                  color: Colors.white.withOpacity(0.7),
+                                  color: Colors.white.withValues(alpha: (0.7)),
                                   fontFamily: 'Poppins',
                                 ),
                               ),

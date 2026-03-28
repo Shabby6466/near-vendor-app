@@ -1,16 +1,18 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_management_cubit.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_detail_cubit.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/widgets/item_screen.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/screens/add_product_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/edit_shop_screen.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
 
 class ShopDetailsScreen extends StatelessWidget {
   final Shop shop;
@@ -65,9 +67,9 @@ class ShopDetailsScreen extends StatelessWidget {
               backgroundColor: theme.primaryColor,
               foregroundColor: Colors.white,
               elevation: 8,
-              icon: const Icon(Icons.add_rounded, size: 24),
+              icon: const Icon(Icons.add_rounded, size: 20),
               label: const Text(
-                'Add Item',
+                'Add',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w600,
@@ -86,10 +88,10 @@ class ShopDetailsScreen extends StatelessWidget {
 
   void _showItemForm(BuildContext context, {Item? item}) {
     AppNavigator.push(
-      context, 
-      BlocProvider(
-        create: (context) => ItemDetailCubit(),
-        child: ItemScreen(itemId: item?.id),
+      context,
+      BlocProvider.value(
+        value: context.read<ItemManagementCubit>(),
+        child: AddProductScreen(shopId: shop.id, item: item),
       ),
     );
   }
@@ -228,7 +230,163 @@ class ShopDetailsScreen extends StatelessWidget {
               elevation: 0,
             ),
           ),
+
+          const SizedBox(width: 8),
+          
+          _buildActionButton(
+            context,
+            icon: Icons.edit_note_rounded,
+            color: Colors.blue,
+            onTap: () => _showEditForm(context),
+          ),
+          
+          const SizedBox(width: 8),
+          
+          _buildActionButton(
+            context,
+            icon: Icons.delete_outline_rounded,
+            color: Colors.red,
+            onTap: () => _confirmDelete(context),
+          ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton(
+    BuildContext context, {
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        onTap();
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: color.withValues(alpha: 0.2),
+            width: 1,
+          ),
+        ),
+        child: Icon(icon, color: color, size: 22),
+      ),
+    );
+  }
+
+  void _showEditForm(BuildContext context) {
+    AppNavigator.push(
+      context,
+      BlocProvider.value(
+        value: context.read<VendorShopCubit>(),
+        child: EditShopScreen(shop: shop),
+      ),
+    );
+  }
+
+  void _confirmDelete(BuildContext context) {
+    final theme = Theme.of(context);
+    showDialog(
+      context: context,
+      builder: (_) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        child: AlertDialog(
+          backgroundColor: theme.cardColor.withValues(alpha: 0.9),
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(32),
+          ),
+          contentPadding: const EdgeInsets.fromLTRB(28, 32, 28, 24),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.delete_sweep_rounded,
+                  color: Colors.red,
+                  size: 40,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Delete Shop?',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  color: theme.textTheme.titleLarge?.color,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Are you sure you want to delete "${shop.shopName}"?\nAll inventory will be permanently removed.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  height: 1.5,
+                  color: theme.textTheme.bodyMedium?.color?.withValues(
+                    alpha: 0.6,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 26),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => AppNavigator.pop(context),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: 0.4,
+                          ),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        context.read<VendorShopCubit>().deleteShop(shop.id);
+                        AppNavigator.pop(context);
+                        AppNavigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: const Text(
+                        'Confirm',
+                        style: TextStyle(fontWeight: FontWeight.w800),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -388,30 +546,49 @@ class ShopDetailsScreen extends StatelessWidget {
   Widget _buildItemCard(BuildContext context, Item item) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: theme.cardColor,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.06),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+        border: Border.all(
+          color: theme.dividerColor.withValues(alpha: isDark ? 0.1 : 0.05),
+          width: 1,
+        ),
       ),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
-        onTap: () => _showItemForm(context, item: item),
-        borderRadius: BorderRadius.circular(16),
+        onTap: () {
+          HapticFeedback.lightImpact();
+          _showItemForm(context, item: item);
+        },
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+          padding: const EdgeInsets.all(12),
           child: Row(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(16),
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? Colors.white.withValues(alpha: 0.05)
-                        : Colors.grey.shade50,
-                  ),
+              Container(
+                width: 90,
+                height: 90,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: theme.primaryColor.withValues(alpha: 0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
                   child: item.imageUrl != null && item.imageUrl!.isNotEmpty
                       ? CachedNetworkImage(
                           imageUrl: item.imageUrl!,
@@ -420,49 +597,67 @@ class ShopDetailsScreen extends StatelessWidget {
                           errorWidget: (context, url, error) =>
                               const Icon(Icons.image_not_supported_rounded),
                         )
-                      : Icon(
-                          Icons.inventory_2_rounded,
-                          color: theme.iconTheme.color?.withValues(alpha: 0.4),
-                          size: 28,
+                      : Container(
+                          color: theme.primaryColor.withValues(alpha: 0.05),
+                          child: Icon(
+                            Icons.inventory_2_rounded,
+                            color: theme.primaryColor.withValues(alpha: 0.4),
+                            size: 32,
+                          ),
                         ),
                 ),
               ),
               const SizedBox(width: 16),
+              // Content Section
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 2),
                     Text(
-                      item.name,
+                      item.name.toUpperCase(),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                        letterSpacing: 0.5,
                         color: theme.textTheme.titleMedium?.color,
+                        height: 1.1,
                       ),
                     ),
-                    Text(
-                      '${item.stockCount} ${item.unit} in stock',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: theme.textTheme.bodySmall?.color?.withValues(
-                          alpha: 0.5,
+                    const SizedBox(height: 12),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'PRICE',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 9,
+                                fontWeight: FontWeight.w800,
+                                color: theme.textTheme.bodySmall?.color
+                                    ?.withValues(alpha: 0.4),
+                                letterSpacing: 1.0,
+                              ),
+                            ),
+                            Text(
+                              'PKR ${item.price.toStringAsFixed(0)}',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                color: theme.primaryColor,
+                                fontWeight: FontWeight.w900,
+                                fontSize: 18,
+                                letterSpacing: -0.5,
+                              ),
+                            ),
+                          ],
                         ),
-                        fontWeight: FontWeight.w500,
-                        fontSize: 12,
-                      ),
-                    ),
-                    Text(
-                      'PKR ${item.price.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        color: theme.primaryColor,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                      ),
+                      ],
                     ),
                   ],
                 ),
@@ -473,7 +668,6 @@ class ShopDetailsScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildErrorState(BuildContext context) {
     final theme = Theme.of(context);

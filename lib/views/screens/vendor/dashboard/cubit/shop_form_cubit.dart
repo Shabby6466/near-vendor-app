@@ -13,7 +13,11 @@ class ShopFormCubit extends Cubit<ShopFormState> {
 
   ShopFormCubit() : super(ShopFormInitial());
 
-  Future<void> createShop(CreateShopInput input, {File? logoFile, File? coverFile}) async {
+  Future<void> createShop(
+    CreateShopInput input, {
+    File? logoFile,
+    File? coverFile,
+  }) async {
     try {
       String? logoUrl = input.storeLogoUrl;
       String? coverUrl = input.coverImageUrl;
@@ -55,7 +59,11 @@ class ShopFormCubit extends Cubit<ShopFormState> {
     }
   }
 
-  Future<void> updateShop(UpdateShopInput input, {File? logoFile, File? coverFile}) async {
+  Future<void> updateShop(
+    UpdateShopInput input, {
+    File? logoFile,
+    File? coverFile,
+  }) async {
     try {
       String? logoUrl = input.storeLogoUrl;
       String? coverUrl = input.coverImageUrl;
@@ -71,7 +79,7 @@ class ShopFormCubit extends Cubit<ShopFormState> {
 
       emit(const ShopFormLoading(message: 'Syncing details...'));
       final finalInput = UpdateShopInput(
-        vendorId: input.vendorId,
+        shopId: input.shopId,
         shopName: input.shopName,
         businessCategory: input.businessCategory,
         registrationNumber: input.registrationNumber,
@@ -88,8 +96,8 @@ class ShopFormCubit extends Cubit<ShopFormState> {
       );
 
       final response = await _shopServices.updateShop(finalInput);
-      if (response.success && response.shop != null) {
-        emit(ShopFormSuccess(shop: response.shop!, isUpdate: true));
+      if (response.success) {
+        emit(ShopFormSuccess(shop: response.shop, isUpdate: true));
       } else {
         emit(ShopFormFailure(response.message));
       }

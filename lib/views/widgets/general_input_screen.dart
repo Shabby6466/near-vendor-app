@@ -40,7 +40,7 @@ class GeneralPinScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     final defaultPinTheme = PinTheme(
       width: 56,
       height: 56,
@@ -53,9 +53,7 @@ class GeneralPinScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: theme.dividerColor.withOpacity(0.1),
-        ),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: (0.1))),
       ),
     );
 
@@ -108,9 +106,13 @@ class GeneralPinScreen extends StatelessWidget {
                       SizedBox(
                         height: AppSpacing.mediumVerticalSpacing(context),
                       ),
-                      icon ?? Assets.icons.nearVendorText.svg(
-                        colorFilter: ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
-                      ),
+                      icon ??
+                          Assets.icons.nearVendorText.svg(
+                            colorFilter: ColorFilter.mode(
+                              theme.primaryColor,
+                              BlendMode.srcIn,
+                            ),
+                          ),
                       SizedBox(
                         height: AppSpacing.largeVerticalSpacing(context),
                       ),
@@ -128,17 +130,18 @@ class GeneralPinScreen extends StatelessWidget {
                         text: TextSpan(
                           text: subtitle,
                           style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
-                                fontFamily: 'Poppins',
-                              ),
+                            color: theme.textTheme.bodyMedium?.color
+                                ?.withValues(alpha: (0.7)),
+                            fontFamily: 'Poppins',
+                          ),
                           children: [
                             TextSpan(
                               text: ' $email',
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontFamily: 'Poppins',
-                                  ),
+                                color: theme.primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Poppins',
+                              ),
                             ),
                           ],
                         ),
@@ -175,10 +178,10 @@ class GeneralPinScreen extends StatelessWidget {
                   child: AppElevatedButton(
                     onPressed: isButtonEnabled
                         ? () => onPinSubmitted(
-                              cubit.codeController.text,
-                              email,
-                              cubit,
-                            )
+                            cubit.codeController.text,
+                            email,
+                            cubit,
+                          )
                         : null,
                     text: buttonText,
                     isEnabled: isButtonEnabled,

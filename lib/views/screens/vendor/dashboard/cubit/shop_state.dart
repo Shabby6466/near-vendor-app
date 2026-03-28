@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:nearvendorapp/models/api_responses/shop_api_responses.dart';
+import 'package:nearvendorapp/models/data_models/shop_model.dart';
 
 abstract class ShopState extends Equatable {
   const ShopState();
@@ -13,7 +13,7 @@ class ShopInitial extends ShopState {}
 class ShopLoading extends ShopState {}
 
 class ShopListLoaded extends ShopState {
-  final List<ShopResponse> shops;
+  final List<Shop> shops;
   const ShopListLoaded(this.shops);
 
   @override

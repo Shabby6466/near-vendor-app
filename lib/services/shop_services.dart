@@ -36,7 +36,10 @@ class ShopServices {
   Future<ShopResponse> updateShop(UpdateShopInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-      final response = await Server.patch(ApiConstants.updateShopProfile, data: data);
+      final response = await Server.patch(
+        '${ApiConstants.updateShopProfile}/${input.shopId}',
+        data: data,
+      );
       return ShopResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {

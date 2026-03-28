@@ -4,36 +4,37 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/api_inputs/shop_api_inputs.dart';
+import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/shop_form_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/categories_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/categories_state.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:latlong2/latlong.dart';
 
-class CreateShopScreen extends StatefulWidget {
-  const CreateShopScreen({super.key});
+class EditShopScreen extends StatefulWidget {
+  final Shop shop;
+  const EditShopScreen({super.key, required this.shop});
 
   @override
-  State<CreateShopScreen> createState() => _CreateShopScreenState();
+  State<EditShopScreen> createState() => _EditShopScreenState();
 }
 
-class _CreateShopScreenState extends State<CreateShopScreen> {
+class _EditShopScreenState extends State<EditShopScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final _nameController = TextEditingController();
-  final _categoryController = TextEditingController();
-  final _regNumberController = TextEditingController();
-  final _addressController = TextEditingController();
-  final _latController = TextEditingController(text: '22.343434');
-  final _longController = TextEditingController(text: '22.343434');
-  final _phoneController = TextEditingController();
-  final _whatsappController = TextEditingController();
-  final _emailController = TextEditingController();
+  late final TextEditingController _nameController;
+  late final TextEditingController _categoryController;
+  late final TextEditingController _regNumberController;
+  late final TextEditingController _addressController;
+  late final TextEditingController _latController;
+  late final TextEditingController _longController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _whatsappController;
+  late final TextEditingController _emailController;
 
   File? _logoFile;
   File? _coverFile;
@@ -48,6 +49,23 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
     'sat': '09:00-18:00',
     'sun': 'Closed',
   };
+
+  @override
+  void initState() {
+    super.initState();
+    final s = widget.shop;
+    _nameController = TextEditingController(text: s.shopName);
+    _categoryController = TextEditingController(text: s.businessCategory);
+    _regNumberController = TextEditingController(text: s.registrationNumber);
+    _addressController = TextEditingController(text: s.shopAddress);
+    _latController = TextEditingController(text: s.shopLatitude.toString());
+    _longController = TextEditingController(text: s.shopLongitude.toString());
+    _phoneController = TextEditingController(text: s.shopContactPhone);
+    _whatsappController = TextEditingController(text: s.whatsappNumber);
+    _emailController = TextEditingController(text: s.storeEmail);
+
+    _operatingHours.addAll(s.operatingHours.cast<String, String>());
+  }
 
   @override
   void dispose() {
@@ -66,24 +84,24 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
   void _submit(BuildContext context) {
     if (!_formKey.currentState!.validate()) return;
 
-    final session = context.read<SessionCubit>().state;
-    final vendorId = session.user?.id ?? 'vendorId';
-
-    final input = CreateShopInput(
-      vendorId: vendorId,
+    final input = UpdateShopInput(
+      shopId: widget.shop.id,
       shopName: _nameController.text,
       businessCategory: _categoryController.text,
       registrationNumber: _regNumberController.text,
       shopAddress: _addressController.text,
       operatingHours: _operatingHours,
-      shopLongitude: double.tryParse(_longController.text) ?? 0.0,
-      shopLatitude: double.tryParse(_latController.text) ?? 0.0,
+      shopLongitude: double.tryParse(_longController.text),
+      shopLatitude: double.tryParse(_latController.text),
       shopContactPhone: _phoneController.text,
       whatsappNumber: _whatsappController.text,
       storeEmail: _emailController.text,
+      storeLogoUrl: widget.shop.storeLogoUrl,
+      coverImageUrl: widget.shop.coverImageUrl,
+      isActive: widget.shop.isActive,
     );
 
-    context.read<ShopFormCubit>().createShop(
+    context.read<ShopFormCubit>().updateShop(
       input,
       logoFile: _logoFile,
       coverFile: _coverFile,
@@ -102,7 +120,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
       child: BlocConsumer<ShopFormCubit, ShopFormState>(
         listener: (context, state) {
           if (state is ShopFormSuccess) {
-            AppAlerts.showSuccessSnackBar(context, 'Your shop is now live!');
+            AppAlerts.showSuccessSnackBar(context, 'Business profile updated!');
             context.read<VendorShopCubit>().fetchShops();
             AppNavigator.pop(context);
           } else if (state is ShopFormFailure) {
@@ -113,7 +131,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
           return AppScaffold(
             appBar: AppBar(
               title: const Text(
-                'Business Identity',
+                'Update Shop',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w700,
@@ -135,7 +153,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Launch Shop',
+                      'Refine details',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 28,
@@ -145,18 +163,6 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    Text(
-                      'Curate your shop details to stand out in the marketplace.',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 15,
-                        color: theme.textTheme.bodySmall?.color?.withValues(
-                          alpha: (0.5),
-                        ),
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 40),
                     _buildSectionTitle(context, 'BRANDING & MEDIA'),
                     Row(
                       children: [
@@ -165,7 +171,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                             context,
                             'Store Logo',
                             _logoFile,
-                            null,
+                            widget.shop.storeLogoUrl,
                             () => _pickImage(true),
                           ),
                         ),
@@ -175,7 +181,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                             context,
                             'Cover Photo',
                             _coverFile,
-                            null,
+                            widget.shop.coverImageUrl,
                             () => _pickImage(false),
                           ),
                         ),
@@ -552,7 +558,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                 ],
               )
             : const Text(
-                'Launch Business',
+                'Update Profile',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 18,

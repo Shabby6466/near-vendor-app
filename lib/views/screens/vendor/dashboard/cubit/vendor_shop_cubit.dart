@@ -12,7 +12,15 @@ class VendorShopCubit extends Cubit<VendorShopState> {
   VendorShopCubit() : super(VendorShopInitial());
 
   Future<void> fetchShops() async {
-    emit(VendorShopLoading());
+    final currentState = state;
+    List<Shop>? currentShops;
+    if (currentState is VendorShopSuccess) {
+      currentShops = currentState.shops;
+    } else if (currentState is VendorShopLoading) {
+      currentShops = currentState.shops;
+    }
+
+    emit(VendorShopLoading(shops: currentShops));
     final response = await _shopServices.getMyShops();
     if (response.success) {
       emit(VendorShopSuccess(response.shops));
@@ -28,10 +36,8 @@ class VendorShopCubit extends Cubit<VendorShopState> {
         DeleteShopInput(shopId: shopId),
       );
       if (response.status == 200 || response.status == 201) {
-        final updatedShops = currentState.shops
-            .where((s) => s.id != shopId)
-            .toList();
-        emit(VendorShopSuccess(updatedShops));
+        // Re-fetch from server to ensure all data (stats, etc.) is updated
+        await fetchShops();
       }
     }
   }

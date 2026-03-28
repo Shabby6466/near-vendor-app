@@ -48,7 +48,9 @@ class WelcomeScreen extends StatelessWidget {
                 'Nearvendor brings everything\nnear you!',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
+                  color: theme.textTheme.bodyMedium?.color?.withValues(
+                    alpha: (0.7),
+                  ),
                   fontFamily: 'Poppins',
                   fontWeight: FontWeight.w500,
                 ),
@@ -60,7 +62,9 @@ class WelcomeScreen extends StatelessWidget {
               child: Image.asset(
                 width: AppSpacing.screenWidth(context) * 0.7,
                 Assets.images.nearVendorSideCut.path,
-                color: isDark ? theme.primaryColor.withOpacity(0.3) : null,
+                color: isDark
+                    ? theme.primaryColor.withValues(alpha: (0.3))
+                    : null,
                 colorBlendMode: isDark ? BlendMode.srcIn : null,
               ),
             ),

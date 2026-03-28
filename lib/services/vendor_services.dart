@@ -30,19 +30,6 @@ class VendorServices {
     }
   }
 
-  Future<GenericApiResponse> updateShop(UpdateShopInput input) async {
-    try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.patch(
-        ApiConstants.updateShopProfile,
-        data: data,
-      );
-      return GenericApiResponse.fromJson(response.data);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
   Future<GenericApiResponse> deleteShop(DeleteShopInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
@@ -58,11 +45,19 @@ class VendorServices {
       final response = await Server.get(ApiConstants.getMyShops);
       if (response.data is List) {
         return (response.data as List)
-            .map((e) => GetMyShopInventoryResponse.fromJson(e as Map<String, dynamic>))
+            .map(
+              (e) => GetMyShopInventoryResponse.fromJson(
+                e as Map<String, dynamic>,
+              ),
+            )
             .toList();
       } else if (response.data is Map && response.data['shops'] is List) {
         return (response.data['shops'] as List)
-            .map((e) => GetMyShopInventoryResponse.fromJson(e as Map<String, dynamic>))
+            .map(
+              (e) => GetMyShopInventoryResponse.fromJson(
+                e as Map<String, dynamic>,
+              ),
+            )
             .toList();
       }
       return [];

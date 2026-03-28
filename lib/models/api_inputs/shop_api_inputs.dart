@@ -47,7 +47,7 @@ class CreateShopInput {
 }
 
 class UpdateShopInput {
-  final String vendorId;
+  final String shopId;
   final String? shopName;
   final String? businessCategory;
   final String? registrationNumber;
@@ -63,7 +63,7 @@ class UpdateShopInput {
   final bool? isActive;
 
   UpdateShopInput({
-    required this.vendorId,
+    required this.shopId,
     this.shopName,
     this.businessCategory,
     this.registrationNumber,
@@ -80,7 +80,7 @@ class UpdateShopInput {
   });
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {'vendorId': vendorId};
+    final Map<String, dynamic> data = {'shopId': shopId};
     if (shopName != null) data['shopName'] = shopName;
     if (businessCategory != null) data['businessCategory'] = businessCategory;
     if (registrationNumber != null)

@@ -20,7 +20,7 @@ class DiscoverySettings extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -38,7 +38,7 @@ class DiscoverySettings extends StatelessWidget {
             color: theme.cardColor,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: theme.dividerColor.withOpacity(0.05),
+              color: theme.dividerColor.withValues(alpha: (0.05)),
             ),
             boxShadow: [
               BoxShadow(
@@ -73,7 +73,10 @@ class DiscoverySettings extends StatelessWidget {
                   );
                 },
               ),
-              Divider(height: 32, color: theme.dividerColor.withOpacity(0.1)),
+              Divider(
+                height: 32,
+                color: theme.dividerColor.withValues(alpha: (0.1)),
+              ),
               _buildSettingItem(
                 context,
                 icon: Icons.notifications_active_outlined,
@@ -82,8 +85,8 @@ class DiscoverySettings extends StatelessWidget {
                 trailing: Switch(
                   value: newOfferAlerts,
                   onChanged: onAlertsToggled,
-                  activeColor: theme.primaryColor,
-                  activeTrackColor: theme.primaryColor.withOpacity(0.3),
+                  activeThumbColor: theme.primaryColor,
+                  activeTrackColor: theme.primaryColor.withValues(alpha: (0.3)),
                 ),
               ),
             ],
@@ -102,7 +105,7 @@ class DiscoverySettings extends StatelessWidget {
     VoidCallback? onTap,
   }) {
     final theme = Theme.of(context);
-    
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
@@ -113,7 +116,7 @@ class DiscoverySettings extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: theme.primaryColor.withOpacity(0.1),
+                color: theme.primaryColor.withValues(alpha: (0.1)),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: theme.primaryColor, size: 22),
@@ -135,7 +138,9 @@ class DiscoverySettings extends StatelessWidget {
                   Text(
                     subtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+                      color: theme.textTheme.bodySmall?.color?.withValues(
+                        alpha: (0.6),
+                      ),
                       fontSize: 12,
                       fontFamily: 'Poppins',
                     ),

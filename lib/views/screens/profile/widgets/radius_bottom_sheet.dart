@@ -27,7 +27,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -43,7 +43,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
         Text(
           'Find vendors within ${_currentRadius.toInt()} miles',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: (0.6)),
             fontFamily: 'Poppins',
           ),
         ),
@@ -54,7 +54,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
           max: 50,
           divisions: 49,
           activeColor: theme.primaryColor,
-          inactiveColor: theme.primaryColor.withOpacity(0.1),
+          inactiveColor: theme.primaryColor.withValues(alpha: (0.1)),
           label: '${_currentRadius.toInt()} mi',
           onChanged: (value) {
             setState(() {

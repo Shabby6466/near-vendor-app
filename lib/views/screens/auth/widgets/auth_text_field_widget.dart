@@ -6,7 +6,7 @@ class AuthTextFieldWidget extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final bool isPassword;
-  
+
   const AuthTextFieldWidget({
     super.key,
     required this.label,
@@ -26,10 +26,12 @@ class AuthTextFieldWidget extends StatelessWidget {
       ),
       width: AppSpacing.screenWidth(context),
       decoration: BoxDecoration(
-        color: isDark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.9),
+        color: isDark
+            ? Colors.white.withValues(alpha: (0.05))
+            : Colors.white.withValues(alpha: (0.9)),
         borderRadius: BorderRadius.circular(24),
         border: Border.all(
-          color: Colors.white.withOpacity(0.1),
+          color: Colors.white.withValues(alpha: (0.1)),
           width: 1,
         ),
       ),

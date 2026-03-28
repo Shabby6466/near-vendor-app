@@ -31,108 +31,102 @@ class AppThemeData {
 
   // --- NORMAL THEMES (Standard Blue) ---
   static ThemeData get normalLightTheme => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        primaryColor: ColorName.primary,
-        fontFamily: _fontFamily,
-        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-        appBarTheme: _appBarTheme.copyWith(
-          foregroundColor: const Color(0xFF1D1D1F),
-        ),
-        cardColor: Colors.white,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: ColorName.primary,
-          brightness: Brightness.light,
-          primary: ColorName.primary,
-          secondary: ColorName.secondary,
-        ),
-        inputDecorationTheme: _inputDecorationTheme.copyWith(
-          fillColor: Colors.white,
-        ),
-      );
+    useMaterial3: true,
+    brightness: Brightness.light,
+    primaryColor: ColorName.primary,
+    fontFamily: _fontFamily,
+    scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+    appBarTheme: _appBarTheme.copyWith(
+      foregroundColor: const Color(0xFF1D1D1F),
+    ),
+    cardColor: Colors.white,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: ColorName.primary,
+      brightness: Brightness.light,
+      primary: ColorName.primary,
+      secondary: ColorName.secondary,
+    ),
+    inputDecorationTheme: _inputDecorationTheme.copyWith(
+      fillColor: Colors.white,
+    ),
+  );
 
   static ThemeData get normalDarkTheme => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        primaryColor: ColorName.primary,
-        fontFamily: _fontFamily,
-        scaffoldBackgroundColor: const Color(0xFF121212),
-        appBarTheme: _appBarTheme.copyWith(
-          foregroundColor: Colors.white,
-        ),
-        cardColor: const Color(0xFF1E1E1E),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: ColorName.primary,
-          brightness: Brightness.dark,
-          primary: ColorName.primary,
-          secondary: ColorName.secondary,
-          surface: const Color(0xFF1E1E1E),
-        ),
-        inputDecorationTheme: _inputDecorationTheme.copyWith(
-          fillColor: const Color(0xFF2C2C2E),
-        ),
-      );
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    primaryColor: ColorName.primary,
+    fontFamily: _fontFamily,
+    scaffoldBackgroundColor: const Color(0xFF121212),
+    appBarTheme: _appBarTheme.copyWith(foregroundColor: Colors.white),
+    cardColor: const Color(0xFF1E1E1E),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: ColorName.primary,
+      brightness: Brightness.dark,
+      primary: ColorName.primary,
+      secondary: ColorName.secondary,
+      surface: const Color(0xFF1E1E1E),
+    ),
+    inputDecorationTheme: _inputDecorationTheme.copyWith(
+      fillColor: const Color(0xFF2C2C2E),
+    ),
+  );
 
   // --- VENDOR THEMES (Yellow Signature) ---
   static ThemeData get vendorLightTheme => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        primaryColor: vendorAccent,
-        fontFamily: _fontFamily,
-        scaffoldBackgroundColor: const Color(0xFFFFFDF5), // Subtle yellow tint
-        appBarTheme: _appBarTheme.copyWith(
-          foregroundColor: const Color(0xFF1D1D1F),
-        ),
-        cardColor: Colors.white,
-        dividerColor: const Color(0xFFFFF8D6),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: vendorAccent,
-          brightness: Brightness.light,
-          primary: vendorAccent,
-          secondary: ColorName.primary,
-          surfaceTint: Colors.white,
-        ),
-        inputDecorationTheme: _inputDecorationTheme.copyWith(
-          fillColor: Colors.white,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: vendorAccent,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          ),
-        ),
-      );
+    useMaterial3: true,
+    brightness: Brightness.light,
+    primaryColor: vendorAccent,
+    fontFamily: _fontFamily,
+    scaffoldBackgroundColor: const Color(0xFFFFFDF5), // Subtle yellow tint
+    appBarTheme: _appBarTheme.copyWith(
+      foregroundColor: const Color(0xFF1D1D1F),
+    ),
+    cardColor: Colors.white,
+    dividerColor: const Color(0xFFFFF8D6),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: vendorAccent,
+      brightness: Brightness.light,
+      primary: vendorAccent,
+      secondary: ColorName.primary,
+      surfaceTint: Colors.white,
+    ),
+    inputDecorationTheme: _inputDecorationTheme.copyWith(
+      fillColor: Colors.white,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: vendorAccent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+    ),
+  );
 
   static ThemeData get vendorDarkTheme => ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        primaryColor: vendorAccent,
-        fontFamily: _fontFamily,
-        scaffoldBackgroundColor: obsidian,
-        appBarTheme: _appBarTheme.copyWith(
-          foregroundColor: Colors.white,
-        ),
-        cardColor: const Color(0xFF16161D),
-        dividerColor: Colors.white.withOpacity(0.05),
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: vendorAccent,
-          brightness: Brightness.dark,
-          primary: vendorAccent,
-          secondary: const Color(0xFFFFD54F),
-          surface: const Color(0xFF16161D),
-        ),
-        inputDecorationTheme: _inputDecorationTheme.copyWith(
-          fillColor: darkGrey,
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: vendorAccent,
-            foregroundColor: Colors.white,
-            elevation: 0,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          ),
-        ),
-      );
+    useMaterial3: true,
+    brightness: Brightness.dark,
+    primaryColor: vendorAccent,
+    fontFamily: _fontFamily,
+    scaffoldBackgroundColor: obsidian,
+    appBarTheme: _appBarTheme.copyWith(foregroundColor: Colors.white),
+    cardColor: const Color(0xFF16161D),
+    dividerColor: Colors.white.withValues(alpha: (0.05)),
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: vendorAccent,
+      brightness: Brightness.dark,
+      primary: vendorAccent,
+      secondary: const Color(0xFFFFD54F),
+      surface: const Color(0xFF16161D),
+    ),
+    inputDecorationTheme: _inputDecorationTheme.copyWith(fillColor: darkGrey),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: vendorAccent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      ),
+    ),
+  );
 }
