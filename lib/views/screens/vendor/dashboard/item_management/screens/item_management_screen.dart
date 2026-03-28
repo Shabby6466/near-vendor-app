@@ -6,7 +6,7 @@ import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_management_cubit.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/widgets/item_form_bottom_sheet.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/widgets/item_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 
@@ -85,15 +85,16 @@ class ItemManagementScreen extends StatelessWidget {
   }
 
   void _showItemForm(BuildContext context, {Item? item}) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: context.read<ItemManagementCubit>(),
-        child: ItemFormBottomSheet(shopId: shop.id, item: item),
-      ),
-    );
+    AppNavigator.push(context, ItemScreen(itemId: item?.id));
+    // showModalBottomSheet(
+    //   context: context,
+    //   isScrollControlled: true,
+    //   backgroundColor: Colors.transparent,
+    //   builder: (_) => BlocProvider.value(
+    //     value: context.read<ItemManagementCubit>(),
+    //     child: ItemFormBottomSheet(shopId: shop.id, item: item),
+    //   ),
+    // );
   }
 
   Widget _buildGlassHeader(BuildContext context) {
@@ -107,9 +108,9 @@ class ItemManagementScreen extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.fromLTRB(20, topPadding + 12, 20, 24),
           decoration: BoxDecoration(
-            color: theme.cardColor.withOpacity(isDark ? 0.7 : 0.85),
+            color: theme.cardColor.withValues(alpha: isDark ? 0.7 : 0.85),
             border: Border(
-              bottom: BorderSide(color: theme.dividerColor.withOpacity(0.1), width: 1),
+              bottom: BorderSide(color: theme.dividerColor.withValues(alpha: 0.1), width: 1),
             ),
           ),
           child: Row(
@@ -138,7 +139,7 @@ class ItemManagementScreen extends StatelessWidget {
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 13,
-                        color: theme.textTheme.bodySmall?.color?.withOpacity(0.6),
+                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -147,7 +148,7 @@ class ItemManagementScreen extends StatelessWidget {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: theme.primaryColor.withOpacity(0.08),
+                  color: theme.primaryColor.withValues(alpha: 0.08),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: IconButton(
@@ -173,7 +174,7 @@ class ItemManagementScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.05)),
+            border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.05)),
           ),
           child: const ShimmerEffect(borderRadius: 24),
         ),
@@ -217,12 +218,12 @@ class ItemManagementScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.2 : 0.04),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 15,
             offset: const Offset(0, 8),
           ),
         ],
-        border: Border.all(color: theme.dividerColor.withOpacity(0.1)),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
       child: InkWell(
         onTap: () => _showItemForm(context, item: item),
@@ -237,7 +238,7 @@ class ItemManagementScreen extends StatelessWidget {
                   width: 72,
                   height: 72,
                   decoration: BoxDecoration(
-                    color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey.shade50,
+                    color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(20),
                     image: item.imageUrl != null && item.imageUrl!.isNotEmpty
                         ? DecorationImage(
@@ -247,7 +248,7 @@ class ItemManagementScreen extends StatelessWidget {
                         : null,
                   ),
                   child: item.imageUrl == null || item.imageUrl!.isEmpty
-                      ? Icon(Icons.inventory_2_rounded, color: theme.iconTheme.color?.withOpacity(0.4), size: 28)
+                      ? Icon(Icons.inventory_2_rounded, color: theme.iconTheme.color?.withValues(alpha: 0.4), size: 28)
                       : null,
                 ),
               ),
@@ -274,7 +275,7 @@ class ItemManagementScreen extends StatelessWidget {
                           '${item.stockCount} ${item.unit} available',
                           style: TextStyle(
                             fontFamily: 'Poppins',
-                            color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                            color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                             fontWeight: FontWeight.w500,
                             fontSize: 11,
                           ),
@@ -366,7 +367,7 @@ class ItemManagementScreen extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: Colors.red.shade50.withOpacity(0.1), shape: BoxShape.circle),
+                decoration: BoxDecoration(color: Colors.red.shade50.withValues(alpha: 0.1), shape: BoxShape.circle),
                 child: Icon(Icons.delete_sweep_rounded, color: Colors.red.shade600, size: 32),
               ),
               const SizedBox(height: 24),
@@ -375,7 +376,7 @@ class ItemManagementScreen extends StatelessWidget {
               Text(
                 'Are you sure you want to remove "${item.name}" from your inventory?',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7)),
+                style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7)),
               ),
               const SizedBox(height: 32),
               Row(
@@ -383,7 +384,7 @@ class ItemManagementScreen extends StatelessWidget {
                   Expanded(
                     child: TextButton(
                       onPressed: () => AppNavigator.pop(context),
-                      child: Text('Cancel', style: TextStyle(color: theme.textTheme.bodySmall?.color?.withOpacity(0.5), fontWeight: FontWeight.w600)),
+                      child: Text('Cancel', style: TextStyle(color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5), fontWeight: FontWeight.w600)),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -423,7 +424,7 @@ class ItemManagementScreen extends StatelessWidget {
             Container(
               height: 140,
               width: 140,
-              decoration: BoxDecoration(color: theme.primaryColor.withOpacity(0.05), shape: BoxShape.circle),
+              decoration: BoxDecoration(color: theme.primaryColor.withValues(alpha: 0.05), shape: BoxShape.circle),
               child: Icon(Icons.inventory_2_rounded, size: 64, color: theme.primaryColor),
             ),
             const SizedBox(height: 40),
@@ -432,7 +433,7 @@ class ItemManagementScreen extends StatelessWidget {
             Text(
               'Your digital shelf is looking a bit bare. Start adding products to showcase your shop.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6), height: 1.5),
+              style: TextStyle(fontFamily: 'Poppins', fontSize: 14, color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6), height: 1.5),
             ),
             const SizedBox(height: 40),
             ElevatedButton.icon(
@@ -445,7 +446,7 @@ class ItemManagementScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 elevation: 6,
-                shadowColor: theme.primaryColor.withOpacity(0.3),
+                shadowColor: theme.primaryColor.withValues(alpha: 0.3),
               ),
             ),
           ],
@@ -469,7 +470,7 @@ class ItemManagementScreen extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Poppins', fontSize: 13, color: theme.textTheme.bodyMedium?.color?.withOpacity(0.6)),
+              style: TextStyle(fontFamily: 'Poppins', fontSize: 13, color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6)),
             ),
             const SizedBox(height: 32),
             TextButton.icon(

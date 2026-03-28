@@ -13,10 +13,11 @@ final class ItemManagementLoading extends ItemManagementState {}
 
 final class ItemManagementSuccess extends ItemManagementState {
   final List<Item> items;
-  const ItemManagementSuccess(this.items);
+  final PaginationMeta? meta;
+  const ItemManagementSuccess(this.items, {this.meta});
 
   @override
-  List<Object?> get props => [items];
+  List<Object?> get props => [items, meta];
 }
 
 final class ItemManagementFailure extends ItemManagementState {
@@ -42,3 +43,4 @@ final class ItemActionSuccess extends ItemManagementState {
   @override
   List<Object?> get props => [message];
 }
+

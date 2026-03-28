@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:nearvendorapp/models/api_inputs/item_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/api_responses/item_response.dart';
 import 'package:nearvendorapp/services/item_services.dart';
 import 'package:nearvendorapp/services/media_services.dart';
 
@@ -14,18 +15,33 @@ class ItemManagementCubit extends Cubit<ItemManagementState> {
 
   ItemManagementCubit({required this.shopId}) : super(ItemManagementInitial());
 
+
+  List<Item> _items = [];
+  PaginationMeta? _meta;
+
   Future<void> fetchItems() async {
-    emit(ItemManagementLoading());
+    if (_items.isEmpty) {
+      emit(ItemManagementLoading());
+    } else {
+      emit(ItemManagementSuccess(_items, meta: _meta));
+    }
+
     final response = await _itemServices.getItemsByShopId(shopId);
     if (response.success) {
-      emit(ItemManagementSuccess(response.items));
+      _items = response.items;
+      _meta = response.meta;
+      emit(ItemManagementSuccess(_items, meta: _meta));
     } else {
-      emit(ItemManagementFailure(response.message));
+      // If we already have items, we don't necessarily want to show an error screen
+      // but maybe just a snackbar? For now, if it's an initial load, show failure.
+      if (_items.isEmpty) {
+        emit(ItemManagementFailure(response.message));
+      }
     }
   }
 
   Future<void> createItem(CreateItemInput input, {File? imageFile}) async {
-    emit(ItemActionLoading());
+    emit(const ItemActionLoading());
     
     String? imageUrl = input.imageUrl;
     if (imageFile != null) {
@@ -51,6 +67,7 @@ class ItemManagementCubit extends Cubit<ItemManagementState> {
     final response = await _itemServices.createItem(finalInput);
     if (response.success) {
       emit(ItemActionSuccess(response.message));
+      _items = []; // Clear cache on success to force refresh
       fetchItems();
     } else {
       emit(ItemManagementFailure(response.message));
@@ -58,7 +75,7 @@ class ItemManagementCubit extends Cubit<ItemManagementState> {
   }
 
   Future<void> updateItem(UpdateItemInput input, {File? imageFile}) async {
-    emit(ItemActionLoading());
+    emit(const ItemActionLoading());
 
     String? imageUrl = input.imageUrl;
     if (imageFile != null) {
@@ -72,7 +89,6 @@ class ItemManagementCubit extends Cubit<ItemManagementState> {
 
     final finalInput = UpdateItemInput(
       id: input.id,
-      shopId: input.shopId,
       name: input.name,
       description: input.description,
       price: input.price,
@@ -85,6 +101,7 @@ class ItemManagementCubit extends Cubit<ItemManagementState> {
     final response = await _itemServices.updateItem(finalInput);
     if (response.success) {
       emit(ItemActionSuccess(response.message));
+      _items = []; // Clear cache on success
       fetchItems();
     } else {
       emit(ItemManagementFailure(response.message));
@@ -92,10 +109,11 @@ class ItemManagementCubit extends Cubit<ItemManagementState> {
   }
 
   Future<void> deleteItem(String id) async {
-    emit(ItemActionLoading());
+    emit(const ItemActionLoading());
     final response = await _itemServices.deleteItem(id);
     if (response.status == 200 || response.status == 201) {
       emit(ItemActionSuccess(response.message ?? 'Item deleted successfully'));
+      _items = []; // Clear cache on success
       fetchItems();
     } else {
       emit(ItemManagementFailure(response.message ?? 'Failed to delete item'));

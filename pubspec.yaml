@@ -59,6 +59,7 @@ dependencies:
   toasty_box: ^1.0.4
   upgrader: ^12.1.0
   url_launcher: ^6.3.2
+  shimmer_animation: ^2.2.2+1
 
 dev_dependencies:
   build_runner: ^2.4.6

@@ -1,77 +1,44 @@
-class ShopResponse {
+class GetMyShopInventoryResponse {
   final String id;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String shopName;
-  final String? shopImageUrl;
-  final String whatsappNumber;
-  final String shopAddress;
-  final bool isActive;
-  final double shopLongitude;
-  final double shopLatitude;
-  final Map<String, String> operatingHours;
-  final String vendorId;
-  final String businessCategory;
-  final String registrationNumber;
-  final String shopContactPhone;
-  final String storeEmail;
-  final String? coverImageUrl;
-  final String? storeLogoUrl;
+  final String name;
+  final String description;
+  final double price;
+  final String unit;
+  final int stockCount;
+  final String? imageUrl;
 
-  ShopResponse({
+  GetMyShopInventoryResponse({
     required this.id,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.shopName,
-    this.shopImageUrl,
-    required this.whatsappNumber,
-    required this.shopAddress,
-    required this.isActive,
-    required this.shopLongitude,
-    required this.shopLatitude,
-    required this.operatingHours,
-    required this.vendorId,
-    required this.businessCategory,
-    required this.registrationNumber,
-    required this.shopContactPhone,
-    required this.storeEmail,
-    this.coverImageUrl,
-    this.storeLogoUrl,
+    required this.name,
+    required this.description,
+    required this.price,
+    required this.unit,
+    required this.stockCount,
+    this.imageUrl,
   });
 
-  factory ShopResponse.fromJson(Map<String, dynamic> json) {
-    return ShopResponse(
-      id: json['id'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
-      shopName: json['shopName'],
-      shopImageUrl: json['shopImageUrl'],
-      whatsappNumber: json['whatsappNumber'],
-      shopAddress: json['shopAddress'],
-      isActive: json['isActive'],
-      shopLongitude: (json['shopLongitude'] as num).toDouble(),
-      shopLatitude: (json['shopLatitude'] as num).toDouble(),
-      operatingHours: Map<String, String>.from(json['operatingHours']),
-      vendorId: json['vendorId'],
-      businessCategory: json['businessCategory'],
-      registrationNumber: json['registrationNumber'],
-      shopContactPhone: json['shopContactPhone'],
-      storeEmail: json['storeEmail'],
-      coverImageUrl: json['coverImageUrl'],
-      storeLogoUrl: json['storeLogoUrl'],
+  factory GetMyShopInventoryResponse.fromJson(Map<String, dynamic> json) {
+    return GetMyShopInventoryResponse(
+      id: json['id'] as String? ?? '',
+      name: json['name'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      price: double.tryParse(json['price']?.toString() ?? '0.0') ?? 0.0,
+      unit: json['unit'] as String? ?? '',
+      stockCount: json['stockCount'] as int? ?? 0,
+      imageUrl: json['imageUrl'] as String?,
     );
   }
 }
 
-class ShopListResponse {
-  final List<ShopResponse> shops;
+class GetMyShopListInventoryResponse {
+  final List<GetMyShopInventoryResponse> shops;
   final int statusCode;
 
-  ShopListResponse({required this.shops, required this.statusCode});
+  GetMyShopListInventoryResponse({required this.shops, required this.statusCode});
 
-  factory ShopListResponse.fromJson(List<dynamic> json, int statusCode) {
-    return ShopListResponse(
-      shops: json.map((e) => ShopResponse.fromJson(e as Map<String, dynamic>)).toList(),
+  factory GetMyShopListInventoryResponse.fromJson(List<dynamic> json, int statusCode) {
+    return GetMyShopListInventoryResponse(
+      shops: json.map((e) => GetMyShopInventoryResponse.fromJson(e as Map<String, dynamic>)).toList(),
       statusCode: statusCode,
     );
   }

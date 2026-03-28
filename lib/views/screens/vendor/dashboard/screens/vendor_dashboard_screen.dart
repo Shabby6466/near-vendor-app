@@ -505,19 +505,6 @@ class VendorDashboardScreen extends StatelessWidget {
                 color: theme.textTheme.titleLarge?.color,
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              message,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 14,
-                color: theme.textTheme.bodyMedium?.color?.withValues(
-                  alpha: 0.6,
-                ),
-              ),
-            ),
-            const SizedBox(height: 32),
             TextButton.icon(
               onPressed: () => context.read<VendorShopCubit>().fetchShops(),
               icon: const Icon(Icons.refresh_rounded),

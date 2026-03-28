@@ -3,7 +3,6 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/shops.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/home/view/all_reviews_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ShopDetailsScreen extends StatelessWidget {
@@ -25,8 +24,6 @@ class ShopDetailsScreen extends StatelessWidget {
                 _buildHeaderImage(context),
                 _buildSellerCard(context),
                 SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-                _buildShopRatings(context),
-                SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                 _buildShopAds(context),
               ],
             ),
@@ -34,7 +31,8 @@ class ShopDetailsScreen extends StatelessWidget {
           Positioned(
             bottom: 24,
             right: 16,
-            left: 16, // Alternatively make it full width or right-aligned. The design shows it at bottom right, but it's wide.
+            left:
+                16, // Alternatively make it full width or right-aligned. The design shows it at bottom right, but it's wide.
             child: Align(
               alignment: Alignment.bottomRight,
               child: ElevatedButton.icon(
@@ -50,7 +48,10 @@ class ShopDetailsScreen extends StatelessWidget {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF004AAD), // Dark Blue
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
@@ -72,13 +73,18 @@ class ShopDetailsScreen extends StatelessWidget {
           child: Image.network(
             shop.image,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) =>
-                Container(color: Colors.grey.shade300, child: const Icon(Icons.store, size: 50)),
+            errorBuilder: (context, error, stackTrace) => Container(
+              color: Colors.grey.shade300,
+              child: const Icon(Icons.store, size: 50),
+            ),
           ),
         ),
         SafeArea(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 8.0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -90,7 +96,11 @@ class ShopDetailsScreen extends StatelessWidget {
                       color: Colors.white,
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(Icons.arrow_back_ios_new, color: ColorName.primary, size: 20),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: ColorName.primary,
+                      size: 20,
+                    ),
                   ),
                 ),
                 Row(
@@ -101,7 +111,11 @@ class ShopDetailsScreen extends StatelessWidget {
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.star, color: Colors.amber, size: 24),
+                      child: const Icon(
+                        Icons.star,
+                        color: Colors.amber,
+                        size: 24,
+                      ),
                     ),
                     const SizedBox(width: 8),
                     Container(
@@ -110,7 +124,11 @@ class ShopDetailsScreen extends StatelessWidget {
                         color: Colors.white,
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.ios_share, color: ColorName.primary, size: 24),
+                      child: const Icon(
+                        Icons.ios_share,
+                        color: ColorName.primary,
+                        size: 24,
+                      ),
                     ),
                   ],
                 ),
@@ -124,7 +142,9 @@ class ShopDetailsScreen extends StatelessWidget {
 
   Widget _buildSellerCard(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
       child: Stack(
         clipBehavior: Clip.none,
         children: [
@@ -164,7 +184,11 @@ class ShopDetailsScreen extends StatelessWidget {
                     color: Color(0xFF004AAD),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.message, color: Colors.white, size: 20),
+                  child: const Icon(
+                    Icons.message,
+                    color: Colors.white,
+                    size: 20,
+                  ),
                 ),
               ),
               const SizedBox(width: 8),
@@ -193,7 +217,9 @@ class ShopDetailsScreen extends StatelessWidget {
                   ),
                   child: const CircleAvatar(
                     radius: 45,
-                    backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=a042581f4e29026704d'),
+                    backgroundImage: NetworkImage(
+                      'https://i.pravatar.cc/150?u=a042581f4e29026704d',
+                    ),
                   ),
                 ),
                 Positioned(
@@ -217,283 +243,11 @@ class ShopDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildShopRatings(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Shop Ratings',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
-          Stack(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AllReviewsScreen()));
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade50,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-            child: Row(
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      height: 30,
-                      child: Stack(
-                        children: [
-                          Positioned(left: 0, child: _buildMiniAvatar('1')),
-                          Positioned(left: 15, child: _buildMiniAvatar('2')),
-                          Positioned(left: 30, child: _buildMiniAvatar('3')),
-                          Positioned(left: 45, child: _buildMiniAvatar('4')),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      '123 Reviews',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Row(
-                      children: List.generate(5, (index) {
-                        return Icon(
-                          index < 4 ? Icons.star : Icons.star_border,
-                          size: 14,
-                          color: Colors.amber,
-                        );
-                      }),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      '"Best Products of my life everything went smoothly. Shop owner was very professional and honest"',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontStyle: FontStyle.italic,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          ),
-              Positioned(
-                top: 8,
-                right: 8,
-                child: GestureDetector(
-                  onTap: () {
-                    _showReviewBottomSheet(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey.shade300),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 4,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(Icons.edit, size: 16, color: ColorName.primary),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildMiniAvatar(String id) {
-    return CircleAvatar(
-      radius: 12,
-      backgroundColor: Colors.white,
-      child: CircleAvatar(
-        radius: 10,
-        backgroundImage: NetworkImage('https://i.pravatar.cc/100?u=$id'),
-      ),
-    );
-  }
-
-  void _showReviewBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            int selectedRating = 4;
-            List<String> selectedChips = [];
-            final chips = ["Clean Shop", "Safe environment", "Polite", "Fast Response", "Good Products"];
-
-            return Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-              ),
-              padding: EdgeInsets.only(
-                left: 24,
-                right: 24,
-                top: 24,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-              ),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: GestureDetector(
-                        onTap: () => Navigator.pop(context),
-                        child: CircleAvatar(
-                          radius: 16,
-                          backgroundColor: Colors.grey.shade300,
-                          child: const Icon(Icons.close, color: Colors.white, size: 20),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Charsi tikka owned by Faraz',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(5, (index) {
-                        return GestureDetector(
-                          onTap: () => setState(() => selectedRating = index + 1),
-                          child: Icon(
-                            Icons.star,
-                            size: 48,
-                            color: index < selectedRating ? Colors.amber : Colors.grey.shade300,
-                          ),
-                        );
-                      }),
-                    ),
-                    const SizedBox(height: 24),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      alignment: WrapAlignment.center,
-                      children: chips.map((chip) {
-                        final isSelected = selectedChips.contains(chip);
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              if (isSelected) {
-                                selectedChips.remove(chip);
-                              } else {
-                                selectedChips.add(chip);
-                              }
-                            });
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isSelected ? Colors.black : Colors.grey.shade300,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              chip,
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.black87,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
-                    const SizedBox(height: 24),
-                    TextField(
-                      maxLines: 4,
-                      style: const TextStyle(color: Colors.black),
-                      decoration: InputDecoration(
-                        hintText: 'Any Comments',
-                        filled: true,
-                        fillColor: Colors.white,
-                        contentPadding: const EdgeInsets.all(12),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: const Color(0xFF004AAD), width: 1.5),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    SizedBox(
-                      width: double.infinity,
-                      height: 50,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const AllReviewsScreen()));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF004AAD),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(25),
-                          ),
-                        ),
-                        child: const Text('Submit', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Please keep in mind that shop fees, including credit and debit charges, are deducted from each month. By continuing, you agree to the fonley terms and privacy policy.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 10, color: Colors.grey.shade600),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   Widget _buildShopAds(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -558,7 +312,9 @@ class ShopAdCard extends StatelessWidget {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16),
+              ),
               child: Image.network(
                 shop.image,
                 fit: BoxFit.cover,
@@ -588,10 +344,7 @@ class ShopAdCard extends StatelessWidget {
                 const SizedBox(height: 2),
                 Text(
                   'Habib Product Center',
-                  style: TextStyle(
-                    color: Colors.grey.shade700,
-                    fontSize: 10,
-                  ),
+                  style: TextStyle(color: Colors.grey.shade700, fontSize: 10),
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -608,7 +361,11 @@ class ShopAdCard extends StatelessWidget {
                     ),
                     Row(
                       children: List.generate(5, (index) {
-                        return const Icon(Icons.star, size: 10, color: Colors.amber);
+                        return const Icon(
+                          Icons.star,
+                          size: 10,
+                          color: Colors.amber,
+                        );
                       }),
                     ),
                   ],

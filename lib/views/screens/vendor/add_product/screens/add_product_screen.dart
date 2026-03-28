@@ -65,7 +65,6 @@ class AddProductScreen extends StatelessWidget {
             SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
             AppElevatedButton(
               onPressed: () {
-                // Handle product addition
                 Navigator.pop(context);
               },
               text: 'Add to Catalog',

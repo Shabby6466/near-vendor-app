@@ -31,7 +31,11 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
     HapticFeedback.selectionClick();
   }
 
-  void _handleInteraction(Offset localPosition, double totalWidth, {required bool isDragging}) {
+  void _handleInteraction(
+    Offset localPosition,
+    double totalWidth, {
+    required bool isDragging,
+  }) {
     final itemWidth = totalWidth / 4;
     final newDragX = localPosition.dx.clamp(8.0, totalWidth - 8.0);
     final currentVelocity = isDragging ? (newDragX - _lastDragX).abs() : 0.0;
@@ -64,10 +68,17 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
 
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
-        final bool isVendor = state.isVendor && state.vendorStatus == 'APPROVED';
+        final bool isVendor =
+            state.isVendor && state.vendorStatus == 'APPROVED';
         return SafeArea(
+          bottom: false,
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+            padding: const EdgeInsets.only(
+              left: 15,
+              right: 15,
+              top: 0,
+              bottom: 20,
+            ),
             child: AnimatedScale(
               scale: _isDragging ? 1.01 : 1.0,
               duration: const Duration(milliseconds: 600),
@@ -125,18 +136,18 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                                   AnimatedPositioned(
                                     duration: _isDragging
                                         ? Duration.zero
-                                        : const Duration(milliseconds: 600),
+                                        : const Duration(milliseconds: 500),
                                     curve: _isDragging
                                         ? Curves.linear
                                         : Curves.elasticOut,
                                     left: currentLeft,
-                                    top: 5,
-                                    bottom: 5,
+                                    top: 4,
+                                    bottom: 4,
                                     width: dropletWidth,
                                     child: Container(
                                       decoration: BoxDecoration(
                                         gradient: RadialGradient(
-                                          center: const Alignment(-0.4, -0.4),
+                                          center: const Alignment(0, 0),
                                           radius: 1.0,
                                           colors: [
                                             (isDark
@@ -149,27 +160,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                                                 .withValues(alpha: .05),
                                           ],
                                         ),
-                                        borderRadius: BorderRadius.circular(24),
-                                        border: Border.all(
-                                          color:
-                                              (isDark
-                                                      ? Colors.white
-                                                      : theme.primaryColor)
-                                                  .withValues(alpha: .2),
-                                          width: 0.5,
-                                        ),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Colors.black.withValues(alpha:
-                                              0.1,
-                                            ),
-                                            blurRadius: 10,
-                                            offset: const Offset(0, 4),
-                                          ),
-                                        ],
-                                      ),
-                                      child: const Stack(
-                                        children: [_DropletShine()],
+                                        borderRadius: BorderRadius.circular(28),
                                       ),
                                     ),
                                   ),
@@ -205,7 +196,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                     ),
                   ),
                   if (isVendor) ...[
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 8),
                     _VendorConsoleButton(
                       isActive: widget.currentIndex == 4,
                       onTap: () => _onItemTapped(4),
@@ -253,9 +244,9 @@ class _NavButton extends StatelessWidget {
             label,
             style: TextStyle(
               color: color,
-              fontSize: 11,
+              fontSize: 8,
               fontFamily: 'Poppins',
-              fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
+              fontWeight: isActive ? FontWeight.w400 : FontWeight.w200,
             ),
           ),
         ],
@@ -315,10 +306,7 @@ class _VendorConsoleButton extends StatelessWidget {
         child: Center(
           child: Container(
             padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(color: activeColor.withValues(alpha: 0.2), width: 1),
-            ),
+            decoration: BoxDecoration(shape: BoxShape.circle),
             child: Icon(
               isActive ? Icons.store : Icons.store_outlined,
               color: isActive
@@ -371,8 +359,8 @@ class _GlassContainer extends StatelessWidget {
               border:
                   border ??
                   Border.all(
-                    color: (isDark ? Colors.white : Colors.black).withValues(alpha:
-                      0.05,
+                    color: (isDark ? Colors.white : Colors.black).withValues(
+                      alpha: 0.05,
                     ),
                     width: 0.5,
                   ),
@@ -388,40 +376,6 @@ class _GlassContainer extends StatelessWidget {
             ),
             child: child,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DropletShine extends StatelessWidget {
-  const _DropletShine();
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned(
-      top: 6,
-      left: 10,
-      child: Container(
-        width: 12,
-        height: 6,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(3),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white.withValues(alpha: 0.4),
-              Colors.white.withValues(alpha: 0.1),
-            ],
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.white.withValues(alpha: 0.2),
-              blurRadius: 4,
-              spreadRadius: 0.5,
-            ),
-          ],
         ),
       ),
     );

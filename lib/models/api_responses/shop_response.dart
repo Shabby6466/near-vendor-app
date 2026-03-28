@@ -19,7 +19,11 @@ class ShopResponse {
       success: json['success'] as bool? ?? (statusCode == 200 || statusCode == 201),
       statusCode: statusCode,
       message: json['message'] as String? ?? '',
-      shop: json['shop'] != null ? Shop.fromJson(json['shop'] as Map<String, dynamic>) : null,
+      shop: (json['data'] != null)
+          ? Shop.fromJson(json['data'] as Map<String, dynamic>)
+          : (json['shop'] != null)
+              ? Shop.fromJson(json['shop'] as Map<String, dynamic>)
+              : null,
     );
   }
 }

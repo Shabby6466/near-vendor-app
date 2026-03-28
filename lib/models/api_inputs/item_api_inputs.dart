@@ -33,7 +33,6 @@ class CreateItemInput {
 
 class UpdateItemInput {
   final String id;
-  final String shopId;
   final String? name;
   final String? description;
   final double? price;
@@ -44,7 +43,6 @@ class UpdateItemInput {
 
   UpdateItemInput({
     required this.id,
-    required this.shopId,
     this.name,
     this.description,
     this.price,
@@ -55,9 +53,7 @@ class UpdateItemInput {
   });
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = {
-      'shopId': shopId,
-    };
+    final Map<String, dynamic> data = {};
     if (name != null) data['name'] = name;
     if (description != null) data['description'] = description;
     if (price != null) data['price'] = price;

@@ -11,7 +11,10 @@ class ItemServices {
   Future<ItemResponse> createItem(CreateItemInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-      final response = await Server.post(ApiConstants.createItem, data: data);
+      final response = await Server.post(
+        ApiConstants.createItem,
+        data: data,
+      );
       return ItemResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
@@ -63,7 +66,9 @@ class ItemServices {
 
   Future<GenericApiResponse> deleteItem(String id) async {
     try {
-      final response = await Server.delete('${ApiConstants.deleteItem}$id');
+      final response = await Server.delete(
+        '${ApiConstants.deleteItem}$id',
+      );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
@@ -103,6 +108,32 @@ class ItemServices {
         statusCode: 500,
         message: e.toString(),
         items: [],
+      );
+    }
+  }
+
+  Future<ItemResponse> getItemById(String id) async {
+    try {
+      final response = await Server.get(
+        '${ApiConstants.getItemById}/$id',
+      );
+      return ItemResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ItemResponse.fromJson(e.response?.data);
+        } else {
+          return ItemResponse(
+            success: false,
+            statusCode: e.response?.statusCode ?? 500,
+            message: e.message ?? 'Failed to fetch item',
+          );
+        }
+      }
+      return ItemResponse(
+        success: false,
+        statusCode: 500,
+        message: e.toString(),
       );
     }
   }

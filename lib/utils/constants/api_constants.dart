@@ -28,5 +28,6 @@ class ApiConstants {
   static const String updateItem = 'api/item/update/';
   static const String deleteItem = 'api/item/delete/';
   static const String getItemsByShop = 'api/item/get-all-by-shop';
+  static const String getItemById = 'api/item/';
   static const String getCategoriesNames = 'api/categories/get-all-names';
 }
