@@ -16,6 +16,10 @@ class Shop extends Equatable {
   final String? coverImageUrl;
   final String? storeLogoUrl;
   final bool isActive;
+  final int? completionPercentage;
+  final bool? isVerifiedBadge;
+  final bool? isRecentlyActive;
+  final int? itemCount;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -35,6 +39,10 @@ class Shop extends Equatable {
     this.coverImageUrl,
     this.storeLogoUrl,
     this.isActive = true,
+    this.completionPercentage,
+    this.isVerifiedBadge,
+    this.isRecentlyActive,
+    this.itemCount,
     this.createdAt,
     this.updatedAt,
   });
@@ -56,6 +64,10 @@ class Shop extends Equatable {
       coverImageUrl: json['coverImageUrl'] as String? ?? json['shopImageUrl'] as String?,
       storeLogoUrl: json['storeLogoUrl'] as String? ?? json['shopLogoUrl'] as String?,
       isActive: json['isActive'] as bool? ?? true,
+      completionPercentage: json['completionPercentage'] as int?,
+      isVerifiedBadge: json['isVerifiedBadge'] as bool?,
+      isRecentlyActive: json['isRecentlyActive'] as bool?,
+      itemCount: json['itemCount'] as int?,
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
     );
@@ -78,6 +90,10 @@ class Shop extends Equatable {
       'shopImageUrl': coverImageUrl,
       'shopLogoUrl': storeLogoUrl,
       'isActive': isActive,
+      'completionPercentage': completionPercentage,
+      'isVerifiedBadge': isVerifiedBadge,
+      'isRecentlyActive': isRecentlyActive,
+      'itemCount': itemCount,
     };
   }
 
@@ -98,5 +114,9 @@ class Shop extends Equatable {
         coverImageUrl,
         storeLogoUrl,
         isActive,
+        completionPercentage,
+        isVerifiedBadge,
+        isRecentlyActive,
+        itemCount,
       ];
 }

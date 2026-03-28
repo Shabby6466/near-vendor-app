@@ -22,6 +22,7 @@ class ApiConstants {
   static const String updateShopProfile = 'api/shops/update';
   static const String deleteShop = 'api/shops/delete';
   static const String getMyShops = 'api/shops/me/shops';
+  static const String getNearbyShops = 'api/explore/shops/nearby';
 
   ///ITEMS
   static const String createItem = 'api/item/create';

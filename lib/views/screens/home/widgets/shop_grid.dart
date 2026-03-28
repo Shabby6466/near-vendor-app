@@ -5,7 +5,7 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/view/product_details_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
 
 class ShopGrid extends StatelessWidget {
   const ShopGrid({super.key});
@@ -33,6 +33,8 @@ class ShopGrid extends StatelessWidget {
 
         if (state is HomeScreenSuccess) {
           final shops = state.shops;
+          final message = state.message;
+
           if (shops.isEmpty) {
             return const SliverFillRemaining(
               child: Center(
@@ -44,38 +46,84 @@ class ShopGrid extends StatelessWidget {
             );
           }
 
-          return SliverPadding(
-            padding: EdgeInsets.only(
-              left: AppSpacing.mediumHorizontalSpacing(context),
-              right: AppSpacing.mediumHorizontalSpacing(context),
-              top: 16,
-              bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
-            ),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.8,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final shop = shops[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => ProductDetailsScreen(shop: shop),
+          return SliverMainAxisGroup(
+            slivers: [
+              if (message != null)
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: AppSpacing.mediumHorizontalSpacing(context),
+                      vertical: 8,
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.amber.shade50,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.amber.shade200,
                         ),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline_rounded,
+                            color: Colors.amber.shade900,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              message,
+                              style: TextStyle(
+                                color: Colors.amber.shade900,
+                                fontSize: 13,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              SliverPadding(
+                padding: EdgeInsets.only(
+                  left: AppSpacing.mediumHorizontalSpacing(context),
+                  right: AppSpacing.mediumHorizontalSpacing(context),
+                  top: 16,
+                  bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
+                ),
+                sliver: SliverGrid(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    childAspectRatio: 0.8,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final shop = shops[index];
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShopDetailsScreen(shop: shop),
+                            ),
+                          );
+                        },
+                        child: ShopCard(shop: shop),
                       );
                     },
-                    child: ShopCard(shop: shop),
-                  );
-                },
-                childCount: shops.length,
+                    childCount: shops.length,
+                  ),
+                ),
               ),
-            ),
+            ],
           );
         }
 
@@ -128,15 +176,29 @@ class ShopCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  shop.name,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        shop.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                    if (shop.isVerifiedBadge ?? false) ...[
+                      const SizedBox(width: 4),
+                      const Icon(
+                        Icons.verified_rounded,
+                        color: Color(0xFF2196F3),
+                        size: 16,
+                      ),
+                    ],
+                  ],
                 ),
                 const SizedBox(height: 4),
                 Row(
@@ -156,6 +218,46 @@ class ShopCard extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (shop.itemCount != null) ...[
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.inventory_2_outlined,
+                        size: 12,
+                        color: Colors.grey.shade600,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${shop.itemCount} Items',
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 11,
+                        ),
+                      ),
+                      if (shop.isRecentlyActive ?? false) ...[
+                        const SizedBox(width: 8),
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: const BoxDecoration(
+                            color: Colors.green,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Active',
+                          style: TextStyle(
+                            color: Colors.green.shade700,
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
               ],
             ),
           ),

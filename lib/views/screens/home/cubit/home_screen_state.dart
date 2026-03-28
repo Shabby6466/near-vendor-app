@@ -14,11 +14,16 @@ final class HomeScreenLoading extends HomeScreenState {}
 final class HomeScreenSuccess extends HomeScreenState {
   final List<ShopModel> shops;
   final String category;
+  final String? message;
 
-  const HomeScreenSuccess({required this.shops, required this.category});
+  const HomeScreenSuccess({
+    required this.shops,
+    required this.category,
+    this.message,
+  });
 
   @override
-  List<Object?> get props => [shops, category];
+  List<Object?> get props => [shops, category, message];
 }
 
 final class HomeScreenFailure extends HomeScreenState {

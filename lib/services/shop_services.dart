@@ -129,4 +129,45 @@ class ShopServices {
       );
     }
   }
+
+  Future<ShopListResponse> getNearbyShops({
+    required double lat,
+    required double lon,
+    double radius = 10000,
+    int page = 1,
+    int limit = 10,
+  }) async {
+    try {
+      final response = await Server.get(
+        ApiConstants.getNearbyShops,
+        queryParameters: {
+          'lat': lat,
+          'lon': lon,
+          'radius': radius,
+          'page': page,
+          'limit': limit,
+        },
+      );
+      return ShopListResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ShopListResponse.fromJson(e.response?.data);
+        } else {
+          return ShopListResponse(
+            success: false,
+            statusCode: e.response?.statusCode ?? 500,
+            message: e.message ?? 'Failed to fetch nearby shops',
+            shops: [],
+          );
+        }
+      }
+      return ShopListResponse(
+        success: false,
+        statusCode: 500,
+        message: e.toString(),
+        shops: [],
+      );
+    }
+  }
 }
