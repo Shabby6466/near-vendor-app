@@ -11,4 +11,6 @@ class HiveKeys {
   static const String currentUserRefreshTokenKey = 'current_user_refresh_token';
   static const String hasOnboardedKey = 'has_onboarded';
   static const String vendorStatusKey = 'vendor_status';
+  static const String discoveryRadiusKey = 'discovery_radius';
+  static const String recentSearchesKey = 'recent_searches';
 }

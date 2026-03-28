@@ -21,12 +21,13 @@ class ProfileCubit extends Cubit<ProfileState> {
   void _loadProfile() {
     emit(ProfileLoading());
     final user = CurrentUserStorage.getCurrentUser();
+    final radius = CurrentUserStorage.getDiscoveryRadius();
     
     emit(ProfileSuccess(
       userName: user?.fullName ?? 'Guest User',
       userLocation: user?.email ?? 'No email provided',
       photoUrl: user?.photoUrl,
-      discoveryRadius: 5.0,
+      discoveryRadius: radius,
       newOfferAlerts: true,
     ));
   }
@@ -58,9 +59,10 @@ class ProfileCubit extends Cubit<ProfileState> {
     }
   }
 
-  void updateRadius(double radius) {
+  Future<void> updateRadius(double radius) async {
     final currentState = state;
     if (currentState is ProfileSuccess) {
+      await CurrentUserStorage.setDiscoveryRadius(radius);
       emit(currentState.copyWith(discoveryRadius: radius));
     }
   }

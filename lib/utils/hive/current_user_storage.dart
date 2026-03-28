@@ -104,4 +104,19 @@ class CurrentUserStorage {
       defaultValue: false,
     ) as bool;
   }
+
+  static Future<void> setDiscoveryRadius(double radius) async {
+    try {
+      await _userBox.put(HiveKeys.discoveryRadiusKey, radius);
+    } catch (e) {
+      debugPrint('Error storing discovery radius: $e');
+    }
+  }
+
+  static double getDiscoveryRadius() {
+    return _userBox.get(
+      HiveKeys.discoveryRadiusKey,
+      defaultValue: 10.0,
+    ) as double;
+  }
 }

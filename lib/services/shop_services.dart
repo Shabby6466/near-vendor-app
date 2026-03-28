@@ -105,4 +105,28 @@ class ShopServices {
       );
     }
   }
+
+  Future<ShopResponse> getShopById(String id) async {
+    try {
+      final response = await Server.get('${ApiConstants.getShopById}$id');
+      return ShopResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ShopResponse.fromJson(e.response?.data);
+        } else {
+          return ShopResponse(
+            success: false,
+            statusCode: e.response?.statusCode ?? 500,
+            message: e.message ?? 'Failed to fetch shop details',
+          );
+        }
+      }
+      return ShopResponse(
+        success: false,
+        statusCode: 500,
+        message: e.toString(),
+      );
+    }
+  }
 }

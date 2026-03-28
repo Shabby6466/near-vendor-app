@@ -41,7 +41,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
         ),
         SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
         Text(
-          'Find vendors within ${_currentRadius.toInt()} miles',
+          'Find vendors within ${_currentRadius.toInt()} kilometers',
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.textTheme.bodyMedium?.color?.withValues(alpha: (0.6)),
             fontFamily: 'Poppins',
@@ -51,11 +51,11 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
         Slider(
           value: _currentRadius,
           min: 1,
-          max: 50,
-          divisions: 49,
+          max: 100,
+          divisions: 99,
           activeColor: theme.primaryColor,
           inactiveColor: theme.primaryColor.withValues(alpha: (0.1)),
-          label: '${_currentRadius.toInt()} mi',
+          label: '${_currentRadius.toInt()} km',
           onChanged: (value) {
             setState(() {
               _currentRadius = value;

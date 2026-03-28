@@ -43,23 +43,36 @@ class ShopListResponse {
 
   factory ShopListResponse.fromJson(dynamic json) {
     if (json is List) {
-      final List<dynamic> shopsData = json.isNotEmpty ? json[0] as List<dynamic> : [];
       return ShopListResponse(
         success: true,
         statusCode: 200,
         message: 'Success',
-        shops: shopsData
+        shops: json
             .map((e) => Shop.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
     }
 
     if (json is Map<String, dynamic>) {
+      final data = json['data'];
+      List<dynamic>? shopsData;
+
+      if (data is Map<String, dynamic>) {
+        shopsData = (data['items'] as List<dynamic>?) ??
+            (data['shops'] as List<dynamic>?);
+      } else if (data is List<dynamic>) {
+        shopsData = data;
+      }
+
+      // Fallback to root level if no data or data is not a list
+      shopsData ??= (json['items'] as List<dynamic>?) ??
+          (json['shops'] as List<dynamic>?);
+
       return ShopListResponse(
-        success: json['success'] as bool? ?? false,
+        success: json['success'] as bool? ?? (shopsData != null),
         statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? '',
-        shops: (json['shops'] as List<dynamic>?)
+        shops: shopsData
                 ?.map((e) => Shop.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             [],

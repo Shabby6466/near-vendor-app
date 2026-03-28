@@ -7,8 +7,9 @@ import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
 class ItemScreen extends StatefulWidget {
   final String? itemId;
+  final bool showEditButton;
 
-  const ItemScreen({super.key, this.itemId});
+  const ItemScreen({super.key, this.itemId, this.showEditButton = true});
 
   @override
   State<ItemScreen> createState() => _ItemScreenState();
@@ -66,7 +67,7 @@ class _ItemScreenState extends State<ItemScreen> {
                   tag: 'item_img_${item.id}',
                   child:
                       item.imageUrl != null &&
-                          item.imageUrl!.isNotEmpty
+                           item.imageUrl!.isNotEmpty
                       ? CachedNetworkImage(
                           imageUrl: item.imageUrl!,
                           fit: BoxFit.cover,
@@ -87,7 +88,7 @@ class _ItemScreenState extends State<ItemScreen> {
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(24, 32, 24, 120),
+              padding: EdgeInsets.fromLTRB(24, 32, 24, widget.showEditButton ? 120 : 32),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   Row(
@@ -193,56 +194,57 @@ class _ItemScreenState extends State<ItemScreen> {
         ),
 
         // Bottom Action Bar
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: Container(
-            padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  theme.scaffoldBackgroundColor.withValues(alpha: 0),
-                  theme.scaffoldBackgroundColor,
-                ],
-              ),
-            ),
-            child: ElevatedButton(
-              onPressed: () {
-                // TODO: Open Edit Form
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.primaryColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                elevation: 8,
-                shadowColor: theme.primaryColor.withValues(
-                  alpha: 0.3,
+        if (widget.showEditButton)
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    theme.scaffoldBackgroundColor.withValues(alpha: 0),
+                    theme.scaffoldBackgroundColor,
+                  ],
                 ),
               ),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.edit_rounded, size: 20),
-                  SizedBox(width: 12),
-                  Text(
-                    'Edit Product Details',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+              child: ElevatedButton(
+                onPressed: () {
+                  // TODO: Open Edit Form
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.primaryColor,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                ],
+                  elevation: 8,
+                  shadowColor: theme.primaryColor.withValues(
+                    alpha: 0.3,
+                  ),
+                ),
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.edit_rounded, size: 20),
+                    SizedBox(width: 12),
+                    Text(
+                      'Edit Product Details',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
       ],
     );
   }

@@ -54,9 +54,9 @@ class DiscoverySettings extends StatelessWidget {
                 context,
                 icon: Icons.location_searching_rounded,
                 title: 'Discovery Radius',
-                subtitle: 'Find vendors within ${radius.toInt()} miles',
+                subtitle: 'Find vendors within ${radius.toInt()} kilometers',
                 trailing: Text(
-                  '${radius.toInt()} mi',
+                  '${radius.toInt()} km',
                   style: TextStyle(
                     color: theme.primaryColor,
                     fontWeight: FontWeight.bold,
