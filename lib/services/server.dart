@@ -39,6 +39,7 @@ class Server {
   static Future<Response> post(
     String url, {
     Map<String, String>? headers,
+    Map<String, dynamic>? queryParameters,
     dynamic data,
     CancelToken? cancelToken,
   }) {
@@ -47,6 +48,7 @@ class Server {
       apiType: ApiType.post,
       data: data,
       headers: headers,
+      queryParameters: queryParameters,
       cancelToken: cancelToken,
     );
   }
@@ -158,6 +160,7 @@ class Server {
             response = await dio.post(
               url,
               data: data,
+              queryParameters: queryParameters,
               cancelToken: cancelToken,
             );
           case ApiType.put:

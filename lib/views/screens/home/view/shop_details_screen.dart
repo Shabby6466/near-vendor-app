@@ -7,6 +7,7 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/shop_details_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
@@ -252,7 +253,7 @@ class ShopDetailsScreen extends StatelessWidget {
               ),
               child: CircleAvatar(
                 radius: 45,
-                backgroundImage: NetworkImage(
+                backgroundImage: CachedNetworkImageProvider(
                   fullShop.storeLogoUrl ??
                       'https://i.pravatar.cc/150?u=a042581f4e29026704d',
                 ),
@@ -464,13 +465,11 @@ class ItemCard extends StatelessWidget {
       },
       child: GestureDetector(
         onTap: () {
-          Navigator.push(
+          AppNavigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => ExploreItemDetailCubit(),
-                child: ExploreItemDetailScreen(itemId: item.id),
-              ),
+            BlocProvider(
+              create: (context) => ExploreItemDetailCubit(),
+              child: ExploreItemDetailScreen(itemId: item.id),
             ),
           );
         },

@@ -32,11 +32,6 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _mapController = MapController();
-    context.read<MapCubit>().fetchShops(
-      lat: widget.initialLat,
-      lon: widget.initialLon,
-      radius: 5000,
-    );
   }
 
   @override

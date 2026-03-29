@@ -266,7 +266,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         children: [
           CircleAvatar(
             radius: 35,
-            backgroundImage: const NetworkImage(
+            backgroundImage: const CachedNetworkImageProvider(
               'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&q=80&w=200',
             ),
           ),

@@ -38,6 +38,7 @@ class ApiConstants {
   static const String getRecentItems = 'api/explore/recent-items';
   static const String batchAnalytics = 'api/analytics/batch';
   static const String updateUserLocation = 'api/users/location';
+  static const String visualSearch = 'api/explore/search/visual';
   
   ///PORTFOLIO
   static const String searchPortfolio = 'api/vendor/portfolio/search';

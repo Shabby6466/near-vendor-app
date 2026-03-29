@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
@@ -147,11 +148,9 @@ class ShopGrid extends StatelessWidget {
                     final shop = shops[index];
                     return GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        AppNavigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ShopDetailsScreen(shop: shop),
-                          ),
+                          ShopDetailsScreen(shop: shop),
                         );
                       },
                       child: VisibilityDetector(

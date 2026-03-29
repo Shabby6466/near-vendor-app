@@ -291,7 +291,8 @@ class _EditShopScreenState extends State<EditShopScreen> {
         if (state is CategoriesLoaded) {
           categories = state.categories;
           // If we have categories but no ID yet, try to find ID by name for existing shops
-          if (_selectedCategoryId == null && _categoryController.text.isNotEmpty) {
+          if (_selectedCategoryId == null &&
+              _categoryController.text.isNotEmpty) {
             final existingCat = categories.cast<CategoryModel?>().firstWhere(
               (c) => c?.name == _categoryController.text,
               orElse: () => null,
@@ -600,11 +601,9 @@ class _EditShopScreenState extends State<EditShopScreen> {
       padding: const EdgeInsets.only(bottom: 20),
       child: InkWell(
         onTap: () async {
-          final LatLng? result = await Navigator.push(
+          final LatLng? result = await AppNavigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const LocationPickerScreen(),
-            ),
+            LocationPickerScreen(),
           );
           if (result != null) {
             setState(() {

@@ -1,9 +1,18 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/views/screens/search/view/search_results_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/view/visual_search_map_results_screen.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/scanning_area.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/visual_search_result_sheet.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/no_result_sheet.dart';
 
 class VisualSearchScreen extends StatefulWidget {
-  const VisualSearchScreen({super.key});
+  final File? initialImage;
+  const VisualSearchScreen({super.key, this.initialImage});
 
   @override
   State<VisualSearchScreen> createState() => _VisualSearchScreenState();
@@ -13,6 +22,8 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _scannerController;
   late Animation<double> _scannerAnimation;
+  final ImagePicker _picker = ImagePicker();
+  File? _selectedImage;
 
   @override
   void initState() {
@@ -25,6 +36,13 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
       begin: 0.0,
       end: 1.0,
     ).animate(_scannerController);
+
+    if (widget.initialImage != null) {
+      _selectedImage = widget.initialImage;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<VisualSearchCubit>().searchByImage(_selectedImage!);
+      });
+    }
   }
 
   @override
@@ -33,21 +51,65 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     super.dispose();
   }
 
+  Future<void> _pickImage(ImageSource source) async {
+    try {
+      final XFile? pickedFile = await _picker.pickImage(
+        source: source,
+        maxWidth: 1200,
+        maxHeight: 1200,
+        imageQuality: 85,
+      );
+
+      if (pickedFile != null) {
+        setState(() {
+          _selectedImage = File(pickedFile.path);
+        });
+        if (mounted) {
+          context.read<VisualSearchCubit>().searchByImage(_selectedImage!);
+        }
+      }
+    } catch (e) {
+      debugPrint("Pick image error: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Simulated Camera Background
+          // Background: Image or Placeholder
           Positioned.fill(
-            child: CachedNetworkImage(
-              imageUrl:
-                  'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=800', // Bottle image
-              fit: BoxFit.cover,
-              color: Colors.black.withValues(alpha: 0.3),
-              colorBlendMode: BlendMode.darken,
-            ),
+            child: _selectedImage != null
+                ? Image.file(
+                    _selectedImage!,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  )
+                : _buildEmptyState(),
+          ),
+
+          // Dim overlay
+          Positioned.fill(
+            child: Container(color: Colors.black.withValues(alpha: 0.3)),
+          ),
+
+          // Search Results Bottom Sheet Trigger
+          BlocListener<VisualSearchCubit, VisualSearchState>(
+            listener: (context, state) {
+              if (state is VisualSearchSuccess) {
+                if (state.results.isEmpty) {
+                  _showNoResultBottomSheet(context);
+                } else {
+                  _showScanResultBottomSheet(context, state.results);
+                }
+              } else if (state is VisualSearchFailure) {
+                _showNoResultBottomSheet(context, message: state.message);
+              }
+            },
+            child: const SizedBox.shrink(),
           ),
 
           SafeArea(
@@ -55,234 +117,137 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
               children: [
                 _buildTopBar(context),
                 const Spacer(),
-                _buildScanningArea(context),
+                if (_selectedImage != null)
+                  ScanningArea(scannerAnimation: _scannerAnimation),
                 const Spacer(),
-                _buildPointAtText(),
+                if (_selectedImage == null) _buildInstructionText(),
                 const SizedBox(height: 48),
-                _buildBottomActions(),
-                const SizedBox(height: 24),
+                BlocBuilder<VisualSearchCubit, VisualSearchState>(
+                  builder: (context, state) {
+                    if (state is VisualSearchLoading) {
+                      return _buildLoadingState();
+                    }
+                    return _buildBottomActions();
+                  },
+                ),
+                const SizedBox(height: 32),
               ],
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyState() {
+    return Container(
+      color: Colors.grey[900],
+      child: Center(
+        child: Icon(
+          Icons.camera_alt_outlined,
+          size: 80,
+          color: Colors.white.withValues(alpha: 0.1),
+        ),
       ),
     );
   }
 
   Widget _buildTopBar(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      padding: const EdgeInsets.all(16),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: Container(
+          IconButton(
+            onPressed: () => Navigator.pop(context),
+            icon: Container(
               padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.2),
+              decoration: const BoxDecoration(
+                color: Colors.black38,
                 shape: BoxShape.circle,
               ),
               child: const Icon(Icons.close, color: Colors.white, size: 24),
             ),
           ),
-          Column(
-            children: [
-              const Text(
-                'VISUAL SEARCH',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                  fontSize: 16,
-                ),
-              ),
-              const SizedBox(height: 4),
-              Container(width: 40, height: 3, color: Colors.blue),
-            ],
-          ),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.flashlight_on_outlined,
+          const Text(
+            'VISUAL SEARCH',
+            style: TextStyle(
               color: Colors.white,
-              size: 24,
+              fontWeight: FontWeight.w900,
+              fontSize: 16,
+              letterSpacing: 2,
+              fontFamily: 'Poppins',
             ),
           ),
+          const SizedBox(width: 48), // Balanced spacer
         ],
       ),
     );
   }
 
-  Widget _buildScanningArea(BuildContext context) {
-    final size = MediaQuery.of(context).size.width * 0.7;
-    return Center(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // Corner brackets
-          Container(
-            width: size,
-            height: size * 1.2,
-            child: Stack(
-              children: [
-                // Top Left
-                Positioned(
-                  top: 0,
-                  left: 0,
-                  child: _buildCorner(top: true, left: true),
-                ),
-                // Top Right
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: _buildCorner(top: true, left: false),
-                ),
-                // Bottom Left
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  child: _buildCorner(top: false, left: true),
-                ),
-                // Bottom Right
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: _buildCorner(top: false, left: false),
-                ),
-
-                // Animated Scanning Line
-                AnimatedBuilder(
-                  animation: _scannerAnimation,
-                  builder: (context, child) {
-                    return Positioned(
-                      top: _scannerAnimation.value * (size * 1.2 - 2),
-                      left: 10,
-                      right: 10,
-                      child: Container(
-                        height: 2,
-                        decoration: BoxDecoration(
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.purple.withValues(alpha: 0.6),
-                              blurRadius: 8,
-                              spreadRadius: 2,
-                            ),
-                          ],
-                          gradient: const LinearGradient(
-                            colors: [
-                              Colors.transparent,
-                              Colors.purpleAccent,
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-
-          // Outer faint border
-          Container(
-            width: size - 20,
-            height: (size * 1.2) - 20,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.3),
-                width: 1,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCorner({required bool top, required bool left}) {
-    const double length = 30;
-    const double thickness = 4;
-    return Container(
-      width: length,
-      height: length,
-      child: Stack(
-        children: [
-          Positioned(
-            top: top ? 0 : null,
-            bottom: top ? null : 0,
-            left: left ? 0 : null,
-            right: left ? null : 0,
-            child: Container(
-              width: length,
-              height: thickness,
-              decoration: BoxDecoration(
-                color: const Color(0xFF004AAD),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          Positioned(
-            top: top ? 0 : null,
-            bottom: top ? null : 0,
-            left: left ? 0 : null,
-            right: left ? null : 0,
-            child: Container(
-              width: thickness,
-              height: length,
-              decoration: BoxDecoration(
-                color: const Color(0xFF004AAD),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPointAtText() {
+  Widget _buildInstructionText() {
     return Column(
-      children: const [
-        Text(
-          'Point at any product',
+      children: [
+        const Text(
+          'Capture or Select an Image',
           style: TextStyle(
             color: Colors.white,
-            fontSize: 22,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
+            fontFamily: 'Poppins',
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
         Text(
-          'کسی بھی پروڈکٹ پر کیمرہ کریں',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          'تصویر لیں یا گیلری سے منتخب کریں',
+          style: TextStyle(
+            color: Colors.white.withValues(alpha: 0.7),
+            fontSize: 16,
+            fontFamily: 'Poppins',
+          ),
         ),
       ],
     );
   }
 
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        children: [
+          const CircularProgressIndicator(color: Colors.white),
+          const SizedBox(height: 16),
+          const Text(
+            "Analyzing Product...",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontFamily: 'Poppins',
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   Widget _buildBottomActions() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 32),
+      padding: const EdgeInsets.symmetric(horizontal: 50),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildActionButton(Icons.photo_library_outlined, 'GALLERY'),
-
-          // Shutter Button
+          _buildActionIconButton(
+            Icons.collections_outlined,
+            "GALLERY",
+            () => _pickImage(ImageSource.gallery),
+          ),
+          const SizedBox(width: 24),
           GestureDetector(
-            onTap: () => _showScanResultBottomSheet(context),
+            onTap: () => _pickImage(ImageSource.camera),
             child: Container(
               padding: const EdgeInsets.all(4),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                border: Border.all(color: Colors.blue, width: 3),
+                border: Border.all(color: Colors.white, width: 4),
               ),
               child: Container(
                 width: 64,
@@ -291,287 +256,103 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
+                child: const Icon(
+                  Icons.camera_alt,
+                  color: Colors.blue,
+                  size: 32,
+                ),
               ),
             ),
           ),
-
-          _buildActionButton(Icons.qr_code_scanner, 'BARCODE'),
+          const SizedBox(width: 24),
+          const SizedBox(width: 60), // Balanced spacer
         ],
       ),
     );
   }
 
-  void _showScanResultBottomSheet(BuildContext context) {
+  Widget _buildActionIconButton(
+    IconData icon,
+    String label,
+    VoidCallback onTap,
+  ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: Colors.black38,
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.white, size: 28),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showScanResultBottomSheet(BuildContext context, List<Item> items) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) {
-        return Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Drag Handle
-              Container(
-                width: 48,
-                height: 5,
-                decoration: BoxDecoration(
-                  color: const Color(0xFF424D59),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Match info
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'MATCH FOUND',
-                    style: TextStyle(
-                      color: Color(0xFF004AAD),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 12,
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        '92% MATCH',
-                        style: TextStyle(
-                          color: Color(0xFF1EC091),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      SizedBox(
-                        width: 100,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(10),
-                          child: const LinearProgressIndicator(
-                            value: 0.92,
-                            backgroundColor: Color(0xFFE0E0E0),
-                            valueColor: AlwaysStoppedAnimation<Color>(
-                              Color(0xFF1EC091),
-                            ),
-                            minHeight: 6,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Product details
-              Row(
-                children: [
-                  Container(
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.grey.shade300),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.all(8),
-                    child: CachedNetworkImage(
-                      imageUrl:
-                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_x_v-9p9zBUPz7bY_G5cR8n5nJ5Y-f6Z9lA&s', // Colgate logo/product
-                      fit: BoxFit.contain,
-                      errorWidget: (context, error, stackTrace) =>
-                          const Icon(Icons.image),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Colgate Strong Teeth',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '150ml • Dental Care',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 32),
-
-              // Action Buttons
-              Row(
-                children: [
-                  Expanded(
-                    flex: 5,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.pop(context); // Close sheet
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const SearchResultsScreen(),
-                          ),
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.check_circle_outline,
-                        color: Colors.white,
-                      ),
-                      label: const Text('Yes, that\'s it'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF004AAD),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    flex: 4,
-                    child: OutlinedButton.icon(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(Icons.refresh, color: Color(0xFF004AAD)),
-                      label: const Text('Try again'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        side: const BorderSide(color: Color(0xFF004AAD)),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        foregroundColor: const Color(0xFF004AAD),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              const Divider(),
-              const SizedBox(height: 16),
-
-              // Footer info
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Column(
-                    children: [
-                      const Text(
-                        'LOWEST PRICE',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: const [
-                          Icon(
-                            Icons.bar_chart,
-                            color: Color(0xFF1EC091),
-                            size: 16,
-                          ),
-                          SizedBox(width: 4),
-                          Text(
-                            '245',
-                            style: TextStyle(
-                              color: Color(0xFF1EC091),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Container(height: 30, width: 1, color: Colors.grey.shade300),
-                  Column(
-                    children: [
-                      const Text(
-                        'STORES NEAR',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      GestureDetector(
-                        onTap: () {
-                          // Simulation: navigate to shops
-                        },
-                        child: const Text(
-                          '14 Shops',
-                          style: TextStyle(
-                            color: Color(0xFF004AAD),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-            ],
-          ),
-        );
-      },
+      builder: (innerContext) => BlocProvider.value(
+        value: context.read<VisualSearchCubit>(),
+        child: VisualSearchResultSheet(
+          items: items,
+          onAccept: () {
+            Navigator.pop(innerContext);
+            AppNavigator.push(
+              context,
+              VisualSearchMapResultsScreen(results: items),
+            );
+          },
+          onTryAgain: () {
+            Navigator.pop(innerContext);
+            setState(() {
+              _selectedImage = null;
+            });
+            context.read<VisualSearchCubit>().reset();
+          },
+        ),
+      ),
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.2),
-            shape: BoxShape.circle,
-          ),
-          child: Icon(icon, color: Colors.white, size: 28),
+  void _showNoResultBottomSheet(BuildContext context, {String? message}) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (innerContext) => BlocProvider.value(
+        value: context.read<VisualSearchCubit>(),
+        child: NoResultSheet(
+          message: message,
+          onIncreaseRadius: () {
+            Navigator.pop(innerContext);
+          },
+          onDismiss: () {
+            Navigator.pop(innerContext);
+            setState(() {
+              _selectedImage = null;
+            });
+            context.read<VisualSearchCubit>().reset();
+          },
         ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: const TextStyle(
-            color: Colors.blue,
-            fontSize: 10,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

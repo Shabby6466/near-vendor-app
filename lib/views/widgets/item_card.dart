@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/shop_details_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
@@ -14,12 +15,7 @@ class ItemCard extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const ItemCard({
-    super.key,
-    required this.item,
-    this.width,
-    this.height,
-  });
+  const ItemCard({super.key, required this.item, this.width, this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +42,11 @@ class ItemCard extends StatelessWidget {
       },
       child: GestureDetector(
         onTap: () {
-          Navigator.push(
+          AppNavigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => BlocProvider(
-                create: (context) => ExploreItemDetailCubit(),
-                child: ExploreItemDetailScreen(
-                  itemId: item.id,
-                ),
-              ),
+            BlocProvider(
+              create: (context) => ExploreItemDetailCubit(),
+              child: ExploreItemDetailScreen(itemId: item.id),
             ),
           );
         },
@@ -79,7 +71,9 @@ class ItemCard extends StatelessWidget {
                 child: Hero(
                   tag: 'item_img_${item.id}',
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+                    borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
                     child: item.imageUrl != null && item.imageUrl!.isNotEmpty
                         ? CachedNetworkImage(
                             imageUrl: item.imageUrl!,
@@ -87,12 +81,16 @@ class ItemCard extends StatelessWidget {
                             width: double.infinity,
                             errorWidget: (context, url, error) => Container(
                               color: theme.dividerColor.withValues(alpha: 0.1),
-                              child: const Center(child: Icon(Icons.image_not_supported)),
+                              child: const Center(
+                                child: Icon(Icons.image_not_supported),
+                              ),
                             ),
                           )
                         : Container(
                             color: theme.dividerColor.withValues(alpha: 0.1),
-                            child: const Center(child: Icon(Icons.image_not_supported)),
+                            child: const Center(
+                              child: Icon(Icons.image_not_supported),
+                            ),
                           ),
                   ),
                 ),

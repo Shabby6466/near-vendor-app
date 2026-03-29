@@ -198,10 +198,9 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
             child: CircleAvatar(
               radius: 54,
               backgroundColor: theme.scaffoldBackgroundColor,
-              backgroundImage:
-                  widget.shop.storeLogoUrl != null &&
+              backgroundImage: widget.shop.storeLogoUrl != null &&
                       widget.shop.storeLogoUrl!.isNotEmpty
-                  ? NetworkImage(widget.shop.storeLogoUrl!)
+                  ? CachedNetworkImageProvider(widget.shop.storeLogoUrl!)
                   : null,
               child:
                   widget.shop.storeLogoUrl == null ||
@@ -896,25 +895,22 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
                     ),
                   ],
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                      ? CachedNetworkImage(
-                          imageUrl: item.imageUrl!,
-                          fit: BoxFit.cover,
-                          placeholder: (context, url) => const ShimmerEffect(),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.image_not_supported_rounded),
-                        )
-                      : Container(
-                          color: theme.primaryColor.withValues(alpha: 0.05),
-                          child: Icon(
-                            Icons.inventory_2_rounded,
-                            color: theme.primaryColor.withValues(alpha: 0.4),
-                            size: 32,
-                          ),
+                child: item.imageUrl != null && item.imageUrl!.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: item.imageUrl!,
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => const ShimmerEffect(),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.image_not_supported_rounded),
+                      )
+                    : Container(
+                        color: theme.primaryColor.withValues(alpha: 0.05),
+                        child: Icon(
+                          Icons.inventory_2_rounded,
+                          color: theme.primaryColor.withValues(alpha: 0.4),
+                          size: 32,
                         ),
-                ),
+                      ),
               ),
               const SizedBox(width: 16),
               // Content Section

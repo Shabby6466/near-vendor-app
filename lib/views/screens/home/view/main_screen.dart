@@ -39,19 +39,22 @@ class MainScreen extends StatelessWidget {
                   isVisible: currentIndex == 1,
                   child: const HomeScreen(),
                 ),
-                BlocBuilder<SessionCubit, SessionState>(
-                  builder: (context, session) {
-                    return BlocProvider(
-                      create: (context) => MapCubit(
-                        lat: session.latitude ?? 33.68,
-                        lon: session.longitude ?? 73.04,
-                      ),
-                      child: MapScreen(
-                        initialLat: session.latitude ?? 33.68,
-                        initialLon: session.longitude ?? 73.04,
-                      ),
-                    );
-                  },
+                LazyLoadWrapper(
+                  isVisible: currentIndex == 2,
+                  child: BlocBuilder<SessionCubit, SessionState>(
+                    builder: (context, session) {
+                      return BlocProvider(
+                        create: (context) => MapCubit(
+                          lat: session.latitude ?? 33.68,
+                          lon: session.longitude ?? 73.04,
+                        ),
+                        child: MapScreen(
+                          initialLat: session.latitude ?? 33.68,
+                          initialLon: session.longitude ?? 73.04,
+                        ),
+                      );
+                    },
+                  ),
                 ),
                 ComingSoonScreen(
                   title: 'Chat Support',

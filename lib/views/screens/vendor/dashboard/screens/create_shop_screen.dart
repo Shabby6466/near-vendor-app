@@ -583,11 +583,9 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
       padding: const EdgeInsets.only(bottom: 20),
       child: InkWell(
         onTap: () async {
-          final LatLng? result = await Navigator.push(
+          final LatLng? result = await AppNavigator.push(
             context,
-            MaterialPageRoute(
-              builder: (context) => const LocationPickerScreen(),
-            ),
+            LocationPickerScreen(),
           );
           if (result != null) {
             setState(() {

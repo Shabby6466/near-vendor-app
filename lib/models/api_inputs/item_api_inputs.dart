@@ -5,7 +5,7 @@ class CreateItemInput {
   final double price;
   final String unit;
   final int stockCount;
-  final String? imageUrl;
+  final List<String> imageUrls;
   final double? discount;
 
   CreateItemInput({
@@ -15,7 +15,7 @@ class CreateItemInput {
     required this.price,
     required this.unit,
     required this.stockCount,
-    this.imageUrl,
+    this.imageUrls = const [],
     this.discount,
   });
 
@@ -26,7 +26,7 @@ class CreateItemInput {
         'price': price,
         'unit': unit,
         'stockCount': stockCount,
-        'imageUrl': imageUrl,
+        'imageUrls': imageUrls,
         'discount': discount,
       };
 }
@@ -38,7 +38,7 @@ class UpdateItemInput {
   final double? price;
   final String? unit;
   final int? stockCount;
-  final String? imageUrl;
+  final List<String>? imageUrls;
   final double? discount;
 
   UpdateItemInput({
@@ -48,7 +48,7 @@ class UpdateItemInput {
     this.price,
     this.unit,
     this.stockCount,
-    this.imageUrl,
+    this.imageUrls,
     this.discount,
   });
 
@@ -59,7 +59,7 @@ class UpdateItemInput {
     if (price != null) data['price'] = price;
     if (unit != null) data['unit'] = unit;
     if (stockCount != null) data['stockCount'] = stockCount;
-    if (imageUrl != null) data['imageUrl'] = imageUrl;
+    if (imageUrls != null) data['imageUrls'] = imageUrls;
     if (discount != null) data['discount'] = discount;
     return data;
   }

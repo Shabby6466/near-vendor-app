@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,10 +20,19 @@ class ExploreItemDetailScreen extends StatefulWidget {
 }
 
 class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
+  final PageController _pageController = PageController();
+  int _currentPage = 0;
+
   @override
   void initState() {
     super.initState();
     context.read<ExploreItemDetailCubit>().fetchDetails(widget.itemId);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   @override
@@ -48,6 +58,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
   Widget _buildMainContent(BuildContext context, Item item, Shop shop) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
+    final images = item.imageUrls.isNotEmpty ? item.imageUrls : (item.imageUrl != null ? [item.imageUrl!] : <String>[]);
 
     return Stack(
       children: [
@@ -57,28 +68,122 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Product Image Header
+              // Product Image Header (Carousel)
               Stack(
                 children: [
-                  Hero(
-                    tag: 'item_img_${item.id}',
-                    child: Container(
-                      height: size.height * 0.5,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: theme.primaryColor.withValues(alpha: 0.05),
-                      ),
-                      child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                          ? CachedNetworkImage(
-                              imageUrl: item.imageUrl!,
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(Icons.inventory_2_rounded, size: 100, color: theme.primaryColor.withValues(alpha: 0.2)),
-                    ),
+                  Container(
+                    height: size.height * 0.55, // Slightly taller for better impact
+                    width: double.infinity,
+                    color: theme.primaryColor.withValues(alpha: 0.05),
+                    child: images.isNotEmpty
+                        ? PageView.builder(
+                            controller: _pageController,
+                            onPageChanged: (index) {
+                              setState(() {
+                                _currentPage = index;
+                              });
+                            },
+                            itemCount: images.length,
+                            itemBuilder: (context, index) {
+                              final content = CachedNetworkImage(
+                                imageUrl: images[index],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                height: double.infinity,
+                                placeholder: (context, url) => Container(
+                                  color: theme.primaryColor.withValues(alpha: 0.05),
+                                  child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                ),
+                                errorWidget: (context, url, error) => Icon(
+                                  Icons.image_not_supported_rounded,
+                                  size: 50,
+                                  color: theme.primaryColor.withValues(alpha: 0.2),
+                                ),
+                              );
+
+                              // Only apply Hero to the first image to match the incoming transition
+                              return index == 0
+                                  ? Hero(
+                                      tag: 'item_img_${item.id}',
+                                      child: content,
+                                    )
+                                  : content;
+                            },
+                          )
+                        : Center(
+                            child: Icon(
+                              Icons.inventory_2_rounded,
+                              size: 100,
+                              color: theme.primaryColor.withValues(alpha: 0.2),
+                            ),
+                          ),
                   ),
+
+                  // Carousel Indicators (Pill Style)
+                  if (images.length > 1)
+                    Positioned(
+                      bottom: 40,
+                      left: 0,
+                      right: 0,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.4),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: List.generate(
+                                images.length,
+                                (index) => AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                                  width: _currentPage == index ? 12 : 6,
+                                  height: 6,
+                                  decoration: BoxDecoration(
+                                    color: _currentPage == index ? theme.primaryColor : Colors.white.withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(3),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                  // Image Index Bubble (e.g., 1/5)
+                  if (images.length > 1)
+                    Positioned(
+                      top: MediaQuery.of(context).padding.top + 60,
+                      right: 20,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            color: Colors.black.withValues(alpha: 0.5),
+                            child: Text(
+                              '${_currentPage + 1}/${images.length}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Poppins',
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
                   // Bottom Gradient Fade
                   Positioned(
-                    bottom: 0,
+                    bottom: -2, // Slight overlap to prevent seam
                     left: 0,
                     right: 0,
                     height: 100,

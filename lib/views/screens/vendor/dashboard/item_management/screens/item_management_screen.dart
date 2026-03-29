@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
@@ -260,18 +261,56 @@ class ItemManagementScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     image: item.imageUrl != null && item.imageUrl!.isNotEmpty
                         ? DecorationImage(
-                            image: NetworkImage(item.imageUrl!),
+                            image: CachedNetworkImageProvider(item.imageUrl!),
                             fit: BoxFit.cover,
                           )
                         : null,
                   ),
-                  child: item.imageUrl == null || item.imageUrl!.isEmpty
-                      ? Icon(
-                          Icons.inventory_2_rounded,
-                          color: theme.iconTheme.color?.withValues(alpha: 0.4),
-                          size: 28,
-                        )
-                      : null,
+                  child: Stack(
+                    children: [
+                      if (item.imageUrl == null || item.imageUrl!.isEmpty)
+                        Center(
+                          child: Icon(
+                            Icons.inventory_2_rounded,
+                            color: theme.iconTheme.color?.withValues(alpha: 0.4),
+                            size: 28,
+                          ),
+                        ),
+                      if (item.imageUrls.length > 1)
+                        Positioned(
+                          right: 4,
+                          bottom: 4,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: theme.primaryColor,
+                              borderRadius: BorderRadius.circular(6),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 4,
+                                ),
+                              ],
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.copy_rounded, color: Colors.white, size: 8),
+                                const SizedBox(width: 2),
+                                Text(
+                                  '${item.imageUrls.length}',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 9,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(width: 16),

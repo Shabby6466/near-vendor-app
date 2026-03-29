@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
@@ -113,12 +114,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(
+                        AppNavigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ShopDetailsScreen(shop: widget.shop),
-                          ),
+                          ShopDetailsScreen(shop: widget.shop),
                         );
                       },
                       child: Container(
@@ -315,7 +313,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     children: [
                       const CircleAvatar(
                         radius: 20,
-                        backgroundImage: NetworkImage(
+                        backgroundImage: CachedNetworkImageProvider(
                           'https://i.pravatar.cc/150?img=11',
                         ), // Fallback avatar
                       ),
