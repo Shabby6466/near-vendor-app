@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
@@ -111,7 +112,10 @@ class _ResultsGrid extends StatelessWidget {
           ),
           itemCount: items.length,
           itemBuilder: (context, index) {
-            return ItemCard(item: items[index]);
+            return ItemCard(item: items[index])
+                .animate(delay: (index * 40).ms)
+                .fadeIn(duration: 300.ms)
+                .slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic);
           },
         ),
         const SizedBox(height: 120),

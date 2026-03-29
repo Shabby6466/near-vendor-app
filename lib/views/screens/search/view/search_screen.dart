@@ -7,7 +7,7 @@ import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart
 import 'package:nearvendorapp/views/screens/search/widgets/search_header.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
 
-import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -20,7 +20,6 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return BlocProvider(
       create: (context) => SearchCubit(),
@@ -36,53 +35,29 @@ class _SearchScreenState extends State<SearchScreen> {
                   padding: EdgeInsets.zero,
                   children: [
                     const SizedBox(height: 16),
-                    const SearchBarField().animate().fadeIn(delay: 100.ms).slideY(begin: 0.1, end: 0),
+                    const SearchBarField().animate().fadeIn(delay: 80.ms).slideY(begin: 0.1, end: 0),
                     const SizedBox(height: 24),
                     
                     BlocBuilder<SearchCubit, SearchState>(
                       builder: (context, state) {
-                        if (state is SearchInitial) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Discovery Chips Section
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 24),
-                                child: Text(
-                                  'Popular Categories',
-                                  style: TextStyle(
-                                    fontFamily: 'Poppins',
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w800,
-                                    color: isDark ? Colors.white : Colors.black87,
-                                  ),
-                                ),
-                              ).animate().fadeIn(delay: 200.ms),
-                              const SizedBox(height: 16),
-                              SizedBox(
-                                height: 44,
-                                child: ListView(
-                                  scrollDirection: Axis.horizontal,
-                                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                                  physics: const BouncingScrollPhysics(),
-                                  children: [
-                                    _buildDiscoveryChip('Electronics', Icons.devices_other_rounded, theme),
-                                    _buildDiscoveryChip('Fashion', Icons.checkroom_rounded, theme),
-                                    _buildDiscoveryChip('Furniture', Icons.chair_rounded, theme),
-                                    _buildDiscoveryChip('Groceries', Icons.shopping_basket_rounded, theme),
-                                    _buildDiscoveryChip('Health', Icons.health_and_safety_rounded, theme),
-                                  ],
-                                ),
-                              ).animate().fadeIn(delay: 300.ms).slideX(begin: 0.1, end: 0),
-                              
-                              const SizedBox(height: 32),
-                              const RecentSearchSection().animate().fadeIn(delay: 400.ms),
-                              const SizedBox(height: 32),
-                              const RecentItemsSection().animate().fadeIn(delay: 500.ms),
-                            ],
-                          );
-                        }
-                        return const SearchResultsList();
+                        return AnimatedSwitcher(
+                          duration: 300.ms,
+                          switchInCurve: Curves.easeOutCubic,
+                          switchOutCurve: Curves.easeInCubic,
+                          transitionBuilder: (child, animation) {
+                            return FadeTransition(
+                              opacity: animation,
+                              child: SlideTransition(
+                                position: Tween<Offset>(
+                                  begin: const Offset(0, 0.05),
+                                  end: Offset.zero,
+                                ).animate(animation),
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: _buildStateContent(context, state),
+                        );
                       },
                     ),
                     const SizedBox(height: 120),
@@ -94,6 +69,56 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
+  }
+
+  Widget _buildStateContent(BuildContext context, SearchState state) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    if (state is SearchInitial) {
+      return Column(
+        key: const ValueKey('search_initial'),
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Discovery Chips Section
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Text(
+              'Popular Categories',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+          ).animate().fadeIn(delay: 200.ms),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 44,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                _buildDiscoveryChip('Electronics', Icons.devices_other_rounded, theme),
+                _buildDiscoveryChip('Fashion', Icons.checkroom_rounded, theme),
+                _buildDiscoveryChip('Furniture', Icons.chair_rounded, theme),
+                _buildDiscoveryChip('Groceries', Icons.shopping_basket_rounded, theme),
+                _buildDiscoveryChip('Health', Icons.health_and_safety_rounded, theme),
+              ],
+            ),
+          ).animate().fadeIn(delay: 350.ms).slideX(begin: 0.1, end: 0),
+          
+          const SizedBox(height: 32),
+          const RecentSearchSection().animate().fadeIn(delay: 500.ms),
+          const SizedBox(height: 32),
+          const RecentItemsSection().animate().fadeIn(delay: 650.ms),
+        ],
+      );
+    }
+    
+    return const SearchResultsList(key: ValueKey('search_results'));
   }
 
   Widget _buildDiscoveryChip(String label, IconData icon, ThemeData theme) {

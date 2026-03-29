@@ -9,6 +9,9 @@ import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dar
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_animate/flutter_animate.dart';
+
 class SearchBarField extends StatefulWidget {
   const SearchBarField({super.key});
 
@@ -18,14 +21,26 @@ class SearchBarField extends StatefulWidget {
 
 class _SearchBarFieldState extends State<SearchBarField> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  bool _isFocused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() => _isFocused = _focusNode.hasFocus);
+    });
+  }
 
   @override
   void dispose() {
     _controller.dispose();
+    _focusNode.dispose();
     super.dispose();
   }
 
   void _onSearch(String query) {
+    HapticFeedback.mediumImpact();
     final sessionState = context.read<SessionCubit>().state;
     final lat = sessionState.latitude ?? 0.0;
     final lon = sessionState.longitude ?? 0.0;
@@ -139,100 +154,118 @@ class _SearchBarFieldState extends State<SearchBarField> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Container(
-        height: 56,
-        decoration: BoxDecoration(
-          color: theme.cardColor,
-          borderRadius: BorderRadius.circular(28),
-          boxShadow: [
-            BoxShadow(
-              color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.05),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
+      child: AnimatedScale(
+        duration: 250.ms,
+        scale: _isFocused ? 1.02 : 1.0,
+        curve: Curves.easeOutBack,
+        child: AnimatedContainer(
+          duration: 250.ms,
+          height: 56,
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(28),
+            boxShadow: [
+              BoxShadow(
+                color: _isFocused 
+                  ? theme.primaryColor.withValues(alpha: 0.15) 
+                  : (isDark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.05)),
+                blurRadius: _isFocused ? 20 : 15,
+                offset: const Offset(0, 5),
+              ),
+            ],
+            border: Border.all(
+              color: _isFocused
+                ? theme.primaryColor.withValues(alpha: 0.5)
+                : (_controller.text.isNotEmpty 
+                  ? theme.primaryColor.withValues(alpha: 0.4)
+                  : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.shade200)),
+              width: 1.2,
             ),
-          ],
-          border: Border.all(
-            color: _controller.text.isNotEmpty 
-              ? theme.primaryColor.withValues(alpha: 0.4)
-              : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.shade200),
-            width: 1.2,
           ),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: Row(
-          children: [
-            const SizedBox(width: 16),
-            Icon(
-              Icons.search_rounded,
-              color: _controller.text.isNotEmpty ? theme.primaryColor : theme.iconTheme.color?.withValues(alpha: 0.3),
-              size: 20,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: TextField(
-                controller: _controller,
-                autofocus: false,
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14,
-                ),
-                onSubmitted: _onSearch,
-                onChanged: (value) {
-                  setState(() {});
-                  if (value.isEmpty) {
-                    context.read<SearchCubit>().clearSearch();
-                  }
-                },
-                decoration: InputDecoration(
-                  hintText: 'Search high-value items...',
-                  hintStyle: TextStyle(
+          clipBehavior: Clip.antiAlias,
+          child: Row(
+            children: [
+              const SizedBox(width: 16),
+              Icon(
+                Icons.search_rounded,
+                color: _isFocused || _controller.text.isNotEmpty 
+                  ? theme.primaryColor 
+                  : theme.iconTheme.color?.withValues(alpha: 0.3),
+                size: 20,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TextField(
+                  controller: _controller,
+                  focusNode: _focusNode,
+                  autofocus: false,
+                  style: const TextStyle(
                     fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w600,
                     fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: theme.textTheme.bodySmall!.color!.withValues(alpha: 0.3),
                   ),
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  contentPadding: EdgeInsets.zero,
-                  isDense: true,
+                  onSubmitted: _onSearch,
+                  onChanged: (value) {
+                    setState(() {});
+                    if (value.isEmpty) {
+                      context.read<SearchCubit>().clearSearch();
+                    }
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'Search high-value items...',
+                    hintStyle: TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: theme.textTheme.bodySmall!.color!.withValues(alpha: 0.3),
+                    ),
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    contentPadding: EdgeInsets.zero,
+                    isDense: true,
+                  ),
                 ),
               ),
-            ),
-            if (_controller.text.isNotEmpty)
-              IconButton(
-                icon: Icon(Icons.close_rounded, color: theme.iconTheme.color?.withValues(alpha: 0.4), size: 18),
-                onPressed: () {
-                  _controller.clear();
-                  context.read<SearchCubit>().clearSearch();
-                  setState(() {});
+              if (_controller.text.isNotEmpty)
+                IconButton(
+                  icon: Icon(Icons.close_rounded, color: theme.iconTheme.color?.withValues(alpha: 0.4), size: 18),
+                  onPressed: () {
+                    HapticFeedback.lightImpact();
+                    _controller.clear();
+                    context.read<SearchCubit>().clearSearch();
+                    setState(() {});
+                  },
+                ),
+              Container(
+                width: 1,
+                height: 20,
+                color: theme.dividerColor.withValues(alpha: 0.1),
+              ),
+              const SizedBox(width: 8),
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  _showImageSourceSelector();
                 },
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: orangeBrandColor.withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(
+                    Icons.camera_alt_rounded,
+                    color: orangeBrandColor,
+                    size: 16,
+                  ),
+                ).animate(onPlay: (controller) => controller.repeat(reverse: true))
+                 .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: 1.seconds, curve: Curves.easeInOut),
               ),
-            Container(
-              width: 1,
-              height: 20,
-              color: theme.dividerColor.withValues(alpha: 0.1),
-            ),
-            const SizedBox(width: 8),
-            GestureDetector(
-              onTap: _showImageSourceSelector,
-              child: Container(
-                margin: const EdgeInsets.only(right: 8),
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: orangeBrandColor.withValues(alpha: 0.15),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.camera_alt_rounded,
-                  color: orangeBrandColor,
-                  size: 16,
-                ),
-              ),
-            ),
-            const SizedBox(width: 4),
-          ],
+              const SizedBox(width: 4),
+            ],
+          ),
         ),
       ),
     );
