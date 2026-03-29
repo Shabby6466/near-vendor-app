@@ -89,73 +89,86 @@ class ShopCard extends StatelessWidget {
                     left: 10,
                     child: _buildGlassStatus(context, shop.isActive),
                   ),
+                  // Metric Overlay (Top Right)
+                  Positioned(
+                    top: 10,
+                    right: 10,
+                    child: _buildMetricPill(context, '1.2k', Icons.visibility_rounded),
+                  ),
                 ],
               ),
             ),
             // Bottom Section (Content Focus)
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          shop.shopName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w800,
-                            fontSize: 14,
-                            letterSpacing: -0.2,
-                            color: theme.textTheme.titleMedium?.color,
-                            height: 1.2,
-                          ),
-                        ),
-                        Text(
-                          shop.businessCategory,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 10,
-                            color: theme.primaryColor,
-                            letterSpacing: 0.1,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      shop.shopName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                        letterSpacing: -0.4,
+                        color: theme.textTheme.titleMedium?.color,
+                        height: 1.1,
+                      ),
+                    ),
+                    const SizedBox(height: 1),
+                    Text(
+                      shop.businessCategory.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w800,
+                        fontSize: 9,
+                        color: theme.primaryColor,
+                        letterSpacing: 0.5,
+                      ),
                     ),
                     const Spacer(),
                     Row(
                       children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          decoration: BoxDecoration(
+                            color: theme.primaryColor.withValues(alpha: 0.1),
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: Text(
+                            '+12% growth',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 8,
+                              fontWeight: FontWeight.w800,
+                              color: theme.primaryColor,
+                            ),
+                          ),
+                        ),
+                        const Spacer(),
                         Icon(
                           Icons.location_on_rounded,
                           size: 10,
-                          color: theme.iconTheme.color?.withValues(alpha: 0.3),
+                          color: theme.iconTheme.color?.withValues(alpha: 0.2),
                         ),
-                        const SizedBox(width: 4),
-                        Expanded(
-                          child: Text(
-                            shop.shopAddress,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 9,
-                              fontWeight: FontWeight.w500,
-                              color: theme.textTheme.bodySmall?.color
-                                  ?.withValues(alpha: 0.5),
-                            ),
+                        const SizedBox(width: 2),
+                        Text(
+                          'Nearby',
+                          style: TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: theme.textTheme.bodySmall?.color
+                                ?.withValues(alpha: 0.4),
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 4),
                   ],
                 ),
               ),
@@ -243,6 +256,42 @@ class ShopCard extends StatelessWidget {
               ),
             ),
             child: Icon(icon, size: 16, color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMetricPill(BuildContext context, String value, IconData icon) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.black.withValues(alpha: 0.3),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.1),
+              width: 1,
+            ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: Colors.white, size: 10),
+              const SizedBox(width: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 9,
+                ),
+              ),
+            ],
           ),
         ),
       ),

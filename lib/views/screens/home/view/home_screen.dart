@@ -52,53 +52,107 @@ class HomeScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               SizedBox(
-                                height:
-                                    AppSpacing.mediumVerticalSpacing(context),
+                                height: AppSpacing.smallVerticalSpacing(
+                                  context,
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal:
                                       AppSpacing.mediumHorizontalSpacing(
-                                    context,
-                                  ),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Assets.icons.nearVendorBlueText.svg(
-                                      colorFilter: ColorFilter.mode(
-                                        theme.primaryColor,
-                                        BlendMode.srcIn,
+                                        context,
                                       ),
-                                    ),
-                                  ],
+                                ),
+                                child: BlocBuilder<SessionCubit, SessionState>(
+                                  builder: (context, state) {
+                                    final isGuest =
+                                        state.status == AuthStatus.guest;
+                                    final firstName =
+                                        state.userName?.split(' ').first ?? '';
+
+                                    return Row(
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                isGuest
+                                                    ? 'Discover Shops'
+                                                    : 'Hello, $firstName',
+                                                style: theme
+                                                    .textTheme
+                                                    .titleLarge
+                                                    ?.copyWith(
+                                                      fontWeight:
+                                                          FontWeight.w900,
+                                                      letterSpacing: -0.5,
+                                                    ),
+                                              ),
+                                              Text(
+                                                isGuest
+                                                    ? 'Find specialized vendors near you'
+                                                    : 'Find local vendors near you',
+                                                style: theme.textTheme.bodySmall
+                                                    ?.copyWith(
+                                                      color: theme
+                                                          .textTheme
+                                                          .bodySmall
+                                                          ?.color
+                                                          ?.withValues(
+                                                            alpha: 0.6,
+                                                          ),
+                                                    ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Assets.icons.nearVendorBlueText.svg(
+                                          height: 24,
+                                          colorFilter: ColorFilter.mode(
+                                            theme.primaryColor,
+                                            BlendMode.srcIn,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    AppSpacing.mediumVerticalSpacing(context),
+                                height: AppSpacing.smallVerticalSpacing(
+                                  context,
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal:
                                       AppSpacing.mediumHorizontalSpacing(
-                                    context,
-                                  ),
+                                        context,
+                                      ),
                                 ),
                                 child: Container(
                                   width: double.infinity,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: theme.cardColor.withValues(
-                                      alpha: (0.9),
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: theme.cardColor,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withValues(
+                                          alpha: isDark ? 0.2 : 0.05,
+                                        ),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                    ],
+                                    border: Border.all(
+                                      color: isDark
+                                          ? theme.dividerColor.withValues(
+                                              alpha: 0.1,
+                                            )
+                                          : Colors.grey.shade100,
                                     ),
-                                    border: isDark
-                                        ? Border.all(
-                                            color: theme.dividerColor
-                                                .withValues(alpha: (0.1)),
-                                          )
-                                        : Border.all(
-                                            color: Colors.grey.shade200),
                                   ),
                                   child: TextField(
                                     onSubmitted: (value) {
@@ -119,15 +173,18 @@ class HomeScreen extends StatelessWidget {
                                             .clearSearch();
                                       }
                                     },
-                                    style:
-                                        const TextStyle(fontFamily: 'Poppins'),
+                                    style: const TextStyle(
+                                      fontFamily: 'Poppins',
+                                      fontSize: 14,
+                                    ),
                                     decoration: InputDecoration(
                                       prefixIcon: Padding(
                                         padding: const EdgeInsets.all(12.0),
                                         child: Assets.icons.searchIcon.svg(
+                                          height: 18,
                                           colorFilter: ColorFilter.mode(
                                             theme.iconTheme.color?.withValues(
-                                                  alpha: (0.5),
+                                                  alpha: 0.4,
                                                 ) ??
                                                 Colors.grey,
                                             BlendMode.srcIn,
@@ -138,36 +195,40 @@ class HomeScreen extends StatelessWidget {
                                       hintStyle: TextStyle(
                                         color: theme.textTheme.bodySmall!.color!
                                             .withValues(alpha: 0.4),
+                                        fontSize: 14,
                                       ),
                                       border: InputBorder.none,
-                                      contentPadding: const EdgeInsets.symmetric(
-                                          vertical: 16),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                            vertical: 14,
+                                          ),
                                     ),
                                   ),
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    AppSpacing.mediumVerticalSpacing(context),
+                                height: AppSpacing.smallVerticalSpacing(
+                                  context,
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal:
                                       AppSpacing.mediumHorizontalSpacing(
-                                    context,
-                                  ),
+                                        context,
+                                      ),
                                 ),
                                 child: Container(
                                   width: double.infinity,
-                                  height:
-                                      AppSpacing.screenHeight(context) * 0.2,
+                                  height: 120,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(20),
                                     gradient: LinearGradient(
                                       colors: [
                                         theme.primaryColor,
-                                        theme.primaryColor
-                                            .withValues(alpha: (0.8)),
+                                        theme.primaryColor.withValues(
+                                          alpha: 0.7,
+                                        ),
                                       ],
                                       begin: Alignment.topLeft,
                                       end: Alignment.bottomRight,
@@ -175,49 +236,117 @@ class HomeScreen extends StatelessWidget {
                                     boxShadow: [
                                       BoxShadow(
                                         color: theme.primaryColor.withValues(
-                                          alpha: (0.3),
+                                          alpha: 0.2,
                                         ),
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 8),
+                                        blurRadius: 12,
+                                        offset: const Offset(0, 6),
                                       ),
                                     ],
                                   ),
-                                  child: const Center(
-                                    child: Text(
-                                      'Advertisement',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Poppins',
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 18,
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                        top: 12,
+                                        right: 16,
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.white.withValues(
+                                              alpha: 0.2,
+                                            ),
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          child: const Text(
+                                            'Sponsored',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      const Center(
+                                        child: Text(
+                                          'Premium Banner Ad',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: 'Poppins',
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 20,
+                                            letterSpacing: -0.5,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    AppSpacing.mediumVerticalSpacing(context),
+                                height: AppSpacing.mediumVerticalSpacing(
+                                  context,
+                                ),
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal:
                                       AppSpacing.mediumHorizontalSpacing(
-                                    context,
-                                  ),
+                                        context,
+                                      ),
                                 ),
-                                child: Text(
-                                  'Best Vendors Near You!',
-                                  style:
-                                      theme.textTheme.headlineSmall?.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                    letterSpacing: -0.5,
-                                  ),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      'Nearby Vendors',
+                                      style: theme.textTheme.titleMedium
+                                          ?.copyWith(
+                                            fontWeight: FontWeight.w900,
+                                            letterSpacing: -0.5,
+                                          ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    BlocBuilder<
+                                      HomeScreenCubit,
+                                      HomeScreenState
+                                    >(
+                                      builder: (context, state) {
+                                        if (state is HomeScreenSuccess) {
+                                          return Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 8,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: theme.primaryColor
+                                                  .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            child: Text(
+                                              '${state.shops.length}',
+                                              style: TextStyle(
+                                                color: theme.primaryColor,
+                                                fontSize: 11,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                        return const SizedBox.shrink();
+                                      },
+                                    ),
+                                  ],
                                 ),
                               ),
                               SizedBox(
-                                height:
-                                    AppSpacing.smallVerticalSpacing(context),
+                                height: AppSpacing.smallVerticalSpacing(
+                                  context,
+                                ),
                               ),
                               const CategorySelector(),
                             ],

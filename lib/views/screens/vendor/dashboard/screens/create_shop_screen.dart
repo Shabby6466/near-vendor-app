@@ -161,6 +161,8 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                     ),
                     const SizedBox(height: 40),
                     _buildSectionTitle(context, 'BRANDING & MEDIA'),
+                    _buildFormHelper('Visuals are the first thing customers see. High-quality logos and covers increase trust by up to 40%.'),
+                    const SizedBox(height: 12),
                     Row(
                       children: [
                         Expanded(
@@ -192,6 +194,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                       _nameController,
                       'Business Name',
                       Icons.storefront_rounded,
+                      helperText: 'Choose a name that is easy to remember and search for.',
                     ),
                     _buildCategoryDropdownField(context),
                     _buildCustomField(
@@ -199,6 +202,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                       _regNumberController,
                       'Tax / Reg Number',
                       Icons.verified_user_outlined,
+                      helperText: 'Required for verification and to build credibility with customers.',
                     ),
 
                     const SizedBox(height: 24),
@@ -245,15 +249,30 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
 
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20, left: 4),
+      padding: const EdgeInsets.only(bottom: 8, left: 4),
       child: Text(
         title,
         style: TextStyle(
           fontFamily: 'Poppins',
           fontSize: 12,
-          fontWeight: FontWeight.w700,
+          fontWeight: FontWeight.w800,
           letterSpacing: 1.5,
           color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFormHelper(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 16),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 12,
+          color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+          height: 1.4,
         ),
       ),
     );
@@ -377,57 +396,75 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
     String label,
     IconData icon, {
     bool isRequired = true,
+    String? helperText,
   }) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
-      child: TextFormField(
-        controller: controller,
-        style: const TextStyle(
-          fontFamily: 'Poppins',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-        decoration: InputDecoration(
-          prefixIcon: Icon(
-            icon,
-            color: theme.iconTheme.color?.withValues(alpha: (0.3)),
-            size: 22,
+      padding: const EdgeInsets.only(bottom: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextFormField(
+            controller: controller,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
+            decoration: InputDecoration(
+              prefixIcon: Icon(
+                icon,
+                color: theme.iconTheme.color?.withValues(alpha: (0.3)),
+                size: 22,
+              ),
+              hintText: label,
+              hintStyle: TextStyle(
+                color: theme.textTheme.bodySmall?.color?.withValues(alpha: (0.4)),
+                fontWeight: FontWeight.w400,
+              ),
+              filled: true,
+              fillColor: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
+              contentPadding: const EdgeInsets.symmetric(
+                horizontal: 20,
+                vertical: 18,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(color: theme.primaryColor, width: 1.5),
+              ),
+              errorStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 12),
+            ),
+            validator: isRequired
+                ? (value) {
+                    if (value == null || value.isEmpty)
+                      return 'This field is required';
+                    return null;
+                  }
+                : null,
           ),
-          hintText: label,
-          hintStyle: TextStyle(
-            color: theme.textTheme.bodySmall?.color?.withValues(alpha: (0.4)),
-            fontWeight: FontWeight.w400,
-          ),
-          filled: true,
-          fillColor: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 18,
-          ),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(18),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(18),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(18),
-            borderSide: BorderSide(color: theme.primaryColor, width: 1.5),
-          ),
-          errorStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 12),
-        ),
-        validator: isRequired
-            ? (value) {
-                if (value == null || value.isEmpty)
-                  return 'This field is required';
-                return null;
-              }
-            : null,
+          if (helperText != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 6, left: 12),
+              child: Text(
+                helperText,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 11,
+                  color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

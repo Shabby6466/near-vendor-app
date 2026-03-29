@@ -1,13 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -17,6 +14,7 @@ class ShopGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return BlocBuilder<HomeScreenCubit, HomeScreenState>(
       builder: (context, state) {
         if (state is HomeScreenLoading) {
@@ -52,13 +50,13 @@ class ShopGrid extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: ColorName.primary.withValues(alpha: (0.1)),
+                          color: theme.primaryColor.withValues(alpha: 0.1),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           Icons.storefront_rounded,
                           size: 64,
-                          color: ColorName.primary.withValues(alpha: (0.4)),
+                          color: theme.primaryColor.withValues(alpha: 0.4),
                         ),
                       ),
                       const SizedBox(height: 24),
@@ -136,15 +134,15 @@ class ShopGrid extends StatelessWidget {
                 padding: EdgeInsets.only(
                   left: AppSpacing.mediumHorizontalSpacing(context),
                   right: AppSpacing.mediumHorizontalSpacing(context),
-                  top: 16,
+                  top: 12,
                   bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
                 ),
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
-                    childAspectRatio: 0.8,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 0.85,
                   ),
                   delegate: SliverChildBuilderDelegate((context, index) {
                     final shop = shops[index];
@@ -160,8 +158,8 @@ class ShopGrid extends StatelessWidget {
                         onVisibilityChanged: (info) {
                           if (info.visibleFraction > 0.5) {
                             context.read<HomeScreenCubit>().trackImpression(
-                              shop.id,
-                            );
+                                  shop.id,
+                                );
                           }
                         },
                         child: ShopCard(shop: shop),
@@ -187,79 +185,186 @@ class ShopCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
             blurRadius: 10,
-            offset: const Offset(0, 5),
+            offset: const Offset(0, 4),
           ),
         ],
+        border: isDark
+            ? Border.all(color: theme.dividerColor.withValues(alpha: 0.1))
+            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Expanded(
-            child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(20),
-              ),
-              child: CachedNetworkImage(
-                imageUrl: shop.image,
-                fit: BoxFit.cover,
-                width: double.infinity,
-                errorWidget: (context, error, stackTrace) => Container(
-                  color: ColorName.primary.withValues(alpha: 0.1),
-                  child: const Icon(Icons.store, color: ColorName.primary),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Stack(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        shop.name,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: shop.image,
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    placeholder: (context, url) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            theme.primaryColor.withValues(alpha: 0.1),
+                            theme.primaryColor.withValues(alpha: 0.05),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.storefront_outlined,
+                          color: theme.primaryColor.withValues(alpha: 0.4),
+                          size: 32,
                         ),
                       ),
                     ),
-                    if (shop.isVerifiedBadge ?? false) ...[
-                      const SizedBox(width: 4),
-                      const Icon(
-                        Icons.verified_rounded,
-                        color: Color(0xFF2196F3),
-                        size: 16,
+                    errorWidget: (context, error, stackTrace) => Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            theme.primaryColor.withValues(alpha: 0.1),
+                            theme.primaryColor.withValues(alpha: 0.05),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
                       ),
-                    ],
-                  ],
+                      child: Center(
+                        child: Icon(
+                          Icons.storefront_outlined,
+                          color: theme.primaryColor.withValues(alpha: 0.4),
+                          size: 32,
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                const SizedBox(height: 4),
+                // Badge Overlays
+                Positioned(
+                  top: 8,
+                  left: 8,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (shop.isVerifiedBadge ?? false)
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 4,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.verified_rounded,
+                            color: Colors.blue,
+                            size: 14,
+                          ),
+                        ),
+                      if (shop.isRecentlyActive ?? false)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 4),
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                              boxShadow: const [
+                                BoxShadow(
+                                  color: Colors.black12,
+                                  blurRadius: 4,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                // Category Tag
+                Positioned(
+                  bottom: 8,
+                  left: 8,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      shop.category.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  shop.name,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                const SizedBox(height: 2),
                 Row(
                   children: [
-                    Assets.icons.locationMarker.svg(),
-                    const SizedBox(width: 4),
+                    Icon(
+                      Icons.location_on_rounded,
+                      size: 12,
+                      color: theme.primaryColor.withValues(alpha: 0.7),
+                    ),
+                    const SizedBox(width: 2),
                     Expanded(
                       child: Text(
                         shop.location ?? 'N/A',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: ColorName.primary.withValues(alpha: 0.8),
-                          fontSize: 12,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 11,
+                          color: theme.textTheme.bodySmall?.color
+                              ?.withValues(alpha: 0.6),
                         ),
                       ),
                     ),
@@ -267,42 +372,13 @@ class ShopCard extends StatelessWidget {
                 ),
                 if (shop.itemCount != null) ...[
                   const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.inventory_2_outlined,
-                        size: 12,
-                        color: Colors.grey.shade600,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        '${shop.itemCount} Items',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 11,
-                        ),
-                      ),
-                      if (shop.isRecentlyActive ?? false) ...[
-                        const SizedBox(width: 8),
-                        Container(
-                          width: 6,
-                          height: 6,
-                          decoration: const BoxDecoration(
-                            color: Colors.green,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          'Active',
-                          style: TextStyle(
-                            color: Colors.green.shade700,
-                            fontSize: 11,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ],
+                  Text(
+                    '${shop.itemCount} Items Available',
+                    style: TextStyle(
+                      color: theme.primaryColor,
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ],
               ],

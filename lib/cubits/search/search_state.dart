@@ -28,15 +28,17 @@ class SearchSuccess extends SearchState {
   final List<Item> items;
   final SearchMeta? meta;
   final String? message;
+  final String? query;
 
   const SearchSuccess({
     required this.items,
     this.meta,
     this.message,
+    this.query,
   });
 
   @override
-  List<Object?> get props => [items, meta, message];
+  List<Object?> get props => [items, meta, message, query];
 }
 
 class SearchFailure extends SearchState {

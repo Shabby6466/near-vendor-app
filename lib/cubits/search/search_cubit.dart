@@ -85,6 +85,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
         items: response.items,
         meta: response.meta,
         message: response.message,
+        query: query.isNotEmpty ? query : null,
       ));
     } else {
       emit(SearchFailure(response.message ?? 'Search failed'));

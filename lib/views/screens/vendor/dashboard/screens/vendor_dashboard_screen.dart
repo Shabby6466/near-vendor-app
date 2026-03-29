@@ -78,11 +78,13 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
               slivers: [
                 _buildSliverHeader(context, firstName),
 
+                _buildInsightsScroller(context),
+
                 SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 8),
+                    padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
                     child: Text(
-                      'Quick Actions',
+                      'Business Console',
                       style: TextStyle(
                         fontFamily: 'Poppins',
                         fontSize: 18,
@@ -248,36 +250,71 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
   Widget _buildExpandedHeader(BuildContext context, String name) {
     return Padding(
       key: const ValueKey('expanded'),
-      padding: const EdgeInsets.fromLTRB(28, 60, 28, 20),
+      padding: const EdgeInsets.fromLTRB(28, 64, 28, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Command Center',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 14,
-                      color: Colors.white.withValues(alpha: 0.7),
-                      fontWeight: FontWeight.w500,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _getGreeting(),
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        color: Colors.white.withValues(alpha: 0.7),
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.5,
+                      ),
                     ),
-                  ),
-                  Text(
-                    name,
-                    style: const TextStyle(
-                      fontFamily: 'Poppins',
-                      fontSize: 32,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -1.0,
-                      color: Colors.white,
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 34,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -1.2,
+                        color: Colors.white,
+                        height: 1.1,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF34C759),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Text(
+                      'Healthy',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.2,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -286,6 +323,13 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
         ],
       ),
     );
+  }
+
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'GOOD MORNING';
+    if (hour < 17) return 'GOOD AFTERNOON';
+    return 'GOOD EVENING';
   }
 
   Widget _buildStatsRow(BuildContext context) {
@@ -298,22 +342,29 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           activeShops = state.shops.where((s) => s.isActive).length;
         }
 
-        return Row(
-          children: [
-            _buildStatItem(
-              'Active',
-              activeShops.toString(),
-              Icons.check_circle_rounded,
-            ),
-            const SizedBox(width: 40),
-            _buildStatItem(
-              'Total',
-              totalShops.toString(),
-              Icons.store_mall_directory_rounded,
-            ),
-            const SizedBox(width: 40),
-            _buildStatItem('Growth', '+12%', Icons.trending_up_rounded),
-          ],
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.05)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildStatItem(
+                'ACTIVE',
+                activeShops.toString(),
+                Icons.check_circle_rounded,
+              ),
+              _buildStatItem(
+                'TOTAL',
+                totalShops.toString(),
+                Icons.store_mall_directory_rounded,
+              ),
+              _buildStatItem('GROWTH', '+12%', Icons.trending_up_rounded),
+            ],
+          ),
         );
       },
     );
@@ -325,29 +376,163 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
       children: [
         Row(
           children: [
-            Icon(icon, size: 14, color: Colors.white.withValues(alpha: 0.6)),
+            Icon(icon, size: 12, color: Colors.white.withValues(alpha: 0.5)),
             const SizedBox(width: 6),
             Text(
               label,
               style: TextStyle(
                 fontFamily: 'Poppins',
-                fontSize: 12,
-                color: Colors.white.withValues(alpha: 0.6),
-                fontWeight: FontWeight.w500,
+                fontSize: 10,
+                color: Colors.white.withValues(alpha: 0.5),
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
               ),
             ),
           ],
         ),
+        const SizedBox(height: 2),
         Text(
           value,
           style: const TextStyle(
             fontFamily: 'Poppins',
-            fontSize: 24,
-            fontWeight: FontWeight.w800,
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
             color: Colors.white,
+            letterSpacing: -0.5,
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildInsightsScroller(BuildContext context) {
+    final theme = Theme.of(context);
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
+            child: Text(
+              'Market Insights',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
+                letterSpacing: -0.5,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 140,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                _buildInsightCard(
+                  context,
+                  'Weekly Reach',
+                  '1.2k Views',
+                  '+12.5%',
+                  Icons.trending_up_rounded,
+                  Colors.blue,
+                ),
+                _buildInsightCard(
+                  context,
+                  'Market Gap',
+                  'High Demand',
+                  'Electronics',
+                  Icons.lightbulb_outline_rounded,
+                  Colors.orange,
+                ),
+                _buildInsightCard(
+                  context,
+                  'Profile Sync',
+                  '98% Rating',
+                  'Top Tier',
+                  Icons.verified_user_outlined,
+                  Colors.green,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInsightCard(
+    BuildContext context,
+    String title,
+    String value,
+    String subtext,
+    IconData icon,
+    Color color,
+  ) {
+    final theme = Theme.of(context);
+    return Container(
+      width: 160,
+      margin: const EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: color.withValues(alpha: 0.1), width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(6),
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: color, size: 16),
+              ),
+              Text(
+                subtext,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: color,
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 18,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.5,
+            ),
+          ),
+          Text(
+            title,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -361,12 +546,13 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           crossAxisCount: 2,
           mainAxisSpacing: 16,
           crossAxisSpacing: 16,
-          childAspectRatio: 2.2,
+          childAspectRatio: 1.8,
         ),
         delegate: SliverChildListDelegate([
           _buildActionCard(
             context,
             'Add Shop',
+            'Expand your reach',
             Icons.add_business_rounded,
             dashboardTheme?.addShopColor ?? Theme.of(context).primaryColor,
             () {
@@ -382,6 +568,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           _buildActionCard(
             context,
             'Analytics',
+            'Performance data',
             Icons.bar_chart_rounded,
             dashboardTheme?.analyticsColor ?? Colors.orange,
             () {
@@ -400,6 +587,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           _buildActionCard(
             context,
             'Inventory',
+            'Manage items',
             Icons.inventory_2_rounded,
             dashboardTheme?.inventoryColor ?? Colors.blue,
             () {
@@ -415,6 +603,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           _buildActionCard(
             context,
             'Support',
+            'Get assistance',
             Icons.headset_mic_rounded,
             dashboardTheme?.supportColor ?? Colors.purple,
             () {
@@ -432,6 +621,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
   Widget _buildActionCard(
     BuildContext context,
     String title,
+    String subtitle,
     IconData icon,
     Color color,
     VoidCallback onTap,
@@ -444,6 +634,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
         onTap: onTap,
         borderRadius: BorderRadius.circular(18),
         child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
             color: theme.cardColor,
             borderRadius: BorderRadius.circular(18),
@@ -457,24 +648,43 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             ],
           ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: color, size: 20),
+                child: Icon(icon, color: color, size: 22),
               ),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: theme.textTheme.titleMedium?.color,
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: theme.textTheme.titleMedium?.color,
+                        letterSpacing: -0.2,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 10,
+                        fontWeight: FontWeight.w500,
+                        color: theme.textTheme.bodySmall?.color
+                            ?.withValues(alpha: 0.5),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ],

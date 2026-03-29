@@ -57,6 +57,13 @@ class WishlistServices {
     return response.data;
   }
 
+  Future<Map<String, dynamic>> completeWishlist(String id) async {
+    final response = await Server.patch(
+      "${ApiConstants.completeWishlist}$id/complete",
+    );
+    return response.data;
+  }
+
   Future<Map<String, dynamic>> exploreLocalDemand({
     required double lat,
     required double lon,

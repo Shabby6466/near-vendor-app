@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
@@ -10,14 +9,16 @@ class CategorySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return BlocBuilder<HomeScreenCubit, HomeScreenState>(
       builder: (context, state) {
         return SizedBox(
-          height: 45,
+          height: 38,
           child: ListView.separated(
             padding: EdgeInsets.symmetric(
               horizontal: AppSpacing.mediumHorizontalSpacing(context),
-              vertical: 4,
             ),
             scrollDirection: Axis.horizontal,
             itemCount: state is HomeScreenSuccess
@@ -27,7 +28,7 @@ class CategorySelector extends StatelessWidget {
                     : (state is HomeScreenFailure
                         ? state.categories.length
                         : 0)),
-            separatorBuilder: (context, index) => const SizedBox(width: 12),
+            separatorBuilder: (context, index) => const SizedBox(width: 10),
             itemBuilder: (context, index) {
               late CategoryModel category;
               bool isSelected = false;
@@ -50,26 +51,36 @@ class CategorySelector extends StatelessWidget {
                   context.read<HomeScreenCubit>().selectCategory(category);
                 },
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 8,
+                    horizontal: 18,
                   ),
                   decoration: BoxDecoration(
                     color: isSelected
-                        ? ColorName.secondary
-                        : ColorName.white.withValues(alpha: 0.9),
-                    borderRadius: BorderRadius.circular(30),
+                        ? theme.primaryColor.withValues(alpha: 0.1)
+                        : theme.cardColor,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: isSelected
+                          ? theme.primaryColor
+                          : (isDark
+                              ? theme.dividerColor.withValues(alpha: 0.1)
+                              : Colors.grey.shade200),
+                      width: isSelected ? 1.5 : 1,
+                    ),
                   ),
                   child: Center(
                     child: Text(
                       category.name,
                       style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: isSelected
-                            ? FontWeight.bold
-                            : FontWeight.w500,
-                        fontSize: 15,
+                        color: isSelected
+                            ? theme.primaryColor
+                            : theme.textTheme.bodyMedium?.color
+                                ?.withValues(alpha: 0.7),
+                        fontWeight:
+                            isSelected ? FontWeight.w800 : FontWeight.w600,
+                        fontSize: 13,
+                        letterSpacing: -0.2,
                       ),
                     ),
                   ),

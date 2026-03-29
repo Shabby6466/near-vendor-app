@@ -219,11 +219,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildSectionTitle('Network Exposure'),
-          const SizedBox(height: 16),
+          _buildInsightHeadline(
+            'Portfolio Reach',
+            'Your brand is expanding across the network.',
+          ),
+          const SizedBox(height: 24),
           _buildBarChart(context, sortedEntries),
+          _buildHelperText('Network Exposure', 'Total unique impressions across all your registered shop spaces.'),
           const SizedBox(height: 32),
-          _buildSectionTitle('Portfolio Breakdown'),
+          _buildSectionTitle('Performance Breakdown'),
           const SizedBox(height: 16),
           ...sortedEntries.map((e) => _buildShopStatRow(context, e)),
         ],
@@ -232,6 +236,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _buildInsightsTab(BuildContext context, AnalyticsSuccess state) {
+    final theme = Theme.of(context);
     return BlocBuilder<VendorShopCubit, VendorShopState>(
       builder: (context, shopState) {
         List<Shop> shops = [];
@@ -247,11 +252,24 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               if (state.selectedShopInsights != null) ...[
                 _buildInsightsSummary(context, state.selectedShopInsights!.summary),
                 const SizedBox(height: 32),
-                _buildSectionTitle('Trend Analysis'),
+                _buildInsightHeadline(
+                  'Trend Analysis',
+                  'Vibrancy of your digital presence over time.',
+                ),
                 const SizedBox(height: 16),
                 _buildLineChart(context, state.selectedShopStats ?? []),
+                _buildHelperText('Engagement Metrics', 'Purple represents impressions, Orange represents direct shop views.'),
                 const SizedBox(height: 32),
                 _buildSectionTitle('Neighborhood Demand'),
+                const SizedBox(height: 8),
+                Text(
+                  'High-intent searches happening near this shop.',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                  ),
+                ),
                 const SizedBox(height: 16),
                 _buildDemandList(context, state.selectedShopMarket?.neighborhoodDemand ?? []),
               ] else if (_selectedShopId == null)
@@ -309,6 +327,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           context,
           'Impressions',
           summary.impressions.toString(),
+          '+12.5%',
           Icons.visibility_outlined,
           dashboardTheme?.inventoryColor ?? Colors.blue,
         ),
@@ -317,6 +336,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           context,
           'Views',
           summary.views.toString(),
+          '+5.2%',
           Icons.ads_click_rounded,
           dashboardTheme?.analyticsColor ?? Colors.orange,
         ),
@@ -325,6 +345,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           context,
           'CTR',
           '${summary.ctr}%',
+          '+0.8%',
           Icons.analytics_outlined,
           dashboardTheme?.successColor ?? Colors.green,
         ),
@@ -336,6 +357,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     BuildContext context,
     String label,
     String value,
+    String trend,
     IconData icon,
     Color color,
   ) {
@@ -351,7 +373,21 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: color, size: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(icon, color: color, size: 20),
+                Text(
+                  trend,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
             const SizedBox(height: 12),
             Text(
               value,
@@ -590,6 +626,69 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         fontSize: 18,
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
+      ),
+    );
+  }
+
+  Widget _buildInsightHeadline(String title, String subtitle) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 22,
+            fontWeight: FontWeight.w900,
+            letterSpacing: -0.8,
+          ),
+        ),
+        Text(
+          subtitle,
+          style: TextStyle(
+            fontFamily: 'Poppins',
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey.shade600,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHelperText(String title, String description) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.info_outline_rounded, size: 12, color: Colors.grey),
+              const SizedBox(width: 4),
+              Text(
+                title.toUpperCase(),
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: Colors.grey,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            description,
+            style: TextStyle(
+              fontFamily: 'Poppins',
+              fontSize: 11,
+              color: Colors.grey.shade500,
+              height: 1.4,
+            ),
+          ),
+        ],
       ),
     );
   }

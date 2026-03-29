@@ -102,4 +102,38 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
       return false;
     }
   }
+
+  Future<bool> completeWishlist(String id) async {
+    try {
+      final response = await _wishlistServices.completeWishlist(id);
+      if (response['statusCode'] == 200 || response['statusCode'] == 2000 || response['success'] == true) {
+        if (state is UserWishlistLoaded) {
+          final currentItems = (state as UserWishlistLoaded).wishlists;
+          final updatedItems = currentItems.map((w) {
+            if (w.id == id) {
+              return WishlistItem(
+                id: w.id,
+                itemName: w.itemName,
+                description: w.description,
+                categoryId: w.categoryId,
+                status: 'FULFILLED',
+                createdAt: w.createdAt,
+                matchedItems: w.matchedItems,
+              );
+            }
+            return w;
+          }).toList();
+          
+          emit(UserWishlistLoaded(
+            wishlists: updatedItems,
+            hasMore: _hasMore,
+          ));
+        }
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
 }

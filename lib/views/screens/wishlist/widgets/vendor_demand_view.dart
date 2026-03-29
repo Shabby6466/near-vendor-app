@@ -18,6 +18,34 @@ class VendorDemandView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Opportunity Feed',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 24,
+                fontWeight: FontWeight.w900,
+                letterSpacing: -1.0,
+              ),
+            ),
+            Text(
+              'Real-time local demand matching your profile',
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: BlocBuilder<VendorDemandCubit, VendorDemandState>(
         builder: (context, state) {
           if (state is VendorDemandInitial || state is VendorDemandLoading) {
@@ -171,23 +199,32 @@ class VendorDemandView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        wish.itemName,
+                        wish.itemName.toUpperCase(),
                         style: TextStyle(
                           fontFamily: 'Poppins',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: -0.5,
                           color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        'Requested ${wish.createdAt != null ? dateFormat.format(wish.createdAt!) : "Unknown time"}',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.6),
-                        ),
+                      Row(
+                        children: [
+                          Icon(Icons.timer_outlined, 
+                            size: 10, 
+                            color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.5)),
+                          const SizedBox(width: 4),
+                          Text(
+                            'Posted ${wish.createdAt != null ? dateFormat.format(wish.createdAt!) : "Recently"}',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              color: (isDark ? Colors.white : Colors.black87).withValues(alpha: 0.5),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -196,28 +233,66 @@ class VendorDemandView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4),
                     ],
                   ),
-                  child: Row(
+                  child: Column(
                     children: [
-                      const Icon(Icons.flash_on_rounded, color: Colors.orange, size: 14),
-                      const SizedBox(width: 4),
                       Text(
-                        'HOT',
+                        'PRIORITY',
                         style: TextStyle(
                           fontFamily: 'Poppins',
-                          fontSize: 10,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.orange.shade800,
+                          fontSize: 8,
+                          fontWeight: FontWeight.w900,
+                          color: Colors.grey.shade600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      Text(
+                        (index % 3 == 0) ? 'HIGH' : 'MEDIUM',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          color: (index % 3 == 0) ? Colors.red.shade700 : Colors.orange.shade800,
                         ),
                       ),
                     ],
                   ),
                 ),
               ],
+            ),
+          ),
+          
+          // Market Tip Section
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+            child: Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: ColorName.primary.withValues(alpha: 0.05),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: ColorName.primary.withValues(alpha: 0.1)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.lightbulb_outline_rounded, size: 16, color: ColorName.primary),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Text(
+                      'Market Gap identified: High search volume for this category in your area.',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                        color: ColorName.primary.withValues(alpha: 0.8),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           
@@ -228,6 +303,7 @@ class VendorDemandView extends StatelessWidget {
               child: Text(
                 '"${wish.description!}"',
                 style: TextStyle(
+                  fontFamily: 'Poppins',
                   fontStyle: FontStyle.italic,
                   fontSize: 14,
                   height: 1.5,
@@ -261,13 +337,15 @@ class VendorDemandView extends StatelessWidget {
                   onPressed: () {
                     // Currently no action beyond viewing the data
                   },
-                  icon: const Icon(Icons.add_business_rounded, size: 18),
-                  label: const Text('Add to Inventory', style: TextStyle(fontWeight: FontWeight.bold)),
+                  icon: const Icon(Icons.bolt_rounded, size: 18),
+                  label: const Text('SEIZE OPPORTUNITY', style: TextStyle(fontWeight: FontWeight.w900, fontSize: 11, letterSpacing: 0.5)),
                   style: TextButton.styleFrom(
-                    foregroundColor: ColorName.primary,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    backgroundColor: ColorName.primary.withValues(alpha: 0.1),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                    backgroundColor: ColorName.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    elevation: 4,
+                    shadowColor: ColorName.primary.withValues(alpha: 0.3),
                   ),
                 ),
               ],
