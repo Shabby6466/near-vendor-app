@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -12,6 +13,7 @@ import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.da
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopDetailsScreen extends StatelessWidget {
   final ui.ShopModel shop;
@@ -131,10 +133,10 @@ class ShopDetailsScreen extends StatelessWidget {
         SizedBox(
           height: AppSpacing.screenHeight(context) * 0.35,
           width: double.infinity,
-          child: Image.network(
-            fullShop.coverImageUrl ?? shop.image,
+          child: CachedNetworkImage(
+            imageUrl: fullShop.coverImageUrl ?? shop.image,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => Container(
+            errorWidget: (context, error, stackTrace) => Container(
               color: Colors.grey.shade300,
               child: const Icon(Icons.store, size: 50),
             ),
@@ -251,7 +253,8 @@ class ShopDetailsScreen extends StatelessWidget {
               child: CircleAvatar(
                 radius: 45,
                 backgroundImage: NetworkImage(
-                  fullShop.storeLogoUrl ?? 'https://i.pravatar.cc/150?u=a042581f4e29026704d',
+                  fullShop.storeLogoUrl ??
+                      'https://i.pravatar.cc/150?u=a042581f4e29026704d',
                 ),
               ),
             ),
@@ -261,7 +264,11 @@ class ShopDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildShopAds(BuildContext context, Shop fullShop, List<Item> inventory) {
+  Widget _buildShopAds(
+    BuildContext context,
+    Shop fullShop,
+    List<Item> inventory,
+  ) {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.mediumHorizontalSpacing(context),
@@ -311,7 +318,10 @@ class ShopDetailsScreen extends StatelessWidget {
               ),
               itemCount: inventory.length,
               itemBuilder: (context, index) {
-                return ItemCard(item: inventory[index], shopName: fullShop.shopName);
+                return ItemCard(
+                  item: inventory[index],
+                  shopName: fullShop.shopName,
+                );
               },
             ),
         ],
@@ -354,7 +364,11 @@ class ShopDetailsScreen extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: GestureDetector(
-                onTap: () => _launchMap(shop.shopLatitude, shop.shopLongitude, shop.shopName),
+                onTap: () => _launchMap(
+                  shop.shopLatitude,
+                  shop.shopLongitude,
+                  shop.shopName,
+                ),
                 child: Container(
                   height: 52,
                   decoration: BoxDecoration(
@@ -364,7 +378,11 @@ class ShopDetailsScreen extends StatelessWidget {
                   child: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.directions_rounded, color: Colors.black, size: 20),
+                      Icon(
+                        Icons.directions_rounded,
+                        color: Colors.black,
+                        size: 20,
+                      ),
                       SizedBox(width: 8),
                       Text(
                         'Directions',
@@ -417,8 +435,10 @@ class ShopDetailsScreen extends StatelessWidget {
 
   Future<void> _launchMap(double lat, double lon, String title) async {
     final url = Uri.parse('google.navigation:q=$lat,$lon');
-    final fallbackUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon');
-    
+    final fallbackUrl = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$lat,$lon',
+    );
+
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else if (await canLaunchUrl(fallbackUrl)) {
@@ -435,99 +455,111 @@ class ItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => BlocProvider(
-              create: (context) => ExploreItemDetailCubit(),
-              child: ExploreItemDetailScreen(
-                itemId: item.id,
-              ),
-            ),
-          ),
-        );
+    return VisibilityDetector(
+      key: Key('item-shop-details-${item.id}'),
+      onVisibilityChanged: (info) {
+        if (info.visibleFraction > 0.5) {
+          context.read<ShopDetailsCubit>().trackImpression(item.id);
+        }
       },
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.grey.shade200),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
-                child: Image.network(
-                  item.imageUrl ?? '',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: ColorName.primary.withValues(alpha: 0.1),
-                    child: const Icon(Icons.inventory_2_outlined, color: ColorName.primary),
-                  ),
-                ),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BlocProvider(
+                create: (context) => ExploreItemDetailCubit(),
+                child: ExploreItemDetailScreen(itemId: item.id),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    item.name,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
+          );
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.grey.shade200),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.05),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                  ),
+                  child: CachedNetworkImage(
+                    imageUrl: item.imageUrl ?? '',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    errorWidget: (context, error, stackTrace) => Container(
+                      color: ColorName.primary.withValues(alpha: 0.1),
+                      child: const Icon(
+                        Icons.inventory_2_outlined,
+                        color: ColorName.primary,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    shopName,
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 10),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        '${item.price} PKR',
-                        style: const TextStyle(
-                          color: ColorName.primary,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
                       ),
-                      if (item.discount != null)
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      shopName,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 10,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
                         Text(
-                          '-${item.discount}%',
+                          '${item.price} PKR',
                           style: const TextStyle(
-                            color: Colors.red,
-                            fontSize: 10,
+                            color: ColorName.primary,
+                            fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                    ],
-                  ),
-                ],
+                        if (item.discount != null)
+                          Text(
+                            '-${item.discount}%',
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

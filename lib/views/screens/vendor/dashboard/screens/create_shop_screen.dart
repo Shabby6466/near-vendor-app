@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nearvendorapp/models/data_models/category_model.dart';
 
 class CreateShopScreen extends StatefulWidget {
   const CreateShopScreen({super.key});
@@ -37,6 +39,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
 
   File? _logoFile;
   File? _coverFile;
+  String? _selectedCategoryId;
   final _picker = ImagePicker();
 
   final Map<String, String> _operatingHours = {
@@ -72,7 +75,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
     final input = CreateShopInput(
       vendorId: vendorId,
       shopName: _nameController.text,
-      businessCategory: _categoryController.text,
+      categoryId: _selectedCategoryId ?? '',
       registrationNumber: _regNumberController.text,
       shopAddress: _addressController.text,
       operatingHours: _operatingHours,
@@ -275,7 +278,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
 
     return BlocBuilder<CategoriesCubit, CategoriesState>(
       builder: (context, state) {
-        List<String> categories = [];
+        List<CategoryModel> categories = [];
         bool isLoading = false;
 
         if (state is CategoriesLoaded) {
@@ -287,9 +290,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 20),
           child: DropdownButtonFormField<String>(
-            value: (categories.contains(_categoryController.text))
-                ? _categoryController.text
-                : null,
+            value: _selectedCategoryId,
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 16,
@@ -334,11 +335,11 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
               ),
               errorStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 12),
             ),
-            items: categories.map((String category) {
+            items: categories.map((CategoryModel category) {
               return DropdownMenuItem<String>(
-                value: category,
+                value: category.id,
                 child: Text(
-                  category,
+                  category.name,
                   style: TextStyle(
                     color: theme.textTheme.bodyLarge?.color,
                     fontFamily: 'Poppins',
@@ -350,7 +351,12 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                 ? null
                 : (String? newValue) {
                     setState(() {
-                      _categoryController.text = newValue ?? '';
+                      _selectedCategoryId = newValue;
+                      if (newValue != null) {
+                        _categoryController.text = categories
+                            .firstWhere((c) => c.id == newValue)
+                            .name;
+                      }
                     });
                   },
             validator: (value) {
@@ -473,7 +479,12 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                 child: file != null
                     ? Image.file(file, fit: BoxFit.cover)
                     : (networkUrl != null && networkUrl.isNotEmpty)
-                    ? Image.network(networkUrl, fit: BoxFit.cover)
+                    ? CachedNetworkImage(
+                        imageUrl: networkUrl,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, error, stackTrace) =>
+                            const Icon(Icons.image),
+                      )
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

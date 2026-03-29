@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/models/ui_models/categories_list.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
+import 'package:nearvendorapp/models/data_models/category_model.dart';
 
 class CategorySelector extends StatelessWidget {
   const CategorySelector({super.key});
@@ -20,15 +20,30 @@ class CategorySelector extends StatelessWidget {
               vertical: 4,
             ),
             scrollDirection: Axis.horizontal,
-            itemCount: CategoriesList.categories.length,
+            itemCount: state is HomeScreenSuccess
+                ? state.categories.length
+                : (state is HomeScreenLoading
+                    ? state.categories.length
+                    : (state is HomeScreenFailure
+                        ? state.categories.length
+                        : 0)),
             separatorBuilder: (context, index) => const SizedBox(width: 12),
             itemBuilder: (context, index) {
-              final category = CategoriesList.categories[index];
-              final state = context.watch<HomeScreenCubit>().state;
-              final currentCategory = state is HomeScreenSuccess
-                  ? state.category
-                  : context.read<HomeScreenCubit>().selectedCategory;
-              final isSelected = currentCategory == category;
+              late CategoryModel category;
+              bool isSelected = false;
+
+              if (state is HomeScreenSuccess) {
+                category = state.categories[index];
+                isSelected = state.selectedCategory == category;
+              } else if (state is HomeScreenLoading) {
+                category = state.categories[index];
+                isSelected = state.selectedCategory == category;
+              } else if (state is HomeScreenFailure) {
+                category = state.categories[index];
+                isSelected = state.selectedCategory == category;
+              } else {
+                return const SizedBox.shrink();
+              }
 
               return GestureDetector(
                 onTap: () {
@@ -48,7 +63,7 @@ class CategorySelector extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      category,
+                      category.name,
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: isSelected

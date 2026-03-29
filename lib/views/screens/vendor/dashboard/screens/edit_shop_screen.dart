@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/categories_st
 import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nearvendorapp/models/data_models/category_model.dart';
 
 class EditShopScreen extends StatefulWidget {
   final Shop shop;
@@ -38,6 +40,7 @@ class _EditShopScreenState extends State<EditShopScreen> {
 
   File? _logoFile;
   File? _coverFile;
+  String? _selectedCategoryId;
   final _picker = ImagePicker();
 
   final Map<String, String> _operatingHours = {
@@ -63,6 +66,7 @@ class _EditShopScreenState extends State<EditShopScreen> {
     _phoneController = TextEditingController(text: s.shopContactPhone);
     _whatsappController = TextEditingController(text: s.whatsappNumber);
     _emailController = TextEditingController(text: s.storeEmail);
+    _selectedCategoryId = s.categoryId;
 
     _operatingHours.addAll(s.operatingHours.cast<String, String>());
   }
@@ -87,7 +91,7 @@ class _EditShopScreenState extends State<EditShopScreen> {
     final input = UpdateShopInput(
       shopId: widget.shop.id,
       shopName: _nameController.text,
-      businessCategory: _categoryController.text,
+      categoryId: _selectedCategoryId, // Fixed: Pass actual category ID
       registrationNumber: _regNumberController.text,
       shopAddress: _addressController.text,
       operatingHours: _operatingHours,
@@ -281,11 +285,21 @@ class _EditShopScreenState extends State<EditShopScreen> {
 
     return BlocBuilder<CategoriesCubit, CategoriesState>(
       builder: (context, state) {
-        List<String> categories = [];
+        List<CategoryModel> categories = [];
         bool isLoading = false;
 
         if (state is CategoriesLoaded) {
           categories = state.categories;
+          // If we have categories but no ID yet, try to find ID by name for existing shops
+          if (_selectedCategoryId == null && _categoryController.text.isNotEmpty) {
+            final existingCat = categories.cast<CategoryModel?>().firstWhere(
+              (c) => c?.name == _categoryController.text,
+              orElse: () => null,
+            );
+            if (existingCat != null) {
+              _selectedCategoryId = existingCat.id;
+            }
+          }
         } else if (state is CategoriesLoading) {
           isLoading = true;
         }
@@ -293,9 +307,7 @@ class _EditShopScreenState extends State<EditShopScreen> {
         return Padding(
           padding: const EdgeInsets.only(bottom: 20),
           child: DropdownButtonFormField<String>(
-            value: (categories.contains(_categoryController.text))
-                ? _categoryController.text
-                : null,
+            value: _selectedCategoryId,
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 16,
@@ -340,11 +352,11 @@ class _EditShopScreenState extends State<EditShopScreen> {
               ),
               errorStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 12),
             ),
-            items: categories.map((String category) {
+            items: categories.map((CategoryModel category) {
               return DropdownMenuItem<String>(
-                value: category,
+                value: category.id,
                 child: Text(
-                  category,
+                  category.name,
                   style: TextStyle(
                     color: theme.textTheme.bodyLarge?.color,
                     fontFamily: 'Poppins',
@@ -356,7 +368,12 @@ class _EditShopScreenState extends State<EditShopScreen> {
                 ? null
                 : (String? newValue) {
                     setState(() {
-                      _categoryController.text = newValue ?? '';
+                      _selectedCategoryId = newValue;
+                      if (newValue != null) {
+                        _categoryController.text = categories
+                            .firstWhere((c) => c.id == newValue)
+                            .name;
+                      }
                     });
                   },
             validator: (value) {
@@ -479,7 +496,12 @@ class _EditShopScreenState extends State<EditShopScreen> {
                 child: file != null
                     ? Image.file(file, fit: BoxFit.cover)
                     : (networkUrl != null && networkUrl.isNotEmpty)
-                    ? Image.network(networkUrl, fit: BoxFit.cover)
+                    ? CachedNetworkImage(
+                        imageUrl: networkUrl,
+                        fit: BoxFit.cover,
+                        errorWidget: (context, error, stackTrace) =>
+                            const Icon(Icons.image),
+                      )
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

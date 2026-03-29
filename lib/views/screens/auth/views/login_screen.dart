@@ -27,7 +27,7 @@ class LoginScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is LoginSuccess) {
             context.read<SessionCubit>().setAuthenticated(state.user);
-            AppNavigator.push(context, const MainScreen());
+            AppNavigator.pushAndRemoveUntil(context, const MainScreen());
           } else if (state is LoginFailure) {
             AppAlerts.showErrorSnackBar(context, state.message);
           }

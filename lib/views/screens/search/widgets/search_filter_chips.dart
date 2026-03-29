@@ -12,7 +12,7 @@ class SearchFilterChips extends StatefulWidget {
 
 class _SearchFilterChipsState extends State<SearchFilterChips> {
   String selectedFilter = 'All';
-  final List<String> filters = ['All', 'Camera Search', 'Audio Search'];
+  final List<String> filters = ['Text', 'Camera Search'];
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,6 @@ class _SearchFilterChipsState extends State<SearchFilterChips> {
           final isSelected = selectedFilter == filter;
           IconData? icon;
           if (filter == 'Camera Search') icon = Icons.camera_enhance_outlined;
-          if (filter == 'Audio Search') icon = Icons.mic_none_outlined;
 
           return Padding(
             padding: const EdgeInsets.only(right: 8.0),

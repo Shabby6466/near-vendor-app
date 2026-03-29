@@ -11,6 +11,8 @@ class Item extends Equatable {
   final String? imageUrl;
   final bool isAvailable;
   final double? discount;
+  final Map<String, dynamic>? shop; // For portfolio results
+  final int? count; // For performance results
 
   const Item({
     required this.id,
@@ -23,6 +25,8 @@ class Item extends Equatable {
     this.imageUrl,
     this.isAvailable = true,
     this.discount,
+    this.shop,
+    this.count,
   });
 
   factory Item.fromJson(Map<String, dynamic> json) {
@@ -37,6 +41,8 @@ class Item extends Equatable {
       imageUrl: json['imageUrl'] as String?,
       isAvailable: json['isAvailable'] as bool? ?? true,
       discount: json['discount'] != null ? double.tryParse(json['discount'].toString()) : null,
+      shop: json['shop'] as Map<String, dynamic>?,
+      count: json['count'] as int?,
     );
   }
 
@@ -67,5 +73,7 @@ class Item extends Equatable {
         imageUrl,
         isAvailable,
         discount,
+        shop,
+        count,
       ];
 }

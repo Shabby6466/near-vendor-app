@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
-import 'package:nearvendorapp/views/screens/auth/views/sign_up_screen.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
@@ -12,6 +10,7 @@ import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.da
 import 'package:nearvendorapp/views/screens/vendor/onboarding/screens/vendor_onboarding_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/guest_auth_banner.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -54,9 +53,28 @@ class ProfileScreen extends StatelessWidget {
                       return Column(
                         children: [
                           const SizedBox(height: 20),
-                          if (isGuest)
-                            const _GuestAuthBanner()
-                          else ...[
+                          if (isGuest) ...[
+                            // Center the guest banner in the remaining space if possible
+                            // or just give it some top padding if it's the only thing.
+                            // The user said "not in center", so I'll wrap it in a Center and Add some spacing.
+                            SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.1,
+                            ),
+                            const GuestAuthBanner(),
+                            SizedBox(
+                              height: AppSpacing.largeVerticalSpacing(context),
+                            ),
+                            DiscoverySettings(
+                              radius: state.discoveryRadius,
+                              newOfferAlerts: state.newOfferAlerts,
+                              onRadiusChanged: (value) => context
+                                  .read<ProfileCubit>()
+                                  .updateRadius(value),
+                              onAlertsToggled: (value) => context
+                                  .read<ProfileCubit>()
+                                  .toggleOfferAlerts(value),
+                            ),
+                          ] else ...[
                             ProfileHeader(
                               userName: state.userName,
                               userLocation: state.userLocation,
@@ -103,13 +121,14 @@ class ProfileScreen extends StatelessWidget {
                                         decoration: BoxDecoration(
                                           color:
                                               sessionState.vendorStatus ==
-                                                  'APPROVED'
-                                              ? Colors.green.withValues(
-                                                  alpha: 0.1,
-                                                )
-                                              : theme.dividerColor.withValues(
-                                                  alpha: 0.1,
-                                                ),
+                                                      'APPROVED'
+                                                  ? Colors.green.withValues(
+                                                      alpha: 0.1,
+                                                    )
+                                                  : theme.dividerColor
+                                                      .withValues(
+                                                      alpha: 0.1,
+                                                    ),
                                           borderRadius: BorderRadius.circular(
                                             12,
                                           ),
@@ -118,15 +137,12 @@ class ProfileScreen extends StatelessWidget {
                                           sessionState.vendorStatus ??
                                               'PENDING',
                                           style: TextStyle(
-                                            color:
-                                                sessionState.vendorStatus ==
+                                            color: sessionState.vendorStatus ==
                                                     'APPROVED'
                                                 ? Colors.green
-                                                : theme
-                                                      .textTheme
-                                                      .bodyMedium
-                                                      ?.color
-                                                      ?.withValues(alpha: 0.6),
+                                                : theme.textTheme.bodyMedium
+                                                    ?.color
+                                                    ?.withValues(alpha: 0.6),
                                             fontWeight: FontWeight.bold,
                                             fontSize: 12,
                                             fontFamily: 'Poppins',
@@ -234,113 +250,3 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-class _GuestAuthBanner extends StatelessWidget {
-  const _GuestAuthBanner();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    // final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: theme.primaryColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.person_outline,
-              color: theme.primaryColor,
-              size: 40,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Unlock the Full Experience!',
-            style: TextStyle(
-              color: theme.textTheme.titleLarge?.color,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Poppins',
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Join our community to shop, sell, and connect with top vendors.',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-              fontSize: 13,
-              fontFamily: 'Poppins',
-            ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () =>
-                      AppNavigator.push(context, const LoginScreen()),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primaryColor,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () =>
-                      AppNavigator.push(context, const SignUpScreen()),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: theme.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: BorderSide(color: theme.primaryColor, width: 1.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}

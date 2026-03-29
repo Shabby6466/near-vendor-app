@@ -1,3 +1,5 @@
+import 'package:nearvendorapp/models/data_models/category_model.dart';
+
 abstract class CategoriesState {
   const CategoriesState();
 }
@@ -7,7 +9,7 @@ class CategoriesInitial extends CategoriesState {}
 class CategoriesLoading extends CategoriesState {}
 
 class CategoriesLoaded extends CategoriesState {
-  final List<String> categories;
+  final List<CategoryModel> categories;
   const CategoriesLoaded(this.categories);
 }
 

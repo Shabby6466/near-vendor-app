@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
@@ -6,6 +7,7 @@ import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopGrid extends StatelessWidget {
   const ShopGrid({super.key});
@@ -36,11 +38,50 @@ class ShopGrid extends StatelessWidget {
           final message = state.message;
 
           if (shops.isEmpty) {
-            return const SliverFillRemaining(
+            return SliverFillRemaining(
+              hasScrollBody: false,
               child: Center(
                 child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: Text('No vendors found in this category'),
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: ColorName.primary.withValues(alpha: (0.1)),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.storefront_rounded,
+                          size: 64,
+                          color: ColorName.primary.withValues(alpha: (0.4)),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      const Text(
+                        'No vendors found here',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Try exploring a different category or\ncheck back later for new arrivals.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 14,
+                          color: Colors.grey.shade600,
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );
@@ -63,9 +104,7 @@ class ShopGrid extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: Colors.amber.shade50,
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: Colors.amber.shade200,
-                        ),
+                        border: Border.all(color: Colors.amber.shade200),
                       ),
                       child: Row(
                         children: [
@@ -104,23 +143,30 @@ class ShopGrid extends StatelessWidget {
                     mainAxisSpacing: 16,
                     childAspectRatio: 0.8,
                   ),
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final shop = shops[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ShopDetailsScreen(shop: shop),
-                            ),
-                          );
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final shop = shops[index];
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ShopDetailsScreen(shop: shop),
+                          ),
+                        );
+                      },
+                      child: VisibilityDetector(
+                        key: Key('shop-${shop.id}'),
+                        onVisibilityChanged: (info) {
+                          if (info.visibleFraction > 0.5) {
+                            context.read<HomeScreenCubit>().trackImpression(
+                              shop.id,
+                            );
+                          }
                         },
                         child: ShopCard(shop: shop),
-                      );
-                    },
-                    childCount: shops.length,
-                  ),
+                      ),
+                    );
+                  }, childCount: shops.length),
                 ),
               ),
             ],
@@ -160,11 +206,11 @@ class ShopCard extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(20),
               ),
-              child: Image.network(
-                shop.image,
+              child: CachedNetworkImage(
+                imageUrl: shop.image,
                 fit: BoxFit.cover,
                 width: double.infinity,
-                errorBuilder: (context, error, stackTrace) => Container(
+                errorWidget: (context, error, stackTrace) => Container(
                   color: ColorName.primary.withValues(alpha: 0.1),
                   child: const Icon(Icons.store, color: ColorName.primary),
                 ),

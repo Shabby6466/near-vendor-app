@@ -31,6 +31,15 @@ class LoginCubit extends Cubit<LoginState> {
       if (response.user != null && response.token != null) {
         await CurrentUserStorage.storeUserData(response.user);
         await CurrentUserStorage.storeUserAuthToken(response.token!, null);
+        
+        // Sync last known location to server upon login
+        final lastLocation = CurrentUserStorage.getLastLocation();
+        if (lastLocation != null) {
+          AuthServices().updateUserLocation(
+            lastLocation['lat']!,
+            lastLocation['lon']!,
+          );
+        }
       }
       emit(LoginSuccess(user: response.user));
     } else {

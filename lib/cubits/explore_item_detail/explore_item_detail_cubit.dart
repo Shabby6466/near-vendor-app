@@ -1,13 +1,16 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/analytics_mixin.dart';
 import 'package:nearvendorapp/services/item_services.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'explore_item_detail_state.dart';
 
-class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> {
+class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> with AnalyticsMixin<ExploreItemDetailState> {
   final ItemServices _itemServices = ItemServices();
   final ShopServices _shopServices = ShopServices();
 
-  ExploreItemDetailCubit() : super(ExploreItemDetailInitial());
+  ExploreItemDetailCubit() : super(ExploreItemDetailInitial()) {
+    initAnalytics('explore_item_detail_screen');
+  }
 
   Future<void> fetchDetails(String itemId) async {
     emit(ExploreItemDetailLoading());
@@ -44,9 +47,19 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> {
         return;
       }
 
+      // 3. Track Impression with metadata
+      updateAnalyticsMetadata({'shopId': shopId});
+      trackImpression(itemId);
+
       emit(ExploreItemDetailSuccess(item, shop));
     } catch (e) {
       emit(ExploreItemDetailFailure(e.toString()));
     }
+  }
+
+  @override
+  Future<void> close() async {
+    await closeAnalytics();
+    return super.close();
   }
 }

@@ -119,4 +119,25 @@ class CurrentUserStorage {
       defaultValue: 10.0,
     ) as double;
   }
+
+  static Future<void> setLastLocation(double lat, double lon) async {
+    try {
+      await _userBox.put(HiveKeys.lastLatitudeKey, lat);
+      await _userBox.put(HiveKeys.lastLongitudeKey, lon);
+    } catch (e) {
+      debugPrint('Error storing last location: $e');
+    }
+  }
+
+  static Map<String, double>? getLastLocation() {
+    final lat = _userBox.get(HiveKeys.lastLatitudeKey);
+    final lon = _userBox.get(HiveKeys.lastLongitudeKey);
+    if (lat != null && lon != null) {
+      return {
+        'lat': lat as double,
+        'lon': lon as double,
+      };
+    }
+    return null;
+  }
 }

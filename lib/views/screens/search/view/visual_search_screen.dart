@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/views/screens/search/view/search_results_screen.dart';
 
@@ -8,7 +9,8 @@ class VisualSearchScreen extends StatefulWidget {
   State<VisualSearchScreen> createState() => _VisualSearchScreenState();
 }
 
-class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTickerProviderStateMixin {
+class _VisualSearchScreenState extends State<VisualSearchScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _scannerController;
   late Animation<double> _scannerAnimation;
 
@@ -19,7 +21,10 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
       vsync: this,
       duration: const Duration(seconds: 2),
     )..repeat(reverse: true);
-    _scannerAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_scannerController);
+    _scannerAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(_scannerController);
   }
 
   @override
@@ -36,14 +41,15 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
         children: [
           // Simulated Camera Background
           Positioned.fill(
-            child: Image.network(
-              'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=800', // Bottle image
+            child: CachedNetworkImage(
+              imageUrl:
+                  'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&q=80&w=800', // Bottle image
               fit: BoxFit.cover,
               color: Colors.black.withValues(alpha: 0.3),
               colorBlendMode: BlendMode.darken,
             ),
           ),
-          
+
           SafeArea(
             child: Column(
               children: [
@@ -92,11 +98,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                 ),
               ),
               const SizedBox(height: 4),
-              Container(
-                width: 40,
-                height: 3,
-                color: Colors.blue,
-              ),
+              Container(width: 40, height: 3, color: Colors.blue),
             ],
           ),
           Container(
@@ -105,7 +107,11 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
               color: Colors.white.withValues(alpha: 0.2),
               shape: BoxShape.circle,
             ),
-            child: const Icon(Icons.flashlight_on_outlined, color: Colors.white, size: 24),
+            child: const Icon(
+              Icons.flashlight_on_outlined,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
         ],
       ),
@@ -148,7 +154,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                   right: 0,
                   child: _buildCorner(top: false, left: false),
                 ),
-                
+
                 // Animated Scanning Line
                 AnimatedBuilder(
                   animation: _scannerAnimation,
@@ -182,13 +188,16 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
               ],
             ),
           ),
-          
+
           // Outer faint border
           Container(
             width: size - 20,
             height: (size * 1.2) - 20,
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white.withValues(alpha: 0.3), width: 1),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.3),
+                width: 1,
+              ),
               borderRadius: BorderRadius.circular(12),
             ),
           ),
@@ -252,10 +261,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
         SizedBox(height: 8),
         Text(
           'کسی بھی پروڈکٹ پر کیمرہ کریں',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-          ),
+          style: TextStyle(color: Colors.white, fontSize: 18),
         ),
       ],
     );
@@ -268,7 +274,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           _buildActionButton(Icons.photo_library_outlined, 'GALLERY'),
-          
+
           // Shutter Button
           GestureDetector(
             onTap: () => _showScanResultBottomSheet(context),
@@ -288,7 +294,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
               ),
             ),
           ),
-          
+
           _buildActionButton(Icons.qr_code_scanner, 'BARCODE'),
         ],
       ),
@@ -320,7 +326,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                 ),
               ),
               const SizedBox(height: 24),
-              
+
               // Match info
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -351,7 +357,9 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                           child: const LinearProgressIndicator(
                             value: 0.92,
                             backgroundColor: Color(0xFFE0E0E0),
-                            valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF1EC091)),
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              Color(0xFF1EC091),
+                            ),
                             minHeight: 6,
                           ),
                         ),
@@ -361,7 +369,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                 ],
               ),
               const SizedBox(height: 16),
-              
+
               // Product details
               Row(
                 children: [
@@ -381,10 +389,12 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                       ],
                     ),
                     padding: const EdgeInsets.all(8),
-                    child: Image.network(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_x_v-9p9zBUPz7bY_G5cR8n5nJ5Y-f6Z9lA&s', // Colgate logo/product
+                    child: CachedNetworkImage(
+                      imageUrl:
+                          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_x_v-9p9zBUPz7bY_G5cR8n5nJ5Y-f6Z9lA&s', // Colgate logo/product
                       fit: BoxFit.contain,
-                      errorBuilder: (context, error, stackTrace) => const Icon(Icons.image),
+                      errorWidget: (context, error, stackTrace) =>
+                          const Icon(Icons.image),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -414,7 +424,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                 ],
               ),
               const SizedBox(height: 32),
-              
+
               // Action Buttons
               Row(
                 children: [
@@ -425,16 +435,23 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                         Navigator.pop(context); // Close sheet
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const SearchResultsScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const SearchResultsScreen(),
+                          ),
                         );
                       },
-                      icon: const Icon(Icons.check_circle_outline, color: Colors.white),
+                      icon: const Icon(
+                        Icons.check_circle_outline,
+                        color: Colors.white,
+                      ),
                       label: const Text('Yes, that\'s it'),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF004AAD),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         elevation: 0,
                       ),
                     ),
@@ -449,7 +466,9 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         side: const BorderSide(color: Color(0xFF004AAD)),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
                         foregroundColor: const Color(0xFF004AAD),
                       ),
                     ),
@@ -459,7 +478,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
               const SizedBox(height: 16),
               const Divider(),
               const SizedBox(height: 16),
-              
+
               // Footer info
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -468,16 +487,28 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                     children: [
                       const Text(
                         'LOWEST PRICE',
-                        style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Row(
                         children: const [
-                           Icon(Icons.bar_chart, color: Color(0xFF1EC091), size: 16),
-                           SizedBox(width: 4),
-                           Text(
+                          Icon(
+                            Icons.bar_chart,
+                            color: Color(0xFF1EC091),
+                            size: 16,
+                          ),
+                          SizedBox(width: 4),
+                          Text(
                             '245',
-                            style: TextStyle(color: Color(0xFF1EC091), fontWeight: FontWeight.bold, fontSize: 18),
+                            style: TextStyle(
+                              color: Color(0xFF1EC091),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
                           ),
                         ],
                       ),
@@ -488,7 +519,11 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                     children: [
                       const Text(
                         'STORES NEAR',
-                        style: TextStyle(fontSize: 10, color: Colors.grey, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       GestureDetector(
@@ -497,7 +532,11 @@ class _VisualSearchScreenState extends State<VisualSearchScreen> with SingleTick
                         },
                         child: const Text(
                           '14 Shops',
-                          style: TextStyle(color: Color(0xFF004AAD), fontWeight: FontWeight.bold, fontSize: 18),
+                          style: TextStyle(
+                            color: Color(0xFF004AAD),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
                         ),
                       ),
                     ],

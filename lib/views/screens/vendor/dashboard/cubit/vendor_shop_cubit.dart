@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:nearvendorapp/models/api_inputs/shop_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
+import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 part 'vendor_shop_state.dart';
 
@@ -21,6 +22,13 @@ class VendorShopCubit extends Cubit<VendorShopState> {
     }
 
     emit(VendorShopLoading(shops: currentShops));
+
+    final token = CurrentUserStorage.getUserAuthToken();
+    if (token == null) {
+      emit(const VendorShopFailure('Authentication required'));
+      return;
+    }
+
     final response = await _shopServices.getMyShops();
     if (response.success) {
       emit(VendorShopSuccess(response.shops));

@@ -8,7 +8,7 @@ class CategoriesCubit extends Cubit<CategoriesState> {
   Future<void> fetchCategories() async {
     emit(CategoriesLoading());
     try {
-      final categories = await CategoriesService.getCategoriesNames();
+      final categories = await CategoriesService.getCategories();
       emit(CategoriesLoaded(categories));
     } catch (e) {
       emit(CategoriesError(e.toString()));

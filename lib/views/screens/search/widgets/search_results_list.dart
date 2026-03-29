@@ -26,7 +26,10 @@ class SearchResultsList extends StatelessWidget {
             return const _EmptyState();
           }
 
-          return _ResultsGrid(items: state.items);
+          return _ResultsGrid(
+            items: state.items,
+            message: state.message,
+          );
         }
 
         return const SizedBox.shrink();
@@ -37,21 +40,26 @@ class SearchResultsList extends StatelessWidget {
 
 class _ResultsGrid extends StatelessWidget {
   final List<Item> items;
+  final String? message;
 
-  const _ResultsGrid({required this.items});
+  const _ResultsGrid({
+    required this.items,
+    this.message,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (message != null) _MessageBanner(message: message!),
         Padding(
           padding: EdgeInsets.symmetric(
             horizontal: AppSpacing.mediumHorizontalSpacing(context),
             vertical: 16,
           ),
           child: Text(
-            'Search Results',
+            'Product results',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
@@ -79,6 +87,47 @@ class _ResultsGrid extends StatelessWidget {
         ),
         const SizedBox(height: 100),
       ],
+    );
+  }
+}
+
+class _MessageBanner extends StatelessWidget {
+  final String message;
+
+  const _MessageBanner({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+        vertical: 8,
+      ),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: Colors.amber.shade50,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: Colors.amber.shade200),
+        ),
+        child: Row(
+          children: [
+            Icon(Icons.info_outline_rounded, color: Colors.amber.shade900, size: 20),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                message,
+                style: TextStyle(
+                  color: Colors.amber.shade900,
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  fontFamily: 'Poppins',
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -20,16 +20,6 @@ class VendorServices {
     }
   }
 
-  Future<GenericApiResponse> createShop(CreateShopInput input) async {
-    try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.post(ApiConstants.createShop, data: data);
-      return GenericApiResponse.fromJson(response.data);
-    } catch (e) {
-      return _handleError(e);
-    }
-  }
-
   Future<GenericApiResponse> deleteShop(DeleteShopInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();

@@ -1,12 +1,12 @@
-class CreateUserInput{
-   CreateUserInput({
-     required this.fullName,
-     required this.email,
-     required this.password,
-     required this.latitude,
-     required this.longitude,
-     required this.role,
-   } );
+class CreateUserInput {
+  CreateUserInput({
+    required this.fullName,
+    required this.email,
+    required this.password,
+    required this.latitude,
+    required this.longitude,
+    required this.role,
+  });
 
   final String fullName;
   final String email;
@@ -27,42 +27,27 @@ class CreateUserInput{
   }
 }
 
-enum UserRoles{
-  BUYER,VENDOR,ADMIN
-}
-
+enum UserRoles { BUYER, VENDOR, ADMIN }
 
 class VerifyOtpInput {
-  VerifyOtpInput({
-    required this.email,
-    required this.otp,
-  });
+  VerifyOtpInput({required this.email, required this.otp});
 
   final String email;
   final String otp;
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'otp': otp,
-    };
+    return {'email': email, 'otp': otp};
   }
 }
-class LoginInput{
 
-  LoginInput({
-    required this.email,
-    required this.password,
-});
+class LoginInput {
+  LoginInput({required this.email, required this.password});
 
   final String email;
   final String password;
 
-  Map<String,dynamic>toJson(){
-    return{
-      'email':email,
-      'password':password,
-    };
+  Map<String, dynamic> toJson() {
+    return {'email': email, 'password': password};
   }
 }
 
@@ -86,24 +71,22 @@ class ChangePasswordInput {
   }
 }
 
-class RegisterInput{
-
+class RegisterInput {
   RegisterInput({
-   required this.businessName,
-   required this.businessCategory,
-   required this.taxId,
-   required this.supportContact,
-   required this.cnic,
-   required this.cnicImageUrl,
+    required this.businessName,
+    required this.businessCategory,
+    required this.taxId,
+    required this.supportContact,
+    required this.cnic,
+    required this.cnicImageUrl,
+  });
 
-});
-
-final String businessName;
-final String businessCategory;
-final String taxId;
-final String supportContact;
-final String cnic;
-final String cnicImageUrl;
+  final String businessName;
+  final String businessCategory;
+  final String taxId;
+  final String supportContact;
+  final String cnic;
+  final String cnicImageUrl;
 
   Map<String, dynamic> toJson() {
     return {

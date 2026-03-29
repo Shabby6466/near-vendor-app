@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
@@ -35,7 +36,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             Center(
               child: Text(
                 'NearVendor',
-                style: TextStyle(color: ColorName.primary, fontSize: 32, fontWeight: FontWeight.w900),
+                style: TextStyle(
+                  color: ColorName.primary,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w900,
+                ),
               ),
             ),
             SizedBox(height: AppSpacing.mediumVerticalSpacing(context) * 2),
@@ -52,15 +57,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           width: double.infinity,
           height: AppSpacing.screenHeight(context) * 0.45,
           color: Colors.grey.shade200,
-          child: Image.network(
-            widget.shop.image,
+          child: CachedNetworkImage(
+            imageUrl: widget.shop.image,
             fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) => const Center(child: Icon(Icons.image, size: 50, color: Colors.grey)),
+            errorWidget: (context, error, stackTrace) => const Center(
+              child: Icon(Icons.image, size: 50, color: Colors.grey),
+            ),
           ),
         ),
         SafeArea(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context), vertical: 8.0),
+            padding: EdgeInsets.symmetric(
+              horizontal: AppSpacing.mediumHorizontalSpacing(context),
+              vertical: 8.0,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -68,8 +78,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                   onTap: () => Navigator.pop(context),
                   child: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(color: ColorName.white, shape: BoxShape.circle),
-                    child: const Icon(Icons.arrow_back_ios_new, color: ColorName.primary, size: 20),
+                    decoration: const BoxDecoration(
+                      color: ColorName.white,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: ColorName.primary,
+                      size: 20,
+                    ),
                   ),
                 ),
                 Row(
@@ -82,19 +99,39 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                        child: Icon(_isLiked ? Icons.favorite : Icons.favorite_border, color: _isLiked ? Colors.red : Colors.black26, size: 24),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          _isLiked ? Icons.favorite : Icons.favorite_border,
+                          color: _isLiked ? Colors.red : Colors.black26,
+                          size: 24,
+                        ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ShopDetailsScreen(shop: widget.shop)));
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                ShopDetailsScreen(shop: widget.shop),
+                          ),
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(color: Colors.white, shape: BoxShape.circle),
-                        child: const Icon(Icons.store, color: Colors.black26, size: 24),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.store,
+                          color: Colors.black26,
+                          size: 24,
+                        ),
                       ),
                     ),
                   ],
@@ -111,11 +148,21 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(20),
-              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 5))],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 5),
+                ),
+              ],
             ),
             child: const Text(
               '92,000 PKR',
-              style: TextStyle(color: ColorName.primary, fontWeight: FontWeight.bold, fontSize: 16),
+              style: TextStyle(
+                color: ColorName.primary,
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
           ),
         ),
@@ -125,7 +172,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
   Widget _buildDetailsSection(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -134,7 +183,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
             children: [
               Text(
                 'Ad Posted At: 10:35 pm - 14/08/2025',
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 12, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               Row(
                 children: [
@@ -143,7 +196,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       margin: const EdgeInsets.only(left: 4),
                       width: 8,
                       height: 8,
-                      decoration: BoxDecoration(shape: BoxShape.circle, color: i == 0 ? ColorName.primary : Colors.grey.shade400),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: i == 0
+                            ? ColorName.primary
+                            : Colors.grey.shade400,
+                      ),
                     ),
                 ],
               ),
@@ -156,7 +214,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               Expanded(
                 child: Text(
                   widget.shop.name,
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               const SizedBox(width: 16),
@@ -166,7 +228,12 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
           const Text(
             '#8 x 2 1/2 Inch Stainless Steel Wood Screw, 200 Count\n#8 x 2 1/2 Inch Stainless Steel Wood Screw, 200 Count',
-            style: TextStyle(fontSize: 14, color: Colors.black87, height: 1.5, fontWeight: FontWeight.w500),
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.black87,
+              height: 1.5,
+              fontWeight: FontWeight.w500,
+            ),
           ),
         ],
       ),
@@ -178,31 +245,45 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.mediumHorizontalSpacing(context),
+          ),
           child: Row(
             children: [
               const Text(
                 'Shop Location',
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
               ),
               const SizedBox(width: 8),
               Text(
                 '5 KMs Away',
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade500, fontWeight: FontWeight.w500),
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade500,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ],
           ),
         ),
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
         Padding(
-          padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+          padding: EdgeInsets.symmetric(
+            horizontal: AppSpacing.mediumHorizontalSpacing(context),
+          ),
           child: Stack(
             clipBehavior: Clip.none,
             children: [
               Container(
                 height: 250,
                 width: double.infinity,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(24),
+                ),
                 child: ShopLocationWidget(
                   longitude: widget.shop.longitude ?? 0,
                   latitude: widget.shop.latitude ?? 0,
@@ -215,17 +296,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 left: 16,
                 right: 16,
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(50),
-                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 5))],
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
+                      ),
+                    ],
                   ),
                   child: Row(
                     children: [
                       const CircleAvatar(
                         radius: 20,
-                        backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=11'), // Fallback avatar
+                        backgroundImage: NetworkImage(
+                          'https://i.pravatar.cc/150?img=11',
+                        ), // Fallback avatar
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -235,9 +327,19 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           children: [
                             const Text(
                               'Rana Faraz Asad',
-                              style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
-                            Text('i10 khokha', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+                            Text(
+                              'i10 khokha',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -246,10 +348,16 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(12),
                           decoration: const BoxDecoration(
-                            color: Color(0xFF004AAD), // Dark Blue for whatsapp/chat
+                            color: Color(
+                              0xFF004AAD,
+                            ), // Dark Blue for whatsapp/chat
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.message, color: Colors.white, size: 18),
+                          child: const Icon(
+                            Icons.message,
+                            color: Colors.white,
+                            size: 18,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8),
@@ -261,7 +369,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                             color: Color(0xFFADFF2F), // Green yellow
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.phone, color: Colors.black, size: 18),
+                          child: const Icon(
+                            Icons.phone,
+                            color: Colors.black,
+                            size: 18,
+                          ),
                         ),
                       ),
                     ],

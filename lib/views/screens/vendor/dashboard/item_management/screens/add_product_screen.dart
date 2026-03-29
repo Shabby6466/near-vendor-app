@@ -8,6 +8,7 @@ import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_management_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 
 class AddProductScreen extends StatefulWidget {
   final String shopId;
@@ -34,11 +35,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.item?.name);
-    _descriptionController = TextEditingController(text: widget.item?.description);
-    _priceController = TextEditingController(text: widget.item?.price.toString());
+    _descriptionController = TextEditingController(
+      text: widget.item?.description,
+    );
+    _priceController = TextEditingController(
+      text: widget.item?.price.toString(),
+    );
     _unitController = TextEditingController(text: widget.item?.unit ?? 'Piece');
-    _stockController = TextEditingController(text: widget.item?.stockCount.toString());
-    _discountController = TextEditingController(text: widget.item?.discount?.toString() ?? '0');
+    _stockController = TextEditingController(
+      text: widget.item?.stockCount.toString(),
+    );
+    _discountController = TextEditingController(
+      text: widget.item?.discount?.toString() ?? '0',
+    );
     _existingImageUrl = widget.item?.imageUrl;
   }
 
@@ -131,7 +140,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 3,
-                  decoration: _inputDecoration('Tell details about your product'),
+                  decoration: _inputDecoration(
+                    'Tell details about your product',
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -202,7 +213,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   builder: (context, state) {
                     final isLoading = state is ItemActionLoading;
                     return AppElevatedButton(
-                      text: isLoading ? 'Saving...' : (isEdit ? 'Update Details' : 'Publish Product'),
+                      text: isLoading
+                          ? 'Saving...'
+                          : (isEdit ? 'Update Details' : 'Publish Product'),
                       onPressed: isLoading ? null : _submit,
                     );
                   },
@@ -264,26 +277,32 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   child: Image.file(_imageFile!, fit: BoxFit.cover),
                 )
               : (_existingImageUrl != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(24),
-                      child: Image.network(_existingImageUrl!, fit: BoxFit.cover),
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.add_photo_alternate_rounded,
-                            size: 40, color: theme.primaryColor),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Upload Product Photo',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            color: theme.primaryColor,
-                            fontWeight: FontWeight.w600,
-                          ),
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: CircularCachedNetworkImage(
+                          imageUrl: _existingImageUrl!,
+                          fit: BoxFit.cover,
                         ),
-                      ],
-                    )),
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add_photo_alternate_rounded,
+                            size: 40,
+                            color: theme.primaryColor,
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Upload Product Photo',
+                            style: TextStyle(
+                              fontFamily: 'Poppins',
+                              color: theme.primaryColor,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      )),
         ),
       ),
     );

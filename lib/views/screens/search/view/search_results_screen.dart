@@ -1,7 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 
@@ -26,7 +28,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           Positioned.fill(
             child: FlutterMap(
               options: const MapOptions(
-                initialCenter: LatLng(33.6844, 73.0479), // Islamabad coordinates
+                initialCenter: LatLng(
+                  33.6844,
+                  73.0479,
+                ), // Islamabad coordinates
                 initialZoom: 15.0,
               ),
               children: [
@@ -77,7 +82,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   Widget _buildSearchBar() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context)),
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
@@ -114,10 +121,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.1),
-            blurRadius: 4,
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4),
         ],
       ),
       child: Row(
@@ -232,7 +236,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                 color: Colors.black,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
               ),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               side: BorderSide.none,
             ),
           );
@@ -253,17 +259,16 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           width: isHighlighted ? 2 : 1,
         ),
         boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 4,
-          ),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4),
         ],
       ),
       child: Row(
         children: [
           CircleAvatar(
             radius: 35,
-            backgroundImage: const NetworkImage('https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&q=80&w=200'),
+            backgroundImage: const NetworkImage(
+              'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&q=80&w=200',
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -272,7 +277,11 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               children: [
                 RichText(
                   text: TextSpan(
-                    style: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                     children: [
                       const TextSpan(text: 'Al Fateh Store - '),
                       TextSpan(
@@ -287,11 +296,18 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   children: [
                     Text(
                       'In Stock',
-                      style: TextStyle(color: Colors.green.shade700, fontSize: 12, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Colors.green.shade700,
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     Text(
                       ' - 5 KM - 4.5',
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontSize: 12,
+                      ),
                     ),
                     const Icon(Icons.star, color: Colors.amber, size: 14),
                   ],
@@ -337,7 +353,12 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
     );
   }
 
-  Widget _buildSimilarProductCard(String title, String distance, String match, String imageUrl) {
+  Widget _buildSimilarProductCard(
+    String title,
+    String distance,
+    String match,
+    String imageUrl,
+  ) {
     return Container(
       width: 180,
       decoration: BoxDecoration(
@@ -359,9 +380,16 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
-                    child: Image.network(
-                      imageUrl,
+                    child: CachedNetworkImage(
+                      imageUrl: imageUrl,
                       fit: BoxFit.contain,
+                      errorWidget: (context, error, stackTrace) => Container(
+                        color: ColorName.primary.withValues(alpha: 0.1),
+                        child: const Icon(
+                          Icons.inventory_2_outlined,
+                          color: ColorName.primary,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -369,14 +397,23 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                   top: 8,
                   right: 8,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: match.contains('95') ? const Color(0xFF1EC091) : Colors.grey.shade600,
+                      color: match.contains('95')
+                          ? const Color(0xFF1EC091)
+                          : Colors.grey.shade600,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       match,
-                      style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -391,7 +428,11 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           const SizedBox(height: 4),
           Row(
             children: [
-              const Icon(Icons.location_on_outlined, size: 14, color: Colors.grey),
+              const Icon(
+                Icons.location_on_outlined,
+                size: 14,
+                color: Colors.grey,
+              ),
               const SizedBox(width: 4),
               Text(
                 distance,
@@ -406,12 +447,18 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: const Color(0xFFC6FF00).withValues(alpha: 0.3)),
+              border: Border.all(
+                color: const Color(0xFFC6FF00).withValues(alpha: 0.3),
+              ),
             ),
             alignment: Alignment.center,
             child: const Text(
               'AVAILABLE',
-              style: TextStyle(color: Color(0xFF1EC091), fontWeight: FontWeight.bold, fontSize: 12),
+              style: TextStyle(
+                color: Color(0xFF1EC091),
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
+              ),
             ),
           ),
         ],
@@ -428,7 +475,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           backgroundColor: const Color(0xFF0D1B2A),
           foregroundColor: Colors.white,
           minimumSize: const Size(double.infinity, 56),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,

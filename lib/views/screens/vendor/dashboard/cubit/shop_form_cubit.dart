@@ -35,7 +35,7 @@ class ShopFormCubit extends Cubit<ShopFormState> {
       final finalInput = CreateShopInput(
         vendorId: input.vendorId,
         shopName: input.shopName,
-        businessCategory: input.businessCategory,
+        categoryId: input.categoryId,
         registrationNumber: input.registrationNumber,
         shopAddress: input.shopAddress,
         operatingHours: input.operatingHours,
@@ -81,7 +81,7 @@ class ShopFormCubit extends Cubit<ShopFormState> {
       final finalInput = UpdateShopInput(
         shopId: input.shopId,
         shopName: input.shopName,
-        businessCategory: input.businessCategory,
+        categoryId: input.categoryId,
         registrationNumber: input.registrationNumber,
         shopAddress: input.shopAddress,
         operatingHours: input.operatingHours,

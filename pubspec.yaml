@@ -60,6 +60,8 @@ dependencies:
   upgrader: ^12.1.0
   url_launcher: ^6.3.2
   shimmer_animation: ^2.2.2+1
+  visibility_detector: ^0.4.0+2
+  fl_chart: ^0.70.1
 
 dev_dependencies:
   build_runner: ^2.4.6

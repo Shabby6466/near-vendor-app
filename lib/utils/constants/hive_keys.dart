@@ -13,4 +13,7 @@ class HiveKeys {
   static const String vendorStatusKey = 'vendor_status';
   static const String discoveryRadiusKey = 'discovery_radius';
   static const String recentSearchesKey = 'recent_searches';
+  static const String lastLatitudeKey = 'last_latitude';
+  static const String lastLongitudeKey = 'last_longitude';
+  static const String analyticsDaysSelectionKey = 'analytics_days_selection';
 }

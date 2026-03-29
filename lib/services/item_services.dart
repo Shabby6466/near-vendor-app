@@ -87,7 +87,8 @@ class ItemServices {
   Future<ItemListResponse> getItemsByShopId(String shopId) async {
     try {
       final response = await Server.get(
-        '${ApiConstants.getItemsByShop}/$shopId',
+        ApiConstants.getItemsByShop,
+        queryParameters: {'shopId': shopId},
       );
       return ItemListResponse.fromJson(response.data);
     } catch (e) {

@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:nearvendorapp/cubits/analytics_mixin.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/services/item_services.dart';
@@ -7,16 +9,32 @@ import 'package:nearvendorapp/services/shop_services.dart';
 
 part 'shop_details_state.dart';
 
-class ShopDetailsCubit extends Cubit<ShopDetailsState> {
+class ShopDetailsCubit extends Cubit<ShopDetailsState> with AnalyticsMixin<ShopDetailsState> {
   final ShopServices _shopServices = ShopServices();
   final ItemServices _itemServices = ItemServices();
 
-  ShopDetailsCubit() : super(ShopDetailsInitial());
+  ShopDetailsCubit() : super(ShopDetailsInitial()) {
+    initAnalytics('shop_details_screen');
+  }
 
   Future<void> loadShopData(String shopId) async {
     emit(ShopDetailsLoading());
 
     try {
+      // Try to get current position for analytics
+      try {
+        final position = await Geolocator.getCurrentPosition();
+        updateAnalyticsMetadata({
+          'lat': position.latitude,
+          'lon': position.longitude,
+          'shopId': shopId,
+        });
+      } catch (_) {
+        updateAnalyticsMetadata({
+          'shopId': shopId,
+        });
+      }
+
       // Fetch shop details and inventory in parallel
       final results = await Future.wait([
         _shopServices.getShopById(shopId),
@@ -46,5 +64,11 @@ class ShopDetailsCubit extends Cubit<ShopDetailsState> {
     } catch (e) {
       emit(ShopDetailsFailure(e.toString()));
     }
+  }
+
+  @override
+  Future<void> close() async {
+    await closeAnalytics();
+    await super.close();
   }
 }

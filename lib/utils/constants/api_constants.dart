@@ -23,6 +23,7 @@ class ApiConstants {
   static const String deleteShop = 'api/shops/delete';
   static const String getMyShops = 'api/shops/me/shops';
   static const String getNearbyShops = 'api/explore/shops/nearby';
+  static const String getShopsByMap = 'api/explore/shops/map';
 
   ///ITEMS
   static const String createItem = 'api/item/create';
@@ -32,6 +33,19 @@ class ApiConstants {
   static const String getItemById = 'api/item/';
   static const String getCategoriesNames = 'api/categories/get-all-names';
   static const String searchItems = 'api/explore/items/search';
+  static const String searchShops = 'api/explore/shops/search';
   static const String getShopById = 'api/shops/';
   static const String getRecentItems = 'api/explore/recent-items';
+  static const String batchAnalytics = 'api/analytics/batch';
+  static const String updateUserLocation = 'api/users/location';
+  
+  ///PORTFOLIO
+  static const String searchPortfolio = 'api/vendor/portfolio/search';
+  static const String getPortfolioPerformance = 'api/vendor/portfolio/performance';
+
+  // Analytics
+  static const String getAnalyticsStats = 'api/analytics/stats/';
+  static const String getVendorPortfolioAnalytics = 'api/analytics/vendor/portfolio';
+  static const String getVendorShopAnalytics = 'api/analytics/vendor/shop/';
+  static const String getMarketInsightsSuffix = '/market-insights';
 }

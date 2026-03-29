@@ -1,7 +1,7 @@
 class CreateShopInput {
   final String vendorId;
   final String shopName;
-  final String businessCategory;
+  final String categoryId;
   final String registrationNumber;
   final String shopAddress;
   final Map<String, dynamic> operatingHours;
@@ -16,7 +16,7 @@ class CreateShopInput {
   CreateShopInput({
     required this.vendorId,
     required this.shopName,
-    required this.businessCategory,
+    required this.categoryId,
     required this.registrationNumber,
     required this.shopAddress,
     required this.operatingHours,
@@ -32,7 +32,7 @@ class CreateShopInput {
   Map<String, dynamic> toJson() => {
     'vendorId': vendorId,
     'shopName': shopName,
-    'businessCategory': businessCategory,
+    'categoryId': categoryId,
     'registrationNumber': registrationNumber,
     'shopAddress': shopAddress,
     'operatingHours': operatingHours,
@@ -49,7 +49,7 @@ class CreateShopInput {
 class UpdateShopInput {
   final String shopId;
   final String? shopName;
-  final String? businessCategory;
+  final String? categoryId;
   final String? registrationNumber;
   final String? shopAddress;
   final Map<String, dynamic>? operatingHours;
@@ -65,7 +65,7 @@ class UpdateShopInput {
   UpdateShopInput({
     required this.shopId,
     this.shopName,
-    this.businessCategory,
+    this.categoryId,
     this.registrationNumber,
     this.shopAddress,
     this.operatingHours,
@@ -82,7 +82,7 @@ class UpdateShopInput {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = {'shopId': shopId};
     if (shopName != null) data['shopName'] = shopName;
-    if (businessCategory != null) data['businessCategory'] = businessCategory;
+    if (categoryId != null) data['categoryId'] = categoryId;
     if (registrationNumber != null)
       data['registrationNumber'] = registrationNumber;
     if (shopAddress != null) data['shopAddress'] = shopAddress;

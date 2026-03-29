@@ -7,8 +7,13 @@ import 'package:nearvendorapp/views/screens/vendor/widgets/shop_card.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/shop_details/screens/shop_details_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/create_shop_screen.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/cubit/analytics_cubit.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/screens/analytics_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/support/screens/support_screen.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_cubit.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/screens/portfolio_screen.dart';
 
 class VendorDashboardScreen extends StatefulWidget {
   const VendorDashboardScreen({super.key});
@@ -362,7 +367,13 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             Icons.add_business_rounded,
             Theme.of(context).primaryColor,
             () {
-              AppNavigator.push(context, const CreateShopScreen());
+              AppNavigator.push(
+                context,
+                BlocProvider.value(
+                  value: context.read<VendorShopCubit>(),
+                  child: const CreateShopScreen(),
+                ),
+              );
             },
           ),
           _buildActionCard(
@@ -370,21 +381,45 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Analytics',
             Icons.bar_chart_rounded,
             Colors.orange,
-            () {},
+            () {
+              AppNavigator.push(
+                context,
+                MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (context) => AnalyticsCubit()),
+                    BlocProvider.value(value: context.read<VendorShopCubit>()),
+                  ],
+                  child: const AnalyticsScreen(),
+                ),
+              );
+            },
           ),
           _buildActionCard(
             context,
             'Inventory',
             Icons.inventory_2_rounded,
             Colors.blue,
-            () {},
+            () {
+              AppNavigator.push(
+                context,
+                BlocProvider(
+                  create: (context) => PortfolioCubit(),
+                  child: const PortfolioScreen(),
+                ),
+              );
+            },
           ),
           _buildActionCard(
             context,
             'Support',
             Icons.headset_mic_rounded,
             Colors.purple,
-            () {},
+            () {
+              AppNavigator.push(
+                context,
+                const SupportScreen(),
+              );
+            },
           ),
         ]),
       ),
@@ -564,7 +599,13 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           const SizedBox(height: 48),
           ElevatedButton.icon(
             onPressed: () {
-              AppNavigator.push(context, const CreateShopScreen());
+              AppNavigator.push(
+                context,
+                BlocProvider.value(
+                  value: context.read<VendorShopCubit>(),
+                  child: const CreateShopScreen(),
+                ),
+              );
             },
             icon: const Icon(Icons.rocket_launch_rounded),
             label: const Text(

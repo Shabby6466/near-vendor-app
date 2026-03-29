@@ -4,6 +4,7 @@ class Shop extends Equatable {
   final String id;
   final String vendorId;
   final String shopName;
+  final String? categoryId;
   final String businessCategory;
   final String registrationNumber;
   final String shopAddress;
@@ -27,6 +28,7 @@ class Shop extends Equatable {
     required this.id,
     required this.vendorId,
     required this.shopName,
+    this.categoryId,
     required this.businessCategory,
     required this.registrationNumber,
     required this.shopAddress,
@@ -52,16 +54,17 @@ class Shop extends Equatable {
       id: json['id'] as String? ?? '',
       vendorId: json['vendorId'] as String? ?? '',
       shopName: json['shopName'] as String? ?? 'Unnamed Shop',
+      categoryId: json['categoryId'] as String? ?? json['category_id'] as String?,
       businessCategory: json['businessCategory'] as String? ?? 'General',
       registrationNumber: json['registrationNumber'] as String? ?? '',
       shopAddress: json['shopAddress'] as String? ?? '',
       operatingHours: (json['operatingHours'] as Map<String, dynamic>?) ?? {},
-      shopLongitude: double.tryParse(json['shopLongitude']?.toString() ?? '0.0') ?? 0.0,
-      shopLatitude: double.tryParse(json['shopLatitude']?.toString() ?? '0.0') ?? 0.0,
+      shopLongitude: double.tryParse((json['shopLongitude'] ?? json['longitude'])?.toString() ?? '0.0') ?? 0.0,
+      shopLatitude: double.tryParse((json['shopLatitude'] ?? json['latitude'])?.toString() ?? '0.0') ?? 0.0,
       shopContactPhone: json['shopContactPhone'] as String? ?? '',
       whatsappNumber: json['whatsappNumber'] as String? ?? '',
       storeEmail: json['storeEmail'] as String? ?? '',
-      coverImageUrl: json['coverImageUrl'] as String? ?? json['shopImageUrl'] as String?,
+      coverImageUrl: json['coverImageUrl'] as String? ?? json['shopImageUrl'] as String? ?? json['shopLogoUrl'] as String?,
       storeLogoUrl: json['storeLogoUrl'] as String? ?? json['shopLogoUrl'] as String?,
       isActive: json['isActive'] as bool? ?? true,
       completionPercentage: json['completionPercentage'] as int?,
@@ -78,6 +81,7 @@ class Shop extends Equatable {
       'id': id,
       'vendorId': vendorId,
       'shopName': shopName,
+      'categoryId': categoryId,
       'businessCategory': businessCategory,
       'registrationNumber': registrationNumber,
       'shopAddress': shopAddress,
@@ -102,6 +106,7 @@ class Shop extends Equatable {
         id,
         vendorId,
         shopName,
+        categoryId,
         businessCategory,
         registrationNumber,
         shopAddress,

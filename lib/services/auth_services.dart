@@ -184,6 +184,28 @@ class AuthServices {
       return MediaUploadResponse(message: e.toString());
     }
   }
+
+  Future<GenericApiResponse> updateUserLocation(double lat, double lon) async {
+    try {
+      final response = await Server.post(
+        ApiConstants.updateUserLocation,
+        data: {
+          'latitude': double.parse(lat.toStringAsFixed(7)),
+          'longitude': double.parse(lon.toStringAsFixed(7)),
+        },
+      );
+      return GenericApiResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
+      return GenericApiResponse(message: e.toString());
+    }
+  }
 }
 
 // Future<GenericApiResponse> refreshToken() async {

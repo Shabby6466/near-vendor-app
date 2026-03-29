@@ -8,23 +8,47 @@ import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_management_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/screens/add_product_screen.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/cubit/analytics_cubit.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/screens/analytics_screen.dart';
+import 'package:nearvendorapp/models/api_responses/analytics_response.dart';
+import 'package:nearvendorapp/utils/constants/hive_keys.dart';
+import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/edit_shop_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
+import 'package:fl_chart/fl_chart.dart';
 
-class ShopDetailsScreen extends StatelessWidget {
+class ShopDetailsScreen extends StatefulWidget {
   final Shop shop;
-
   const ShopDetailsScreen({super.key, required this.shop});
 
   @override
+  State<ShopDetailsScreen> createState() => _ShopDetailsScreenState();
+}
+
+class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    
+    // Load persisted days
+    final storedDays = HiveManager.currentUserBox.get(
+      HiveKeys.analyticsDaysSelectionKey,
+      defaultValue: 7,
+    );
+    final days = (storedDays as int).clamp(1, 30);
 
-    return BlocProvider(
-      create: (context) => ItemManagementCubit(shopId: shop.id)..fetchItems(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ItemManagementCubit(shopId: widget.shop.id)..fetchItems(),
+        ),
+        BlocProvider(
+          create: (context) => AnalyticsCubit()..fetchShopDetails(widget.shop.id, days: days),
+        ),
+      ],
       child: BlocListener<ItemManagementCubit, ItemManagementState>(
         listener: (context, state) {
           if (state is ItemActionSuccess) {
@@ -49,11 +73,10 @@ class ShopDetailsScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildShopInfo(context),
-
-                      const SizedBox(height: 20),
-
+                      const SizedBox(height: 32),
+                      _buildAnalyticsSection(context),
+                      const SizedBox(height: 32),
                       _buildItemsSection(context),
-
                       const SizedBox(height: 100),
                     ],
                   ),
@@ -91,7 +114,7 @@ class ShopDetailsScreen extends StatelessWidget {
       context,
       BlocProvider.value(
         value: context.read<ItemManagementCubit>(),
-        child: AddProductScreen(shopId: shop.id, item: item),
+        child: AddProductScreen(shopId: widget.shop.id, item: item),
       ),
     );
   }
@@ -110,9 +133,9 @@ class ShopDetailsScreen extends StatelessWidget {
           decoration: BoxDecoration(
             color: theme.dividerColor.withValues(alpha: 0.05),
           ),
-          child: shop.coverImageUrl != null && shop.coverImageUrl!.isNotEmpty
+          child: widget.shop.coverImageUrl != null && widget.shop.coverImageUrl!.isNotEmpty
               ? CachedNetworkImage(
-                  imageUrl: shop.coverImageUrl!,
+                  imageUrl: widget.shop.coverImageUrl!,
                   fit: BoxFit.cover,
                   placeholder: (context, url) => const ShimmerEffect(),
                   errorWidget: (context, url, error) =>
@@ -167,10 +190,10 @@ class ShopDetailsScreen extends StatelessWidget {
               radius: 54,
               backgroundColor: theme.scaffoldBackgroundColor,
               backgroundImage:
-                  shop.storeLogoUrl != null && shop.storeLogoUrl!.isNotEmpty
-                  ? NetworkImage(shop.storeLogoUrl!)
+                  widget.shop.storeLogoUrl != null && widget.shop.storeLogoUrl!.isNotEmpty
+                  ? NetworkImage(widget.shop.storeLogoUrl!)
                   : null,
-              child: shop.storeLogoUrl == null || shop.storeLogoUrl!.isEmpty
+              child: widget.shop.storeLogoUrl == null || widget.shop.storeLogoUrl!.isEmpty
                   ? Icon(
                       Icons.storefront_rounded,
                       size: 40,
@@ -197,7 +220,7 @@ class ShopDetailsScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  shop.shopName,
+                  widget.shop.shopName,
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 26,
@@ -285,7 +308,7 @@ class ShopDetailsScreen extends StatelessWidget {
       context,
       BlocProvider.value(
         value: context.read<VendorShopCubit>(),
-        child: EditShopScreen(shop: shop),
+        child: EditShopScreen(shop: widget.shop),
       ),
     );
   }
@@ -331,7 +354,7 @@ class ShopDetailsScreen extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                'Are you sure you want to delete "${shop.shopName}"?\nAll inventory will be permanently removed.',
+                'Are you sure you want to delete "${widget.shop.shopName}"?\nAll inventory will be permanently removed.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Poppins',
@@ -363,7 +386,7 @@ class ShopDetailsScreen extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<VendorShopCubit>().deleteShop(shop.id);
+                        context.read<VendorShopCubit>().deleteShop(widget.shop.id);
                         AppNavigator.pop(context);
                         AppNavigator.pop(context);
                       },
@@ -387,6 +410,266 @@ class ShopDetailsScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsSection(BuildContext context) {
+    final theme = Theme.of(context);
+    return BlocBuilder<AnalyticsCubit, AnalyticsState>(
+      builder: (context, state) {
+        if (state is AnalyticsLoading) {
+          return _buildAnalyticsSkeleton(context);
+        }
+        if (state is AnalyticsSuccess && state.selectedShopInsights != null) {
+          final insights = state.selectedShopInsights!;
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _buildSectionTitle(
+                    context: context,
+                    title: 'Performance',
+                    fontSize: 18,
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      AppNavigator.push(
+                        context,
+                        MultiBlocProvider(
+                          providers: [
+                            BlocProvider(create: (context) => AnalyticsCubit()..fetchShopDetails(widget.shop.id, days: state.days)),
+                            BlocProvider.value(value: context.read<VendorShopCubit>()),
+                          ],
+                          child: const AnalyticsScreen(),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'All Insights',
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontWeight: FontWeight.w700,
+                        color: theme.primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              _buildMetricCards(context, insights.summary),
+              const SizedBox(height: 24),
+              _buildSectionTitle(
+                context: context,
+                title: 'Performance Trend',
+                fontSize: 14,
+              ),
+              const SizedBox(height: 12),
+              _buildMiniTrendChart(context, state.selectedShopStats ?? []),
+              const SizedBox(height: 24),
+              if (state.selectedShopMarket != null && state.selectedShopMarket!.neighborhoodDemand.isNotEmpty) ...[
+                _buildSectionTitle(
+                  context: context,
+                  title: 'Local Demand',
+                  fontSize: 14,
+                ),
+                const SizedBox(height: 12),
+                _buildMarketDemandList(context, state.selectedShopMarket!.neighborhoodDemand.take(3).toList()),
+              ],
+            ],
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildMiniTrendChart(BuildContext context, List<AnalyticsStatEntry> stats) {
+    if (stats.isEmpty) return const SizedBox.shrink();
+    
+    final data = stats.where((s) => s.type == 'IMPRESSION').toList();
+    if (data.isEmpty) return const SizedBox.shrink();
+
+    return Container(
+      height: 100,
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.05)),
+      ),
+      child: LineChart(
+        LineChartData(
+          gridData: const FlGridData(show: false),
+          titlesData: const FlTitlesData(show: false),
+          borderData: FlBorderData(show: false),
+          lineBarsData: [
+            LineChartBarData(
+              spots: data.asMap().entries.map((e) {
+                return FlSpot(e.key.toDouble(), e.value.count.toDouble());
+              }).toList(),
+              isCurved: true,
+              color: Theme.of(context).primaryColor,
+              barWidth: 2,
+              isStrokeCapRound: true,
+              dotData: const FlDotData(show: false),
+              belowBarData: BarAreaData(
+                show: true,
+                color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAnalyticsSkeleton(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildSectionTitle(context: context, title: 'Performance', fontSize: 18),
+        const SizedBox(height: 12),
+        Row(
+          children: List.generate(3, (i) => Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(right: i < 2 ? 8.0 : 0),
+              child: Container(
+                height: 80,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: const ShimmerEffect(borderRadius: 16),
+              ),
+            ),
+          )),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMetricCards(BuildContext context, InsightsSummary summary) {
+    return Row(
+      children: [
+        _buildMiniMetricCard(
+          context,
+          'Impressions',
+          summary.impressions.toString(),
+          Icons.visibility_outlined,
+          Colors.blue,
+        ),
+        const SizedBox(width: 8),
+        _buildMiniMetricCard(
+          context,
+          'Views',
+          summary.views.toString(),
+          Icons.ads_click_rounded,
+          Colors.orange,
+        ),
+        const SizedBox(width: 8),
+        _buildMiniMetricCard(
+          context,
+          'CTR',
+          '${summary.ctr}%',
+          Icons.analytics_outlined,
+          Colors.green,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMiniMetricCard(
+    BuildContext context,
+    String label,
+    String value,
+    IconData icon,
+    Color color,
+  ) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.05),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.1)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 16),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: const TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 16,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            Text(
+              label,
+              style: TextStyle(
+                fontFamily: 'Poppins',
+                fontSize: 9,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMarketDemandList(BuildContext context, List<DemandEntry> demand) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withValues(alpha: 0.05)),
+      ),
+      child: Column(
+        children: demand.asMap().entries.map((e) {
+          final entry = e.value;
+          final isLast = e.key == demand.length - 1;
+          return Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    entry.query.toUpperCase(),
+                    style: const TextStyle(
+                      fontFamily: 'Poppins',
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.green.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      '${entry.count} Hits',
+                      style: const TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 10,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              if (!isLast) const Divider(height: 16),
+            ],
+          );
+        }).toList(),
       ),
     );
   }

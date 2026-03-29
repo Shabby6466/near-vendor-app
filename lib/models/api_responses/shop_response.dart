@@ -1,3 +1,4 @@
+import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 
 class ShopResponse {
@@ -33,12 +34,14 @@ class ShopListResponse {
   final int statusCode;
   final String message;
   final List<Shop> shops;
+  final SearchMeta? meta;
 
   ShopListResponse({
     required this.success,
     required this.statusCode,
     required this.message,
     required this.shops,
+    this.meta,
   });
 
   factory ShopListResponse.fromJson(dynamic json) {
@@ -56,10 +59,14 @@ class ShopListResponse {
     if (json is Map<String, dynamic>) {
       final data = json['data'];
       List<dynamic>? shopsData;
+      SearchMeta? meta;
 
       if (data is Map<String, dynamic>) {
         shopsData = (data['items'] as List<dynamic>?) ??
             (data['shops'] as List<dynamic>?);
+        if (data['meta'] != null) {
+          meta = SearchMeta.fromJson(data['meta'] as Map<String, dynamic>);
+        }
       } else if (data is List<dynamic>) {
         shopsData = data;
       }
@@ -67,6 +74,10 @@ class ShopListResponse {
       // Fallback to root level if no data or data is not a list
       shopsData ??= (json['items'] as List<dynamic>?) ??
           (json['shops'] as List<dynamic>?);
+      
+      if (meta == null && json['meta'] != null) {
+        meta = SearchMeta.fromJson(json['meta'] as Map<String, dynamic>);
+      }
 
       return ShopListResponse(
         success: json['success'] as bool? ?? (shopsData != null),
@@ -76,6 +87,7 @@ class ShopListResponse {
                 ?.map((e) => Shop.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             [],
+        meta: meta,
       );
     }
 

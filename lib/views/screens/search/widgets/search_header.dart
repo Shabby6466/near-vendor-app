@@ -100,7 +100,8 @@ class _ProfileHeader extends StatelessWidget {
 
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
-        final String name = state.userName ?? 'Guest';
+        final bool isGuest = state.status == AuthStatus.guest;
+        final String name = isGuest ? 'Sign In' : (state.userName ?? 'User');
 
         return GestureDetector(
           onTap: () {
@@ -114,16 +115,17 @@ class _ProfileHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    'Hello',
-                    style: TextStyle(
-                      color: theme.textTheme.bodySmall?.color?.withValues(
-                        alpha: 0.5,
+                  if (!isGuest)
+                    Text(
+                      'Hello',
+                      style: TextStyle(
+                        color: theme.textTheme.bodySmall?.color?.withValues(
+                          alpha: 0.5,
+                        ),
+                        fontSize: 11,
+                        fontFamily: 'Poppins',
                       ),
-                      fontSize: 11,
-                      fontFamily: 'Poppins',
                     ),
-                  ),
                   Text(
                     name,
                     style: TextStyle(

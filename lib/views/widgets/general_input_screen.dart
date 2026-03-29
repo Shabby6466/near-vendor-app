@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
@@ -74,9 +75,7 @@ class GeneralPinScreen extends StatelessWidget {
                 email,
                 context.read<GeneralPinCubit>().codeController.text,
               );
-              Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => widget as Widget),
-              );
+              AppNavigator.pushAndRemoveUntil(context, widget as Widget);
             }
           } else if (state is GeneralPinFailure) {
             AppAlerts.showErrorSnackBar(context, state.message);

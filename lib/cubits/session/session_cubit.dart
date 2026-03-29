@@ -87,10 +87,14 @@ class SessionCubit extends Cubit<SessionState> {
         debugPrint('Session refresh failed: $e');
       }
     } else {
+      // Fallback for Guest location from storage
+      final lastLoc = CurrentUserStorage.getLastLocation();
       emit(state.copyWith(
         status: AuthStatus.guest,
         userName: 'Guest User',
         hasOnboarded: hasOnboarded,
+        latitude: lastLoc?['lat'],
+        longitude: lastLoc?['lon'],
       ));
     }
   }
@@ -208,6 +212,10 @@ class SessionCubit extends Cubit<SessionState> {
       final position = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
       );
+      
+      // Persist location locally
+      await CurrentUserStorage.setLastLocation(position.latitude, position.longitude);
+
       String? cityName = await _getCityName(position.latitude, position.longitude);
       
       // Fallback for emulator if geocoding fails
@@ -215,12 +223,15 @@ class SessionCubit extends Cubit<SessionState> {
         cityName = "Mountain View";
       }
 
-      await updateUserProfile(UpdateUserInput(
-        latitude: position.latitude,
-        longitude: position.longitude,
-      ));
+      if (isAuthenticated) {
+        await updateUserProfile(UpdateUserInput(
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ));
+      }
 
-      // The updateUserProfile will call emit, but let's ensure cityName is correct in the final state
+      // The updateUserProfile will call emit if authenticated, 
+      // but for guests we still want to update the local state with the city name etc.
       emit(state.copyWith(
         latitude: position.latitude,
         longitude: position.longitude,

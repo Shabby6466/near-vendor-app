@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
@@ -7,11 +8,7 @@ class ShopCard extends StatelessWidget {
   final Shop shop;
   final VoidCallback? onTap;
 
-  const ShopCard({
-    super.key,
-    required this.shop,
-    this.onTap,
-  });
+  const ShopCard({super.key, required this.shop, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +50,15 @@ class ShopCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    child: shop.storeLogoUrl != null &&
+                    child:
+                        shop.storeLogoUrl != null &&
                             shop.storeLogoUrl!.isNotEmpty
-                        ? Image.network(shop.storeLogoUrl!, fit: BoxFit.cover)
+                        ? CachedNetworkImage(
+                            imageUrl: shop.storeLogoUrl!,
+                            fit: BoxFit.cover,
+                            errorWidget: (context, error, stackTrace) =>
+                                const Icon(Icons.image),
+                          )
                         : Center(
                             child: Icon(
                               Icons.storefront_rounded,
