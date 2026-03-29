@@ -98,7 +98,12 @@ flutter_gen:
 
 flutter_native_splash:
   color: "#000000"
-  image: "assets/images/app_icon.png"
+  image: "assets/app_icons/nearvendor.png"
   android: true
   android_12:
     color: "#000000"
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/app_icons/nearvendor.png"
