@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
 import 'package:image_picker/image_picker.dart';
@@ -139,69 +138,106 @@ class _SearchBarFieldState extends State<SearchBarField> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.mediumHorizontalSpacing(context),
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Container(
+        height: 56,
         decoration: BoxDecoration(
           color: theme.cardColor,
-          borderRadius: BorderRadius.circular(16),
-          border: isDark
-              ? Border.all(color: theme.dividerColor.withValues(alpha: 0.1))
-              : Border.all(color: Colors.grey.shade200),
+          borderRadius: BorderRadius.circular(28),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.05),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
             ),
           ],
-        ),
-        child: TextField(
-          controller: _controller,
-          autofocus: false,
-          style: const TextStyle(fontFamily: 'Poppins'),
-          onSubmitted: _onSearch,
-          onChanged: (value) {
-            if (value.isEmpty) {
-              context.read<SearchCubit>().clearSearch();
-            }
-          },
-          decoration: InputDecoration(
-            hintText: 'Search Item',
-            hintStyle: TextStyle(
-              color: theme.textTheme.bodySmall!.color!.withValues(alpha: 0.4),
-            ),
-            prefixIcon: IconButton(
-              icon: Icon(
-                Icons.search,
-                color: theme.iconTheme.color?.withValues(alpha: 0.5),
-              ),
-              onPressed: () => _onSearch(_controller.text),
-            ),
-            suffixIcon: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                GestureDetector(
-                  onTap: _showImageSourceSelector,
-                  child: Icon(
-                    Icons.camera_alt_outlined,
-                    color: theme.iconTheme.color?.withValues(alpha: 0.5),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Icon(
-                  Icons.mic_none,
-                  color: theme.iconTheme.color?.withValues(alpha: 0.5),
-                ),
-                const SizedBox(width: 16),
-              ],
-            ),
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 16),
+          border: Border.all(
+            color: _controller.text.isNotEmpty 
+              ? theme.primaryColor.withValues(alpha: 0.4)
+              : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.shade200),
+            width: 1.2,
           ),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Row(
+          children: [
+            const SizedBox(width: 16),
+            Icon(
+              Icons.search_rounded,
+              color: _controller.text.isNotEmpty ? theme.primaryColor : theme.iconTheme.color?.withValues(alpha: 0.3),
+              size: 20,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextField(
+                controller: _controller,
+                autofocus: false,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                ),
+                onSubmitted: _onSearch,
+                onChanged: (value) {
+                  setState(() {});
+                  if (value.isEmpty) {
+                    context.read<SearchCubit>().clearSearch();
+                  }
+                },
+                decoration: InputDecoration(
+                  hintText: 'Search high-value items...',
+                  hintStyle: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: theme.textTheme.bodySmall!.color!.withValues(alpha: 0.3),
+                  ),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  contentPadding: EdgeInsets.zero,
+                  isDense: true,
+                ),
+              ),
+            ),
+            if (_controller.text.isNotEmpty)
+              IconButton(
+                icon: Icon(Icons.close_rounded, color: theme.iconTheme.color?.withValues(alpha: 0.4), size: 18),
+                onPressed: () {
+                  _controller.clear();
+                  context.read<SearchCubit>().clearSearch();
+                  setState(() {});
+                },
+              ),
+            Container(
+              width: 1,
+              height: 20,
+              color: theme.dividerColor.withValues(alpha: 0.1),
+            ),
+            const SizedBox(width: 8),
+            GestureDetector(
+              onTap: _showImageSourceSelector,
+              child: Container(
+                margin: const EdgeInsets.only(right: 8),
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: orangeBrandColor.withValues(alpha: 0.15),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.camera_alt_rounded,
+                  color: orangeBrandColor,
+                  size: 16,
+                ),
+              ),
+            ),
+            const SizedBox(width: 4),
+          ],
         ),
       ),
     );
   }
 }
+
+// Helper for the brand color if not available, otherwise use theme.primary
+const orangeBrandColor = Color(0xFFF3B700);

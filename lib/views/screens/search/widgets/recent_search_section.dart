@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
 
 class RecentSearchSection extends StatelessWidget {
   const RecentSearchSection({super.key});
@@ -10,6 +9,7 @@ class RecentSearchSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return BlocBuilder<SearchCubit, SearchState>(
       buildWhen: (previous, current) => current is SearchInitial,
@@ -24,70 +24,84 @@ class RecentSearchSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: AppSpacing.mediumHorizontalSpacing(context),
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Recent Search',
+                    'Recent Research',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
                       fontFamily: 'Poppins',
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () => context.read<SearchCubit>().clearHistory(),
+                  GestureDetector(
+                    onTap: () => context.read<SearchCubit>().clearHistory(),
                     child: Text(
-                      'Clear All',
+                      'Clear History',
                       style: TextStyle(
-                        color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                         fontFamily: 'Poppins',
                         fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: theme.primaryColor,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 16),
             SizedBox(
-              height: 45,
+              height: 48,
               child: ListView.separated(
-                padding: EdgeInsets.symmetric(
-                  horizontal: AppSpacing.mediumHorizontalSpacing(context),
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
                 itemCount: recentSearches.length,
                 separatorBuilder: (context, index) => const SizedBox(width: 10),
                 itemBuilder: (context, index) {
                   final keyword = recentSearches[index];
-                  return ActionChip(
-                    label: Text(
-                      keyword,
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
+                  return Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: () {
+                        final sessionState = context.read<SessionCubit>().state;
+                        context.read<SearchCubit>().searchItems(
+                              lat: sessionState.latitude ?? 0.0,
+                              lon: sessionState.longitude ?? 0.0,
+                              query: keyword,
+                            );
+                      },
+                      borderRadius: BorderRadius.circular(14),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.history_rounded, size: 14, color: isDark ? Colors.white30 : Colors.black38),
+                            const SizedBox(width: 8),
+                            Text(
+                              keyword,
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: isDark ? Colors.white70 : Colors.black54,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    backgroundColor: theme.cardColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: theme.dividerColor.withValues(alpha: 0.1),
-                      ),
-                    ),
-                    onPressed: () {
-                      final sessionState = context.read<SessionCubit>().state;
-                      context.read<SearchCubit>().searchItems(
-                            lat: sessionState.latitude ?? 0.0,
-                            lon: sessionState.longitude ?? 0.0,
-                            query: keyword,
-                          );
-                    },
                   );
                 },
               ),
