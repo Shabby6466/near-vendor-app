@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
@@ -38,7 +39,10 @@ class ShopDetailsScreen extends StatelessWidget {
             }
 
             if (state is ShopDetailsFailure) {
-              return Center(child: Text('Error: ${state.message}'));
+              return AnimatedErrorState(
+                message: state.message,
+                onRetry: () => context.read<ShopDetailsCubit>().loadShopData(shop.id),
+              );
             }
 
             if (state is ShopDetailsSuccess) {

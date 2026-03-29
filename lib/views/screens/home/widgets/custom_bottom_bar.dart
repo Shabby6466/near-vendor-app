@@ -182,8 +182,8 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                                       isActive: widget.currentIndex == 2,
                                     ),
                                     _NavButton(
-                                      label: 'Chat',
-                                      icon: Icons.chat_bubble_outline,
+                                      label: 'Wishes',
+                                      icon: Icons.auto_awesome,
                                       isActive: widget.currentIndex == 3,
                                     ),
                                   ],

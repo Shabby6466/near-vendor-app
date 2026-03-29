@@ -40,6 +40,12 @@ class ApiConstants {
   static const String updateUserLocation = 'api/users/location';
   static const String visualSearch = 'api/explore/search/visual';
   
+  ///WISHLIST
+  static const String createWishlist = 'api/wishlist';
+  static const String getMyWishlists = 'api/wishlist/me';
+  static const String deleteWishlist = 'api/wishlist/';
+  static const String exploreWishlists = 'api/wishlist/explore';
+
   ///PORTFOLIO
   static const String searchPortfolio = 'api/vendor/portfolio/search';
   static const String getPortfolioPerformance = 'api/vendor/portfolio/performance';

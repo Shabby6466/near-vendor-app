@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
-import 'package:nearvendorapp/views/screens/home/view/coming_soon_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
+import 'package:nearvendorapp/views/screens/wishlist/view/wishlist_main_screen.dart';
 
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/map_screen.dart';
@@ -56,9 +55,9 @@ class MainScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                ComingSoonScreen(
-                  title: 'Chat Support',
-                  iconPath: Assets.icons.profileIcon.path,
+                LazyLoadWrapper(
+                  isVisible: currentIndex == 3,
+                  child: const WishlistMainScreen(),
                 ),
                 LazyLoadWrapper(
                   isVisible: currentIndex == 4,

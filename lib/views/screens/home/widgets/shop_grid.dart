@@ -8,6 +8,8 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
+import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopGrid extends StatelessWidget {
@@ -25,11 +27,11 @@ class ShopGrid extends StatelessWidget {
 
         if (state is HomeScreenFailure) {
           return SliverFillRemaining(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text('Error: ${state.message}'),
-              ),
+            child: AnimatedErrorState(
+              message: state.message,
+              onRetry: () {
+                context.read<HomeScreenCubit>().loadShops();
+              },
             ),
           );
         }

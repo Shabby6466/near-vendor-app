@@ -11,6 +11,9 @@ import 'package:nearvendorapp/utils/constants/hive_keys.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/views/screens/wishlist/cubits/vendor_demand_cubit.dart';
+import 'package:nearvendorapp/views/screens/wishlist/widgets/vendor_demand_view.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -49,7 +52,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final theme = Theme.of(context);
 
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: AppScaffold(
         appBar: AppBar(
           title: const Text(
@@ -81,6 +84,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             tabs: const [
               Tab(text: 'PORTFOLIO'),
               Tab(text: 'SHOP INSIGHTS'),
+              Tab(text: 'LOCAL DEMAND'),
             ],
           ),
         ),
@@ -104,6 +108,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                       children: [
                         _buildPortfolioTab(context, state),
                         _buildInsightsTab(context, state),
+                        _buildVendorDemandWrapper(context),
                       ],
                     ),
                   ),
@@ -586,6 +591,21 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         fontWeight: FontWeight.w800,
         letterSpacing: -0.5,
       ),
+    );
+  }
+
+  Widget _buildVendorDemandWrapper(BuildContext context) {
+    final sessionState = context.read<SessionCubit>().state;
+    final lat = sessionState.latitude;
+    final lon = sessionState.longitude;
+
+    if (lat == null || lon == null) {
+      return const Center(child: Text('Location unavailable. Please update your location.'));
+    }
+
+    return BlocProvider(
+      create: (_) => VendorDemandCubit()..exploreLocalDemand(lat: lat, lon: lon),
+      child: const VendorDemandView(),
     );
   }
 }
