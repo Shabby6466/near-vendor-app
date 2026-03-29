@@ -13,11 +13,14 @@ import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/screens/a
 import 'package:nearvendorapp/models/api_responses/analytics_response.dart';
 import 'package:nearvendorapp/utils/constants/hive_keys.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
+import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/edit_shop_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_cubit.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/screens/portfolio_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class ShopDetailsScreen extends StatefulWidget {
@@ -29,11 +32,13 @@ class ShopDetailsScreen extends StatefulWidget {
 }
 
 class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
+  DashboardThemeExtension? get _dashboardTheme =>
+      Theme.of(context).extension<DashboardThemeExtension>();
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
-    // Load persisted days
+
     final storedDays = HiveManager.currentUserBox.get(
       HiveKeys.analyticsDaysSelectionKey,
       defaultValue: 7,
@@ -43,10 +48,12 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => ItemManagementCubit(shopId: widget.shop.id)..fetchItems(),
+          create: (context) =>
+              ItemManagementCubit(shopId: widget.shop.id)..fetchItems(),
         ),
         BlocProvider(
-          create: (context) => AnalyticsCubit()..fetchShopDetails(widget.shop.id, days: days),
+          create: (context) =>
+              AnalyticsCubit()..fetchShopDetails(widget.shop.id, days: days),
         ),
       ],
       child: BlocListener<ItemManagementCubit, ItemManagementState>(
@@ -133,7 +140,9 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
           decoration: BoxDecoration(
             color: theme.dividerColor.withValues(alpha: 0.05),
           ),
-          child: widget.shop.coverImageUrl != null && widget.shop.coverImageUrl!.isNotEmpty
+          child:
+              widget.shop.coverImageUrl != null &&
+                  widget.shop.coverImageUrl!.isNotEmpty
               ? CachedNetworkImage(
                   imageUrl: widget.shop.coverImageUrl!,
                   fit: BoxFit.cover,
@@ -190,10 +199,13 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
               radius: 54,
               backgroundColor: theme.scaffoldBackgroundColor,
               backgroundImage:
-                  widget.shop.storeLogoUrl != null && widget.shop.storeLogoUrl!.isNotEmpty
+                  widget.shop.storeLogoUrl != null &&
+                      widget.shop.storeLogoUrl!.isNotEmpty
                   ? NetworkImage(widget.shop.storeLogoUrl!)
                   : null,
-              child: widget.shop.storeLogoUrl == null || widget.shop.storeLogoUrl!.isEmpty
+              child:
+                  widget.shop.storeLogoUrl == null ||
+                      widget.shop.storeLogoUrl!.isEmpty
                   ? Icon(
                       Icons.storefront_rounded,
                       size: 40,
@@ -233,82 +245,62 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
             ),
           ),
 
-          ElevatedButton.icon(
-            onPressed: () {},
-            label: const Text(
-              'Share',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w600,
-                fontSize: 16,
+          _buildQuickAction(
+            context,
+            'Edit Business',
+            Icons.edit_note_rounded,
+            _dashboardTheme?.analyticsColor ?? Colors.orange,
+            () => AppNavigator.push(context, EditShopScreen(shop: widget.shop)),
+          ),
+          _buildQuickAction(
+            context,
+            'Inventory',
+            Icons.inventory_2_rounded,
+            _dashboardTheme?.inventoryColor ?? Colors.blue,
+            () => AppNavigator.push(
+              context,
+              BlocProvider(
+                create: (context) => PortfolioCubit(),
+                child: const PortfolioScreen(),
               ),
             ),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF0056C0),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24),
-              ),
-              elevation: 0,
-            ),
           ),
-
-          const SizedBox(width: 8),
-          
-          _buildActionButton(
+          _buildQuickAction(
             context,
-            icon: Icons.edit_note_rounded,
-            color: Colors.blue,
-            onTap: () => _showEditForm(context),
-          ),
-          
-          const SizedBox(width: 8),
-          
-          _buildActionButton(
-            context,
-            icon: Icons.delete_outline_rounded,
-            color: Colors.red,
-            onTap: () => _confirmDelete(context),
+            'Delete Shop',
+            Icons.delete_outline_rounded,
+            _dashboardTheme?.errorColor ?? Colors.red,
+            () => _confirmDelete(context),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildActionButton(
-    BuildContext context, {
-    required IconData icon,
-    required Color color,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: () {
-        HapticFeedback.lightImpact();
-        onTap();
-      },
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: color.withValues(alpha: 0.2),
-            width: 1,
+  Widget _buildQuickAction(
+    BuildContext context,
+    String label,
+    IconData icon,
+    Color color,
+    VoidCallback onTap,
+  ) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 8),
+      child: InkWell(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
           ),
+          child: Icon(icon, color: color, size: 22),
         ),
-        child: Icon(icon, color: color, size: 22),
-      ),
-    );
-  }
-
-  void _showEditForm(BuildContext context) {
-    AppNavigator.push(
-      context,
-      BlocProvider.value(
-        value: context.read<VendorShopCubit>(),
-        child: EditShopScreen(shop: widget.shop),
       ),
     );
   }
@@ -332,12 +324,14 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: Colors.red.withValues(alpha: 0.1),
+                  color: (_dashboardTheme?.errorColor ?? Colors.red).withValues(
+                    alpha: 0.1,
+                  ),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.delete_sweep_rounded,
-                  color: Colors.red,
+                  color: _dashboardTheme?.errorColor ?? Colors.red,
                   size: 40,
                 ),
               ),
@@ -386,12 +380,15 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () {
-                        context.read<VendorShopCubit>().deleteShop(widget.shop.id);
+                        context.read<VendorShopCubit>().deleteShop(
+                          widget.shop.id,
+                        );
                         AppNavigator.pop(context);
                         AppNavigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
+                        backgroundColor:
+                            _dashboardTheme?.errorColor ?? Colors.red,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         shape: RoundedRectangleBorder(
@@ -440,8 +437,16 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
                         context,
                         MultiBlocProvider(
                           providers: [
-                            BlocProvider(create: (context) => AnalyticsCubit()..fetchShopDetails(widget.shop.id, days: state.days)),
-                            BlocProvider.value(value: context.read<VendorShopCubit>()),
+                            BlocProvider(
+                              create: (context) => AnalyticsCubit()
+                                ..fetchShopDetails(
+                                  widget.shop.id,
+                                  days: state.days,
+                                ),
+                            ),
+                            BlocProvider.value(
+                              value: context.read<VendorShopCubit>(),
+                            ),
                           ],
                           child: const AnalyticsScreen(),
                         ),
@@ -469,14 +474,18 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
               const SizedBox(height: 12),
               _buildMiniTrendChart(context, state.selectedShopStats ?? []),
               const SizedBox(height: 24),
-              if (state.selectedShopMarket != null && state.selectedShopMarket!.neighborhoodDemand.isNotEmpty) ...[
+              if (state.selectedShopMarket != null &&
+                  state.selectedShopMarket!.neighborhoodDemand.isNotEmpty) ...[
                 _buildSectionTitle(
                   context: context,
                   title: 'Local Demand',
                   fontSize: 14,
                 ),
                 const SizedBox(height: 12),
-                _buildMarketDemandList(context, state.selectedShopMarket!.neighborhoodDemand.take(3).toList()),
+                _buildMarketDemandList(
+                  context,
+                  state.selectedShopMarket!.neighborhoodDemand.take(3).toList(),
+                ),
               ],
             ],
           );
@@ -486,9 +495,12 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
     );
   }
 
-  Widget _buildMiniTrendChart(BuildContext context, List<AnalyticsStatEntry> stats) {
+  Widget _buildMiniTrendChart(
+    BuildContext context,
+    List<AnalyticsStatEntry> stats,
+  ) {
     if (stats.isEmpty) return const SizedBox.shrink();
-    
+
     final data = stats.where((s) => s.type == 'IMPRESSION').toList();
     if (data.isEmpty) return const SizedBox.shrink();
 
@@ -531,22 +543,29 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionTitle(context: context, title: 'Performance', fontSize: 18),
+        _buildSectionTitle(
+          context: context,
+          title: 'Performance',
+          fontSize: 18,
+        ),
         const SizedBox(height: 12),
         Row(
-          children: List.generate(3, (i) => Expanded(
-            child: Padding(
-              padding: EdgeInsets.only(right: i < 2 ? 8.0 : 0),
-              child: Container(
-                height: 80,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(16),
+          children: List.generate(
+            3,
+            (i) => Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(right: i < 2 ? 8.0 : 0),
+                child: Container(
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const ShimmerEffect(borderRadius: 16),
                 ),
-                child: const ShimmerEffect(borderRadius: 16),
               ),
             ),
-          )),
+          ),
         ),
       ],
     );
@@ -560,7 +579,7 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
           'Impressions',
           summary.impressions.toString(),
           Icons.visibility_outlined,
-          Colors.blue,
+          _dashboardTheme?.inventoryColor ?? Colors.blue,
         ),
         const SizedBox(width: 8),
         _buildMiniMetricCard(
@@ -568,7 +587,7 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
           'Views',
           summary.views.toString(),
           Icons.ads_click_rounded,
-          Colors.orange,
+          _dashboardTheme?.analyticsColor ?? Colors.orange,
         ),
         const SizedBox(width: 8),
         _buildMiniMetricCard(
@@ -576,7 +595,7 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
           'CTR',
           '${summary.ctr}%',
           Icons.analytics_outlined,
-          Colors.green,
+          _dashboardTheme?.successColor ?? Colors.green,
         ),
       ],
     );
@@ -624,7 +643,10 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
     );
   }
 
-  Widget _buildMarketDemandList(BuildContext context, List<DemandEntry> demand) {
+  Widget _buildMarketDemandList(
+    BuildContext context,
+    List<DemandEntry> demand,
+  ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -650,15 +672,19 @@ class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
-                      color: Colors.green.withValues(alpha: 0.1),
+                      color: (_dashboardTheme?.successColor ?? Colors.green)
+                          .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       '${entry.count} Hits',
-                      style: const TextStyle(
-                        color: Colors.green,
+                      style: TextStyle(
+                        color: _dashboardTheme?.successColor ?? Colors.green,
                         fontWeight: FontWeight.w800,
                         fontSize: 10,
                       ),

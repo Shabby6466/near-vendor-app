@@ -101,6 +101,16 @@ class AppThemeData {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     ),
+    extensions: [
+      DashboardThemeExtension(
+        addShopColor: vendorAccent,
+        analyticsColor: const Color(0xFFFF9800), // Orange
+        inventoryColor: const Color(0xFF2196F3), // Blue
+        supportColor: const Color(0xFF9C27B0), // Purple
+        successColor: const Color(0xFF4CAF50), // Green
+        errorColor: const Color(0xFFF44336), // Red
+      ),
+    ],
   );
 
   static ThemeData get vendorDarkTheme => ThemeData(
@@ -128,5 +138,68 @@ class AppThemeData {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     ),
+    extensions: [
+      DashboardThemeExtension(
+        addShopColor: vendorAccent,
+        analyticsColor: const Color(0xFFFFB74D), // Muted Orange
+        inventoryColor: const Color(0xFF64B5F6), // Muted Blue
+        supportColor: const Color(0xFFBA68C8), // Muted Purple
+        successColor: const Color(0xFF81C784), // Muted Green
+        errorColor: const Color(0xFFE57373), // Muted Red
+      ),
+    ],
   );
+}
+
+class DashboardThemeExtension extends ThemeExtension<DashboardThemeExtension> {
+  final Color addShopColor;
+  final Color analyticsColor;
+  final Color inventoryColor;
+  final Color supportColor;
+  final Color successColor;
+  final Color errorColor;
+
+  DashboardThemeExtension({
+    required this.addShopColor,
+    required this.analyticsColor,
+    required this.inventoryColor,
+    required this.supportColor,
+    required this.successColor,
+    required this.errorColor,
+  });
+
+  @override
+  ThemeExtension<DashboardThemeExtension> copyWith({
+    Color? addShopColor,
+    Color? analyticsColor,
+    Color? inventoryColor,
+    Color? supportColor,
+    Color? successColor,
+    Color? errorColor,
+  }) {
+    return DashboardThemeExtension(
+      addShopColor: addShopColor ?? this.addShopColor,
+      analyticsColor: analyticsColor ?? this.analyticsColor,
+      inventoryColor: inventoryColor ?? this.inventoryColor,
+      supportColor: supportColor ?? this.supportColor,
+      successColor: successColor ?? this.successColor,
+      errorColor: errorColor ?? this.errorColor,
+    );
+  }
+
+  @override
+  ThemeExtension<DashboardThemeExtension> lerp(
+    ThemeExtension<DashboardThemeExtension>? other,
+    double t,
+  ) {
+    if (other is! DashboardThemeExtension) return this;
+    return DashboardThemeExtension(
+      addShopColor: Color.lerp(addShopColor, other.addShopColor, t)!,
+      analyticsColor: Color.lerp(analyticsColor, other.analyticsColor, t)!,
+      inventoryColor: Color.lerp(inventoryColor, other.inventoryColor, t)!,
+      supportColor: Color.lerp(supportColor, other.supportColor, t)!,
+      successColor: Color.lerp(successColor, other.successColor, t)!,
+      errorColor: Color.lerp(errorColor, other.errorColor, t)!,
+    );
+  }
 }

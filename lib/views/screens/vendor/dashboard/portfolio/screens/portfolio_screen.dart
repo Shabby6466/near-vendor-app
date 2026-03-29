@@ -5,6 +5,7 @@ import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_state.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:ui';
 
@@ -284,7 +285,10 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
 
   Widget _buildPerformanceCard(BuildContext context, Item item, bool isPositive) {
     final theme = Theme.of(context);
-    final indicatorColor = isPositive ? Colors.green : Colors.orange;
+    final dashboardTheme = theme.extension<DashboardThemeExtension>();
+    final indicatorColor = isPositive 
+        ? (dashboardTheme?.successColor ?? Colors.green) 
+        : (dashboardTheme?.analyticsColor ?? Colors.orange);
 
     return Container(
       width: 140,

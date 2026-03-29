@@ -10,6 +10,7 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/constants/hive_keys.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/utils/app_theme_data.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -295,6 +296,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _buildInsightsSummary(BuildContext context, InsightsSummary summary) {
+    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
+    
     return Row(
       children: [
         _buildSummaryCard(
@@ -302,7 +305,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           'Impressions',
           summary.impressions.toString(),
           Icons.visibility_outlined,
-          Colors.blue,
+          dashboardTheme?.inventoryColor ?? Colors.blue,
         ),
         const SizedBox(width: 12),
         _buildSummaryCard(
@@ -310,7 +313,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           'Views',
           summary.views.toString(),
           Icons.ads_click_rounded,
-          Colors.orange,
+          dashboardTheme?.analyticsColor ?? Colors.orange,
         ),
         const SizedBox(width: 12),
         _buildSummaryCard(
@@ -318,7 +321,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           'CTR',
           '${summary.ctr}%',
           Icons.analytics_outlined,
-          Colors.green,
+          dashboardTheme?.successColor ?? Colors.green,
         ),
       ],
     );
@@ -347,10 +350,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             const SizedBox(height: 12),
             Text(
               value,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Poppins',
                 fontSize: 20,
                 fontWeight: FontWeight.w800,
+                color: theme.textTheme.titleLarge?.color,
               ),
             ),
             Text(
@@ -401,8 +405,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   Widget _buildLineChart(BuildContext context, List<AnalyticsStatEntry> stats) {
     if (stats.isEmpty) return const Center(child: Text('No data for trends'));
 
+    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
     final impressions = stats.where((s) => s.type == 'IMPRESSION').toList();
     final views = stats.where((s) => s.type == 'VIEW').toList();
+
+    final color1 = dashboardTheme?.inventoryColor ?? Colors.blue;
+    final color2 = dashboardTheme?.analyticsColor ?? Colors.orange;
 
     return Container(
       height: 250,
@@ -410,7 +418,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Colors.grey.withValues(alpha: 0.05)),
+        border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.05)),
       ),
       child: LineChart(
         LineChartData(
@@ -428,13 +436,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 return FlSpot(e.key.toDouble(), e.value.count.toDouble());
               }).toList(),
               isCurved: true,
-              color: Colors.blue,
+              color: color1,
               barWidth: 3,
               isStrokeCapRound: true,
               dotData: const FlDotData(show: false),
               belowBarData: BarAreaData(
                 show: true,
-                color: Colors.blue.withValues(alpha: 0.1),
+                color: color1.withValues(alpha: 0.1),
               ),
             ),
             LineChartBarData(
@@ -442,13 +450,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 return FlSpot(e.key.toDouble(), e.value.count.toDouble());
               }).toList(),
               isCurved: true,
-              color: Colors.orange,
+              color: color2,
               barWidth: 3,
               isStrokeCapRound: true,
               dotData: const FlDotData(show: false),
               belowBarData: BarAreaData(
                 show: true,
-                color: Colors.orange.withValues(alpha: 0.1),
+                color: color2.withValues(alpha: 0.1),
               ),
             ),
           ],
@@ -459,6 +467,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
 
   Widget _buildDemandList(BuildContext context, List<DemandEntry> demand) {
     if (demand.isEmpty) return const Center(child: Text('Evaluating neighborhood demand...'));
+    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
 
     return ListView.separated(
       shrinkWrap: true,
@@ -481,13 +490,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           trailing: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.1),
+              color: (dashboardTheme?.successColor ?? Colors.green).withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               '${entry.count} Hits',
-              style: const TextStyle(
-                color: Colors.green,
+              style: TextStyle(
+                color: dashboardTheme?.successColor ?? Colors.green,
                 fontWeight: FontWeight.w800,
                 fontSize: 12,
               ),

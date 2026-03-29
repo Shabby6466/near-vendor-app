@@ -29,51 +29,52 @@ class ProfileHeader extends StatelessWidget {
         Center(
           child: SvgPicture.asset(
             'assets/icons/near_vendor_blue_text.svg',
-            height: 40,
+            height: 36,
             colorFilter: ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
           ),
         ),
-        SizedBox(height: AppSpacing.mediumVerticalSpacing(context) * 2),
+        SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
         SizedBox(
-          width: 130,
-          height: 130,
+          width: 140,
+          height: 140,
           child: Stack(
             alignment: Alignment.center,
             children: [
               if (isUploadingImage)
                 SizedBox(
-                  width: 130,
-                  height: 130,
+                  width: 140,
+                  height: 140,
                   child: CircularProgressIndicator(
                     color: theme.primaryColor,
                     strokeWidth: 3,
                   ),
                 ),
               SizedBox(
-                width: 120,
-                height: 120,
+                width: 130,
+                height: 130,
                 child: Stack(
                   children: [
                     Container(
-                      width: 120,
-                      height: 120,
+                      width: 130,
+                      height: 130,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
-                          color: theme.primaryColor.withValues(alpha: (0.2)),
-                          width: 3,
+                          color: theme.scaffoldBackgroundColor,
+                          width: 4,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: theme.primaryColor.withValues(alpha: (0.1)),
-                            blurRadius: 20,
-                            offset: const Offset(0, 10),
+                            color: theme.primaryColor.withValues(alpha: 0.15),
+                            blurRadius: 24,
+                            spreadRadius: 4,
+                            offset: const Offset(0, 8),
                           ),
                         ],
                       ),
                       child: CircularCachedNetworkImage(
                         imageUrl: photoUrl,
-                        size: 120,
+                        size: 130,
                       ),
                     ),
                     if (!isUploadingImage)
@@ -83,22 +84,23 @@ class ProfileHeader extends StatelessWidget {
                         child: GestureDetector(
                           onTap: onEditProfile,
                           child: Container(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: theme.primaryColor,
                               shape: BoxShape.circle,
+                              border: Border.all(color: theme.scaffoldBackgroundColor, width: 2),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.2),
+                                  color: Colors.black.withValues(alpha: 0.15),
                                   blurRadius: 8,
                                   offset: const Offset(0, 4),
                                 ),
                               ],
                             ),
                             child: const Icon(
-                              Icons.edit,
+                              Icons.edit_rounded,
                               color: Colors.white,
-                              size: 16,
+                              size: 18,
                             ),
                           ),
                         ),
@@ -112,31 +114,40 @@ class ProfileHeader extends StatelessWidget {
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
         Text(
           userName,
-          style: theme.textTheme.headlineMedium?.copyWith(
-            fontWeight: FontWeight.bold,
+          style: theme.textTheme.headlineSmall?.copyWith(
+            fontWeight: FontWeight.w800,
             fontFamily: 'Poppins',
+            letterSpacing: -0.5,
           ),
         ),
-        const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.location_on_rounded,
-              color: theme.primaryColor,
-              size: 18,
-            ),
-            const SizedBox(width: 4),
-            Text(
-              userLocation,
-              style: TextStyle(
-                fontSize: 14,
+        const SizedBox(height: 6),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: theme.primaryColor.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.location_on_rounded,
                 color: theme.primaryColor,
-                fontWeight: FontWeight.w600,
-                fontFamily: 'Poppins',
+                size: 14,
               ),
-            ),
-          ],
+              const SizedBox(width: 4),
+              Text(
+                userLocation,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: theme.primaryColor,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Poppins',
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );

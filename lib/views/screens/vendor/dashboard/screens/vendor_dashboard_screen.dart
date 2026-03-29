@@ -14,6 +14,7 @@ import 'package:nearvendorapp/views/screens/vendor/dashboard/support/screens/sup
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/screens/portfolio_screen.dart';
+import 'package:nearvendorapp/utils/app_theme_data.dart';
 
 class VendorDashboardScreen extends StatefulWidget {
   const VendorDashboardScreen({super.key});
@@ -351,6 +352,8 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
   }
 
   Widget _buildQuickActionsGrid(BuildContext context) {
+    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
+    
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       sliver: SliverGrid(
@@ -365,7 +368,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Add Shop',
             Icons.add_business_rounded,
-            Theme.of(context).primaryColor,
+            dashboardTheme?.addShopColor ?? Theme.of(context).primaryColor,
             () {
               AppNavigator.push(
                 context,
@@ -380,7 +383,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Analytics',
             Icons.bar_chart_rounded,
-            Colors.orange,
+            dashboardTheme?.analyticsColor ?? Colors.orange,
             () {
               AppNavigator.push(
                 context,
@@ -398,7 +401,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Inventory',
             Icons.inventory_2_rounded,
-            Colors.blue,
+            dashboardTheme?.inventoryColor ?? Colors.blue,
             () {
               AppNavigator.push(
                 context,
@@ -413,7 +416,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Support',
             Icons.headset_mic_rounded,
-            Colors.purple,
+            dashboardTheme?.supportColor ?? Colors.purple,
             () {
               AppNavigator.push(
                 context,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/utils/app_theme_data.dart';
 
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
@@ -198,24 +199,26 @@ class SupportScreen extends StatelessWidget {
 
   Widget _buildTipsCarousel(BuildContext context) {
     final theme = Theme.of(context);
+    final dashboardTheme = theme.extension<DashboardThemeExtension>();
+    
     final tips = [
       {
         'title': 'High-Quality Images',
         'desc': 'Shops with professional photos get 3x more views.',
         'icon': Icons.camera_alt_outlined,
-        'color': Colors.blue,
+        'color': dashboardTheme?.inventoryColor ?? Colors.blue,
       },
       {
         'title': 'Optimize Descriptions',
         'desc': 'Use keywords your customers search for.',
         'icon': Icons.description_outlined,
-        'color': Colors.orange,
+        'color': dashboardTheme?.analyticsColor ?? Colors.orange,
       },
       {
         'title': 'Stay Updated',
         'desc': 'Keep your inventory current to avoid cancellations.',
         'icon': Icons.update_rounded,
-        'color': Colors.green,
+        'color': dashboardTheme?.addShopColor ?? Colors.green,
       },
     ];
 

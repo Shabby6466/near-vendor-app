@@ -5,7 +5,6 @@ import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_items_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/search_filter_chips.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_header.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
 
@@ -36,8 +35,6 @@ class _SearchScreenState extends State<SearchScreen> {
                   children: [
                     SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                     const SearchBarField(),
-                    SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-                    const SearchFilterChips(),
                     SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
                     BlocBuilder<SearchCubit, SearchState>(
                       builder: (context, state) {
