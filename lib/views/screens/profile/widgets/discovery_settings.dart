@@ -28,7 +28,6 @@ class DiscoverySettings extends StatelessWidget {
           'Discovery Settings',
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
-            fontFamily: 'Poppins',
           ),
         ),
         SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
@@ -57,10 +56,9 @@ class DiscoverySettings extends StatelessWidget {
                 subtitle: 'Find vendors within ${radius.toInt()} kilometers',
                 trailing: Text(
                   '${radius.toInt()} km',
-                  style: TextStyle(
+                  style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.primaryColor,
                     fontWeight: FontWeight.bold,
-                    fontFamily: 'Poppins',
                   ),
                 ),
                 onTap: () {
@@ -131,7 +129,6 @@ class DiscoverySettings extends StatelessWidget {
                     style: theme.textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                       fontSize: 14,
-                      fontFamily: 'Poppins',
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -142,7 +139,6 @@ class DiscoverySettings extends StatelessWidget {
                         alpha: (0.6),
                       ),
                       fontSize: 12,
-                      fontFamily: 'Poppins',
                     ),
                   ),
                 ],

@@ -287,7 +287,7 @@ class VendorDemandView extends StatelessWidget {
                         fontFamily: 'Poppins',
                         fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        color: ColorName.primary.withValues(alpha: 0.8),
+                        color: Colors.white.withValues(alpha: 0.8),
                       ),
                     ),
                   ),

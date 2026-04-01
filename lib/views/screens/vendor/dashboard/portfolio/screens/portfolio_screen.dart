@@ -531,7 +531,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.w900,
-                      color: Theme.of(context).primaryColor,
+                      color: Colors.white,
                     ),
                   ),
                 ],

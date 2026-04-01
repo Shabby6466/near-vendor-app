@@ -61,7 +61,7 @@ class VendorListOverlay extends StatelessWidget {
                       child: Text(
                         'Sort',
                         style: TextStyle(
-                          color: Theme.of(context).primaryColor,
+                          color: isDark ? Colors.white : Colors.black87,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

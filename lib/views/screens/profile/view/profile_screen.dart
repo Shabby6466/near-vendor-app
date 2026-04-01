@@ -36,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
               return Center(
                 child: Text(
                   state.error,
-                  style: const TextStyle(fontFamily: 'Poppins'),
+                  style: theme.textTheme.bodyMedium,
                 ),
               );
             }
@@ -57,11 +57,9 @@ class ProfileScreen extends StatelessWidget {
                         centerTitle: true,
                         title: Text(
                           'Profile',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w800,
+                          style: theme.textTheme.titleLarge?.copyWith(
                             fontSize: 18,
-                            color: theme.textTheme.titleLarge?.color,
+                            fontWeight: FontWeight.w800,
                           ),
                         ),
                       ),
@@ -133,14 +131,12 @@ class ProfileScreen extends StatelessWidget {
                                               ),
                                               child: Text(
                                                 sessionState.vendorStatus ?? 'PENDING',
-                                                style: TextStyle(
+                                                style: theme.textTheme.labelSmall?.copyWith(
                                                   color: sessionState.vendorStatus == 'APPROVED'
                                                       ? Colors.green
                                                       : theme.textTheme.bodyMedium?.color
                                                           ?.withValues(alpha: 0.6),
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 10,
-                                                  fontFamily: 'Poppins',
                                                 ),
                                               ),
                                             ),
@@ -211,11 +207,10 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Padding(
-      padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
+      padding: EdgeInsets.only(left: 16, bottom: 8, top: 8),
       child: Text(
         title,
-        style: TextStyle(
-          fontFamily: 'Poppins',
+        style: Theme.of(context).textTheme.labelSmall?.copyWith(
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.2,
@@ -279,11 +274,10 @@ class ProfileScreen extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(
                   'Log Out',
-                  style: TextStyle(
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
                     color: Colors.red.shade600,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    fontFamily: 'Poppins',
                     letterSpacing: 0.5,
                   ),
                 ),

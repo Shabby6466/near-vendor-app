@@ -36,7 +36,6 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
           'Discovery Radius',
           style: theme.textTheme.titleLarge?.copyWith(
             fontWeight: FontWeight.bold,
-            fontFamily: 'Poppins',
           ),
         ),
         SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
@@ -44,7 +43,6 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
           'Find vendors within ${_currentRadius.toInt()} kilometers',
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.textTheme.bodyMedium?.color?.withValues(alpha: (0.6)),
-            fontFamily: 'Poppins',
           ),
         ),
         SizedBox(height: AppSpacing.largeVerticalSpacing(context)),

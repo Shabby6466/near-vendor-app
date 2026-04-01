@@ -32,12 +32,10 @@ class RecentItemsSection extends StatelessWidget {
                 children: [
                   Text(
                     'Memory',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: theme.textTheme.headlineSmall?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
                       letterSpacing: -0.5,
-                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -52,10 +50,8 @@ class RecentItemsSection extends StatelessWidget {
                   const SizedBox(width: 8),
                   Text(
                     'LAST SEEN',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: theme.textTheme.labelSmall?.copyWith(
                       fontSize: 10,
-                      fontWeight: FontWeight.w800,
                       color: theme.primaryColor.withValues(alpha: 0.6),
                       letterSpacing: 1.2,
                     ),
@@ -154,7 +150,11 @@ class _MemoryCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             '${item.stockCount ?? 0} left',
-                            style: const TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              fontSize: 10,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
                       ),
@@ -172,21 +172,16 @@ class _MemoryCard extends StatelessWidget {
                     item.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: theme.textTheme.labelLarge?.copyWith(
                       fontSize: 13,
-                      fontWeight: FontWeight.w700,
-                      color: isDark ? Colors.white : Colors.black87,
                       letterSpacing: -0.2,
                     ),
                   ),
                   const SizedBox(height: 2),
                   Text(
                     'Rs. ${item.price.toStringAsFixed(0)}',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: theme.textTheme.labelLarge?.copyWith(
                       fontSize: 12,
-                      fontWeight: FontWeight.w800,
                       color: theme.primaryColor,
                     ),
                   ),

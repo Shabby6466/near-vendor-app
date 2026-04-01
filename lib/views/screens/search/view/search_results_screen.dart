@@ -6,6 +6,7 @@ import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   const SearchResultsScreen({super.key});
@@ -103,7 +104,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           suffixIcon: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.camera_enhance_outlined, color: Colors.black54),
+              SvgPicture.asset(
+                'assets/icons/camera.svg',
+                colorFilter:
+                    const ColorFilter.mode(Colors.black54, BlendMode.srcIn),
+                width: 20,
+                height: 20,
+              ),
               const SizedBox(width: 12),
               const Icon(Icons.mic_none, color: Colors.black54),
               const SizedBox(width: 16),

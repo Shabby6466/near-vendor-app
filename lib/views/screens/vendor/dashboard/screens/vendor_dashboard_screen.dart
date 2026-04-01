@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
@@ -85,12 +87,9 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
                     child: Text(
                       'Business Console',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
+                      style: theme.textTheme.titleLarge?.copyWith(
                         letterSpacing: -0.5,
-                        color: theme.textTheme.titleLarge?.color,
+                        fontSize: 18,
                       ),
                     ),
                   ),
@@ -106,12 +105,9 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                       children: [
                         Text(
                           'Your Retail Spaces',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700,
+                          style: theme.textTheme.titleLarge?.copyWith(
                             letterSpacing: -0.5,
-                            color: theme.textTheme.titleLarge?.color,
+                            fontSize: 18,
                           ),
                         ),
                         BlocBuilder<VendorShopCubit, VendorShopState>(
@@ -123,11 +119,9 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                             if (shops != null && shops.isNotEmpty) {
                               return Text(
                                 '${shops.length} Active',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
+                                style: theme.textTheme.labelLarge?.copyWith(
                                   color: theme.primaryColor,
+                                  fontSize: 13,
                                 ),
                               );
                             }
@@ -235,10 +229,8 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
       children: [
         Text(
           name,
-          style: const TextStyle(
-            fontFamily: 'Poppins',
+          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
             fontSize: 20,
-            fontWeight: FontWeight.w800,
             color: Colors.white,
             overflow: TextOverflow.ellipsis,
           ),
@@ -264,18 +256,15 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                   children: [
                     Text(
                       _getGreeting(),
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
                         fontSize: 14,
                         color: Colors.white.withValues(alpha: 0.7),
-                        fontWeight: FontWeight.w600,
                         letterSpacing: 0.5,
                       ),
                     ),
                     Text(
                       name,
-                      style: const TextStyle(
-                        fontFamily: 'Poppins',
+                      style: Theme.of(context).textTheme.displaySmall?.copyWith(
                         fontSize: 34,
                         fontWeight: FontWeight.w900,
                         letterSpacing: -1.2,
@@ -380,11 +369,8 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             const SizedBox(width: 6),
             Text(
               label,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 10,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
                 color: Colors.white.withValues(alpha: 0.5),
-                fontWeight: FontWeight.w700,
                 letterSpacing: 0.5,
               ),
             ),
@@ -414,11 +400,9 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
             child: Text(
               'Market Insights',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
                 letterSpacing: -0.5,
+                fontSize: 18,
               ),
             ),
           ),
@@ -435,7 +419,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                   '1.2k Views',
                   '+12.5%',
                   Icons.trending_up_rounded,
-                  Colors.blue,
+                  const Color(0xFFFF4D00),
                 ),
                 _buildInsightCard(
                   context,
@@ -443,7 +427,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                   'High Demand',
                   'Electronics',
                   Icons.lightbulb_outline_rounded,
-                  Colors.orange,
+                  const Color(0xFFFF4D00),
                 ),
                 _buildInsightCard(
                   context,
@@ -451,7 +435,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                   '98% Rating',
                   'Top Tier',
                   Icons.verified_user_outlined,
-                  Colors.green,
+                  const Color(0xFFFF4D00),
                 ),
               ],
             ),
@@ -492,19 +476,10 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: color, size: 16),
-              ),
+              Icon(icon, color: color, size: 20),
               Text(
                 subtext,
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontSize: 10,
+                style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w800,
                   color: color,
                 ),
@@ -514,17 +489,15 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           const Spacer(),
           Text(
             value,
-            style: const TextStyle(
-              fontFamily: 'Poppins',
-              fontSize: 18,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w800,
               letterSpacing: -0.5,
+              fontSize: 18,
             ),
           ),
           Text(
             title,
-            style: TextStyle(
-              fontFamily: 'Poppins',
+            style: theme.textTheme.bodySmall?.copyWith(
               fontSize: 11,
               fontWeight: FontWeight.w600,
               color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
@@ -536,7 +509,8 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
   }
 
   Widget _buildQuickActionsGrid(BuildContext context) {
-    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
+    final theme = Theme.of(context);
+    final dashboardTheme = theme.extension<DashboardThemeExtension>();
     
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -552,8 +526,10 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Add Shop',
             'Expand your reach',
-            Icons.add_business_rounded,
-            dashboardTheme?.addShopColor ?? Theme.of(context).primaryColor,
+            Icon(Icons.add_business_rounded,
+                color: const Color(0xFFFF4D00),
+                size: 22),
+            const Color(0xFFFF4D00),
             () {
               AppNavigator.push(
                 context,
@@ -568,8 +544,14 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Analytics',
             'Performance data',
-            Icons.bar_chart_rounded,
-            dashboardTheme?.analyticsColor ?? Colors.orange,
+            Assets.icons.graph1.svg(
+              colorFilter: const ColorFilter.mode(
+                  Color(0xFFFF4D00),
+                  BlendMode.srcIn),
+              width: 22,
+              height: 22,
+            ),
+            const Color(0xFFFF4D00),
             () {
               AppNavigator.push(
                 context,
@@ -587,8 +569,15 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Inventory',
             'Manage items',
-            Icons.inventory_2_rounded,
-            dashboardTheme?.inventoryColor ?? Colors.blue,
+            SvgPicture.asset(
+              'assets/icons/inventory.svg',
+              colorFilter: const ColorFilter.mode(
+                  Color(0xFFFF4D00),
+                  BlendMode.srcIn),
+              width: 22,
+              height: 22,
+            ),
+            const Color(0xFFFF4D00),
             () {
               AppNavigator.push(
                 context,
@@ -603,8 +592,15 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Support',
             'Get assistance',
-            Icons.headset_mic_rounded,
-            dashboardTheme?.supportColor ?? Colors.purple,
+            SvgPicture.asset(
+              'assets/icons/support.svg',
+              colorFilter: const ColorFilter.mode(
+                  Color(0xFFFF4D00),
+                  BlendMode.srcIn),
+              width: 22,
+              height: 22,
+            ),
+            const Color(0xFFFF4D00),
             () {
               AppNavigator.push(
                 context,
@@ -621,7 +617,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
     BuildContext context,
     String title,
     String subtitle,
-    IconData icon,
+    Widget icon,
     Color color,
     VoidCallback onTap,
   ) {
@@ -649,14 +645,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: color, size: 22),
-              ),
+              icon,
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -665,18 +654,14 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                   children: [
                     Text(
                       title,
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
+                      style: theme.textTheme.titleMedium?.copyWith(
                         fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: theme.textTheme.titleMedium?.color,
                         letterSpacing: -0.2,
                       ),
                     ),
                     Text(
                       subtitle,
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
+                      style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
                         color: theme.textTheme.bodySmall?.color
@@ -790,19 +775,16 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           const SizedBox(height: 40),
           Text(
             'Ready for your first shop?',
-            style: TextStyle(
-              fontFamily: 'Poppins',
+            style: theme.textTheme.headlineSmall?.copyWith(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: theme.textTheme.titleLarge?.color,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             'Establish your retail presence and start managing your inventory with ease.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Poppins',
+            style: theme.textTheme.bodyMedium?.copyWith(
               fontSize: 15,
               color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
               height: 1.5,
@@ -820,10 +802,9 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
               );
             },
             icon: const Icon(Icons.rocket_launch_rounded),
-            label: const Text(
+            label:  Text(
               'Establish Digital Shop',
-              style: TextStyle(
-                fontFamily: 'Poppins',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w800,
                 fontSize: 16,
               ),
@@ -859,19 +840,16 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           const SizedBox(height: 24),
           Text(
             'Sync Interrupted',
-            style: TextStyle(
-              fontFamily: 'Poppins',
+            style: theme.textTheme.titleLarge?.copyWith(
               fontSize: 22,
               fontWeight: FontWeight.w800,
-              color: theme.textTheme.titleLarge?.color,
             ),
           ),
           const SizedBox(height: 12),
           Text(
             'We encountered a problem while synchronizing your data. Please try again later.',
             textAlign: TextAlign.center,
-            style: TextStyle(
-              fontFamily: 'Poppins',
+            style: theme.textTheme.bodyMedium?.copyWith(
               fontSize: 14,
               color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
             ),
@@ -880,10 +858,9 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           TextButton.icon(
             onPressed: () => context.read<VendorShopCubit>().fetchShops(),
             icon: const Icon(Icons.refresh_rounded),
-            label: const Text(
+            label:  Text(
               'RETRY SYNC',
-              style: TextStyle(
-                fontFamily: 'Poppins',
+              style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w800,
               ),
             ),

@@ -6,6 +6,8 @@ import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_header.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
+import 'package:nearvendorapp/utils/category_utils.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 
@@ -85,11 +87,9 @@ class _SearchScreenState extends State<SearchScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Text(
               'Popular Categories',
-              style: TextStyle(
-                fontFamily: 'Poppins',
+              style: theme.textTheme.titleMedium?.copyWith(
                 fontSize: 16,
                 fontWeight: FontWeight.w800,
-                color: isDark ? Colors.white : Colors.black87,
               ),
             ),
           ).animate().fadeIn(delay: 200.ms),
@@ -101,11 +101,11 @@ class _SearchScreenState extends State<SearchScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20),
               physics: const BouncingScrollPhysics(),
               children: [
-                _buildDiscoveryChip('Electronics', Icons.devices_other_rounded, theme),
-                _buildDiscoveryChip('Fashion', Icons.checkroom_rounded, theme),
-                _buildDiscoveryChip('Furniture', Icons.chair_rounded, theme),
-                _buildDiscoveryChip('Groceries', Icons.shopping_basket_rounded, theme),
-                _buildDiscoveryChip('Health', Icons.health_and_safety_rounded, theme),
+                _buildDiscoveryChip('Electronics', theme),
+                _buildDiscoveryChip('Fashion', theme),
+                _buildDiscoveryChip('Furniture', theme),
+                _buildDiscoveryChip('Groceries', theme),
+                _buildDiscoveryChip('Health', theme),
               ],
             ),
           ).animate().fadeIn(delay: 350.ms).slideX(begin: 0.1, end: 0),
@@ -121,8 +121,10 @@ class _SearchScreenState extends State<SearchScreen> {
     return const SearchResultsList(key: ValueKey('search_results'));
   }
 
-  Widget _buildDiscoveryChip(String label, IconData icon, ThemeData theme) {
+  Widget _buildDiscoveryChip(String label, ThemeData theme) {
     final isDark = theme.brightness == Brightness.dark;
+    final svgPath = CategoryUtils.getCategoryIconPath(label);
+    final fallbackIcon = CategoryUtils.getDefaultIcon(label);
     return Container(
       margin: const EdgeInsets.only(right: 12),
       child: Material(
@@ -143,15 +145,21 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             child: Row(
               children: [
-                Icon(icon, size: 16, color: theme.primaryColor),
+                svgPath != null
+                    ? SvgPicture.asset(
+                        svgPath,
+                        width: 16,
+                        height: 16,
+                        colorFilter:
+                            ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
+                      )
+                    : Icon(fallbackIcon, size: 16, color: theme.primaryColor),
                 const SizedBox(width: 8),
                 Text(
                   label,
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
+                  style: theme.textTheme.labelSmall?.copyWith(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: isDark ? Colors.white70 : Colors.black87,
                   ),
                 ),
               ],

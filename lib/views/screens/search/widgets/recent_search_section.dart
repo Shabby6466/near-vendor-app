@@ -30,21 +30,17 @@ class RecentSearchSection extends StatelessWidget {
                 children: [
                   Text(
                     'Recent Research',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
                   GestureDetector(
                     onTap: () => context.read<SearchCubit>().clearHistory(),
                     child: Text(
                       'Clear History',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
+                      style: theme.textTheme.labelLarge?.copyWith(
                         fontSize: 12,
-                        fontWeight: FontWeight.w600,
                         color: theme.primaryColor,
                       ),
                     ),
@@ -91,11 +87,9 @@ class RecentSearchSection extends StatelessWidget {
                             const SizedBox(width: 8),
                             Text(
                               keyword,
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
+                              style: theme.textTheme.labelMedium?.copyWith(
                                 fontSize: 13,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white70 : Colors.black54,
                               ),
                             ),
                           ],

@@ -146,7 +146,7 @@ class ShopCard extends StatelessWidget {
                               fontFamily: 'Poppins',
                               fontSize: 8,
                               fontWeight: FontWeight.w800,
-                              color: theme.primaryColor,
+                              color: Colors.white,
                             ),
                           ),
                         ),

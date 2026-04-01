@@ -46,15 +46,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           return LoadingScreenView(
             isLoading: state is ChangePasswordLoading,
             child: AppScaffold(
-              bgColor: ColorName.white,
+              bgColor: Theme.of(context).scaffoldBackgroundColor,
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 leading: IconButton(
-                  icon: const Icon(
+                  icon:  Icon(
                     Icons.arrow_back_ios_new,
                     size: 20,
-                    color: Colors.black,
+                    color: Theme.of(context).iconTheme.color,
                   ),
                   onPressed: () => Navigator.pop(context),
                 ),
@@ -66,18 +66,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const Text(
+                      Text(
                         'Change Password',
-                        style: TextStyle(
-                          fontSize: 24,
+                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.bold,
-                          color: Colors.black,
                         ),
                       ),
                       SizedBox(height: 8),
-                      const Text(
+                      Text(
                         'Secure your account by updating your password regularly.',
-                        style: TextStyle(color: Colors.grey),
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey,
+                        ),
                       ),
                       SizedBox(
                         height: AppSpacing.largeVerticalSpacing(context),
@@ -181,7 +181,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 ? const CircularProgressIndicator(
                                     color: Colors.white,
                                   )
-                                : const Text('Update Password'),
+                                : Text(
+                                    'Update Password',
+                                    style: Theme.of(context).textTheme.labelLarge,
+                                  ),
                           );
                         },
                       ),
@@ -201,10 +204,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
       child: Text(
         text,
-        style: const TextStyle(
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Colors.black87,
         ),
       ),
     );

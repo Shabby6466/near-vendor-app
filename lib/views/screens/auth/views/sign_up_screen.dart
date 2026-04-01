@@ -80,7 +80,6 @@ class SignUpScreen extends StatelessWidget {
                             'Create Account to get started',
                             style: theme.textTheme.headlineSmall?.copyWith(
                               color: Colors.white,
-                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -149,7 +148,6 @@ class SignUpScreen extends StatelessWidget {
                                 'Already have an account? ',
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: Colors.white.withValues(alpha: (0.7)),
-                                  fontFamily: 'Poppins',
                                 ),
                               ),
                               TextButton(
@@ -161,7 +159,6 @@ class SignUpScreen extends StatelessWidget {
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: theme.primaryColor,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: 'Poppins',
                                   ),
                                 ),
                               ),

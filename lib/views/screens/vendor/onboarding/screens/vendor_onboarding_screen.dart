@@ -80,10 +80,10 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
         child: BlocBuilder<OnboardingCubit, OnboardingState>(
           builder: (context, state) {
             return Scaffold(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               appBar: AppBar(
                 leading: IconButton(
-                  icon: const Icon(Icons.arrow_back, color: Colors.black),
+                  icon: Icon(Icons.arrow_back, color: Theme.of(context).iconTheme.color),
                   onPressed: () {
                     if (state.currentStep == OnboardingStep.businessInfo) {
                       AppNavigator.pop(context);
@@ -99,7 +99,7 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
                   ),
                 ),
                 elevation: 0,
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.transparent,
               ),
               body: SafeArea(
                 child: Column(
@@ -161,9 +161,11 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: const Text(
+                child: Text(
                   'Back',
-                  style: TextStyle(color: Colors.black),
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                  ),
                 ),
               ),
             ),

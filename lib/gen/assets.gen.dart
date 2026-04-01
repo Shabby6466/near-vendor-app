@@ -31,9 +31,32 @@ class $AssetsFontsGen {
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/camera.svg
+  SvgGenImage get camera => const SvgGenImage('assets/icons/camera.svg');
+
+  /// File path: assets/icons/electronics.svg
+  SvgGenImage get electronics =>
+      const SvgGenImage('assets/icons/electronics.svg');
+
   /// File path: assets/icons/everything_near_you_text.svg
   SvgGenImage get everythingNearYouText =>
       const SvgGenImage('assets/icons/everything_near_you_text.svg');
+
+  /// File path: assets/icons/explore.svg
+  SvgGenImage get explore => const SvgGenImage('assets/icons/explore.svg');
+
+  /// File path: assets/icons/fashion_icon.svg
+  SvgGenImage get fashionIcon =>
+      const SvgGenImage('assets/icons/fashion_icon.svg');
+
+  /// File path: assets/icons/graph1.svg
+  SvgGenImage get graph1 => const SvgGenImage('assets/icons/graph1.svg');
+
+  /// File path: assets/icons/grocery.svg
+  SvgGenImage get grocery => const SvgGenImage('assets/icons/grocery.svg');
+
+  /// File path: assets/icons/health.svg
+  SvgGenImage get health => const SvgGenImage('assets/icons/health.svg');
 
   /// File path: assets/icons/hearts.svg
   SvgGenImage get hearts => const SvgGenImage('assets/icons/hearts.svg');
@@ -41,9 +64,15 @@ class $AssetsIconsGen {
   /// File path: assets/icons/home_icon.svg
   SvgGenImage get homeIcon => const SvgGenImage('assets/icons/home_icon.svg');
 
+  /// File path: assets/icons/inventory.svg
+  SvgGenImage get inventory => const SvgGenImage('assets/icons/inventory.svg');
+
   /// File path: assets/icons/location_marker.svg
   SvgGenImage get locationMarker =>
       const SvgGenImage('assets/icons/location_marker.svg');
+
+  /// File path: assets/icons/map.svg
+  SvgGenImage get map => const SvgGenImage('assets/icons/map.svg');
 
   /// File path: assets/icons/map_icon.svg
   SvgGenImage get mapIcon => const SvgGenImage('assets/icons/map_icon.svg');
@@ -64,17 +93,30 @@ class $AssetsIconsGen {
   SvgGenImage get searchIcon =>
       const SvgGenImage('assets/icons/search_icon.svg');
 
+  /// File path: assets/icons/support.svg
+  SvgGenImage get support => const SvgGenImage('assets/icons/support.svg');
+
   /// List of all assets
   List<SvgGenImage> get values => [
+    camera,
+    electronics,
     everythingNearYouText,
+    explore,
+    fashionIcon,
+    graph1,
+    grocery,
+    health,
     hearts,
     homeIcon,
+    inventory,
     locationMarker,
+    map,
     mapIcon,
     nearVendorText,
     nearVendorBlueText,
     profileIcon,
     searchIcon,
+    support,
   ];
 }
 
@@ -119,10 +161,14 @@ class $AssetsLottieGen {
 class Assets {
   const Assets._();
 
+  static const String aEnv = '.env';
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsLottieGen lottie = $AssetsLottieGen();
+
+  /// List of all assets
+  static List<String> get values => [aEnv];
 }
 
 class AssetGenImage {

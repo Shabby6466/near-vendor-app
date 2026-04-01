@@ -69,7 +69,6 @@ class LoginScreen extends StatelessWidget {
                             'What ever is near you,\nNearvendor is the nearest',
                             style: theme.textTheme.headlineSmall?.copyWith(
                               color: Colors.white,
-                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -110,7 +109,6 @@ class LoginScreen extends StatelessWidget {
                                 'Don\'t have an account? ',
                                 style: theme.textTheme.bodySmall?.copyWith(
                                   color: Colors.white.withValues(alpha: (0.7)),
-                                  fontFamily: 'Poppins',
                                 ),
                               ),
                               TextButton(
@@ -125,7 +123,6 @@ class LoginScreen extends StatelessWidget {
                                   style: theme.textTheme.bodySmall?.copyWith(
                                     color: theme.primaryColor,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: 'Poppins',
                                   ),
                                 ),
                               ),

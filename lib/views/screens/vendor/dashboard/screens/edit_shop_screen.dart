@@ -4,7 +4,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/api_inputs/shop_api_inputs.dart';
+import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
@@ -354,14 +357,34 @@ class _EditShopScreenState extends State<EditShopScreen> {
               errorStyle: const TextStyle(fontFamily: 'Poppins', fontSize: 12),
             ),
             items: categories.map((CategoryModel category) {
+              final iconPath = CategoryUtils.getCategoryIconPath(category.name);
               return DropdownMenuItem<String>(
                 value: category.id,
-                child: Text(
-                  category.name,
-                  style: TextStyle(
-                    color: theme.textTheme.bodyLarge?.color,
-                    fontFamily: 'Poppins',
-                  ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    iconPath != null
+                        ? SvgPicture.asset(
+                            iconPath,
+                            colorFilter: const ColorFilter.mode(
+                                ColorName.primary, BlendMode.srcIn),
+                            width: 18,
+                            height: 18,
+                          )
+                        : Icon(
+                            CategoryUtils.getDefaultIcon(category.name),
+                            color: ColorName.primary,
+                            size: 18,
+                          ),
+                    const SizedBox(width: 12),
+                    Text(
+                      category.name,
+                      style: TextStyle(
+                        color: theme.textTheme.bodyLarge?.color,
+                        fontFamily: 'Poppins',
+                      ),
+                    ),
+                  ],
                 ),
               );
             }).toList(),
@@ -506,10 +529,13 @@ class _EditShopScreenState extends State<EditShopScreen> {
                     : Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.add_photo_alternate_outlined,
-                            color: theme.primaryColor.withValues(alpha: (0.5)),
-                            size: 28,
+                          SvgPicture.asset(
+                            'assets/icons/camera.svg',
+                            colorFilter: ColorFilter.mode(
+                                theme.primaryColor.withValues(alpha: 0.5),
+                                BlendMode.srcIn),
+                            width: 28,
+                            height: 28,
                           ),
                           const SizedBox(height: 8),
                           Text(

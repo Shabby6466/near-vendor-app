@@ -156,7 +156,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                     fontFamily: 'Poppins',
                     fontSize: 11,
                     fontWeight: FontWeight.w900,
-                    color: theme.primaryColor,
+                    color: Colors.white,
                   ),
                 ),
               ),

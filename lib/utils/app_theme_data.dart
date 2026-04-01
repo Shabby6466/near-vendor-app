@@ -6,12 +6,57 @@ class AppThemeData {
   AppThemeData._();
 
   // --- BRAND COLORS ---
-  static const Color vendorAccent = Color(0xFFFFC107); // Vibrant Yellow
-  static const Color obsidian = Color(0xFF0C0C11);
+  static const Color vendorAccent = Color(0xFFFF4D00); // International Orange
+  static const Color obsidian = Color(0xFF21242A);
   static const Color midnight = Color(0xFF171D25);
   static const Color darkGrey = Color(0xFF1C1C23);
 
   static const String _fontFamily = FontFamily.poppins;
+
+  static TextTheme _buildTextTheme(Brightness brightness) {
+    final bool isDark = brightness == Brightness.dark;
+    final Color textColor = isDark ? Colors.white : Colors.black87;
+    final Color subColor = isDark ? Colors.white70 : Colors.black54;
+
+    return TextTheme(
+      displayLarge: TextStyle(fontFamily: _fontFamily, color: textColor),
+      displayMedium: TextStyle(fontFamily: _fontFamily, color: textColor),
+      displaySmall: TextStyle(fontFamily: _fontFamily, color: textColor),
+      headlineLarge: TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w800,
+          color: textColor),
+      headlineMedium: TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w700,
+          color: textColor),
+      headlineSmall: TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w600,
+          color: textColor),
+      titleLarge: TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w700,
+          color: textColor),
+      titleMedium: TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w600,
+          color: textColor),
+      titleSmall: TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w500,
+          color: textColor),
+      bodyLarge: TextStyle(fontFamily: _fontFamily, color: textColor),
+      bodyMedium: TextStyle(fontFamily: _fontFamily, color: textColor),
+      bodySmall: TextStyle(fontFamily: _fontFamily, color: subColor),
+      labelLarge: TextStyle(
+          fontFamily: _fontFamily,
+          fontWeight: FontWeight.w600,
+          color: textColor),
+      labelMedium: TextStyle(fontFamily: _fontFamily, color: subColor),
+      labelSmall: TextStyle(fontFamily: _fontFamily, color: subColor),
+    );
+  }
 
   static final _appBarTheme = const AppBarTheme(
     backgroundColor: Colors.transparent,
@@ -31,124 +76,130 @@ class AppThemeData {
 
   // --- NORMAL THEMES (Standard Blue) ---
   static ThemeData get normalLightTheme => ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    primaryColor: ColorName.primary,
-    fontFamily: _fontFamily,
-    scaffoldBackgroundColor: const Color(0xFFF8F9FA),
-    appBarTheme: _appBarTheme.copyWith(
-      foregroundColor: const Color(0xFF1D1D1F),
-    ),
-    cardColor: Colors.white,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: ColorName.primary,
-      brightness: Brightness.light,
-      primary: ColorName.primary,
-      secondary: ColorName.secondary,
-    ),
-    inputDecorationTheme: _inputDecorationTheme.copyWith(
-      fillColor: Colors.white,
-    ),
-  );
+        useMaterial3: true,
+        brightness: Brightness.light,
+        primaryColor: ColorName.primary,
+        fontFamily: _fontFamily,
+        textTheme: _buildTextTheme(Brightness.light),
+        scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+        appBarTheme: _appBarTheme.copyWith(
+          foregroundColor: const Color(0xFF1D1D1F),
+        ),
+        cardColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: ColorName.primary,
+          brightness: Brightness.light,
+          primary: ColorName.primary,
+          secondary: ColorName.secondary,
+        ),
+        inputDecorationTheme: _inputDecorationTheme.copyWith(
+          fillColor: Colors.white,
+        ),
+      );
 
   static ThemeData get normalDarkTheme => ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    primaryColor: ColorName.primary,
-    fontFamily: _fontFamily,
-    scaffoldBackgroundColor: const Color(0xFF121212),
-    appBarTheme: _appBarTheme.copyWith(foregroundColor: Colors.white),
-    cardColor: const Color(0xFF1E1E1E),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: ColorName.primary,
-      brightness: Brightness.dark,
-      primary: ColorName.primary,
-      secondary: ColorName.secondary,
-      surface: const Color(0xFF1E1E1E),
-    ),
-    inputDecorationTheme: _inputDecorationTheme.copyWith(
-      fillColor: const Color(0xFF2C2C2E),
-    ),
-  );
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        primaryColor: ColorName.primary,
+        fontFamily: _fontFamily,
+        textTheme: _buildTextTheme(Brightness.dark),
+        scaffoldBackgroundColor: obsidian,
+        appBarTheme: _appBarTheme.copyWith(foregroundColor: Colors.white),
+        cardColor: const Color(0xFF1E1E1E),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: ColorName.primary,
+          brightness: Brightness.dark,
+          primary: ColorName.primary,
+          secondary: ColorName.secondary,
+          surface: const Color(0xFF1E1E1E),
+        ),
+        inputDecorationTheme: _inputDecorationTheme.copyWith(
+          fillColor: const Color(0xFF2C2C2E),
+        ),
+      );
 
   // --- VENDOR THEMES (Yellow Signature) ---
   static ThemeData get vendorLightTheme => ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.light,
-    primaryColor: vendorAccent,
-    fontFamily: _fontFamily,
-    scaffoldBackgroundColor: const Color(0xFFFFFDF5), // Subtle yellow tint
-    appBarTheme: _appBarTheme.copyWith(
-      foregroundColor: const Color(0xFF1D1D1F),
-    ),
-    cardColor: Colors.white,
-    dividerColor: const Color(0xFFFFF8D6),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: vendorAccent,
-      brightness: Brightness.light,
-      primary: vendorAccent,
-      secondary: ColorName.primary,
-      surfaceTint: Colors.white,
-    ),
-    inputDecorationTheme: _inputDecorationTheme.copyWith(
-      fillColor: Colors.white,
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: vendorAccent,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-    ),
-    extensions: [
-      DashboardThemeExtension(
-        addShopColor: vendorAccent,
-        analyticsColor: const Color(0xFFFF9800), // Orange
-        inventoryColor: const Color(0xFF2196F3), // Blue
-        supportColor: const Color(0xFF9C27B0), // Purple
-        successColor: const Color(0xFF4CAF50), // Green
-        errorColor: const Color(0xFFF44336), // Red
-      ),
-    ],
-  );
+        useMaterial3: true,
+        brightness: Brightness.light,
+        primaryColor: vendorAccent,
+        fontFamily: _fontFamily,
+        textTheme: _buildTextTheme(Brightness.light),
+        scaffoldBackgroundColor: const Color(0xFFFFF9F5), // Subtle orange tint
+        appBarTheme: _appBarTheme.copyWith(
+          foregroundColor: const Color(0xFF1D1D1F),
+        ),
+        cardColor: Colors.white,
+        dividerColor: const Color(0xFFFFE0D6),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: vendorAccent,
+          brightness: Brightness.light,
+          primary: vendorAccent,
+          secondary: ColorName.primary,
+          surfaceTint: Colors.white,
+        ),
+        inputDecorationTheme: _inputDecorationTheme.copyWith(
+          fillColor: Colors.white,
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: vendorAccent,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          ),
+        ),
+        extensions: [
+          DashboardThemeExtension(
+            addShopColor: vendorAccent,
+            analyticsColor: const Color(0xFFFF9800), // Orange
+            inventoryColor: const Color(0xFF2196F3), // Blue
+            supportColor: const Color(0xFF9C27B0), // Purple
+            successColor: const Color(0xFF4CAF50), // Green
+            errorColor: const Color(0xFFF44336), // Red
+          ),
+        ],
+      );
 
   static ThemeData get vendorDarkTheme => ThemeData(
-    useMaterial3: true,
-    brightness: Brightness.dark,
-    primaryColor: vendorAccent,
-    fontFamily: _fontFamily,
-    scaffoldBackgroundColor: obsidian,
-    appBarTheme: _appBarTheme.copyWith(foregroundColor: Colors.white),
-    cardColor: const Color(0xFF16161D),
-    dividerColor: Colors.white.withValues(alpha: (0.05)),
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: vendorAccent,
-      brightness: Brightness.dark,
-      primary: vendorAccent,
-      secondary: const Color(0xFFFFD54F),
-      surface: const Color(0xFF16161D),
-    ),
-    inputDecorationTheme: _inputDecorationTheme.copyWith(fillColor: darkGrey),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: vendorAccent,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-    ),
-    extensions: [
-      DashboardThemeExtension(
-        addShopColor: vendorAccent,
-        analyticsColor: const Color(0xFFFFB74D), // Muted Orange
-        inventoryColor: const Color(0xFF64B5F6), // Muted Blue
-        supportColor: const Color(0xFFBA68C8), // Muted Purple
-        successColor: const Color(0xFF81C784), // Muted Green
-        errorColor: const Color(0xFFE57373), // Muted Red
-      ),
-    ],
-  );
+        useMaterial3: true,
+        brightness: Brightness.dark,
+        primaryColor: vendorAccent,
+        fontFamily: _fontFamily,
+        textTheme: _buildTextTheme(Brightness.dark),
+        scaffoldBackgroundColor: obsidian,
+        appBarTheme: _appBarTheme.copyWith(foregroundColor: Colors.white),
+        cardColor: const Color(0xFF16161D),
+        dividerColor: Colors.white.withValues(alpha: (0.05)),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: vendorAccent,
+          brightness: Brightness.dark,
+          primary: vendorAccent,
+          secondary: const Color(0xFFFFAB91),
+          surface: const Color(0xFF16161D),
+        ),
+        inputDecorationTheme: _inputDecorationTheme.copyWith(fillColor: darkGrey),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: vendorAccent,
+            foregroundColor: Colors.white,
+            elevation: 0,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          ),
+        ),
+        extensions: [
+          DashboardThemeExtension(
+            addShopColor: vendorAccent,
+            analyticsColor: const Color(0xFFFFB74D), // Muted Orange
+            inventoryColor: const Color(0xFF64B5F6), // Muted Blue
+            supportColor: const Color(0xFFBA68C8), // Muted Purple
+            successColor: const Color(0xFF81C784), // Muted Green
+            errorColor: const Color(0xFFE57373), // Muted Red
+          ),
+        ],
+      );
 }
 
 class DashboardThemeExtension extends ThemeExtension<DashboardThemeExtension> {

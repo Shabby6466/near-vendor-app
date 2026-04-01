@@ -169,11 +169,9 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                             color: Colors.black.withValues(alpha: 0.5),
                             child: Text(
                               '${_currentPage + 1}/${images.length}',
-                              style: const TextStyle(
+                              style: theme.textTheme.labelSmall?.copyWith(
                                 color: Colors.white,
-                                fontSize: 12,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Poppins',
                               ),
                             ),
                           ),
@@ -219,19 +217,17 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                             children: [
                               Text(
                                 item.name,
-                                style: const TextStyle(
+                                style: theme.textTheme.headlineMedium?.copyWith(
                                   fontSize: 28,
                                   fontWeight: FontWeight.w900,
-                                  fontFamily: 'Poppins',
                                   letterSpacing: -0.5,
                                 ),
                               ),
                               Text(
                                 shop.businessCategory,
-                                style: TextStyle(
+                                style: theme.textTheme.titleMedium?.copyWith(
                                   fontSize: 16,
                                   color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
-                                  fontFamily: 'Poppins',
                                 ),
                               ),
                             ],
@@ -243,33 +239,29 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                     const SizedBox(height: 16),
                     Text(
                       'PKR ${item.price.toStringAsFixed(0)}',
-                      style: TextStyle(
+                      style: theme.textTheme.headlineMedium?.copyWith(
                         fontSize: 26,
                         fontWeight: FontWeight.w900,
                         color: theme.primaryColor,
-                        fontFamily: 'Poppins',
                       ),
                     ),
                     const SizedBox(height: 24),
 
 
                     // Description
-                    const Text(
+                    Text(
                       'Description',
-                      style: TextStyle(
-                        fontSize: 18,
+                      style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
                       item.description.isNotEmpty ? item.description : 'Explore this amazing product at ${shop.shopName}.',
-                      style: TextStyle(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         fontSize: 15,
                         height: 1.6,
                         color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
-                        fontFamily: 'Poppins',
                       ),
                     ),
                     
@@ -312,15 +304,14 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                     onPressed: () => Navigator.pop(context),
                   ),
                 ),
-                const Expanded(
+                Expanded(
                   child: Text(
                     'Product Details',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: theme.textTheme.titleLarge?.copyWith(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
                     ),
                   ),
                 ),
@@ -388,18 +379,17 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                   color: const Color(0xFFFFB300),
                   borderRadius: BorderRadius.circular(27),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.directions_rounded, color: Colors.black, size: 20),
-                    SizedBox(width: 8),
+                    const Icon(Icons.directions_rounded, color: Colors.black, size: 20),
+                    const SizedBox(width: 8),
                     Text(
                       'Directions',
-                      style: TextStyle(
+                      style: theme.textTheme.labelLarge?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.w900,
                         fontSize: 16,
-                        fontFamily: 'Poppins',
                       ),
                     ),
                   ],
@@ -460,11 +450,13 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
               children: [
                 Text(
                   shop.shopName,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 Text(
                   'Vendor',
-                  style: TextStyle(fontSize: 12, color: theme.textTheme.bodySmall?.color),
+                  style: theme.textTheme.bodySmall,
                 ),
               ],
             ),
@@ -507,10 +499,9 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
               const SizedBox(width: 4),
               Text(
                 distanceText,
-                style: const TextStyle(
-                  fontSize: 11,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFFFFB300),
+                  color: Colors.white,
                 ),
               ),
             ],

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
@@ -9,6 +10,7 @@ import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
@@ -92,7 +94,7 @@ class _ResultsGrid extends StatelessWidget {
                     fontFamily: 'Poppins',
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
-                    color: theme.primaryColor,
+                    color: Colors.white,
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -342,16 +344,26 @@ class _EmptyStateState extends State<_EmptyState> {
                   separatorBuilder: (_, __) => const SizedBox(height: 4),
                   itemBuilder: (context, index) {
                     final cat = categories[index];
+                    final iconPath = CategoryUtils.getCategoryIconPath(cat.name);
+
                     return ListTile(
                       dense: true,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      leading: Icon(
-                        Icons.label_outline_rounded,
-                        color: ColorName.primary,
-                        size: 20,
-                      ),
+                      leading: iconPath != null
+                          ? SvgPicture.asset(
+                              iconPath,
+                              colorFilter: const ColorFilter.mode(
+                                  ColorName.primary, BlendMode.srcIn),
+                              width: 20,
+                              height: 20,
+                            )
+                          : Icon(
+                              CategoryUtils.getDefaultIcon(cat.name),
+                              color: ColorName.primary,
+                              size: 20,
+                            ),
                       title: Text(
                         cat.name,
                         style: TextStyle(

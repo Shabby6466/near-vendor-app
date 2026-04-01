@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 
@@ -173,12 +174,12 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                                     ),
                                     _NavButton(
                                       label: 'Explore',
-                                      icon: Assets.icons.homeIcon.path,
+                                      icon: 'assets/icons/explore.svg',
                                       isActive: widget.currentIndex == 1,
                                     ),
                                     _NavButton(
                                       label: 'Map',
-                                      icon: Assets.icons.mapIcon.path,
+                                      icon: 'assets/icons/map.svg',
                                       isActive: widget.currentIndex == 2,
                                     ),
                                     _NavButton(
@@ -259,15 +260,11 @@ class _NavButton extends StatelessWidget {
       return Icon(icon as IconData, color: color, size: 22);
     }
     if (icon is String && (icon as String).contains('.svg')) {
-      return ColorFiltered(
+      return SvgPicture.asset(
+        icon as String,
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-        child: icon == Assets.icons.homeIcon.path
-            ? Assets.icons.homeIcon.svg(height: 22, width: 22)
-            : icon == Assets.icons.mapIcon.path
-            ? Assets.icons.mapIcon.svg(height: 22, width: 22)
-            : icon == Assets.icons.searchIcon.path
-            ? Assets.icons.searchIcon.svg(height: 22, width: 22)
-            : Assets.icons.profileIcon.svg(height: 22, width: 22),
+        height: 22,
+        width: 22,
       );
     }
     return const SizedBox();

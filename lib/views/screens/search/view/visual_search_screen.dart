@@ -9,6 +9,7 @@ import 'package:nearvendorapp/views/screens/search/view/visual_search_map_result
 import 'package:nearvendorapp/views/screens/search/widgets/scanning_area.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/visual_search_result_sheet.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/no_result_sheet.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class VisualSearchScreen extends StatefulWidget {
   final File? initialImage;
@@ -143,10 +144,12 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     return Container(
       color: Colors.grey[900],
       child: Center(
-        child: Icon(
-          Icons.camera_alt_outlined,
-          size: 80,
-          color: Colors.white.withValues(alpha: 0.1),
+        child: SvgPicture.asset(
+          'assets/icons/camera.svg',
+          height: 80,
+          width: 80,
+          colorFilter: ColorFilter.mode(
+              Colors.white.withValues(alpha: 0.1), BlendMode.srcIn),
         ),
       ),
     );
@@ -236,7 +239,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildActionIconButton(
-            Icons.collections_outlined,
+            Icon(Icons.collections_outlined, color: Colors.white, size: 28),
             "GALLERY",
             () => _pickImage(ImageSource.gallery),
           ),
@@ -256,10 +259,14 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
                   color: Colors.white,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.camera_alt,
-                  color: Colors.blue,
-                  size: 32,
+                child: Center(
+                  child: SvgPicture.asset(
+                    'assets/icons/camera.svg',
+                    colorFilter:
+                        const ColorFilter.mode(Colors.blue, BlendMode.srcIn),
+                    width: 32,
+                    height: 32,
+                  ),
                 ),
               ),
             ),
@@ -272,7 +279,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
   }
 
   Widget _buildActionIconButton(
-    IconData icon,
+    Widget icon,
     String label,
     VoidCallback onTap,
   ) {
@@ -287,7 +294,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
               color: Colors.black38,
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: Colors.white, size: 28),
+            child: icon,
           ),
           const SizedBox(height: 8),
           Text(

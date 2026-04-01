@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SupportScreen extends StatelessWidget {
   const SupportScreen({super.key});
@@ -205,7 +206,7 @@ class SupportScreen extends StatelessWidget {
       {
         'title': 'High-Quality Images',
         'desc': 'Shops with professional photos get 3x more views.',
-        'icon': Icons.camera_alt_outlined,
+        'icon': 'assets/icons/camera.svg',
         'color': dashboardTheme?.inventoryColor ?? Colors.blue,
       },
       {
@@ -242,7 +243,16 @@ class SupportScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(tip['icon'] as IconData, color: tip['color'] as Color, size: 24),
+                tip['icon'] is IconData
+                    ? Icon(tip['icon'] as IconData,
+                        color: tip['color'] as Color, size: 24)
+                    : SvgPicture.asset(
+                        tip['icon'] as String,
+                        colorFilter: ColorFilter.mode(
+                            tip['color'] as Color, BlendMode.srcIn),
+                        width: 24,
+                        height: 24,
+                      ),
                 const SizedBox(height: 12),
                 Text(
                   tip['title'] as String,

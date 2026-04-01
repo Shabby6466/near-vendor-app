@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/models/api_inputs/item_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_management_cubit.dart';
@@ -533,10 +534,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 color: theme.primaryColor.withValues(alpha: 0.12),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.add_photo_alternate_rounded,
-                size: 24,
-                color: theme.primaryColor,
+              child: SvgPicture.asset(
+                'assets/icons/camera.svg',
+                colorFilter:
+                    ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
+                width: 24,
+                height: 24,
               ),
             ),
             const SizedBox(height: 8),

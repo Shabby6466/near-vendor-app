@@ -27,16 +27,18 @@ class VerificationLaunchStep extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                'Please upload your cnic to verify your account and accept our vendor terms to go live.',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                'Please upload your CNIC to verify your account and accept our vendor terms to go live.',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                    ),
               ),
               SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
               _buildLabel(context, 'CNIC Image'),
-              const Text(
+              Text(
                 'CNIC Front or Back Image',
-                style: TextStyle(color: Colors.grey, fontSize: 12),
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                      color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                    ),
               ),
               const SizedBox(height: 12),
               GestureDetector(
@@ -45,10 +47,10 @@ class VerificationLaunchStep extends StatelessWidget {
                   height: 160,
                   width: double.infinity,
                   decoration: BoxDecoration(
-                    color: Colors.blue.withValues(alpha: 0.05),
+                    color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: Colors.blue.withValues(alpha: 0.2),
+                      color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
                       style: BorderStyle.solid,
                     ),
                   ),
@@ -72,18 +74,18 @@ class VerificationLaunchStep extends StatelessWidget {
                       : Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Icon(
+                            Icon(
                               Icons.cloud_upload_outlined,
                               size: 40,
-                              color: Colors.blue,
+                              color: Theme.of(context).primaryColor,
                             ),
                             const SizedBox(height: 8),
-                            const Text(
+                            Text(
                               'Tap to upload or drag and drop',
-                              style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w500,
-                              ),
+                              style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                    fontWeight: FontWeight.w600,
+                                  ),
                             ),
                             Text(
                               'JPG or PNG (max. 5MB)',
@@ -111,8 +113,7 @@ class VerificationLaunchStep extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 12.0),
                       child: RichText(
                         text: TextSpan(
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: Colors.black87),
+                          style: Theme.of(context).textTheme.bodySmall,
                           children: [
                             const TextSpan(text: 'I agree to the '),
                             TextSpan(
@@ -137,14 +138,14 @@ class VerificationLaunchStep extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.blue.withValues(alpha: 0.1),
+                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.info_outline,
-                      color: Colors.blue,
+                      color: Theme.of(context).primaryColor,
                       size: 20,
                     ),
                     const SizedBox(width: 12),
@@ -152,7 +153,7 @@ class VerificationLaunchStep extends StatelessWidget {
                       child: Text(
                         'Our team typically reviews documents within 24-48 business hours.',
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                          color: Colors.blue.shade800,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                     ),

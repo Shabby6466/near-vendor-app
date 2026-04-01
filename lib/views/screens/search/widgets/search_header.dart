@@ -42,13 +42,11 @@ class SearchHeader extends StatelessWidget {
                       children: [
                         Text(
                           'Current Location',
-                          style: TextStyle(
+                          style: theme.textTheme.labelSmall?.copyWith(
                             fontSize: 12,
                             color: theme.textTheme.bodySmall?.color?.withValues(
                               alpha: 0.5,
                             ),
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w500,
                           ),
                         ),
                         const SizedBox(width: 4),
@@ -70,11 +68,9 @@ class SearchHeader extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           locationText,
-                          style: TextStyle(
+                          style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
-                            color: theme.textTheme.titleMedium?.color,
-                            fontFamily: 'Poppins',
                           ),
                         ),
                       ],
@@ -118,21 +114,17 @@ class _ProfileHeader extends StatelessWidget {
                   if (!isGuest)
                     Text(
                       'Hello',
-                      style: TextStyle(
+                      style: theme.textTheme.labelSmall?.copyWith(
                         color: theme.textTheme.bodySmall?.color?.withValues(
                           alpha: 0.5,
                         ),
                         fontSize: 11,
-                        fontFamily: 'Poppins',
                       ),
                     ),
                   Text(
                     name,
-                    style: TextStyle(
-                      color: theme.textTheme.titleMedium?.color,
+                    style: theme.textTheme.labelLarge?.copyWith(
                       fontSize: 13,
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],

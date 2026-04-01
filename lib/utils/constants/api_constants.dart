@@ -4,7 +4,7 @@ class ApiConstants {
   ApiConstants._();
 
   static String get baseUrl =>
-      dotenv.env['BASE_URL'] ?? 'http://10.0.2.2:3837/';
+      dotenv.env['BASE_URL'] ?? 'https://api.nearvendor.pro/';
   // static String baseurl = 'http://10.0.2.2:3837';
 
   ///AUTH

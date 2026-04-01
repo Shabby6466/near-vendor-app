@@ -41,7 +41,6 @@ class ProfileMenuItem extends StatelessWidget {
         style: theme.textTheme.bodyLarge?.copyWith(
           fontWeight: FontWeight.w700,
           fontSize: 15,
-          fontFamily: 'Poppins',
         ),
       ),
       subtitle: Padding(
@@ -51,7 +50,6 @@ class ProfileMenuItem extends StatelessWidget {
           style: theme.textTheme.bodySmall?.copyWith(
             color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
             fontSize: 12,
-            fontFamily: 'Poppins',
           ),
         ),
       ),

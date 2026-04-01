@@ -116,7 +116,6 @@ class ProfileHeader extends StatelessWidget {
           userName,
           style: theme.textTheme.headlineSmall?.copyWith(
             fontWeight: FontWeight.w800,
-            fontFamily: 'Poppins',
             letterSpacing: -0.5,
           ),
         ),
@@ -138,11 +137,10 @@ class ProfileHeader extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 userLocation,
-                style: TextStyle(
+                style: theme.textTheme.labelSmall?.copyWith(
                   fontSize: 12,
                   color: theme.primaryColor,
                   fontWeight: FontWeight.w700,
-                  fontFamily: 'Poppins',
                   letterSpacing: 0.5,
                 ),
               ),

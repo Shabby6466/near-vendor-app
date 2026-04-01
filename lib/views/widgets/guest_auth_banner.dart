@@ -42,21 +42,18 @@ class GuestAuthBanner extends StatelessWidget {
           const SizedBox(height: 16),
           Text(
             'Unlock the Full Experience!',
-            style: TextStyle(
-              color: theme.textTheme.titleLarge?.color,
+            style: theme.textTheme.titleLarge?.copyWith(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              fontFamily: 'Poppins',
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Join our community to shop, sell, and connect with top vendors.',
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
               fontSize: 13,
-              fontFamily: 'Poppins',
             ),
           ),
           const SizedBox(height: 24),
