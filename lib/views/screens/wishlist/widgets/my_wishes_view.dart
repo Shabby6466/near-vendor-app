@@ -9,6 +9,8 @@ import 'package:nearvendorapp/views/screens/wishlist/cubits/user_wishlist_cubit.
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart'; 
 import 'package:intl/intl.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class MyWishesView extends StatelessWidget {
   const MyWishesView({super.key});
@@ -23,7 +25,7 @@ class MyWishesView extends StatelessWidget {
       body: BlocBuilder<UserWishlistCubit, UserWishlistState>(
         builder: (context, state) {
           if (state is UserWishlistInitial || state is UserWishlistLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingIndicator();
           }
 
           if (state is UserWishlistError) {
@@ -81,7 +83,7 @@ class MyWishesView extends StatelessWidget {
                             return const Center(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 16),
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: LoadingAnimation(size: 16),
                               ),
                             );
                           }
@@ -486,7 +488,7 @@ class _WishlistCard extends StatelessWidget {
                                       : Container(
                                           color: isDark ? Colors.black26 : Colors.grey.shade100,
                                           child: const Center(
-                                            child: Icon(Icons.image_outlined, color: Colors.grey, size: 18),
+                                            child: LoadingAnimation(size: 16),
                                           ),
                                         ),
                                 ),
@@ -645,7 +647,7 @@ class _WishlistCard extends StatelessWidget {
                       color: confirmColor.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, color: confirmColor, size: 40),
+                    child: const LoadingAnimation(size: 24),
                   ),
                   const SizedBox(height: 24),
                   Text(

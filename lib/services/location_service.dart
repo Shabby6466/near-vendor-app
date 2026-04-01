@@ -21,17 +21,29 @@ class LocationSuggestion {
 class LocationService {
   final Dio _dio = Dio();
 
-  Future<List<LocationSuggestion>> getSuggestions(String query) async {
+  Future<List<LocationSuggestion>> getSuggestions(String query, {double? lat, double? lon}) async {
     if (query.isEmpty) return [];
 
     try {
+      final queryParams = {
+        'q': query,
+        'format': 'json',
+        'limit': 10,
+        'addressdetails': 1,
+        'accept-language': 'en',
+      };
+
+      if (lat != null && lon != null) {
+        // Bias results towards current location
+        queryParams['lat'] = lat.toString();
+        queryParams['lon'] = lon.toString();
+        // and add a small viewbox around the location for stronger biasing
+        queryParams['viewbox'] = '${lon - 0.1},${lat + 0.1},${lon + 0.1},${lat - 0.1}';
+      }
+
       final response = await _dio.get(
         'https://nominatim.openstreetmap.org/search',
-        queryParameters: {
-          'q': query,
-          'format': 'json',
-          'limit': 5,
-        },
+        queryParameters: queryParams,
         options: Options(
           headers: {
             'User-Agent': 'nearvendorapp/1.0',

@@ -9,13 +9,16 @@ import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 import 'package:nearvendorapp/views/widgets/item_card.dart';
-import 'package:toasty_box/toasty_box.dart';
+import 'package:toasty_box/toast_service.dart';
+import 'package:latlong2/latlong.dart';
 
 class SearchResultsList extends StatelessWidget {
   const SearchResultsList({super.key});
@@ -510,10 +513,7 @@ class _EmptyStateState extends State<_EmptyState> {
                             ? const SizedBox(
                                 width: 16,
                                 height: 16,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
+                                child: LoadingAnimation(size: 20),
                               )
                             : const Icon(Icons.add_rounded, size: 18, color: Colors.white),
                         label: Text(

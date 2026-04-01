@@ -7,8 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/api_inputs/shop_api_inputs.dart';
-import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
+import 'package:nearvendorapp/utils/category_utils.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/shop_form_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
@@ -34,8 +37,8 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
   final _categoryController = TextEditingController();
   final _regNumberController = TextEditingController();
   final _addressController = TextEditingController();
-  final _latController = TextEditingController(text: '22.343434');
-  final _longController = TextEditingController(text: '22.343434');
+  final _latController = TextEditingController();
+  final _longController = TextEditingController();
   final _phoneController = TextEditingController();
   final _whatsappController = TextEditingController();
   final _emailController = TextEditingController();
@@ -105,39 +108,51 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
         BlocProvider(create: (context) => ShopFormCubit()),
         BlocProvider(create: (context) => CategoriesCubit()..fetchCategories()),
       ],
-      child: BlocConsumer<ShopFormCubit, ShopFormState>(
-        listener: (context, state) {
-          if (state is ShopFormSuccess) {
-            AppAlerts.showSuccessSnackBar(context, 'Your shop is now live!');
-            context.read<VendorShopCubit>().fetchShops();
-            AppNavigator.pop(context);
-          } else if (state is ShopFormFailure) {
-            AppAlerts.showErrorSnackBar(context, state.message);
+      child: BlocListener<SessionCubit, SessionState>(
+        listenWhen: (previous, current) =>
+            previous.latitude != current.latitude ||
+            previous.longitude != current.longitude,
+        listener: (context, sessionState) {
+          if (sessionState.latitude != null && sessionState.longitude != null) {
+            setState(() {
+              _latController.text = sessionState.latitude!.toStringAsFixed(6);
+              _longController.text = sessionState.longitude!.toStringAsFixed(6);
+            });
           }
         },
-        builder: (context, state) {
-          return AppScaffold(
-            appBar: AppBar(
-              title: const Text(
-                'Business Identity',
-                style: TextStyle(
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w700,
+        child: BlocConsumer<ShopFormCubit, ShopFormState>(
+          listener: (context, state) {
+            if (state is ShopFormSuccess) {
+              AppAlerts.showSuccessSnackBar(context, 'Your shop is now live!');
+              context.read<VendorShopCubit>().fetchShops();
+              AppNavigator.pop(context);
+            } else if (state is ShopFormFailure) {
+              AppAlerts.showErrorSnackBar(context, state.message);
+            }
+          },
+          builder: (context, state) {
+            return AppScaffold(
+              appBar: AppBar(
+                title: const Text(
+                  'Business Identity',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                elevation: 0,
+                backgroundColor: theme.scaffoldBackgroundColor,
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                  onPressed: () => AppNavigator.pop(context),
                 ),
               ),
-              elevation: 0,
-              backgroundColor: theme.scaffoldBackgroundColor,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                onPressed: () => AppNavigator.pop(context),
-              ),
-            ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(28),
-              physics: const BouncingScrollPhysics(),
-              child: Form(
-                key: _formKey,
-                child: Column(
+              body: SingleChildScrollView(
+                padding: const EdgeInsets.all(28),
+                physics: const BouncingScrollPhysics(),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
@@ -243,9 +258,10 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                   ],
                 ),
               ),
-            ),
-          );
-        },
+              )
+            );
+          },
+        ),
       ),
     );
   }
@@ -609,10 +625,7 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                   const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
+                    child: const LoadingAnimation(size: 20, color: Colors.white),
                   ),
                   const SizedBox(width: 12),
                   Text(
@@ -645,17 +658,15 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: InkWell(
-        onTap: () async {
-          final LatLng? result = await AppNavigator.push(
+        onTap: () {
+          context.read<SessionCubit>().startManualLocationPick(
+                tempLatitude: double.tryParse(_latController.text),
+                tempLongitude: double.tryParse(_longController.text),
+              );
+          AppNavigator.push(
             context,
-            LocationPickerScreen(),
+            const LocationPickerScreen(),
           );
-          if (result != null) {
-            setState(() {
-              _latController.text = result.latitude.toStringAsFixed(6);
-              _longController.text = result.longitude.toStringAsFixed(6);
-            });
-          }
         },
         borderRadius: BorderRadius.circular(18),
         child: Container(

@@ -5,6 +5,7 @@ import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
+import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
@@ -121,41 +122,16 @@ class HomeScreen extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(
-                                height: AppSpacing.smallVerticalSpacing(
+                                height: AppSpacing.mediumVerticalSpacing(
                                   context,
-                                ),
+                                )*1.6,
                               ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal:
-                                      AppSpacing.mediumHorizontalSpacing(
-                                        context,
-                                      ),
-                                ),
-                                child: Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(16),
-                                    color: theme.cardColor,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withValues(
-                                          alpha: isDark ? 0.2 : 0.05,
-                                        ),
-                                        blurRadius: 10,
-                                        offset: const Offset(0, 4),
-                                      ),
-                                    ],
-                                    border: Border.all(
-                                      color: isDark
-                                          ? theme.dividerColor.withValues(
-                                              alpha: 0.1,
-                                            )
-                                          : Colors.grey.shade100,
-                                    ),
-                                  ),
-                                  child: TextField(
-                                    onSubmitted: (value) {
+                                Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: AppSpacing.mediumHorizontalSpacing(context))*1.5,
+                                  child: AppSearchBar(
+                                    hintText: 'Search Shops Near You',
+                                    padding: EdgeInsets.zero,
+                                    onSearch: (value) {
                                       if (value.isNotEmpty) {
                                         context
                                             .read<HomeScreenCubit>()
@@ -173,50 +149,24 @@ class HomeScreen extends StatelessWidget {
                                             .clearSearch();
                                       }
                                     },
-                                    style: const TextStyle(
-                                      fontFamily: 'Poppins',
-                                      fontSize: 14,
-                                    ),
-                                    decoration: InputDecoration(
-                                      prefixIcon: Padding(
-                                        padding: const EdgeInsets.all(12.0),
-                                        child: Assets.icons.searchIcon.svg(
-                                          height: 18,
-                                          colorFilter: ColorFilter.mode(
-                                            theme.iconTheme.color?.withValues(
-                                                  alpha: 0.4,
-                                                ) ??
-                                                Colors.grey,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                      ),
-                                      hintText: 'Search Shops Near You',
-                                      hintStyle: TextStyle(
-                                        color: theme.textTheme.bodySmall!.color!
-                                            .withValues(alpha: 0.4),
-                                        fontSize: 14,
-                                      ),
-                                      border: InputBorder.none,
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                            vertical: 14,
-                                          ),
-                                    ),
+                                    onClear: () {
+                                      context
+                                          .read<HomeScreenCubit>()
+                                          .clearSearch();
+                                    },
                                   ),
                                 ),
-                              ),
                               SizedBox(
-                                height: AppSpacing.smallVerticalSpacing(
+                                height: AppSpacing.mediumVerticalSpacing(
                                   context,
-                                ),
+                                )*1.5,
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(
                                   horizontal:
                                       AppSpacing.mediumHorizontalSpacing(
                                         context,
-                                      ),
+                                      )*1.5,
                                 ),
                                 child: Container(
                                   width: double.infinity,
@@ -290,7 +240,7 @@ class HomeScreen extends StatelessWidget {
                               SizedBox(
                                 height: AppSpacing.mediumVerticalSpacing(
                                   context,
-                                ),
+                                )*1.5,
                               ),
                               Padding(
                                 padding: EdgeInsets.symmetric(

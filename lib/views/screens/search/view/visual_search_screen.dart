@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_map_results_screen.dart';
@@ -126,7 +129,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
                 BlocBuilder<VisualSearchCubit, VisualSearchState>(
                   builder: (context, state) {
                     if (state is VisualSearchLoading) {
-                      return _buildLoadingState();
+                      return const AppLoadingIndicator();
                     }
                     return _buildBottomActions();
                   },
@@ -217,7 +220,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     return Center(
       child: Column(
         children: [
-          const CircularProgressIndicator(color: Colors.white),
+          const LoadingAnimation(color: Colors.white, size: 28),
           const SizedBox(height: 16),
           const Text(
             "Analyzing Product...",

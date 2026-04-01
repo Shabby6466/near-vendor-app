@@ -9,7 +9,9 @@ import 'package:nearvendorapp/models/api_inputs/item_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_management_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 
 class AddProductScreen extends StatefulWidget {
   final String shopId;
@@ -398,10 +400,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           child: SizedBox(
             width: 24,
             height: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: theme.primaryColor,
-            ),
+            child: const LoadingAnimation(size: 20, color: Colors.white),
           ),
         ),
         errorWidget: (_, __, ___) => Icon(

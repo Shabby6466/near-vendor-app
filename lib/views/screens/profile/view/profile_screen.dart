@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
@@ -28,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
           builder: (context, state) {
             if (state is ProfileLoading) {
               return Center(
-                child: CircularProgressIndicator(color: theme.primaryColor),
+                child: const LoadingAnimation(size: 24),
               );
             }
 
@@ -118,7 +120,7 @@ class ProfileScreen extends StatelessWidget {
                                           ? const SizedBox(
                                               width: 20,
                                               height: 20,
-                                              child: CircularProgressIndicator(strokeWidth: 2),
+                                              child: const LoadingAnimation(size: 16),
                                             )
                                           : Container(
                                               padding: const EdgeInsets.symmetric(

@@ -9,6 +9,7 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/api_inputs/shop_api_inputs.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/shop_form_cubit.dart';
@@ -590,10 +591,7 @@ class _EditShopScreenState extends State<EditShopScreen> {
                   const SizedBox(
                     height: 20,
                     width: 20,
-                    child: CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 2,
-                    ),
+                    child: const LoadingAnimation(size: 20, color: Colors.white),
                   ),
                   const SizedBox(width: 12),
                   Text(

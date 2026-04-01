@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_detail_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class ItemScreen extends StatefulWidget {
   final String? itemId;
@@ -32,7 +35,7 @@ class _ItemScreenState extends State<ItemScreen> {
       body: BlocBuilder<ItemDetailCubit, ItemDetailState>(
         builder: (context, state) {
           if (state is ItemDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: LoadingAnimation());
           }
           if (state is ItemDetailSuccess) {
             return _buildItemDetail(context, state.item);
@@ -366,6 +369,7 @@ class _ItemScreenState extends State<ItemScreen> {
               size: 48,
               color: Colors.red,
             ),
+            const LoadingAnimation(size: 20, color: Colors.white),
             const SizedBox(height: 16),
             Text(
               'Failed to load details',

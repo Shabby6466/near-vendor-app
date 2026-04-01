@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 
@@ -44,10 +45,7 @@ class ProfileHeader extends StatelessWidget {
                 SizedBox(
                   width: 140,
                   height: 140,
-                  child: CircularProgressIndicator(
-                    color: theme.primaryColor,
-                    strokeWidth: 3,
-                  ),
+                  child: const LoadingAnimation(size: 20, color: Colors.white),
                 ),
               SizedBox(
                 width: 130,

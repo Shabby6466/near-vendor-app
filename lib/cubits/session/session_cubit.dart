@@ -130,13 +130,37 @@ class SessionCubit extends Cubit<SessionState> {
         vendorStatus: response.vendorStatus,
         isVendor: (state.user?.role?.toUpperCase() == 'VENDOR') || (response.vendorStatus != null),
       ));
-    } else {
-      await CurrentUserStorage.storeVendorStatus('PENDING');
-      emit(state.copyWith(
-        vendorStatus: 'PENDING',
-        isVendor: state.user?.role?.toUpperCase() == 'VENDOR',
-      ));
     }
+  }
+
+  void startManualLocationPick({double? tempLatitude, double? tempLongitude}) {
+    emit(state.copyWith(
+      tempLatitude: tempLatitude ?? state.latitude ?? 33.667306,
+      tempLongitude: tempLongitude ?? state.longitude ?? 73.075177,
+    ));
+  }
+
+  void updateTempLocation(double lat, double lng) {
+    emit(state.copyWith(tempLatitude: lat, tempLongitude: lng));
+  }
+
+  Future<void> confirmManualLocationPick() async {
+    if (state.tempLatitude != null && state.tempLongitude != null) {
+      final lat = state.tempLatitude!;
+      final lng = state.tempLongitude!;
+
+      // Clear temp location before updating manual location
+      emit(state.copyWith(clearTempLocation: true));
+
+      await updateManualLocation(
+        latitude: lat,
+        longitude: lng,
+      );
+    }
+  }
+
+  void cancelManualLocationPick() {
+    emit(state.copyWith(clearTempLocation: true));
   }
 
   void setVendorStatus(bool isVendor) {
@@ -184,6 +208,41 @@ class SessionCubit extends Cubit<SessionState> {
       }
     } catch (e) {
       debugPrint('Error updating user profile: $e');
+    }
+  }
+
+  Future<void> updateManualLocation({
+    required double latitude,
+    required double longitude,
+    String? cityName,
+  }) async {
+    try {
+      // Persist location locally
+      await CurrentUserStorage.setLastLocation(latitude, longitude);
+
+      String? finalCityName = cityName;
+      if (finalCityName == null) {
+        finalCityName = await _getCityName(latitude, longitude);
+        // Fallback for emulator if geocoding fails
+        if (finalCityName == null && latitude.toStringAsFixed(3) == "37.422" && longitude.toStringAsFixed(3) == "-122.084") {
+          finalCityName = "Mountain View";
+        }
+      }
+
+      if (isAuthenticated) {
+        await updateUserProfile(UpdateUserInput(
+          latitude: latitude,
+          longitude: longitude,
+        ));
+      }
+
+      emit(state.copyWith(
+        latitude: latitude,
+        longitude: longitude,
+        cityName: finalCityName,
+      ));
+    } catch (e) {
+      debugPrint('Error updating manual location: $e');
     }
   }
 

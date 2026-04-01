@@ -12,6 +12,7 @@ import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class SearchBarField extends StatefulWidget {
   const SearchBarField({super.key});
@@ -156,117 +157,21 @@ class _SearchBarFieldState extends State<SearchBarField> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: AnimatedScale(
-        duration: 250.ms,
-        scale: _isFocused ? 1.02 : 1.0,
-        curve: Curves.easeOutBack,
-        child: AnimatedContainer(
-          duration: 250.ms,
-          height: 56,
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: _isFocused 
-                  ? theme.primaryColor.withValues(alpha: 0.15) 
-                  : (isDark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.05)),
-                blurRadius: _isFocused ? 20 : 15,
-                offset: const Offset(0, 5),
-              ),
-            ],
-            border: Border.all(
-              color: _isFocused
-                ? theme.primaryColor.withValues(alpha: 0.5)
-                : (_controller.text.isNotEmpty 
-                  ? theme.primaryColor.withValues(alpha: 0.4)
-                  : (isDark ? Colors.white.withValues(alpha: 0.08) : Colors.grey.shade200)),
-              width: 1.2,
-            ),
-          ),
-          clipBehavior: Clip.antiAlias,
-          child: Row(
-            children: [
-              const SizedBox(width: 16),
-              Icon(
-                Icons.search_rounded,
-                color: _isFocused || _controller.text.isNotEmpty 
-                  ? theme.primaryColor 
-                  : theme.iconTheme.color?.withValues(alpha: 0.3),
-                size: 20,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: _controller,
-                  focusNode: _focusNode,
-                  autofocus: false,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                  onSubmitted: _onSearch,
-                  onChanged: (value) {
-                    setState(() {});
-                    if (value.isEmpty) {
-                      context.read<SearchCubit>().clearSearch();
-                    }
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search high-value items...',
-                    hintStyle: theme.textTheme.bodySmall?.copyWith(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: theme.textTheme.bodySmall!.color!.withValues(alpha: 0.3),
-                    ),
-                    border: InputBorder.none,
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none,
-                    contentPadding: EdgeInsets.zero,
-                    isDense: true,
-                  ),
-                ),
-              ),
-              if (_controller.text.isNotEmpty)
-                IconButton(
-                  icon: Icon(Icons.close_rounded, color: theme.iconTheme.color?.withValues(alpha: 0.4), size: 18),
-                  onPressed: () {
-                    HapticFeedback.lightImpact();
-                    _controller.clear();
-                    context.read<SearchCubit>().clearSearch();
-                    setState(() {});
-                  },
-                ),
-              Container(
-                width: 1,
-                height: 20,
-                color: theme.dividerColor.withValues(alpha: 0.1),
-              ),
-              const SizedBox(width: 8),
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  _showImageSourceSelector();
-                },
-                child: SvgPicture.asset(
-                  'assets/icons/camera.svg',
-                  colorFilter: const ColorFilter.mode(
-                      Color(0xFFFF4D00), BlendMode.srcIn),
-                  width: 24,
-                  height: 24,
-                ).animate(onPlay: (controller) => controller.repeat(reverse: true))
-                 .scale(begin: const Offset(1, 1), end: const Offset(1.1, 1.1), duration: 1.seconds, curve: Curves.easeInOut),
-              ),
-              const SizedBox(width: 16),
-            ],
-          ),
-        ),
-      ),
+    return AppSearchBar(
+      controller: _controller,
+      focusNode: _focusNode,
+      hintText: 'Search high-value items...',
+      showVisualSearch: true,
+      onSearch: _onSearch,
+      onChanged: (value) {
+        setState(() {});
+        if (value.isEmpty) {
+          context.read<SearchCubit>().clearSearch();
+        }
+      },
+      onClear: () {
+        context.read<SearchCubit>().clearSearch();
+      },
     );
   }
 }

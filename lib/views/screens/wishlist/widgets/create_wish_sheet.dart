@@ -4,6 +4,7 @@ import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubits/user_wishlist_cubit.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:toasty_box/toasty_box.dart';
 
 class CreateWishSheet extends StatefulWidget {
@@ -170,10 +171,7 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
                   ? const SizedBox(
                       height: 20,
                       width: 20,
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
-                        strokeWidth: 2,
-                      ),
+                      child: LoadingAnimation(color: Colors.white, size: 20),
                     )
                   : const Text(
                       'Submit Wish',

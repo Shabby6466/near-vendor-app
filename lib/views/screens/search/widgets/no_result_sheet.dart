@@ -8,8 +8,11 @@ import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:toasty_box/toasty_box.dart';
+import 'package:toasty_box/toast_service.dart';
+import 'package:latlong2/latlong.dart';
 
 class NoResultSheet extends StatefulWidget {
   final String? message;
@@ -232,9 +235,9 @@ class _NoResultSheetState extends State<NoResultSheet> {
                         onPressed: _isCreatingWish ? null : _showCategoryPickerAndCreateWish,
                         icon: _isCreatingWish
                             ? const SizedBox(
-                                width: 14,
-                                height: 14,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                width: 20,
+                                height: 20,
+                                child: LoadingAnimation(color: Colors.white, size: 28),
                               )
                             : const Icon(Icons.add_rounded, size: 16, color: Colors.white),
                         label: Text(

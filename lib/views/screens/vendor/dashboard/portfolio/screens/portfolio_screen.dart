@@ -5,6 +5,8 @@ import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_state.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:ui';
@@ -41,7 +43,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       body: BlocBuilder<PortfolioCubit, PortfolioState>(
         builder: (context, state) {
           if (state is PortfolioLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingIndicator();
           }
 
           if (state is PortfolioFailure) {

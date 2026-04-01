@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class AppElevatedButton extends StatelessWidget {
   final void Function()? onPressed;
@@ -28,9 +29,9 @@ class AppElevatedButton extends StatelessWidget {
             ? const SizedBox(
                 height: 20,
                 width: 20,
-                child: CircularProgressIndicator(
+                child: LoadingAnimation(
                   color: Colors.white,
-                  strokeWidth: 2,
+                  size: 20,
                 ),
               )
             : Text(

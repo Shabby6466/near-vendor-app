@@ -5,8 +5,11 @@ import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/view/profile_screen.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
+import 'package:latlong2/latlong.dart';
+
 
 class SearchHeader extends StatelessWidget {
   const SearchHeader({super.key});
@@ -32,7 +35,11 @@ class SearchHeader extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   HapticFeedback.lightImpact();
-                  context.read<SessionCubit>().updateLocation();
+                  context.read<SessionCubit>().startManualLocationPick();
+                  AppNavigator.push(
+                    context,
+                    const LocationPickerScreen(),
+                  );
                 },
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

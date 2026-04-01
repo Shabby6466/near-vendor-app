@@ -7,7 +7,9 @@ import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cub
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_state.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ExploreItemDetailScreen extends StatefulWidget {
@@ -41,7 +43,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
       body: BlocBuilder<ExploreItemDetailCubit, ExploreItemDetailState>(
         builder: (context, state) {
           if (state is ExploreItemDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingIndicator();
           }
           if (state is ExploreItemDetailSuccess) {
             return _buildMainContent(context, state.item, state.shop);
@@ -92,7 +94,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                                 height: double.infinity,
                                 placeholder: (context, url) => Container(
                                   color: theme.primaryColor.withValues(alpha: 0.05),
-                                  child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                  child: const LoadingAnimation(size: 16),
                                 ),
                                 errorWidget: (context, url, error) => Icon(
                                   Icons.image_not_supported_rounded,
@@ -376,7 +378,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
               child: Container(
                 height: 54,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFB300),
+                  color: const Color(0xFFFF4D00),
                   borderRadius: BorderRadius.circular(27),
                 ),
                 child: Row(

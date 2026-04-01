@@ -15,6 +15,7 @@ import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.da
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopDetailsScreen extends StatelessWidget {
@@ -35,7 +36,7 @@ class ShopDetailsScreen extends StatelessWidget {
         body: BlocBuilder<ShopDetailsCubit, ShopDetailsState>(
           builder: (context, state) {
             if (state is ShopDetailsLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const AppLoadingIndicator();
             }
 
             if (state is ShopDetailsFailure) {
@@ -244,7 +245,7 @@ class ShopDetailsScreen extends StatelessWidget {
                 ),
               ),
               if (fullShop.isVerifiedBadge ?? false)
-                const Icon(Icons.verified, color: Colors.blue, size: 20),
+                const Icon(Icons.location_on_rounded, size: 12, color: Color(0xFFFF4D00)),
             ],
           ),
           Positioned(
@@ -377,7 +378,7 @@ class ShopDetailsScreen extends StatelessWidget {
                 child: Container(
                   height: 52,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFB300),
+                    color: const Color(0xFFFF4D00),
                     borderRadius: BorderRadius.circular(26),
                   ),
                   child: const Row(
@@ -415,9 +416,9 @@ class ShopDetailsScreen extends StatelessWidget {
         width: 50,
         height: 50,
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
-          shape: BoxShape.circle,
-          border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+          color: const Color(0xFFFF4D00).withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: const Color(0xFFFF4D00).withValues(alpha: 0.2)),
         ),
         child: Icon(icon, color: color, size: 22),
       ),

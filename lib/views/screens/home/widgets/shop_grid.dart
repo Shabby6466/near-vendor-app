@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -19,7 +22,7 @@ class ShopGrid extends StatelessWidget {
       builder: (context, state) {
         if (state is HomeScreenLoading) {
           return const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: LoadingAnimation()),
           );
         }
 

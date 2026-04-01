@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/change_password_cubit/change_password_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
@@ -178,9 +179,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     }
                                   },
                             child: state is ChangePasswordLoading
-                                ? const CircularProgressIndicator(
-                                    color: Colors.white,
-                                  )
+                                ? const LoadingAnimation(color: Colors.white, size: 20)
                                 : Text(
                                     'Update Password',
                                     style: Theme.of(context).textTheme.labelLarge,

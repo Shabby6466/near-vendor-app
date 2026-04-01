@@ -6,14 +6,17 @@ import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/cubit/analytics_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/constants/hive_keys.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubits/vendor_demand_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/vendor_demand_view.dart';
+import 'package:nearvendorapp/utils/app_spacing.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -95,8 +98,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             }
           },
           builder: (context, state) {
-            if (state is AnalyticsLoading && state is! AnalyticsSuccess) {
-              return const Center(child: CircularProgressIndicator());
+            if (state is AnalyticsLoading) {
+              return const AppLoadingIndicator();
             }
 
             if (state is AnalyticsSuccess) {
@@ -280,7 +283,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   ),
                 )
               else
-                const Center(child: CircularProgressIndicator()),
+                const AppLoadingIndicator(),
             ],
           ),
         );

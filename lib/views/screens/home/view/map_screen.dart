@@ -8,6 +8,7 @@ import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_state.dart';
 import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
 
@@ -38,9 +39,23 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: Stack(
-        children: [
+    return BlocListener<SessionCubit, SessionState>(
+      listenWhen: (previous, current) =>
+          previous.latitude != current.latitude ||
+          previous.longitude != current.longitude,
+      listener: (context, sessionState) {
+        if (sessionState.latitude != null && sessionState.longitude != null) {
+          final center = LatLng(sessionState.latitude!, sessionState.longitude!);
+          _mapController.move(center, 13);
+          context.read<MapCubit>().fetchShops(
+                lat: sessionState.latitude!,
+                lon: sessionState.longitude!,
+              );
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
           BlocBuilder<MapCubit, MapState>(
             builder: (context, state) {
               return FlutterMap(
@@ -113,6 +128,7 @@ class _MapScreenState extends State<MapScreen> {
           ),
         ],
       ),
+      )
     );
   }
 

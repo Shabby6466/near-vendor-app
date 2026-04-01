@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_items_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
@@ -25,10 +26,28 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return BlocProvider(
       create: (context) => SearchCubit(),
-      child: Scaffold(
-        backgroundColor: theme.scaffoldBackgroundColor,
-        body: SafeArea(
-          child: Column(
+      child: BlocListener<SessionCubit, SessionState>(
+        listenWhen: (previous, current) =>
+            previous.latitude != current.latitude ||
+            previous.longitude != current.longitude,
+        listener: (context, sessionState) {
+          final searchCubit = context.read<SearchCubit>();
+          final searchState = searchCubit.state;
+          
+          if (searchState is SearchSuccess && searchState.query != null) {
+            searchCubit.searchItems(
+              lat: sessionState.latitude ?? 0,
+              lon: sessionState.longitude ?? 0,
+              query: searchState.query!,
+            );
+          } else if (searchState is SearchInitial) {
+            searchCubit.loadInitialData();
+          }
+        },
+        child: Scaffold(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          body: SafeArea(
+            child: Column(
             children: [
               const SearchHeader().animate().fadeIn(duration: 400.ms).slideY(begin: -0.2, end: 0),
               Expanded(
@@ -70,7 +89,9 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
+      ),
     );
+
   }
 
   Widget _buildStateContent(BuildContext context, SearchState state) {
