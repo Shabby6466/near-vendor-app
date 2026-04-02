@@ -123,8 +123,8 @@ class HomeScreenCubit extends Cubit<HomeScreenState> with AnalyticsMixin<HomeScr
               categoryId: _selectedCategory.id,
             );
       
-      if (response.success || response.statusCode == 410) {
-        _apiMessage = response.statusCode == 410 ? response.message : null;
+      if (response.success || response.statusCode == 410 || response.statusCode == 404) {
+        _apiMessage = (response.statusCode == 410 || response.statusCode == 404) ? response.message : null;
         _allShops = response.shops.map((shop) => _mapToShopModel(shop)).toList();
         
         // Update cache

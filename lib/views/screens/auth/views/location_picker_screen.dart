@@ -6,11 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-
 import 'dart:async';
 import 'package:nearvendorapp/services/location_service.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
-import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class LocationPickerScreen extends StatefulWidget {
@@ -28,7 +25,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   List<LocationSuggestion> _suggestions = [];
   Timer? _debounce;
   bool _isLoading = false;
-  bool _isSearching = false;
 
   @override
   void dispose() {
@@ -48,13 +44,19 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     });
   }
 
-  Future<void> _fetchSuggestions(String query, {double? lat, double? lon}) async {
-    setState(() => _isSearching = true);
-    final suggestions = await _locationService.getSuggestions(query, lat: lat, lon: lon);
+  Future<void> _fetchSuggestions(
+    String query, {
+    double? lat,
+    double? lon,
+  }) async {
+    final suggestions = await _locationService.getSuggestions(
+      query,
+      lat: lat,
+      lon: lon,
+    );
     if (mounted) {
       setState(() {
         _suggestions = suggestions;
-        _isSearching = false;
       });
     }
   }
@@ -65,7 +67,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       _suggestions = [];
       _searchController.text = suggestion.displayName;
     });
-    
+
     _mapController.move(suggestion.location, 15.0);
     context.read<SessionCubit>().updateTempLocation(
       suggestion.location.latitude,
@@ -107,21 +109,37 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
         final sessionCubit = context.read<SessionCubit>();
-        final currentLat = state.tempLatitude ?? widget.initialLocation?.latitude ?? state.latitude ?? 33.667306;
-        final currentLon = state.tempLongitude ?? widget.initialLocation?.longitude ?? state.longitude ?? 73.075177;
+        final currentLat =
+            state.tempLatitude ??
+            widget.initialLocation?.latitude ??
+            state.latitude ??
+            33.667306;
+        final currentLon =
+            state.tempLongitude ??
+            widget.initialLocation?.longitude ??
+            state.longitude ??
+            73.075177;
         final currentLatLng = LatLng(currentLat, currentLon);
 
         return Scaffold(
+          extendBodyBehindAppBar: true,
           appBar: AppBar(
             title: const Text(
-              'Pin Your Location',
-              style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold),
+              'Location Picker',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.5,
+              ),
             ),
             elevation: 0,
-            backgroundColor: theme.scaffoldBackgroundColor,
-            foregroundColor: theme.textTheme.titleLarge?.color,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: ClipRect(
+              child: Container(
+                color: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
+              ),
+            ),
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
+              icon: const Icon(Icons.close_rounded),
               onPressed: () {
                 sessionCubit.cancelManualLocationPick();
                 Navigator.pop(context);
@@ -152,101 +170,180 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                   ),
                 ],
               ),
-              // Search Bar Placeholder (Simplified for this version)
+
+              // Top Search Overlay
               Positioned(
-                top: 20,
+                top: MediaQuery.of(context).padding.top + 70,
                 left: 20,
                 right: 20,
                 child: Column(
                   children: [
-                    AppSearchBar(
-                      controller: _searchController,
-                      hintText: 'Search location...',
-                      padding: EdgeInsets.zero,
-                      onChanged: (value) => _onSearchChanged(
-                        value,
-                        lat: state.tempLatitude ?? state.latitude,
-                        lon: state.tempLongitude ?? state.longitude,
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: AppSearchBar(
+                        controller: _searchController,
+                        hintText: 'Search for a place...',
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 4,
+                        ),
+                        onChanged: (value) => _onSearchChanged(
+                          value,
+                          lat: currentLat,
+                          lon: currentLon,
+                        ),
+                        onClear: () {
+                          _searchController.clear();
+                          _onSearchChanged('');
+                        },
                       ),
-                      onClear: () {
-                        _searchController.clear();
-                        _onSearchChanged('');
-                      },
                     ),
                     if (_suggestions.isNotEmpty)
-                      Container(
-                        margin: const EdgeInsets.only(top: 8),
-                        constraints: const BoxConstraints(maxHeight: 250),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.only(top: 12),
+                        constraints: const BoxConstraints(maxHeight: 300),
                         decoration: BoxDecoration(
-                          color: theme.cardColor,
-                          borderRadius: BorderRadius.circular(12),
+                          color: theme.cardColor.withValues(alpha: 0.95),
+                          borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.1),
-                              blurRadius: 10,
-                              offset: const Offset(0, 4),
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 30,
+                              offset: const Offset(0, 15),
                             ),
                           ],
                         ),
-                        child: ListView.separated(
-                          shrinkWrap: true,
-                          padding: EdgeInsets.zero,
-                          itemCount: _suggestions.length,
-                          separatorBuilder: (context, index) => const Divider(height: 1),
-                          itemBuilder: (context, index) {
-                            final suggestion = _suggestions[index];
-                            return ListTile(
-                              title: Text(
-                                suggestion.displayName,
-                                style: const TextStyle(fontSize: 13, fontFamily: 'Poppins'),
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              onTap: () => _selectSuggestion(suggestion),
-                            );
-                          },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            itemCount: _suggestions.length,
+                            separatorBuilder: (context, index) => Divider(
+                              color: theme.dividerColor.withValues(alpha: 0.1),
+                              indent: 20,
+                              endIndent: 20,
+                            ),
+                            itemBuilder: (context, index) {
+                              final suggestion = _suggestions[index];
+                              return ListTile(
+                                leading: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.location_on_outlined,
+                                    color: theme.colorScheme.onSurface,
+                                    size: 18,
+                                  ),
+                                ),
+                                title: Text(
+                                  suggestion.displayName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                onTap: () => _selectSuggestion(suggestion),
+                              );
+                            },
+                          ),
                         ),
                       ),
                   ],
                 ),
               ),
-              // My Location Button
-              Positioned(
-                bottom: 110,
-                right: 20,
-                child: FloatingActionButton(
-                  heroTag: 'my_location',
-                  onPressed: _isLoading ? null : () => _getCurrentLocation(context),
-                  backgroundColor: theme.primaryColor,
-                  child: _isLoading
-                      ? const LoadingAnimation(color: Colors.white, size: 24)
-                      : const Icon(Icons.my_location, color: Colors.white),
-                ),
-              ),
-              // Center Marker
+
+              // Center Target Indicator
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 40.0),
-                  child: Icon(
-                    Icons.location_on,
-                    size: 50,
-                    color: theme.primaryColor,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.primaryColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.location_on_rounded,
+                          size: 44,
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
-              // Confirm Button
+
+              // Bottom Actions Layout
               Positioned(
-                bottom: 40,
-                left: 20,
-                right: 20,
-                child: AppElevatedButton(
-                  text: 'Confirm Location',
-                  onPressed: () async {
-                    await sessionCubit.confirmManualLocationPick();
-                    if (mounted) {
-                      Navigator.pop(context);
-                    }
-                  },
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          FloatingActionButton.small(
+                            heroTag: 'my_location',
+                            onPressed: _isLoading
+                                ? null
+                                : () => _getCurrentLocation(context),
+                            backgroundColor: theme.colorScheme.onSurface,
+                            foregroundColor: theme.colorScheme.surface,
+                            elevation: 4,
+                            child: _isLoading
+                                ? const LoadingAnimation(
+                                    color: Colors.white,
+                                    size: 18,
+                                  )
+                                : const Icon(Icons.my_location_rounded),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      AppElevatedButton(
+                        text: 'Confirm Location',
+                        onPressed: () async {
+                          await sessionCubit.confirmManualLocationPick();
+                          if (mounted) {
+                            Navigator.pop(context);
+                          }
+                        },
+                      ),
+                      SizedBox(height: MediaQuery.of(context).padding.bottom),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -256,5 +353,3 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     );
   }
 }
-
-

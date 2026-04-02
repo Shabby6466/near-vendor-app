@@ -23,18 +23,16 @@ class ProfileMenuItem extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListTile(
-      contentPadding: const EdgeInsets.symmetric(
-        horizontal: 20,
-        vertical: 8,
-      ),
-      leading: leading ??
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+      leading:
+          leading ??
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               color: theme.primaryColor.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: theme.primaryColor, size: 22),
+            child: Icon(icon, color: theme.iconTheme.color, size: 22),
           ),
       title: Text(
         title,
@@ -53,7 +51,8 @@ class ProfileMenuItem extends StatelessWidget {
           ),
         ),
       ),
-      trailing: trailing ??
+      trailing:
+          trailing ??
           Icon(
             Icons.chevron_right_rounded,
             size: 20,

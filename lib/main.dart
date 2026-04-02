@@ -6,10 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
+import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
 import 'package:upgrader/upgrader.dart';
-
-import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -55,13 +54,18 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       ],
       child: BlocBuilder<SessionCubit, SessionState>(
         builder: (context, state) {
-          final isApprovedVendor = state.isVendor && state.vendorStatus == 'APPROVED';
+          final isApprovedVendor =
+              state.isVendor && state.vendorStatus == 'APPROVED';
           return MaterialApp(
             navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             themeMode: ThemeMode.system,
-            theme: isApprovedVendor ? AppThemeData.vendorLightTheme : AppThemeData.normalLightTheme,
-            darkTheme: isApprovedVendor ? AppThemeData.vendorDarkTheme : AppThemeData.normalDarkTheme,
+            theme: isApprovedVendor
+                ? AppThemeData.vendorLightTheme
+                : AppThemeData.normalLightTheme,
+            darkTheme: isApprovedVendor
+                ? AppThemeData.vendorDarkTheme
+                : AppThemeData.normalDarkTheme,
             home: UpgradeAlert(
               upgrader: Upgrader(
                 minAppVersion: '0.0.0',
@@ -72,7 +76,9 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
               dialogStyle: Platform.isIOS
                   ? UpgradeDialogStyle.cupertino
                   : UpgradeDialogStyle.material,
-              child: (state.status == AuthStatus.authenticated || state.hasOnboarded)
+              child:
+                  (state.status == AuthStatus.authenticated ||
+                      state.hasOnboarded)
                   ? const MainScreen()
                   : const WelcomeScreen(),
             ),
@@ -82,5 +88,3 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     );
   }
 }
-
-// FirebaseImp class removed due to iOS dependency conflicts with mobile_scanner

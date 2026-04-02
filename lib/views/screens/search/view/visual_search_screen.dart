@@ -4,8 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_map_results_screen.dart';
@@ -152,7 +150,9 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
           height: 80,
           width: 80,
           colorFilter: ColorFilter.mode(
-              Colors.white.withValues(alpha: 0.1), BlendMode.srcIn),
+            Colors.white.withValues(alpha: 0.1),
+            BlendMode.srcIn,
+          ),
         ),
       ),
     );
@@ -216,24 +216,24 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     );
   }
 
-  Widget _buildLoadingState() {
-    return Center(
-      child: Column(
-        children: [
-          const LoadingAnimation(color: Colors.white, size: 28),
-          const SizedBox(height: 16),
-          const Text(
-            "Analyzing Product...",
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              fontFamily: 'Poppins',
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildLoadingState() {
+  //   return Center(
+  //     child: Column(
+  //       children: [
+  //         const LoadingAnimation(color: Colors.white, size: 28),
+  //         const SizedBox(height: 16),
+  //         const Text(
+  //           "Analyzing Product...",
+  //           style: TextStyle(
+  //             color: Colors.white,
+  //             fontWeight: FontWeight.bold,
+  //             fontFamily: 'Poppins',
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildBottomActions() {
     return Padding(
@@ -265,8 +265,10 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
                 child: Center(
                   child: SvgPicture.asset(
                     'assets/icons/camera.svg',
-                    colorFilter:
-                        const ColorFilter.mode(Colors.blue, BlendMode.srcIn),
+                    colorFilter: const ColorFilter.mode(
+                      Colors.blue,
+                      BlendMode.srcIn,
+                    ),
                     width: 32,
                     height: 32,
                   ),
@@ -281,11 +283,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     );
   }
 
-  Widget _buildActionIconButton(
-    Widget icon,
-    String label,
-    VoidCallback onTap,
-  ) {
+  Widget _buildActionIconButton(Widget icon, String label, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
       child: Column(

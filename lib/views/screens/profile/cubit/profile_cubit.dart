@@ -25,7 +25,7 @@ class ProfileCubit extends Cubit<ProfileState> {
     
     emit(ProfileSuccess(
       userName: user?.fullName ?? 'Guest User',
-      userLocation: user?.email ?? 'No email provided',
+      userLocation: user?.cityName ?? 'Location not set',
       photoUrl: user?.photoUrl,
       discoveryRadius: radius,
       newOfferAlerts: true,

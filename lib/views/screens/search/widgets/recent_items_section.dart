@@ -12,7 +12,6 @@ class RecentItemsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return BlocBuilder<SearchCubit, SearchState>(
       buildWhen: (previous, current) => current is SearchInitial,
@@ -105,7 +104,9 @@ class _MemoryCard extends StatelessWidget {
           color: theme.cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.grey.shade100,
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.grey.shade100,
           ),
           boxShadow: [
             BoxShadow(
@@ -131,7 +132,11 @@ class _MemoryCard extends StatelessWidget {
                       fit: BoxFit.cover,
                       errorWidget: (context, url, error) => Container(
                         color: isDark ? Colors.black26 : Colors.grey.shade50,
-                        child: const Icon(Icons.image_not_supported_outlined, color: Colors.grey, size: 24),
+                        child: const Icon(
+                          Icons.image_not_supported_outlined,
+                          color: Colors.grey,
+                          size: 24,
+                        ),
                       ),
                     ),
                   ),
@@ -139,14 +144,21 @@ class _MemoryCard extends StatelessWidget {
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.black.withValues(alpha: 0.4),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
                         children: [
-                          const Icon(Icons.inventory_2_outlined, color: Colors.white, size: 10),
+                          const Icon(
+                            Icons.inventory_2_outlined,
+                            color: Colors.white,
+                            size: 10,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             '${item.stockCount ?? 0} left',

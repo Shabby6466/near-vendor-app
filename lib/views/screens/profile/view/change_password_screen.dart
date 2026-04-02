@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
@@ -52,7 +51,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 leading: IconButton(
-                  icon:  Icon(
+                  icon: Icon(
                     Icons.arrow_back_ios_new,
                     size: 20,
                     color: Theme.of(context).iconTheme.color,
@@ -69,16 +68,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     children: [
                       Text(
                         'Change Password',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 8),
                       Text(
                         'Secure your account by updating your password regularly.',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey,
-                        ),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
                       ),
                       SizedBox(
                         height: AppSpacing.largeVerticalSpacing(context),
@@ -179,10 +177,15 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                     }
                                   },
                             child: state is ChangePasswordLoading
-                                ? const LoadingAnimation(color: Colors.white, size: 20)
+                                ? const LoadingAnimation(
+                                    color: Colors.white,
+                                    size: 20,
+                                  )
                                 : Text(
                                     'Update Password',
-                                    style: Theme.of(context).textTheme.labelLarge,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.labelLarge,
                                   ),
                           );
                         },

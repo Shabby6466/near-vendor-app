@@ -116,6 +116,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                               : targetLeft;
 
                           return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
                             onHorizontalDragStart: (_) =>
                                 setState(() => _isDragging = true),
                             onHorizontalDragUpdate: (details) =>
@@ -236,21 +237,24 @@ class _NavButton extends StatelessWidget {
         : (isDark ? Colors.white.withValues(alpha: 0.4) : Colors.grey.shade400);
 
     return Expanded(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _buildIcon(color),
-          const SizedBox(height: 2),
-          Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 8,
-              fontFamily: 'Poppins',
-              fontWeight: isActive ? FontWeight.w400 : FontWeight.w200,
+      child: Container(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _buildIcon(color),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              style: TextStyle(
+                color: color,
+                fontSize: 8,
+                fontFamily: 'Poppins',
+                fontWeight: isActive ? FontWeight.w400 : FontWeight.w200,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -297,13 +301,12 @@ class _VendorConsoleButton extends StatelessWidget {
       border: isActive
           ? Border.all(color: activeColor.withValues(alpha: 0.5), width: 2)
           : null,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(32),
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.all(2),
-            decoration: BoxDecoration(shape: BoxShape.circle),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(height / 2),
+          child: Center(
             child: Icon(
               isActive ? Icons.store : Icons.store_outlined,
               color: isActive

@@ -23,6 +23,14 @@ class GeneralPinCubit extends Cubit<GeneralPinState> {
     emit(GeneralPinSuccess());
   }
 
+  void setLoading(bool isLoading) {
+    if (isLoading) {
+      emit(GeneralPinLoading());
+    } else {
+      emit(GeneralPinCodeChanged(codeController.text));
+    }
+  }
+
   void onFailure(String message) {
     emit(GeneralPinFailure(message));
   }

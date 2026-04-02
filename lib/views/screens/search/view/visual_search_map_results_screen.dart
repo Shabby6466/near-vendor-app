@@ -6,7 +6,6 @@ import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/vendor_list_overlay.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
 
 class VisualSearchMapResultsScreen extends StatefulWidget {
   final List<Item> results;
@@ -57,8 +56,10 @@ class _VisualSearchMapResultsScreenState
         builder: (context, sessionState) {
           final initialCenter = _markers.isNotEmpty
               ? _markers.first.point
-              : LatLng(sessionState.latitude ?? 33.5898,
-                  sessionState.longitude ?? 73.0221);
+              : LatLng(
+                  sessionState.latitude ?? 33.5898,
+                  sessionState.longitude ?? 73.0221,
+                );
 
           return Scaffold(
             backgroundColor: Colors.black,

@@ -10,13 +10,11 @@ import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/constants/hive_keys.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubits/vendor_demand_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/vendor_demand_view.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
@@ -71,9 +69,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
             icon: const Icon(Icons.arrow_back_ios_new_rounded),
             onPressed: () => AppNavigator.pop(context),
           ),
-          actions: const [
-            SizedBox(width: 8),
-          ],
+          actions: const [SizedBox(width: 8)],
           bottom: TabBar(
             indicatorColor: theme.primaryColor,
             labelColor: theme.primaryColor,
@@ -148,7 +144,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
@@ -173,7 +172,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               thumbColor: theme.primaryColor,
               overlayColor: theme.primaryColor.withValues(alpha: 0.1),
               valueIndicatorColor: theme.primaryColor,
-              valueIndicatorTextStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              valueIndicatorTextStyle: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             child: Slider(
               value: _selectedDays.toDouble(),
@@ -188,9 +190,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 final days = value.round();
                 _saveSelectedDays(days);
                 if (_selectedShopId != null) {
-                  context.read<AnalyticsCubit>().fetchShopDetails(_selectedShopId!, days: days);
+                  context.read<AnalyticsCubit>().fetchShopDetails(
+                    _selectedShopId!,
+                    days: days,
+                  );
                 } else {
-                  context.read<AnalyticsCubit>().fetchPortfolioAnalytics(days: days);
+                  context.read<AnalyticsCubit>().fetchPortfolioAnalytics(
+                    days: days,
+                  );
                 }
               },
             ),
@@ -210,7 +217,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final Map<String, int> shopImpressions = {};
     for (var entry in portfolio) {
       if (entry.type == 'IMPRESSION') {
-        shopImpressions[entry.shopId] = (shopImpressions[entry.shopId] ?? 0) + entry.count;
+        shopImpressions[entry.shopId] =
+            (shopImpressions[entry.shopId] ?? 0) + entry.count;
       }
     }
 
@@ -228,7 +236,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           ),
           const SizedBox(height: 24),
           _buildBarChart(context, sortedEntries),
-          _buildHelperText('Network Exposure', 'Total unique impressions across all your registered shop spaces.'),
+          _buildHelperText(
+            'Network Exposure',
+            'Total unique impressions across all your registered shop spaces.',
+          ),
           const SizedBox(height: 32),
           _buildSectionTitle('Performance Breakdown'),
           const SizedBox(height: 16),
@@ -253,7 +264,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
               _buildShopSelector(context, shops),
               const SizedBox(height: 24),
               if (state.selectedShopInsights != null) ...[
-                _buildInsightsSummary(context, state.selectedShopInsights!.summary),
+                _buildInsightsSummary(
+                  context,
+                  state.selectedShopInsights!.summary,
+                ),
                 const SizedBox(height: 32),
                 _buildInsightHeadline(
                   'Trend Analysis',
@@ -261,7 +275,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                 ),
                 const SizedBox(height: 16),
                 _buildLineChart(context, state.selectedShopStats ?? []),
-                _buildHelperText('Engagement Metrics', 'Purple represents impressions, Orange represents direct shop views.'),
+                _buildHelperText(
+                  'Engagement Metrics',
+                  'Purple represents impressions, Orange represents direct shop views.',
+                ),
                 const SizedBox(height: 32),
                 _buildSectionTitle('Neighborhood Demand'),
                 const SizedBox(height: 8),
@@ -270,11 +287,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 12,
-                    color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                    color: theme.textTheme.bodySmall?.color?.withValues(
+                      alpha: 0.6,
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
-                _buildDemandList(context, state.selectedShopMarket?.neighborhoodDemand ?? []),
+                _buildDemandList(
+                  context,
+                  state.selectedShopMarket?.neighborhoodDemand ?? [],
+                ),
               ] else if (_selectedShopId == null)
                 const Center(
                   child: Padding(
@@ -313,7 +335,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           onChanged: (value) {
             if (value != null) {
               setState(() => _selectedShopId = value);
-              context.read<AnalyticsCubit>().fetchShopDetails(value, days: _selectedDays);
+              context.read<AnalyticsCubit>().fetchShopDetails(
+                value,
+                days: _selectedDays,
+              );
             }
           },
         ),
@@ -322,15 +347,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _buildInsightsSummary(BuildContext context, InsightsSummary summary) {
-    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
-    
+    final dashboardTheme = Theme.of(
+      context,
+    ).extension<DashboardThemeExtension>();
+
     return Row(
       children: [
         _buildSummaryCard(
           context,
           'Impressions',
           summary.impressions.toString(),
-          '+12.5%',
           Icons.visibility_outlined,
           dashboardTheme?.inventoryColor ?? Colors.blue,
         ),
@@ -339,7 +365,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           context,
           'Views',
           summary.views.toString(),
-          '+5.2%',
           Icons.ads_click_rounded,
           dashboardTheme?.analyticsColor ?? Colors.orange,
         ),
@@ -348,7 +373,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           context,
           'CTR',
           '${summary.ctr}%',
-          '+0.8%',
           Icons.analytics_outlined,
           dashboardTheme?.successColor ?? Colors.green,
         ),
@@ -360,7 +384,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     BuildContext context,
     String label,
     String value,
-    String trend,
     IconData icon,
     Color color,
   ) {
@@ -378,18 +401,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Icon(icon, color: color, size: 20),
-                Text(
-                  trend,
-                  style: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    color: color,
-                  ),
-                ),
-              ],
+              children: [Icon(icon, color: color, size: 20)],
             ),
             const SizedBox(height: 12),
             Text(
@@ -416,14 +428,19 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     );
   }
 
-  Widget _buildBarChart(BuildContext context, List<MapEntry<String, int>> data) {
+  Widget _buildBarChart(
+    BuildContext context,
+    List<MapEntry<String, int>> data,
+  ) {
     return Container(
       height: 200,
       padding: const EdgeInsets.only(top: 20, right: 20),
       child: BarChart(
         BarChartData(
           alignment: BarChartAlignment.spaceAround,
-          maxY: data.isEmpty ? 10 : data.map((e) => e.value).reduce((a, b) => a > b ? a : b) * 1.2,
+          maxY: data.isEmpty
+              ? 10
+              : data.map((e) => e.value).reduce((a, b) => a > b ? a : b) * 1.2,
           barTouchData: BarTouchData(enabled: false),
           titlesData: const FlTitlesData(show: false),
           gridData: const FlGridData(show: false),
@@ -436,7 +453,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   toY: e.value.value.toDouble(),
                   color: Theme.of(context).primaryColor,
                   width: 18,
-                  borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(6),
+                  ),
                 ),
               ],
             );
@@ -449,7 +468,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   Widget _buildLineChart(BuildContext context, List<AnalyticsStatEntry> stats) {
     if (stats.isEmpty) return const Center(child: Text('No data for trends'));
 
-    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
+    final dashboardTheme = Theme.of(
+      context,
+    ).extension<DashboardThemeExtension>();
     final impressions = stats.where((s) => s.type == 'IMPRESSION').toList();
     final views = stats.where((s) => s.type == 'VIEW').toList();
 
@@ -462,7 +483,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.05)),
+        border: Border.all(
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.05),
+        ),
       ),
       child: LineChart(
         LineChartData(
@@ -510,8 +533,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
   }
 
   Widget _buildDemandList(BuildContext context, List<DemandEntry> demand) {
-    if (demand.isEmpty) return const Center(child: Text('Evaluating neighborhood demand...'));
-    final dashboardTheme = Theme.of(context).extension<DashboardThemeExtension>();
+    if (demand.isEmpty)
+      return const Center(child: Text('Evaluating neighborhood demand...'));
+    final dashboardTheme = Theme.of(
+      context,
+    ).extension<DashboardThemeExtension>();
 
     return ListView.separated(
       shrinkWrap: true,
@@ -534,7 +560,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
           trailing: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: (dashboardTheme?.successColor ?? Colors.green).withValues(alpha: 0.1),
+              color: (dashboardTheme?.successColor ?? Colors.green).withValues(
+                alpha: 0.1,
+              ),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
@@ -557,9 +585,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         String shopName = 'Shop ${entry.key.substring(0, 5)}...';
         if (shopState is VendorShopSuccess) {
           final shop = shopState.shops.cast<Shop?>().firstWhere(
-                (s) => s?.id == entry.key,
-                orElse: () => null,
-              );
+            (s) => s?.id == entry.key,
+            orElse: () => null,
+          );
           if (shop != null) shopName = shop.shopName;
         }
 
@@ -579,8 +607,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Icon(Icons.storefront_rounded, 
-                  color: Theme.of(context).primaryColor, size: 20),
+                child: Icon(
+                  Icons.storefront_rounded,
+                  color: Theme.of(context).primaryColor,
+                  size: 20,
+                ),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -667,7 +698,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
         children: [
           Row(
             children: [
-              const Icon(Icons.info_outline_rounded, size: 12, color: Colors.grey),
+              const Icon(
+                Icons.info_outline_rounded,
+                size: 12,
+                color: Colors.grey,
+              ),
               const SizedBox(width: 4),
               Text(
                 title.toUpperCase(),
@@ -702,11 +737,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
     final lon = sessionState.longitude;
 
     if (lat == null || lon == null) {
-      return const Center(child: Text('Location unavailable. Please update your location.'));
+      return const Center(
+        child: Text('Location unavailable. Please update your location.'),
+      );
     }
 
     return BlocProvider(
-      create: (_) => VendorDemandCubit()..exploreLocalDemand(lat: lat, lon: lon),
+      create: (_) =>
+          VendorDemandCubit()..exploreLocalDemand(lat: lat, lon: lon),
       child: const VendorDemandView(),
     );
   }

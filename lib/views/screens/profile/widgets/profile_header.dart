@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
@@ -26,14 +25,6 @@ class ProfileHeader extends StatelessWidget {
 
     return Column(
       children: [
-        SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
-        Center(
-          child: SvgPicture.asset(
-            'assets/icons/near_vendor_blue_text.svg',
-            height: 36,
-            colorFilter: ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
-          ),
-        ),
         SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
         SizedBox(
           width: 140,
@@ -86,7 +77,10 @@ class ProfileHeader extends StatelessWidget {
                             decoration: BoxDecoration(
                               color: theme.primaryColor,
                               shape: BoxShape.circle,
-                              border: Border.all(color: theme.scaffoldBackgroundColor, width: 2),
+                              border: Border.all(
+                                color: theme.scaffoldBackgroundColor,
+                                width: 2,
+                              ),
                               boxShadow: [
                                 BoxShadow(
                                   color: Colors.black.withValues(alpha: 0.15),
@@ -121,7 +115,7 @@ class ProfileHeader extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: theme.primaryColor.withValues(alpha: 0.08),
+            color: theme.iconTheme.color?.withValues(alpha: 0.08),
             borderRadius: BorderRadius.circular(20),
           ),
           child: Row(
@@ -129,7 +123,7 @@ class ProfileHeader extends StatelessWidget {
             children: [
               Icon(
                 Icons.location_on_rounded,
-                color: theme.primaryColor,
+                color: theme.iconTheme.color,
                 size: 14,
               ),
               const SizedBox(width: 4),
@@ -137,7 +131,7 @@ class ProfileHeader extends StatelessWidget {
                 userLocation,
                 style: theme.textTheme.labelSmall?.copyWith(
                   fontSize: 12,
-                  color: theme.primaryColor,
+                  color: theme.iconTheme.color,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 0.5,
                 ),

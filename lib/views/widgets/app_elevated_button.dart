@@ -18,28 +18,33 @@ class AppElevatedButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return SizedBox(
       width: double.infinity,
-      height: 56, // Senior UX: slightly taller buttons
+      height: 56,
       child: ElevatedButton(
         onPressed: (isEnabled ?? true) && !isLoading ? onPressed : null,
         style: theme.elevatedButtonTheme.style,
         child: isLoading
-            ? const SizedBox(
+            ? SizedBox(
                 height: 20,
                 width: 20,
                 child: LoadingAnimation(
-                  color: Colors.white,
+                  color: theme.colorScheme.onSurface,
                   size: 20,
                 ),
               )
             : Text(
                 text,
-                style: const TextStyle(
+                style: theme.textTheme.labelLarge?.copyWith(
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.w900,
+                  letterSpacing: 1.2,
+                  color:
+                      theme.elevatedButtonTheme.style?.foregroundColor?.resolve(
+                        {},
+                      ) ??
+                      theme.colorScheme.onSurface,
                 ),
               ),
       ),

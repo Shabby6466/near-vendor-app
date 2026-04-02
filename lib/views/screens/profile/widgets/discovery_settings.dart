@@ -24,12 +24,6 @@ class DiscoverySettings extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Discovery Settings',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
         SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
         Container(
           padding: const EdgeInsets.all(16),
@@ -57,7 +51,7 @@ class DiscoverySettings extends StatelessWidget {
                 trailing: Text(
                   '${radius.toInt()} km',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.primaryColor,
+                    color: theme.iconTheme.color,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -83,7 +77,7 @@ class DiscoverySettings extends StatelessWidget {
                 trailing: Switch(
                   value: newOfferAlerts,
                   onChanged: onAlertsToggled,
-                  activeThumbColor: theme.primaryColor,
+                  activeThumbColor: theme.iconTheme.color,
                   activeTrackColor: theme.primaryColor.withValues(alpha: (0.3)),
                 ),
               ),
@@ -117,7 +111,7 @@ class DiscoverySettings extends StatelessWidget {
                 color: theme.primaryColor.withValues(alpha: (0.1)),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: theme.primaryColor, size: 22),
+              child: Icon(icon, color: theme.iconTheme.color, size: 22),
             ),
             const SizedBox(width: 16),
             Expanded(

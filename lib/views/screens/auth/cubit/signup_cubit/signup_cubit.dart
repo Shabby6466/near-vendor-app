@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
+import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/utils/globals.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'signup_state.dart';
 
@@ -79,6 +83,18 @@ class SignupCubit extends Cubit<SignupState> {
     );
     print('response --> ${response.toJson()}');
     if (response.status == 200 || response.status == 201) {
+      if (response.user != null && response.token != null) {
+        await CurrentUserStorage.storeUserData(response.user);
+        await CurrentUserStorage.storeUserAuthToken(
+          response.token!,
+          response.refreshToken,
+        );
+        // ignore: use_build_context_synchronously
+        final context = navigatorKey.currentContext;
+        if (context != null) {
+          context.read<SessionCubit>().setAuthenticated(response.user);
+        }
+      }
       emit(SignupSuccess(emailController.text));
     } else {
       // Handle error or other states if needed

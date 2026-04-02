@@ -23,15 +23,15 @@ import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/por
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/screens/portfolio_screen.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class ShopDetailsScreen extends StatefulWidget {
+class VendorShopDetailsScreen extends StatefulWidget {
   final Shop shop;
-  const ShopDetailsScreen({super.key, required this.shop});
+  const VendorShopDetailsScreen({super.key, required this.shop});
 
   @override
-  State<ShopDetailsScreen> createState() => _ShopDetailsScreenState();
+  State<VendorShopDetailsScreen> createState() => _VendorShopDetailsScreenState();
 }
 
-class _ShopDetailsScreenState extends State<ShopDetailsScreen> {
+class _VendorShopDetailsScreenState extends State<VendorShopDetailsScreen> {
   DashboardThemeExtension? get _dashboardTheme =>
       Theme.of(context).extension<DashboardThemeExtension>();
 

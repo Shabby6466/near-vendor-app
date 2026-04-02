@@ -66,6 +66,7 @@ class Data {
 
 class VerifyOtpResponse extends BaseApiResponse {
   String? token;
+  String? refreshToken;
   User? user;
   bool? mustChangePassword;
 
@@ -73,6 +74,7 @@ class VerifyOtpResponse extends BaseApiResponse {
     super.message,
     super.status,
     this.token,
+    this.refreshToken,
     this.user,
     this.mustChangePassword,
   });
@@ -80,6 +82,7 @@ class VerifyOtpResponse extends BaseApiResponse {
   VerifyOtpResponse.fromJson(dynamic json) : super.fromJson(json) {
     if (json is Map) {
       token = json["token"] as String?;
+      refreshToken = json["refreshToken"] as String?;
       mustChangePassword = json["mustChangePassword"] as bool?;
       user = json["user"] != null ? User.fromJson(json["user"]) : null;
     }
@@ -89,6 +92,7 @@ class VerifyOtpResponse extends BaseApiResponse {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = super.toJson();
     map["token"] = token;
+    map["refreshToken"] = refreshToken;
     map["mustChangePassword"] = mustChangePassword;
     map["user"] = user?.toJson();
     return map;
@@ -97,18 +101,19 @@ class VerifyOtpResponse extends BaseApiResponse {
 
 class LoginResponse extends BaseApiResponse{
   String? token;
+  String? refreshToken;
   User? user;
-
 
   LoginResponse({
     super.message,
     this.token,
+    this.refreshToken,
     this.user,
-
-});
+  });
   LoginResponse.fromJson(dynamic json) : super.fromJson(json) {
     if (json is Map) {
       token = json["token"] as String?;
+      refreshToken = json["refreshToken"] as String?;
       user = json["user"] != null ? User.fromJson(json["user"]) : null;
     }
   }
@@ -117,6 +122,7 @@ class LoginResponse extends BaseApiResponse{
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> map = super.toJson();
     map["token"] = token;
+    map["refreshToken"] = refreshToken;
     map["user"] = user?.toJson();
     return map;
   }

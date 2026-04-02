@@ -49,6 +49,9 @@ class $AssetsIconsGen {
   SvgGenImage get fashionIcon =>
       const SvgGenImage('assets/icons/fashion_icon.svg');
 
+  /// File path: assets/icons/furniture.svg
+  SvgGenImage get furniture => const SvgGenImage('assets/icons/furniture.svg');
+
   /// File path: assets/icons/graph1.svg
   SvgGenImage get graph1 => const SvgGenImage('assets/icons/graph1.svg');
 
@@ -103,6 +106,7 @@ class $AssetsIconsGen {
     everythingNearYouText,
     explore,
     fashionIcon,
+    furniture,
     graph1,
     grocery,
     health,
@@ -123,6 +127,9 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/cover.jpg
+  AssetGenImage get cover => const AssetGenImage('assets/images/cover.jpg');
+
   /// File path: assets/images/items_art.png
   AssetGenImage get itemsArt =>
       const AssetGenImage('assets/images/items_art.png');
@@ -137,6 +144,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+    cover,
     itemsArt,
     nearVendorRightCut,
     nearVendorSideCut,

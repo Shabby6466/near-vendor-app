@@ -4,11 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -39,7 +37,6 @@ class ShopGrid extends StatelessWidget {
 
         if (state is HomeScreenSuccess) {
           final shops = state.shops;
-          final message = state.message;
 
           if (shops.isEmpty) {
             return SliverFillRemaining(
@@ -93,46 +90,6 @@ class ShopGrid extends StatelessWidget {
 
           return SliverMainAxisGroup(
             slivers: [
-              if (message != null)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.mediumHorizontalSpacing(context),
-                      vertical: 8,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.amber.shade50,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.amber.shade200),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline_rounded,
-                            color: Colors.amber.shade900,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              message,
-                              style: TextStyle(
-                                color: Colors.amber.shade900,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
               SliverPadding(
                 padding: EdgeInsets.only(
                   left: AppSpacing.mediumHorizontalSpacing(context),
@@ -153,7 +110,7 @@ class ShopGrid extends StatelessWidget {
                       onTap: () {
                         AppNavigator.push(
                           context,
-                          ShopDetailsScreen(shop: shop),
+                          CustomerShopDetailsScreen(shop: shop),
                         );
                       },
                       child: VisibilityDetector(
@@ -161,8 +118,8 @@ class ShopGrid extends StatelessWidget {
                         onVisibilityChanged: (info) {
                           if (info.visibleFraction > 0.5) {
                             context.read<HomeScreenCubit>().trackImpression(
-                                  shop.id,
-                                );
+                              shop.id,
+                            );
                           }
                         },
                         child: ShopCard(shop: shop),
@@ -315,8 +272,10 @@ class ShopCard extends StatelessWidget {
                   bottom: 8,
                   left: 8,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(4),
@@ -366,8 +325,9 @@ class ShopCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
                           fontSize: 11,
-                          color: theme.textTheme.bodySmall?.color
-                              ?.withValues(alpha: 0.6),
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: 0.6,
+                          ),
                         ),
                       ),
                     ),

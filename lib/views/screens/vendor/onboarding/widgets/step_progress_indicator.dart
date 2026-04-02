@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 
 class StepProgressIndicator extends StatelessWidget {
   final int currentStep;
@@ -13,28 +12,49 @@ class StepProgressIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'STEP $currentStep OF $totalSteps',
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: ColorName.primary,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.2,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'Step $currentStep of $totalSteps',
+              style: theme.textTheme.labelMedium?.copyWith(
+                color: theme.primaryColor,
+                fontWeight: FontWeight.w900,
+                letterSpacing: 0.5,
               ),
+            ),
+            Text(
+              '${((currentStep / totalSteps) * 100).toInt()}% Complete',
+              style: theme.textTheme.labelSmall?.copyWith(
+                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Row(
           children: List.generate(totalSteps, (index) {
             final isActive = index < currentStep;
             return Expanded(
-              child: Container(
-                height: 4,
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                height: 8,
                 margin: EdgeInsets.only(right: index == totalSteps - 1 ? 0 : 8),
                 decoration: BoxDecoration(
-                  color: isActive ? ColorName.primary : Colors.grey.shade300,
-                  borderRadius: BorderRadius.circular(2),
+                  color: isActive ? theme.primaryColor : theme.primaryColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(4),
+                  boxShadow: isActive ? [
+                    BoxShadow(
+                      color: theme.primaryColor.withValues(alpha: 0.2),
+                      blurRadius: 4,
+                      offset: const Offset(0, 2),
+                    ),
+                  ] : null,
                 ),
               ),
             );

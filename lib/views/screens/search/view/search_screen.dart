@@ -33,7 +33,7 @@ class _SearchScreenState extends State<SearchScreen> {
         listener: (context, sessionState) {
           final searchCubit = context.read<SearchCubit>();
           final searchState = searchCubit.state;
-          
+
           if (searchState is SearchSuccess && searchState.query != null) {
             searchCubit.searchItems(
               lat: sessionState.latitude ?? 0,
@@ -48,55 +48,60 @@ class _SearchScreenState extends State<SearchScreen> {
           backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
-            children: [
-              const SearchHeader().animate().fadeIn(duration: 400.ms).slideY(begin: -0.2, end: 0),
-              Expanded(
-                child: ListView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: EdgeInsets.zero,
-                  children: [
-                    const SizedBox(height: 16),
-                    const SearchBarField().animate().fadeIn(delay: 80.ms).slideY(begin: 0.1, end: 0),
-                    const SizedBox(height: 24),
-                    
-                    BlocBuilder<SearchCubit, SearchState>(
-                      builder: (context, state) {
-                        return AnimatedSwitcher(
-                          duration: 300.ms,
-                          switchInCurve: Curves.easeOutCubic,
-                          switchOutCurve: Curves.easeInCubic,
-                          transitionBuilder: (child, animation) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: SlideTransition(
-                                position: Tween<Offset>(
-                                  begin: const Offset(0, 0.05),
-                                  end: Offset.zero,
-                                ).animate(animation),
-                                child: child,
-                              ),
-                            );
-                          },
-                          child: _buildStateContent(context, state),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 120),
-                  ],
+              children: [
+                const SearchHeader()
+                    .animate()
+                    .fadeIn(duration: 400.ms)
+                    .slideY(begin: -0.2, end: 0),
+                Expanded(
+                  child: ListView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    children: [
+                      const SizedBox(height: 16),
+                      const SearchBarField()
+                          .animate()
+                          .fadeIn(delay: 80.ms)
+                          .slideY(begin: 0.1, end: 0),
+                      const SizedBox(height: 24),
+
+                      BlocBuilder<SearchCubit, SearchState>(
+                        builder: (context, state) {
+                          return AnimatedSwitcher(
+                            duration: 300.ms,
+                            switchInCurve: Curves.easeOutCubic,
+                            switchOutCurve: Curves.easeInCubic,
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: animation,
+                                child: SlideTransition(
+                                  position: Tween<Offset>(
+                                    begin: const Offset(0, 0.05),
+                                    end: Offset.zero,
+                                  ).animate(animation),
+                                  child: child,
+                                ),
+                              );
+                            },
+                            child: _buildStateContent(context, state),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 120),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-      ),
     );
-
   }
 
   Widget _buildStateContent(BuildContext context, SearchState state) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    // final isDark = theme.brightness == Brightness.dark;
 
     if (state is SearchInitial) {
       return Column(
@@ -130,7 +135,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
           ).animate().fadeIn(delay: 350.ms).slideX(begin: 0.1, end: 0),
-          
+
           const SizedBox(height: 32),
           const RecentSearchSection().animate().fadeIn(delay: 500.ms),
           const SizedBox(height: 32),
@@ -138,7 +143,7 @@ class _SearchScreenState extends State<SearchScreen> {
         ],
       );
     }
-    
+
     return const SearchResultsList(key: ValueKey('search_results'));
   }
 
@@ -151,14 +156,14 @@ class _SearchScreenState extends State<SearchScreen> {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            // Future: Trigger search by category
-          },
+          onTap: () {},
           borderRadius: BorderRadius.circular(16),
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: isDark ? Colors.white.withValues(alpha: 0.05) : theme.primaryColor.withValues(alpha: 0.05),
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : theme.primaryColor.withValues(alpha: 0.05),
               borderRadius: BorderRadius.circular(16),
               border: Border.all(
                 color: theme.primaryColor.withValues(alpha: 0.1),
@@ -171,8 +176,10 @@ class _SearchScreenState extends State<SearchScreen> {
                         svgPath,
                         width: 16,
                         height: 16,
-                        colorFilter:
-                            ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
+                        colorFilter: ColorFilter.mode(
+                          theme.colorScheme.onSurface,
+                          BlendMode.srcIn,
+                        ),
                       )
                     : Icon(fallbackIcon, size: 16, color: theme.primaryColor),
                 const SizedBox(width: 8),
@@ -191,4 +198,3 @@ class _SearchScreenState extends State<SearchScreen> {
     );
   }
 }
-

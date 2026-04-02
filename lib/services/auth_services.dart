@@ -11,22 +11,22 @@ import 'package:nearvendorapp/models/api_responses/vendor_status_response.dart';
 
 class AuthServices {
   AuthServices();
-  Future<GenericApiResponse> createUser(CreateUserInput input) async {
+  Future<LoginResponse> createUser(CreateUserInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
 
       final response = await Server.post(ApiConstants.createUser, data: data);
       print('response inside $response');
-      return GenericApiResponse.fromJson(response.data);
+      return LoginResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return GenericApiResponse.fromJson(e.response?.data);
+          return LoginResponse.fromJson(e.response?.data);
         } else {
-          return GenericApiResponse(message: e.message);
+          return LoginResponse(message: e.message);
         }
       }
-      return GenericApiResponse(message: e.toString());
+      return LoginResponse(message: e.toString());
     }
   }
 
@@ -209,39 +209,39 @@ class AuthServices {
 }
 
 // Future<GenericApiResponse> refreshToken() async {
-  //   try {
-  //     final refreshToken = CurrentUserStorage.getUserRefreshAuthToken();
-  //     if (refreshToken == null) {
-  //       return GenericApiResponse(message: AppStrings.noRefreshTokenFound);
-  //     }
-  //
-  //     final response = await Server.get(
-  //       ApiConstants.refreshToken,
-  //       headers: {
-  //         'Authorization': 'Bearer $refreshToken',
-  //       },
-  //     );
-  //
-  //     final data = response.data;
-  //     if (data is Map) {
-  //       final String? newAccessToken = data['token'] as String?;
-  //       final String? newRefreshToken = data['refreshToken'] as String?;
-  //       if (newAccessToken != null) {
-  //         await CurrentUserStorage.storeUserAuthToken(
-  //           newAccessToken,
-  //           newRefreshToken,
-  //         );
-  //       }
-  //     }
-  //     return GenericApiResponse.fromJson(response.data);
-  //   } catch (e) {
-  //     if (e is DioException) {
-  //       if (e.response?.data != null) {
-  //         return GenericApiResponse.fromJson(e.response?.data);
-  //       } else {
-  //         return GenericApiResponse(message: e.message);
-  //       }
-  //     }
-  //     return GenericApiResponse(message: e.toString());
-  //   }
-  // }
+//   try {
+//     final refreshToken = CurrentUserStorage.getUserRefreshAuthToken();
+//     if (refreshToken == null) {
+//       return GenericApiResponse(message: AppStrings.noRefreshTokenFound);
+//     }
+//
+//     final response = await Server.get(
+//       ApiConstants.refreshToken,
+//       headers: {
+//         'Authorization': 'Bearer $refreshToken',
+//       },
+//     );
+//
+//     final data = response.data;
+//     if (data is Map) {
+//       final String? newAccessToken = data['token'] as String?;
+//       final String? newRefreshToken = data['refreshToken'] as String?;
+//       if (newAccessToken != null) {
+//         await CurrentUserStorage.storeUserAuthToken(
+//           newAccessToken,
+//           newRefreshToken,
+//         );
+//       }
+//     }
+//     return GenericApiResponse.fromJson(response.data);
+//   } catch (e) {
+//     if (e is DioException) {
+//       if (e.response?.data != null) {
+//         return GenericApiResponse.fromJson(e.response?.data);
+//       } else {
+//         return GenericApiResponse(message: e.message);
+//       }
+//     }
+//     return GenericApiResponse(message: e.toString());
+//   }
+// }

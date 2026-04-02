@@ -4,9 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
@@ -30,7 +28,10 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           previous.latitude != current.latitude ||
           previous.longitude != current.longitude,
       listener: (context, state) {
-        final center = LatLng(state.latitude ?? 33.6844, state.longitude ?? 73.0479);
+        final center = LatLng(
+          state.latitude ?? 33.6844,
+          state.longitude ?? 73.0479,
+        );
         _mapController.move(center, 15.0);
       },
       child: BlocBuilder<SessionCubit, SessionState>(
@@ -79,7 +80,8 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     children: [
                       const SizedBox(height: 16),
                       GestureDetector(
-                        onTap: () => setState(() => isProductFound = !isProductFound),
+                        onTap: () =>
+                            setState(() => isProductFound = !isProductFound),
                         child: Assets.icons.nearVendorBlueText.svg(height: 32),
                       ),
                       const SizedBox(height: 16),
@@ -106,7 +108,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       ),
     );
   }
-
 
   Widget _buildRadiusBadge() {
     return Container(

@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_detail_cubit.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
@@ -68,30 +66,29 @@ class _ItemScreenState extends State<ItemScreen> {
               flexibleSpace: FlexibleSpaceBar(
                 background: Hero(
                   tag: 'item_img_${item.id}',
-                  child:
-                      item.imageUrl != null &&
-                           item.imageUrl!.isNotEmpty
+                  child: item.imageUrl != null && item.imageUrl!.isNotEmpty
                       ? CachedNetworkImage(
                           imageUrl: item.imageUrl!,
                           fit: BoxFit.cover,
                         )
                       : Container(
-                          color: theme.primaryColor.withValues(
-                            alpha: 0.05,
-                          ),
+                          color: theme.primaryColor.withValues(alpha: 0.05),
                           child: Icon(
                             Icons.inventory_2_rounded,
                             size: 80,
-                            color: theme.primaryColor.withValues(
-                              alpha: 0.2,
-                            ),
+                            color: theme.primaryColor.withValues(alpha: 0.2),
                           ),
                         ),
                 ),
               ),
             ),
             SliverPadding(
-              padding: EdgeInsets.fromLTRB(24, 32, 24, widget.showEditButton ? 120 : 32),
+              padding: EdgeInsets.fromLTRB(
+                24,
+                32,
+                24,
+                widget.showEditButton ? 120 : 32,
+              ),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   Row(
@@ -100,8 +97,7 @@ class _ItemScreenState extends State<ItemScreen> {
                     children: [
                       Expanded(
                         child: Column(
-                          crossAxisAlignment:
-                              CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               item.name,
@@ -110,17 +106,11 @@ class _ItemScreenState extends State<ItemScreen> {
                                 fontSize: 26,
                                 fontWeight: FontWeight.w700,
                                 letterSpacing: -0.5,
-                                color: theme
-                                    .textTheme
-                                    .headlineLarge
-                                    ?.color,
+                                color: theme.textTheme.headlineLarge?.color,
                               ),
                             ),
                             const SizedBox(height: 8),
-                            _buildStockBadge(
-                              context,
-                              item.stockCount,
-                            ),
+                            _buildStockBadge(context, item.stockCount),
                           ],
                         ),
                       ),
@@ -142,10 +132,7 @@ class _ItemScreenState extends State<ItemScreen> {
                               style: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontSize: 12,
-                                color: theme
-                                    .textTheme
-                                    .bodySmall
-                                    ?.color
+                                color: theme.textTheme.bodySmall?.color
                                     ?.withValues(alpha: 0.5),
                               ),
                             ),
@@ -164,8 +151,9 @@ class _ItemScreenState extends State<ItemScreen> {
                       fontFamily: 'Poppins',
                       fontSize: 15,
                       height: 1.6,
-                      color: theme.textTheme.bodyMedium?.color
-                          ?.withValues(alpha: 0.7),
+                      color: theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.7,
+                      ),
                     ),
                   ),
 
@@ -226,9 +214,7 @@ class _ItemScreenState extends State<ItemScreen> {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   elevation: 8,
-                  shadowColor: theme.primaryColor.withValues(
-                    alpha: 0.3,
-                  ),
+                  shadowColor: theme.primaryColor.withValues(alpha: 0.3),
                 ),
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -255,14 +241,9 @@ class _ItemScreenState extends State<ItemScreen> {
   Widget _buildStockBadge(BuildContext context, int stock) {
     final isInStock = stock > 0;
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 6,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: (isInStock ? Colors.green : Colors.red).withValues(
-          alpha: 0.1,
-        ),
+        color: (isInStock ? Colors.green : Colors.red).withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -320,9 +301,7 @@ class _ItemScreenState extends State<ItemScreen> {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isDark
-            ? const Color(0xFF1C1C23)
-            : const Color(0xFFF8F9FA),
+        color: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -338,9 +317,7 @@ class _ItemScreenState extends State<ItemScreen> {
             style: TextStyle(
               fontFamily: 'Poppins',
               fontSize: 14,
-              color: theme.textTheme.bodyMedium?.color?.withValues(
-                alpha: 0.5,
-              ),
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
             ),
           ),
           const Spacer(),
@@ -377,9 +354,7 @@ class _ItemScreenState extends State<ItemScreen> {
                 fontFamily: 'Poppins',
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                color: Theme.of(
-                  context,
-                ).textTheme.headlineSmall?.color,
+                color: Theme.of(context).textTheme.headlineSmall?.color,
               ),
             ),
             const SizedBox(height: 8),
@@ -396,9 +371,8 @@ class _ItemScreenState extends State<ItemScreen> {
             ),
             const SizedBox(height: 24),
             TextButton(
-              onPressed: () => context
-                  .read<ItemDetailCubit>()
-                  .fetchItemById(widget.itemId!),
+              onPressed: () =>
+                  context.read<ItemDetailCubit>().fetchItemById(widget.itemId!),
               child: const Text('Try Again'),
             ),
           ],

@@ -10,8 +10,6 @@ import 'package:nearvendorapp/models/api_inputs/shop_api_inputs.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/shop_form_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
@@ -20,7 +18,6 @@ import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/categories_st
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 
 class CreateShopScreen extends StatefulWidget {
@@ -153,112 +150,116 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                 child: Form(
                   key: _formKey,
                   child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Launch Shop',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 28,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -1,
-                        color: theme.textTheme.headlineLarge?.color,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Launch Shop',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -1,
+                          color: theme.textTheme.headlineLarge?.color,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Curate your shop details to stand out in the marketplace.',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: 15,
-                        color: theme.textTheme.bodySmall?.color?.withValues(
-                          alpha: (0.5),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Curate your shop details to stand out in the marketplace.',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 15,
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: (0.5),
+                          ),
+                          height: 1.5,
                         ),
-                        height: 1.5,
                       ),
-                    ),
-                    const SizedBox(height: 40),
-                    _buildSectionTitle(context, 'BRANDING & MEDIA'),
-                    _buildFormHelper('Visuals are the first thing customers see. High-quality logos and covers increase trust by up to 40%.'),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildMediaField(
-                            context,
-                            'Store Logo',
-                            _logoFile,
-                            null,
-                            () => _pickImage(true),
+                      const SizedBox(height: 40),
+                      _buildSectionTitle(context, 'BRANDING & MEDIA'),
+                      _buildFormHelper(
+                        'Visuals are the first thing customers see. High-quality logos and covers increase trust by up to 40%.',
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildMediaField(
+                              context,
+                              'Store Logo',
+                              _logoFile,
+                              null,
+                              () => _pickImage(true),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: _buildMediaField(
-                            context,
-                            'Cover Photo',
-                            _coverFile,
-                            null,
-                            () => _pickImage(false),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: _buildMediaField(
+                              context,
+                              'Cover Photo',
+                              _coverFile,
+                              null,
+                              () => _pickImage(false),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
 
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, 'CORE INFORMATION'),
-                    _buildCustomField(
-                      context,
-                      _nameController,
-                      'Business Name',
-                      Icons.storefront_rounded,
-                      helperText: 'Choose a name that is easy to remember and search for.',
-                    ),
-                    _buildCategoryDropdownField(context),
-                    _buildCustomField(
-                      context,
-                      _regNumberController,
-                      'Tax / Reg Number',
-                      Icons.verified_user_outlined,
-                      helperText: 'Required for verification and to build credibility with customers.',
-                    ),
+                      const SizedBox(height: 24),
+                      _buildSectionTitle(context, 'CORE INFORMATION'),
+                      _buildCustomField(
+                        context,
+                        _nameController,
+                        'Business Name',
+                        Icons.storefront_rounded,
+                        helperText:
+                            'Choose a name that is easy to remember and search for.',
+                      ),
+                      _buildCategoryDropdownField(context),
+                      _buildCustomField(
+                        context,
+                        _regNumberController,
+                        'Tax / Reg Number',
+                        Icons.verified_user_outlined,
+                        helperText:
+                            'Required for verification and to build credibility with customers.',
+                      ),
 
-                    const SizedBox(height: 24),
-                    _buildSectionTitle(context, 'CONTACT & REACH'),
-                    _buildCustomField(
-                      context,
-                      _addressController,
-                      'Physical Address',
-                      Icons.location_on_outlined,
-                    ),
-                    _buildLocationPickerField(context),
-                    _buildCustomField(
-                      context,
-                      _phoneController,
-                      'Contact Phone',
-                      Icons.phone_iphone_rounded,
-                    ),
-                    _buildCustomField(
-                      context,
-                      _whatsappController,
-                      'WhatsApp Business (Optional)',
-                      Icons.chat_bubble_outline_rounded,
-                      isRequired: false,
-                    ),
-                    _buildCustomField(
-                      context,
-                      _emailController,
-                      'Support Email',
-                      Icons.mail_outline_rounded,
-                    ),
+                      const SizedBox(height: 24),
+                      _buildSectionTitle(context, 'CONTACT & REACH'),
+                      _buildCustomField(
+                        context,
+                        _addressController,
+                        'Physical Address',
+                        Icons.location_on_outlined,
+                      ),
+                      _buildLocationPickerField(context),
+                      _buildCustomField(
+                        context,
+                        _phoneController,
+                        'Contact Phone',
+                        Icons.phone_iphone_rounded,
+                      ),
+                      _buildCustomField(
+                        context,
+                        _whatsappController,
+                        'WhatsApp Business (Optional)',
+                        Icons.chat_bubble_outline_rounded,
+                        isRequired: false,
+                      ),
+                      _buildCustomField(
+                        context,
+                        _emailController,
+                        'Support Email',
+                        Icons.mail_outline_rounded,
+                      ),
 
-                    const SizedBox(height: 48),
-                    _buildSubmitButton(context, state),
-                    const SizedBox(height: 40),
-                  ],
+                      const SizedBox(height: 48),
+                      _buildSubmitButton(context, state),
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
-              )
             );
           },
         ),
@@ -290,7 +291,9 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
         style: TextStyle(
           fontFamily: 'Poppins',
           fontSize: 12,
-          color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+          color: Theme.of(
+            context,
+          ).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
           height: 1.4,
         ),
       ),
@@ -384,7 +387,9 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                         ? SvgPicture.asset(
                             iconPath,
                             colorFilter: const ColorFilter.mode(
-                                ColorName.primary, BlendMode.srcIn),
+                              ColorName.primary,
+                              BlendMode.srcIn,
+                            ),
                             width: 18,
                             height: 18,
                           )
@@ -460,11 +465,15 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
               ),
               hintText: label,
               hintStyle: TextStyle(
-                color: theme.textTheme.bodySmall?.color?.withValues(alpha: (0.4)),
+                color: theme.textTheme.bodySmall?.color?.withValues(
+                  alpha: (0.4),
+                ),
                 fontWeight: FontWeight.w400,
               ),
               filled: true,
-              fillColor: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
+              fillColor: isDark
+                  ? const Color(0xFF1C1C23)
+                  : const Color(0xFFF8F9FA),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 20,
                 vertical: 18,
@@ -499,7 +508,9 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 11,
-                  color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                  color: theme.textTheme.bodySmall?.color?.withValues(
+                    alpha: 0.5,
+                  ),
                 ),
               ),
             ),
@@ -567,8 +578,9 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                           SvgPicture.asset(
                             'assets/icons/camera.svg',
                             colorFilter: ColorFilter.mode(
-                                theme.primaryColor.withValues(alpha: 0.5),
-                                BlendMode.srcIn),
+                              theme.primaryColor.withValues(alpha: 0.5),
+                              BlendMode.srcIn,
+                            ),
                             width: 28,
                             height: 28,
                           ),
@@ -625,7 +637,10 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
                   const SizedBox(
                     height: 20,
                     width: 20,
-                    child: const LoadingAnimation(size: 20, color: Colors.white),
+                    child: const LoadingAnimation(
+                      size: 20,
+                      color: Colors.white,
+                    ),
                   ),
                   const SizedBox(width: 12),
                   Text(
@@ -660,13 +675,10 @@ class _CreateShopScreenState extends State<CreateShopScreen> {
       child: InkWell(
         onTap: () {
           context.read<SessionCubit>().startManualLocationPick(
-                tempLatitude: double.tryParse(_latController.text),
-                tempLongitude: double.tryParse(_longController.text),
-              );
-          AppNavigator.push(
-            context,
-            const LocationPickerScreen(),
+            tempLatitude: double.tryParse(_latController.text),
+            tempLongitude: double.tryParse(_longController.text),
           );
+          AppNavigator.push(context, const LocationPickerScreen());
         },
         borderRadius: BorderRadius.circular(18),
         child: Container(

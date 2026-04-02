@@ -3,31 +3,47 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
+import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
+import 'package:nearvendorapp/services/categories_service.dart';
 
 part 'onboarding_state.dart';
 
 class OnboardingCubit extends Cubit<OnboardingState> {
   final ImagePicker _picker = ImagePicker();
 
-  OnboardingCubit() : super(const OnboardingState());
+  OnboardingCubit() : super(const OnboardingState()) {
+    fetchCategories();
+  }
+
+  Future<void> fetchCategories() async {
+    emit(state.copyWith(isLoadingCategories: true, errorMessage: null));
+    try {
+      final categories = await CategoriesService.getCategories();
+      emit(state.copyWith(
+        availableCategories: categories,
+        isLoadingCategories: false,
+      ));
+    } catch (e) {
+      emit(state.copyWith(
+        isLoadingCategories: false,
+        errorMessage: 'Failed to load categories: $e',
+      ));
+    }
+  }
 
   void updateBusinessInfo({String? name, String? category}) {
     emit(state.copyWith(businessName: name, category: category));
   }
 
-  void updateLocationContact({
-    String? address,
+  void updateLegalContact({
     String? phone,
-    String? email,
     String? cnic,
     String? taxId,
   }) {
     emit(
       state.copyWith(
-        address: address,
         phoneNumber: phone,
-        email: email,
         cnicNo: cnic,
         taxId: taxId,
       ),

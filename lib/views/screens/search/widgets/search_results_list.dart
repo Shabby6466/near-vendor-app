@@ -10,7 +10,6 @@ import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
@@ -18,7 +17,6 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 import 'package:nearvendorapp/views/widgets/item_card.dart';
 import 'package:toasty_box/toast_service.dart';
-import 'package:latlong2/latlong.dart';
 
 class SearchResultsList extends StatelessWidget {
   const SearchResultsList({super.key});
@@ -40,10 +38,7 @@ class SearchResultsList extends StatelessWidget {
             return _EmptyState(query: state.query);
           }
 
-          return _ResultsGrid(
-            items: state.items,
-            message: state.message,
-          );
+          return _ResultsGrid(items: state.items, message: state.message);
         }
 
         return const SizedBox.shrink();
@@ -56,10 +51,7 @@ class _ResultsGrid extends StatelessWidget {
   final List<Item> items;
   final String? message;
 
-  const _ResultsGrid({
-    required this.items,
-    this.message,
-  });
+  const _ResultsGrid({required this.items, this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +142,11 @@ class _MessageBanner extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.info_outline_rounded, color: Colors.amber.shade900, size: 20),
+            Icon(
+              Icons.info_outline_rounded,
+              color: Colors.amber.shade900,
+              size: 20,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
@@ -268,7 +264,9 @@ class _EmptyStateState extends State<_EmptyState> {
   }
 
   Future<CategoryModel?> _showCategoryPicker(
-      BuildContext context, List<CategoryModel> categories) {
+    BuildContext context,
+    List<CategoryModel> categories,
+  ) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return showModalBottomSheet<CategoryModel>(
@@ -306,8 +304,11 @@ class _EmptyStateState extends State<_EmptyState> {
                         color: ColorName.primary.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Icon(Icons.category_rounded,
-                          color: ColorName.primary, size: 18),
+                      child: const Icon(
+                        Icons.category_rounded,
+                        color: ColorName.primary,
+                        size: 18,
+                      ),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -347,7 +348,9 @@ class _EmptyStateState extends State<_EmptyState> {
                   separatorBuilder: (_, __) => const SizedBox(height: 4),
                   itemBuilder: (context, index) {
                     final cat = categories[index];
-                    final iconPath = CategoryUtils.getCategoryIconPath(cat.name);
+                    final iconPath = CategoryUtils.getCategoryIconPath(
+                      cat.name,
+                    );
 
                     return ListTile(
                       dense: true,
@@ -358,7 +361,9 @@ class _EmptyStateState extends State<_EmptyState> {
                           ? SvgPicture.asset(
                               iconPath,
                               colorFilter: const ColorFilter.mode(
-                                  ColorName.primary, BlendMode.srcIn),
+                                ColorName.primary,
+                                BlendMode.srcIn,
+                              ),
                               width: 20,
                               height: 20,
                             )
@@ -424,7 +429,9 @@ class _EmptyStateState extends State<_EmptyState> {
 
             // Title
             Text(
-              hasQuery ? '"${widget.query}" not found nearby' : 'No items found',
+              hasQuery
+                  ? '"${widget.query}" not found nearby'
+                  : 'No items found',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 18,
@@ -473,7 +480,11 @@ class _EmptyStateState extends State<_EmptyState> {
                           color: ColorName.primary.withValues(alpha: 0.12),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: const Icon(Icons.auto_awesome, color: ColorName.primary, size: 18),
+                        child: const Icon(
+                          Icons.auto_awesome,
+                          color: ColorName.primary,
+                          size: 18,
+                        ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
@@ -508,14 +519,20 @@ class _EmptyStateState extends State<_EmptyState> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: _isCreatingWish ? null : _showCategoryPickerAndCreateWish,
+                        onPressed: _isCreatingWish
+                            ? null
+                            : _showCategoryPickerAndCreateWish,
                         icon: _isCreatingWish
                             ? const SizedBox(
                                 width: 16,
                                 height: 16,
                                 child: LoadingAnimation(size: 20),
                               )
-                            : const Icon(Icons.add_rounded, size: 18, color: Colors.white),
+                            : const Icon(
+                                Icons.add_rounded,
+                                size: 18,
+                                color: Colors.white,
+                              ),
                         label: Text(
                           _isCreatingWish
                               ? 'Adding wish…'
@@ -559,7 +576,9 @@ class _EmptyStateState extends State<_EmptyState> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          side: BorderSide(color: ColorName.primary.withValues(alpha: 0.3)),
+                          side: BorderSide(
+                            color: ColorName.primary.withValues(alpha: 0.3),
+                          ),
                         ),
                       ),
                     ),
@@ -574,10 +593,22 @@ class _EmptyStateState extends State<_EmptyState> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 _buildStep(Icons.edit_note_rounded, 'You wish', isDark),
-                Icon(Icons.chevron_right_rounded, size: 16, color: isDark ? Colors.white24 : Colors.grey.shade400),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 16,
+                  color: isDark ? Colors.white24 : Colors.grey.shade400,
+                ),
                 _buildStep(Icons.storefront_rounded, 'Vendors see', isDark),
-                Icon(Icons.chevron_right_rounded, size: 16, color: isDark ? Colors.white24 : Colors.grey.shade400),
-                _buildStep(Icons.check_circle_outline_rounded, 'Matched!', isDark),
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 16,
+                  color: isDark ? Colors.white24 : Colors.grey.shade400,
+                ),
+                _buildStep(
+                  Icons.check_circle_outline_rounded,
+                  'Matched!',
+                  isDark,
+                ),
               ],
             ),
           ],

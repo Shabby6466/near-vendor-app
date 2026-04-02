@@ -23,6 +23,9 @@ class AppTextField extends StatefulWidget {
   final Iterable<String>? autofillHints;
   final EdgeInsetsGeometry? contentPadding;
   final Color? hintColor;
+  final TextStyle? style;
+  final TextStyle? hintStyle;
+  final InputDecoration? decoration;
 
   const AppTextField({
     super.key,
@@ -30,6 +33,9 @@ class AppTextField extends StatefulWidget {
     this.textAlign,
     this.contentPadding,
     this.hintColor,
+    this.style,
+    this.hintStyle,
+    this.decoration,
     this.hint,
     this.isPassword = false,
     this.keyboardType,
@@ -89,13 +95,13 @@ class _AppTextFieldState extends State<AppTextField> {
               validator: widget.validator,
               textInputAction: widget.textInputAction,
               onFieldSubmitted: widget.onFieldSubmitted,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: widget.style ?? theme.textTheme.bodyMedium?.copyWith(
                 fontFamily: 'Poppins',
               ),
-              decoration:
+              decoration: widget.decoration ?? 
                   InputDecoration(
                         contentPadding: widget.contentPadding,
-                        hintStyle: TextStyle(
+                        hintStyle: widget.hintStyle ?? TextStyle(
                           color:
                               widget.hintColor ??
                               theme.textTheme.bodySmall?.color?.withValues(

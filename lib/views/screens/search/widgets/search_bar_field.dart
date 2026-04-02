@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'dart:ui';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
@@ -7,12 +9,10 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
-
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 
 class SearchBarField extends StatefulWidget {
   const SearchBarField({super.key});
@@ -24,13 +24,13 @@ class SearchBarField extends StatefulWidget {
 class _SearchBarFieldState extends State<SearchBarField> {
   final TextEditingController _controller = TextEditingController();
   final FocusNode _focusNode = FocusNode();
-  bool _isFocused = false;
+  bool isFocused = false;
 
   @override
   void initState() {
     super.initState();
     _focusNode.addListener(() {
-      setState(() => _isFocused = _focusNode.hasFocus);
+      setState(() => isFocused = _focusNode.hasFocus);
     });
   }
 
@@ -50,83 +50,161 @@ class _SearchBarFieldState extends State<SearchBarField> {
     context.read<SearchCubit>().searchItems(lat: lat, lon: lon, query: query);
   }
 
-  void _showImageSourceSelector() {
-    AppBottomSheet.showBottomSheet(
+  void _showVisualSearchDialog() {
+    HapticFeedback.mediumImpact();
+    showDialog(
       context: context,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            'Visual Search',
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Search for items using your camera or an image from your gallery',
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildSourceButton(
-                iconWidget: SvgPicture.asset(
-                  'assets/icons/camera.svg',
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColor, BlendMode.srcIn),
-                  width: 32,
-                  height: 32,
+      barrierColor: Colors.black.withValues(alpha: 0.5),
+      builder: (context) => BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+        child: Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+            decoration: BoxDecoration(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF1C1C23).withValues(alpha: 0.9)
+                  : Colors.white.withValues(alpha: 0.95),
+              borderRadius: BorderRadius.circular(32),
+              border: Border.all(
+                color: Colors.white.withValues(alpha: 0.1),
+                width: 1.5,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 30,
+                  offset: const Offset(0, 15),
                 ),
-                label: 'Camera',
-                onTap: () => _navigateToVisualSearch(ImageSource.camera),
-              ),
-              _buildSourceButton(
-                iconWidget: Icon(Icons.photo_library_rounded,
-                    color: Theme.of(context).primaryColor, size: 32),
-                label: 'Gallery',
-                onTap: () => _navigateToVisualSearch(ImageSource.gallery),
-              ),
-            ],
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFFF4D00).withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: SvgPicture.asset(
+                    'assets/icons/camera.svg',
+                    colorFilter: const ColorFilter.mode(
+                      Color(0xFFFF4D00),
+                      BlendMode.srcIn,
+                    ),
+                    width: 32,
+                    height: 32,
+                  ),
+                ).animate().scale(
+                  delay: 100.ms,
+                  duration: 400.ms,
+                  curve: Curves.easeOutBack,
+                ),
+                const SizedBox(height: 20),
+                Text(
+                  'Visual Search',
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.5,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Search for items instantly using your\ncamera or photo gallery.',
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 32),
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildDialogButton(
+                        context,
+                        icon: CupertinoIcons.camera,
+                        label: 'Camera',
+                        onTap: () =>
+                            _navigateToVisualSearch(ImageSource.camera),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: _buildDialogButton(
+                        context,
+                        icon: CupertinoIcons.photo,
+                        label: 'Gallery',
+                        onTap: () =>
+                            _navigateToVisualSearch(ImageSource.gallery),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Theme.of(context).textTheme.bodySmall?.color,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 16),
-        ],
+        ).animate().scale(duration: 300.ms, curve: Curves.easeOutBack).fadeIn(),
       ),
     );
   }
 
-  Widget _buildSourceButton({
-    required Widget iconWidget,
+  Widget _buildDialogButton(
+    BuildContext context, {
+    required IconData icon,
     required String label,
     required VoidCallback onTap,
   }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return InkWell(
       onTap: () {
         Navigator.pop(context);
         onTap();
       },
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-              shape: BoxShape.circle,
-            ),
-            child: iconWidget,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        decoration: BoxDecoration(
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.05)
+              : Colors.black.withValues(alpha: 0.03),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.05)
+                : Colors.black.withValues(alpha: 0.05),
           ),
-          const SizedBox(height: 12),
-          Text(
-            label,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.bold,
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: const Color(0xFFFF4D00), size: 28),
+            const SizedBox(height: 12),
+            Text(
+              label,
+              style: theme.textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w700,
+                fontSize: 13,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -162,6 +240,7 @@ class _SearchBarFieldState extends State<SearchBarField> {
       focusNode: _focusNode,
       hintText: 'Search high-value items...',
       showVisualSearch: true,
+      onVisualSearchTap: _showVisualSearchDialog,
       onSearch: _onSearch,
       onChanged: (value) {
         setState(() {});
@@ -175,6 +254,3 @@ class _SearchBarFieldState extends State<SearchBarField> {
     );
   }
 }
-
-// Helper for the brand color if not available, otherwise use theme.primary
-const orangeBrandColor = Color(0xFFF3B700);

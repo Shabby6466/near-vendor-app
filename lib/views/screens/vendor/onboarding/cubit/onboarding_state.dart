@@ -7,15 +7,15 @@ class OnboardingState extends Equatable {
   final String businessName;
   final String category;
   final String taxId;
-  final String address;
   final String phoneNumber;
-  final String email;
   final String cnicNo;
   final String? cnicImagePath;
+  final List<CategoryModel> availableCategories;
   final bool termsAccepted;
   final bool isSubmitting;
   final bool isSuccess;
   final bool isUploadingImage;
+  final bool isLoadingCategories;
   final String? errorMessage;
 
   const OnboardingState({
@@ -23,15 +23,15 @@ class OnboardingState extends Equatable {
     this.businessName = '',
     this.category = '',
     this.taxId = '',
-    this.address = '',
     this.phoneNumber = '',
-    this.email = '',
     this.cnicNo = '',
     this.cnicImagePath,
+    this.availableCategories = const [],
     this.termsAccepted = false,
     this.isSubmitting = false,
     this.isSuccess = false,
     this.isUploadingImage = false,
+    this.isLoadingCategories = false,
     this.errorMessage,
   });
 
@@ -41,15 +41,15 @@ class OnboardingState extends Equatable {
         businessName,
         category,
         taxId,
-        address,
         phoneNumber,
-        email,
         cnicNo,
         cnicImagePath,
+        availableCategories,
         termsAccepted,
         isSubmitting,
         isSuccess,
         isUploadingImage,
+        isLoadingCategories,
         errorMessage,
       ];
 
@@ -58,15 +58,15 @@ class OnboardingState extends Equatable {
     String? businessName,
     String? category,
     String? taxId,
-    String? address,
     String? phoneNumber,
-    String? email,
     String? cnicNo,
     String? cnicImagePath,
+    List<CategoryModel>? availableCategories,
     bool? termsAccepted,
     bool? isSubmitting,
     bool? isSuccess,
     bool? isUploadingImage,
+    bool? isLoadingCategories,
     String? errorMessage,
   }) {
     return OnboardingState(
@@ -74,16 +74,27 @@ class OnboardingState extends Equatable {
       businessName: businessName ?? this.businessName,
       category: category ?? this.category,
       taxId: taxId ?? this.taxId,
-      address: address ?? this.address,
       phoneNumber: phoneNumber ?? this.phoneNumber,
-      email: email ?? this.email,
       cnicNo: cnicNo ?? this.cnicNo,
       cnicImagePath: cnicImagePath ?? this.cnicImagePath,
+      availableCategories: availableCategories ?? this.availableCategories,
       termsAccepted: termsAccepted ?? this.termsAccepted,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isSuccess: isSuccess ?? this.isSuccess,
       isUploadingImage: isUploadingImage ?? this.isUploadingImage,
+      isLoadingCategories: isLoadingCategories ?? this.isLoadingCategories,
       errorMessage: errorMessage ?? this.errorMessage,
     );
+  }
+
+  bool get canMoveToNext {
+    switch (currentStep) {
+      case OnboardingStep.businessInfo:
+        return businessName.isNotEmpty && category.isNotEmpty;
+      case OnboardingStep.locationContact:
+        return phoneNumber.isNotEmpty && taxId.isNotEmpty && cnicNo.isNotEmpty;
+      case OnboardingStep.verification:
+        return cnicImagePath != null && cnicImagePath!.isNotEmpty && termsAccepted;
+    }
   }
 }
