@@ -117,7 +117,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                               return Text(
                                 '${shops.length} Active',
                                 style: theme.textTheme.labelLarge?.copyWith(
-                                  color: theme.primaryColor,
+                                  color: theme.colorScheme.onSurface,
                                   fontSize: 13,
                                 ),
                               );
@@ -193,23 +193,29 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           StretchMode.zoomBackground,
           StretchMode.blurBackground,
         ],
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned(
-              right: -50,
-              top: -50,
-              child: Opacity(
-                opacity: 0.1,
-                child: Icon(
-                  Icons.dashboard_rounded,
-                  size: 250,
-                  color: Colors.white,
+        background: ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            bottom: Radius.circular(26),
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Assets.images.headerImg.image(fit: BoxFit.cover),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      theme.primaryColor.withValues(alpha: 0.7),
+                      theme.primaryColor.withValues(alpha: 0.95),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (!_isCollapsed) _buildExpandedHeader(context, name),
-          ],
+              if (!_isCollapsed) _buildExpandedHeader(context, name),
+            ],
+          ),
         ),
       ),
     );
@@ -409,10 +415,10 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Expand your reach',
             Icon(
               Icons.add_business_rounded,
-              color: const Color(0xFFFF4D00),
+              color: Theme.of(context).colorScheme.onSurface,
               size: 22,
             ),
-            const Color(0xFFFF4D00),
+            Theme.of(context).colorScheme.onSurface,
             () {
               AppNavigator.push(
                 context,
@@ -428,14 +434,14 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Analytics',
             'Performance data',
             Assets.icons.graph1.svg(
-              colorFilter: const ColorFilter.mode(
-                Color(0xFFFF4D00),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
               width: 22,
               height: 22,
             ),
-            const Color(0xFFFF4D00),
+            Theme.of(context).primaryColor,
             () {
               AppNavigator.push(
                 context,
@@ -455,14 +461,14 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Manage items',
             SvgPicture.asset(
               'assets/icons/inventory.svg',
-              colorFilter: const ColorFilter.mode(
-                Color(0xFFFF4D00),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
               width: 22,
               height: 22,
             ),
-            const Color(0xFFFF4D00),
+            Theme.of(context).primaryColor,
             () {
               AppNavigator.push(
                 context,
@@ -479,14 +485,14 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Get assistance',
             SvgPicture.asset(
               'assets/icons/support.svg',
-              colorFilter: const ColorFilter.mode(
-                Color(0xFFFF4D00),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
                 BlendMode.srcIn,
               ),
               width: 22,
               height: 22,
             ),
-            const Color(0xFFFF4D00),
+            Theme.of(context).primaryColor,
             () {
               AppNavigator.push(context, const SupportScreen());
             },
@@ -514,16 +520,8 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: color.withValues(alpha: 0.1), width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            color: theme.cardColor.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,

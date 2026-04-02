@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
@@ -41,6 +42,8 @@ class SignUpScreen extends StatelessWidget {
               context,
               VerificationCodeScreen(email: state.email),
             );
+          } else if (state is SignupFailure) {
+            AppAlerts.showErrorSnackBar(context, state.message);
           }
         },
         builder: (context, state) {

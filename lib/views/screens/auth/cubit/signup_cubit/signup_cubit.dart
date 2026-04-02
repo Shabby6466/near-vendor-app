@@ -97,7 +97,7 @@ class SignupCubit extends Cubit<SignupState> {
       }
       emit(SignupSuccess(emailController.text));
     } else {
-      // Handle error or other states if needed
+      emit(SignupFailure(response.message ?? 'Signup failed'));
     }
   }
 
