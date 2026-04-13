@@ -21,6 +21,7 @@ class Shop extends Equatable {
   final bool? isVerifiedBadge;
   final bool? isRecentlyActive;
   final int? itemCount;
+  final double? distance;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -45,6 +46,7 @@ class Shop extends Equatable {
     this.isVerifiedBadge,
     this.isRecentlyActive,
     this.itemCount,
+    this.distance,
     this.createdAt,
     this.updatedAt,
   });
@@ -71,6 +73,7 @@ class Shop extends Equatable {
       isVerifiedBadge: json['isVerifiedBadge'] as bool?,
       isRecentlyActive: json['isRecentlyActive'] as bool?,
       itemCount: json['itemCount'] as int?,
+      distance: double.tryParse(json['distance']?.toString() ?? ''),
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
     );
@@ -98,6 +101,7 @@ class Shop extends Equatable {
       'isVerifiedBadge': isVerifiedBadge,
       'isRecentlyActive': isRecentlyActive,
       'itemCount': itemCount,
+      'distance': distance,
     };
   }
 

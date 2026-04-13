@@ -11,6 +11,11 @@ import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
+import 'package:nearvendorapp/utils/app_navigation.dart';
+
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -20,6 +25,35 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  final FocusNode _searchFocusNode = FocusNode();
+  final GlobalKey<SearchBarFieldState> _searchBarKey =
+      GlobalKey<SearchBarFieldState>();
+
+  @override
+  void dispose() {
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _handleMakeAWish() {
+    final session = context.read<SessionCubit>().state;
+    if (session.status != AuthStatus.authenticated) {
+      AppBottomSheet.showConfirmationBottomSheet(
+        context: context,
+        title: 'Sign In Required',
+        message: 'You need to sign in to make a wish and alert local vendors.',
+        confirmButtonText: 'Sign In',
+        onConfirm: () {
+          Navigator.pop(context);
+          AppNavigator.push(context, const LoginScreen());
+        },
+      );
+      return;
+    }
+    // Switch to wishlist tab (index 3)
+    context.read<MainScreenCubit>().switchTab(3);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -59,7 +93,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     padding: EdgeInsets.zero,
                     children: [
                       const SizedBox(height: 16),
-                      const SearchBarField()
+                      SearchBarField(
+                        key: _searchBarKey,
+                        focusNode: _searchFocusNode,
+                      )
                           .animate()
                           .fadeIn(delay: 80.ms)
                           .slideY(begin: 0.1, end: 0),
@@ -108,34 +145,12 @@ class _SearchScreenState extends State<SearchScreen> {
         key: const ValueKey('search_initial'),
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Discovery Chips Section
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Text(
-              'Popular Categories',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontSize: 16,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
+          _HowToSearchSection(
+            onExactSearch: () => _searchFocusNode.requestFocus(),
+            onVisualSearch: () =>
+                _searchBarKey.currentState?.showVisualSearchDialog(),
+            onMakeAWish: _handleMakeAWish,
           ).animate().fadeIn(delay: 200.ms),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 44,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              physics: const BouncingScrollPhysics(),
-              children: [
-                _buildDiscoveryChip('Electronics', theme),
-                _buildDiscoveryChip('Fashion', theme),
-                _buildDiscoveryChip('Furniture', theme),
-                _buildDiscoveryChip('Groceries', theme),
-                _buildDiscoveryChip('Health', theme),
-              ],
-            ),
-          ).animate().fadeIn(delay: 350.ms).slideX(begin: 0.1, end: 0),
-
           const SizedBox(height: 32),
           const RecentSearchSection().animate().fadeIn(delay: 500.ms),
           const SizedBox(height: 32),
@@ -146,53 +161,165 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return const SearchResultsList(key: ValueKey('search_results'));
   }
+}
 
-  Widget _buildDiscoveryChip(String label, ThemeData theme) {
+class _HowToSearchSection extends StatelessWidget {
+  final VoidCallback onExactSearch;
+  final VoidCallback onVisualSearch;
+  final VoidCallback onMakeAWish;
+
+  const _HowToSearchSection({
+    required this.onExactSearch,
+    required this.onVisualSearch,
+    required this.onMakeAWish,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final svgPath = CategoryUtils.getCategoryIconPath(label);
-    final fallbackIcon = CategoryUtils.getDefaultIcon(label);
-    return Container(
-      margin: const EdgeInsets.only(right: 12),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () {},
-          borderRadius: BorderRadius.circular(16),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'How to find what you need',
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              fontFamily: 'Poppins',
+              letterSpacing: -0.5,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: isDark
-                  ? Colors.white.withValues(alpha: 0.05)
-                  : theme.primaryColor.withValues(alpha: 0.05),
-              borderRadius: BorderRadius.circular(16),
+                  ? Colors.white.withValues(alpha: 0.03)
+                  : theme.primaryColor.withValues(alpha: 0.03),
+              borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: theme.primaryColor.withValues(alpha: 0.1),
+                color: theme.primaryColor.withValues(alpha: 0.08),
               ),
             ),
-            child: Row(
+            child: Column(
               children: [
-                svgPath != null
-                    ? SvgPicture.asset(
-                        svgPath,
-                        width: 16,
-                        height: 16,
-                        colorFilter: ColorFilter.mode(
-                          theme.colorScheme.onSurface,
-                          BlendMode.srcIn,
-                        ),
-                      )
-                    : Icon(fallbackIcon, size: 16, color: theme.primaryColor),
-                const SizedBox(width: 8),
-                Text(
-                  label,
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                  ),
+                _SearchTipItem(
+                  icon: Icons.search_rounded,
+                  title: 'Exact Search',
+                  subtitle: 'Type precisely what you need (e.g., "Organic Milk")',
+                  theme: theme,
+                  onTap: onExactSearch,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Divider(height: 1, thickness: 0.5),
+                ),
+                _SearchTipItem(
+                  icon: Icons.camera_alt_rounded,
+                  title: 'Visual Search',
+                  subtitle: 'Snap a photo to find high-value matches nearby',
+                  theme: theme,
+                  iconColor: Colors.deepOrange,
+                  onTap: onVisualSearch,
+                ),
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 12),
+                  child: Divider(height: 1, thickness: 0.5),
+                ),
+                _SearchTipItem(
+                  icon: Icons.auto_awesome_rounded,
+                  title: 'Make a Wish',
+                  subtitle: 'Can\'t find it? Make a wish to alert local vendors',
+                  theme: theme,
+                  iconColor: Colors.purple,
+                  onTap: onMakeAWish,
                 ),
               ],
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SearchTipItem extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final ThemeData theme;
+  final Color? iconColor;
+  final VoidCallback onTap;
+
+  const _SearchTipItem({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.theme,
+    required this.onTap,
+    this.iconColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = theme.brightness == Brightness.dark;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: (iconColor ?? theme.primaryColor).withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: iconColor ?? theme.primaryColor,
+                size: 20,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: theme.textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 14,
+                      fontFamily: 'Poppins',
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      fontSize: 12,
+                      fontFamily: 'Poppins',
+                      color: isDark ? Colors.white54 : Colors.black54,
+                      height: 1.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.2),
+              size: 20,
+            ),
+          ],
         ),
       ),
     );

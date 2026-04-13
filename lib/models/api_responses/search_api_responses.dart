@@ -6,6 +6,8 @@ class SearchItemResponse {
   final List<Item> items;
   final SearchMeta? meta;
   final String? message;
+  final bool isGlobalFallback;
+  final String? rangeMessage;
 
   SearchItemResponse({
     required this.success,
@@ -13,6 +15,8 @@ class SearchItemResponse {
     required this.items,
     this.meta,
     this.message,
+    this.isGlobalFallback = false,
+    this.rangeMessage,
   });
 
   factory SearchItemResponse.fromJson(Map<String, dynamic> json) {
@@ -25,6 +29,8 @@ class SearchItemResponse {
           [],
       meta: json['meta'] != null ? SearchMeta.fromJson(json['meta']) : null,
       message: json['message'] as String?,
+      isGlobalFallback: json['isGlobalFallback'] as bool? ?? false,
+      rangeMessage: json['rangeMessage'] as String?,
     );
   }
 }

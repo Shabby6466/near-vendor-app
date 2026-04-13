@@ -29,16 +29,27 @@ class SearchSuccess extends SearchState {
   final SearchMeta? meta;
   final String? message;
   final String? query;
+  final bool isGlobalFallback;
+  final String? rangeMessage;
 
   const SearchSuccess({
     required this.items,
     this.meta,
     this.message,
     this.query,
+    this.isGlobalFallback = false,
+    this.rangeMessage,
   });
 
   @override
-  List<Object?> get props => [items, meta, message, query];
+  List<Object?> get props => [
+        items,
+        meta,
+        message,
+        query,
+        isGlobalFallback,
+        rangeMessage,
+      ];
 }
 
 class SearchFailure extends SearchState {

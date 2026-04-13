@@ -174,6 +174,8 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
             categories: _categories,
             selectedCategory: _selectedCategory,
             message: _apiMessage,
+            isGlobalFallback: response.isGlobalFallback,
+            rangeMessage: response.rangeMessage,
           ),
         );
       } else {
@@ -208,6 +210,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       itemCount: shop.itemCount,
       isVerifiedBadge: shop.isVerifiedBadge,
       isRecentlyActive: shop.isRecentlyActive,
+      distance: shop.distance,
     );
   }
 

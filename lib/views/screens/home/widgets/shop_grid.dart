@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
@@ -90,11 +91,18 @@ class ShopGrid extends StatelessWidget {
 
           return SliverMainAxisGroup(
             slivers: [
+              if (state.isGlobalFallback && state.rangeMessage != null)
+                SliverPadding(
+                  padding: const EdgeInsets.only(top: 12),
+                  sliver: SliverToBoxAdapter(
+                    child: FallbackBanner(message: state.rangeMessage!),
+                  ),
+                ),
               SliverPadding(
                 padding: EdgeInsets.only(
                   left: AppSpacing.mediumHorizontalSpacing(context),
                   right: AppSpacing.mediumHorizontalSpacing(context),
-                  top: 12,
+                  top: state.isGlobalFallback ? 8 : 12,
                   bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
                 ),
                 sliver: SliverGrid(
@@ -193,12 +201,12 @@ class ShopCard extends StatelessWidget {
                           Icons.storefront_outlined,
                           color: theme.primaryColor.withValues(alpha: 0.4),
                           size: 32,
-                        ),
+                         ),
                       ),
                     ),
                     errorWidget: (context, error, stackTrace) => Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
+                         gradient: LinearGradient(
                           colors: [
                             theme.primaryColor.withValues(alpha: 0.1),
                             theme.primaryColor.withValues(alpha: 0.05),
@@ -217,6 +225,42 @@ class ShopCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (shop.distance != null)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.location_on_rounded,
+                            color: Colors.white,
+                            size: 10,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            shop.distance! < 1000
+                                ? '${shop.distance!.toInt()}m'
+                                : '${(shop.distance! / 1000).toStringAsFixed(1)}km',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                       ),
+                    ),
+                  ),
                 // Badge Overlays
                 Positioned(
                   top: 8,

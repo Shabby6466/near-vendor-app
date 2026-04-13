@@ -35,6 +35,8 @@ class ShopListResponse {
   final String message;
   final List<Shop> shops;
   final SearchMeta? meta;
+  final bool isGlobalFallback;
+  final String? rangeMessage;
 
   ShopListResponse({
     required this.success,
@@ -42,6 +44,8 @@ class ShopListResponse {
     required this.message,
     required this.shops,
     this.meta,
+    this.isGlobalFallback = false,
+    this.rangeMessage,
   });
 
   factory ShopListResponse.fromJson(dynamic json) {
@@ -88,6 +92,8 @@ class ShopListResponse {
                 .toList() ??
             [],
         meta: meta,
+        isGlobalFallback: json['isGlobalFallback'] as bool? ?? false,
+        rangeMessage: json['rangeMessage'] as String? ?? json['message'] as String?,
       );
     }
 

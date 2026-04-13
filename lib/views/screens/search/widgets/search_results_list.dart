@@ -9,6 +9,7 @@ import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
+import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
@@ -38,7 +39,13 @@ class SearchResultsList extends StatelessWidget {
             return _EmptyState(query: state.query);
           }
 
-          return _ResultsGrid(items: state.items, message: state.message);
+          return _ResultsGrid(
+            items: state.items,
+            message: state.message,
+            isGlobalFallback: state.isGlobalFallback,
+            rangeMessage: state.rangeMessage,
+            query: state.query,
+          );
         }
 
         return const SizedBox.shrink();
@@ -50,8 +57,17 @@ class SearchResultsList extends StatelessWidget {
 class _ResultsGrid extends StatelessWidget {
   final List<Item> items;
   final String? message;
+  final bool isGlobalFallback;
+  final String? rangeMessage;
+  final String? query;
 
-  const _ResultsGrid({required this.items, this.message});
+  const _ResultsGrid({
+    required this.items,
+    this.message,
+    this.isGlobalFallback = false,
+    this.rangeMessage,
+    this.query,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -62,12 +78,21 @@ class _ResultsGrid extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (message != null) _MessageBanner(message: message!),
+        if (isGlobalFallback && rangeMessage != null)
+          FallbackBanner(message: rangeMessage!),
+
+        if (isGlobalFallback)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
+            child: _CompactWishlistCTA(query: query),
+          ).animate().fadeIn(delay: 200.ms).slideY(begin: -0.1, end: 0),
+
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
           child: Row(
             children: [
               Text(
-                'Matches',
+                isGlobalFallback ? 'Regional Matches' : 'Matches',
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 18,
@@ -84,12 +109,16 @@ class _ResultsGrid extends StatelessWidget {
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
-                  '${items.length} TO DISCOVER',
+                  isGlobalFallback
+                      ? 'FOUND FURTHER AWAY'
+                      : '${items.length} TO DISCOVER',
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
-                    color: Colors.white,
+                    color: isDark
+                        ? theme.primaryColor
+                        : theme.primaryColor.withValues(alpha: 0.8),
                     letterSpacing: 0.5,
                   ),
                 ),
@@ -632,6 +661,201 @@ class _EmptyStateState extends State<_EmptyState> {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CompactWishlistCTA extends StatefulWidget {
+  final String? query;
+
+  const _CompactWishlistCTA({this.query});
+
+  @override
+  State<_CompactWishlistCTA> createState() => _CompactWishlistCTAState();
+}
+
+class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
+  bool _isCreatingWish = false;
+
+  void _createWish() async {
+     if (widget.query == null || widget.query!.isEmpty) return;
+
+    final session = context.read<SessionCubit>().state;
+    if (session.latitude == null || session.longitude == null) {
+      ToastService.showErrorToast(
+        context,
+        expandedHeight: 100,
+        message: 'Location required to make a wish.',
+      );
+      return;
+    }
+
+    // Fetch categories
+    final categories = await ShopServices().getCategoryNames();
+    if (!mounted) return;
+
+    // Show category picker bottom sheet (reusing the one from _EmptyState logic)
+    // For simplicity, I will implement a similar helper here or make the other one static.
+    // I will implement a quick one here for now.
+    final selectedCategory = await _showCategoryPickerQuick(context, categories);
+    if (!mounted) return;
+    if (selectedCategory == null) return;
+
+    setState(() => _isCreatingWish = true);
+
+    final input = CreateWishlistInput(
+      itemName: widget.query!,
+      description: '',
+      categoryId: selectedCategory.id.isNotEmpty ? selectedCategory.id : null,
+      lat: session.latitude!,
+      lon: session.longitude!,
+    );
+
+    try {
+      final response = await WishlistServices().createWishlist(input);
+      if (!mounted) return;
+      setState(() => _isCreatingWish = false);
+
+      if (response['success'] == true) {
+        ToastService.showSuccessToast(
+          context,
+          expandedHeight: 100,
+          message: '✨ Wish added! Vendors will be notified.',
+        );
+      } else {
+        ToastService.showErrorToast(
+          context,
+          expandedHeight: 100,
+          message: response['message'] ?? 'Failed to create wish.',
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() => _isCreatingWish = false);
+      ToastService.showErrorToast(
+        context,
+        expandedHeight: 100,
+        message: 'Failed to create wish.',
+      );
+    }
+  }
+
+  Future<CategoryModel?> _showCategoryPickerQuick(
+    BuildContext context,
+    List<CategoryModel> categories,
+  ) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return showModalBottomSheet<CategoryModel>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (ctx) {
+        return Container(
+           padding: const EdgeInsets.only(bottom: 24),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF171D25) : Colors.white,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const SizedBox(height: 12),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey.withValues(alpha: 0.3),
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Select Category',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: categories.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 4),
+                  itemBuilder: (context, index) {
+                    final cat = categories[index];
+                    return ListTile(
+                      title: Text(cat.name),
+                      trailing: const Icon(Icons.chevron_right, size: 18),
+                      onTap: () => Navigator.pop(ctx, cat),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isAuthenticated = context.read<SessionCubit>().isAuthenticated;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+         color: ColorName.primary.withValues(alpha: 0.04),
+         borderRadius: BorderRadius.circular(20),
+         border: Border.all(color: ColorName.primary.withValues(alpha: 0.1)),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Want it nearby?',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                Text(
+                  'Notify local vendors instead.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          ElevatedButton(
+            onPressed: _isCreatingWish ? null : (isAuthenticated ? _createWish : () => AppNavigator.push(context, const LoginScreen())),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: ColorName.primary,
+              foregroundColor: Colors.white,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+            ),
+            child: _isCreatingWish 
+              ? const SizedBox(width: 16, height: 16, child: LoadingAnimation(size: 20))
+              : Text(
+                  isAuthenticated ? 'Make a Wish' : 'Sign In',
+                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
+                ),
+          ),
+        ],
+      ),
     );
   }
 }

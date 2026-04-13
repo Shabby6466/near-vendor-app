@@ -148,51 +148,87 @@ class AppBottomSheet {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
         children: [
+          Center(
+            child: Container(
+              height: 4,
+              width: 40,
+              margin: const EdgeInsets.only(bottom: 24),
+              decoration: BoxDecoration(
+                color: Colors.white.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(20),
+              ),
+            ),
+          ),
           Text(
             title,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w900,
+              color: Colors.white,
+              fontSize: 22,
+              letterSpacing: -0.5,
+              fontFamily: 'Poppins',
             ),
           ),
-          SizedBox(
-            height: AppSpacing.mediumVerticalSpacing(context),
-          ),
-          Text(
-            subtitle,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 20,
+          if (subtitle.isNotEmpty) ...[
+            const SizedBox(height: 8),
+            Text(
+              subtitle,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w700,
+                color: Colors.white.withValues(alpha: 0.9),
+                fontSize: 18,
+                fontFamily: 'Poppins',
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: AppSpacing.mediumVerticalSpacing(context),
-          ),
+          ],
+          const SizedBox(height: 16),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
+              color: Colors.white.withValues(alpha: 0.7),
+              height: 1.5,
+              fontFamily: 'Poppins',
             ),
           ),
-          SizedBox(
-            height: AppSpacing.mediumVerticalSpacing(context),
-          ),
+          const SizedBox(height: 32),
           ElevatedButton(
             onPressed: onConfirm,
             style: ElevatedButton.styleFrom(
-              backgroundColor: confirmButtonColor,
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.black,
+              elevation: 0,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
-            child: Text(confirmButtonText),
+            child: Text(
+              confirmButtonText,
+              style: const TextStyle(
+                fontWeight: FontWeight.w800,
+                fontSize: 15,
+                fontFamily: 'Poppins',
+              ),
+            ),
           ),
-          SizedBox(
-            height: AppSpacing.smallVerticalSpacing(context),
-          ),
+          const SizedBox(height: 12),
           TextButton(
-            onPressed: onCancel ?? () => AppNavigator.pop(context),
-            child: Text(cancelButtonText),
+            onPressed: onCancel ?? () => Navigator.pop(context),
+            child: Text(
+              cancelButtonText,
+              style: TextStyle(
+                color: Colors.white.withValues(alpha: 0.6),
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                fontFamily: 'Poppins',
+              ),
+            ),
           ),
+          const SizedBox(height: 8),
         ],
       ),
     );

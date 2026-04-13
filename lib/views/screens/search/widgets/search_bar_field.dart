@@ -15,29 +15,33 @@ import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 class SearchBarField extends StatefulWidget {
-  const SearchBarField({super.key});
+  final FocusNode? focusNode;
+  const SearchBarField({super.key, this.focusNode});
 
   @override
-  State<SearchBarField> createState() => _SearchBarFieldState();
+  State<SearchBarField> createState() => SearchBarFieldState();
 }
 
-class _SearchBarFieldState extends State<SearchBarField> {
+class SearchBarFieldState extends State<SearchBarField> {
   final TextEditingController _controller = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
+  late final FocusNode _focusNode;
   bool isFocused = false;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = widget.focusNode ?? FocusNode();
     _focusNode.addListener(() {
-      setState(() => isFocused = _focusNode.hasFocus);
+      if (mounted) setState(() => isFocused = _focusNode.hasFocus);
     });
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _focusNode.dispose();
+    if (widget.focusNode == null) {
+      _focusNode.dispose();
+    }
     super.dispose();
   }
 
@@ -50,7 +54,7 @@ class _SearchBarFieldState extends State<SearchBarField> {
     context.read<SearchCubit>().searchItems(lat: lat, lon: lon, query: query);
   }
 
-  void _showVisualSearchDialog() {
+  void showVisualSearchDialog() {
     HapticFeedback.mediumImpact();
     showDialog(
       context: context,
@@ -240,7 +244,7 @@ class _SearchBarFieldState extends State<SearchBarField> {
       focusNode: _focusNode,
       hintText: 'Search high-value items...',
       showVisualSearch: true,
-      onVisualSearchTap: _showVisualSearchDialog,
+      onVisualSearchTap: showVisualSearchDialog,
       onSearch: _onSearch,
       onChanged: (value) {
         setState(() {});
