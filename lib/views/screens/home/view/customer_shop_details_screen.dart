@@ -19,6 +19,12 @@ import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:nearvendorapp/services/safety_services.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 
 class CustomerShopDetailsScreen extends StatelessWidget {
   final ui.ShopModel shop;
@@ -173,14 +179,25 @@ class CustomerShopDetailsScreen extends StatelessWidget {
                   children: [
                     _buildCircleNavButton(
                       context,
-                      icon: Icons.star_border_rounded,
-                      onTap: () {}, // Favorite logic
-                    ),
-                    const SizedBox(width: 10),
-                    _buildCircleNavButton(
-                      context,
-                      icon: Icons.ios_share_rounded,
-                      onTap: () {}, // Share logic
+                      icon: Icons.more_horiz_rounded,
+                      onTap: () {
+                        final session = context.read<SessionCubit>().state;
+                        if (session.status != AuthStatus.authenticated) {
+                          AppBottomSheet.showConfirmationBottomSheet(
+                            context: context,
+                            title: 'Sign In Required',
+                            message:
+                                'You need to sign in to report content or block vendors.',
+                            confirmButtonText: 'Sign In',
+                            onConfirm: () {
+                              Navigator.pop(context);
+                              AppNavigator.push(context, const LoginScreen());
+                            },
+                          );
+                          return;
+                        }
+                        _showSafetyMenu(context, fullShop);
+                      },
                     ),
                   ],
                 ),
@@ -328,7 +345,10 @@ class CustomerShopDetailsScreen extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(10),
@@ -504,6 +524,76 @@ class CustomerShopDetailsScreen extends StatelessWidget {
     } else if (await canLaunchUrl(fallbackUrl)) {
       await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
     }
+  }
+
+  void _showSafetyMenu(BuildContext context, Shop shop) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            ListTile(
+              leading: const Icon(Icons.flag_outlined, color: Colors.orange),
+              title: const Text('Report Shop'),
+              subtitle: const Text('Report inappropriate content or behavior'),
+              onTap: () {
+                Navigator.pop(ctx);
+                showDialog(
+                  context: context,
+                  builder: (dialogCtx) => SafetyReportDialog(
+                    targetId: shop.id,
+                    targetType: 'SHOP',
+                    targetName: shop.shopName,
+                  ),
+                );
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.block_flipped, color: Colors.red),
+              title: const Text('Block Vendor'),
+              subtitle: Text('Stop seeing content from ${shop.shopName}'),
+              onTap: () async {
+                Navigator.pop(ctx);
+                final result = await SafetyServices().blockUser(
+                  blockedId: shop.vendorId ?? '',
+                );
+                if (context.mounted) {
+                  if (result.success == true) {
+                    AppAlerts.showSuccessSnackBar(
+                      context,
+                      '${shop.shopName} has been blocked.',
+                    );
+                    Navigator.pop(
+                      context,
+                    ); // Go back as user shouldn't see this shop anymore
+                  } else {
+                    AppAlerts.showErrorSnackBar(
+                      context,
+                      result.message ?? 'Failed to block user',
+                    );
+                  }
+                }
+              },
+            ),
+            const SizedBox(height: 16),
+          ],
+        ),
+      ),
+    );
   }
 }
 

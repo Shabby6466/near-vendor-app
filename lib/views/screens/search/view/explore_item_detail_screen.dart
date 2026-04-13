@@ -15,6 +15,10 @@ import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/services.dart';
+import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 
 class ExploreItemDetailScreen extends StatefulWidget {
   final String itemId;
@@ -327,34 +331,59 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                 ],
               ),
             ),
-            child: Row(
-              children: [
-                const SizedBox(width: 16),
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios_new_rounded,
-                      color: Colors.black,
-                      size: 18,
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Product Details',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                ),
-                // Spacer for centering
-                const SizedBox(width: 56),
-              ],
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.flag_outlined,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        final session = context.read<SessionCubit>().state;
+                        if (session.status != AuthStatus.authenticated) {
+                          AppBottomSheet.showConfirmationBottomSheet(
+                            context: context,
+                            title: 'Sign In Required',
+                            message: 'You need to sign in to report items.',
+                            confirmButtonText: 'Sign In',
+                            onConfirm: () {
+                              Navigator.pop(context);
+                              AppNavigator.push(context, const LoginScreen());
+                            },
+                          );
+                          return;
+                        }
+
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => SafetyReportDialog(
+                            targetId: item.id,
+                            targetType: 'ITEM',
+                            targetName: item.name,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -480,6 +509,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
         HapticFeedback.lightImpact();
         final uiModel = ui.ShopModel(
           id: shop.id,
+          vendorId: shop.vendorId,
           name: shop.shopName,
           image: shop.coverImageUrl ?? shop.storeLogoUrl ?? '',
           category: shop.businessCategory,
@@ -490,6 +520,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
           isRecentlyActive: shop.isRecentlyActive,
           itemCount: shop.itemCount,
         );
+
         AppNavigator.push(context, CustomerShopDetailsScreen(shop: uiModel));
       },
       child: Container(

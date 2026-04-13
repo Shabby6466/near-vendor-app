@@ -1,6 +1,8 @@
 class ShopModel {
   final String id;
+  final String? vendorId;
   final String name;
+
   final String image;
   final String category;
   final String? location;
@@ -13,6 +15,7 @@ class ShopModel {
 
   ShopModel({
     required this.id,
+    this.vendorId,
     required this.name,
     required this.image,
     required this.category,
@@ -28,7 +31,9 @@ class ShopModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'vendorId': vendorId,
       'name': name,
+
       'image': image,
       'category': category,
       'location': location,
@@ -42,7 +47,9 @@ class ShopModel {
   factory ShopModel.fromJson(Map<String, dynamic> json) {
     return ShopModel(
       id: json['id']?.toString() ?? '',
+      vendorId: json['vendorId']?.toString(),
       name: json['name']?.toString() ?? '',
+
       image: json['image']?.toString() ?? '',
       category: json['category']?.toString() ?? '',
       location: json['location']?.toString(),

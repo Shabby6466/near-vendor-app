@@ -201,6 +201,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
   ShopModel _mapToShopModel(data.Shop shop) {
     return ShopModel(
       id: shop.id,
+      vendorId: shop.vendorId,
       name: shop.shopName,
       image: shop.coverImageUrl ?? '',
       category: shop.businessCategory,
@@ -213,6 +214,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       distance: shop.distance,
     );
   }
+
 
   void selectCategory(CategoryModel category) {
     if (_selectedCategory == category) return;

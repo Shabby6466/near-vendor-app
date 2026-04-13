@@ -12,6 +12,8 @@ import 'package:intl/intl.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
+import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
+
 class MyWishesView extends StatelessWidget {
   const MyWishesView({super.key});
 
@@ -29,6 +31,14 @@ class MyWishesView extends StatelessWidget {
           }
 
           if (state is UserWishlistError) {
+            final isConnectionError = state.message.toLowerCase().contains('socketexception') || 
+                                     state.message.toLowerCase().contains('connection error');
+            
+            if (isConnectionError) {
+              return NoInternetScreen(
+                onRetry: () => context.read<UserWishlistCubit>().getMyWishlists(refresh: true),
+              );
+            }
             return _buildErrorState(context, isDark, state.message);
           }
 

@@ -6,6 +6,8 @@ abstract class BaseApiResponse {
 
   int? get status => _status;
   String? get message => _message;
+  bool get success => _status == 200 || _status == 201;
+
 
   BaseApiResponse({
     int? status,
