@@ -31,12 +31,15 @@ class MyWishesView extends StatelessWidget {
           }
 
           if (state is UserWishlistError) {
-            final isConnectionError = state.message.toLowerCase().contains('socketexception') || 
-                                     state.message.toLowerCase().contains('connection error');
-            
+            final isConnectionError =
+                state.message.toLowerCase().contains('socketexception') ||
+                state.message.toLowerCase().contains('connection error');
+
             if (isConnectionError) {
               return NoInternetScreen(
-                onRetry: () => context.read<UserWishlistCubit>().getMyWishlists(refresh: true),
+                onRetry: () => context.read<UserWishlistCubit>().getMyWishlists(
+                  refresh: true,
+                ),
               );
             }
             return _buildErrorState(context, isDark, state.message);
@@ -520,7 +523,7 @@ class _WishlistCard extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 80,
+                    height: 100,
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,
@@ -651,28 +654,16 @@ class _WishlistCard extends StatelessWidget {
                     ? Colors.black.withValues(alpha: 0.1)
                     : const Color(0xFFFFFBEB),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.hourglass_top_rounded,
-                    size: 14,
-                    color: Colors.amber.shade700,
+              child: Expanded(
+                child: Text(
+                  'No matches yet — vendors near you will be notified and can add this item to their shop.',
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    height: 1.3,
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      'No matches yet — vendors near you will be notified and can add this item to their shop.',
-                      style: TextStyle(
-                        color: isDark
-                            ? Colors.amber.shade200
-                            : Colors.amber.shade800,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        height: 1.3,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ],

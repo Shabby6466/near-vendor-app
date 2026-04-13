@@ -193,7 +193,7 @@ class HomeScreen extends StatelessWidget {
                                   ),
                                   const Center(
                                     child: Text(
-                                      'Premium Banner Ad',
+                                      'Featured',
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontFamily: 'Poppins',
