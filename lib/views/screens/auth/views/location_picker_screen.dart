@@ -334,10 +334,18 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                       const SizedBox(height: 20),
                       AppElevatedButton(
                         text: 'Confirm Location',
+                        isLoading: _isLoading,
                         onPressed: () async {
-                          await sessionCubit.confirmManualLocationPick();
-                          if (mounted) {
-                            Navigator.pop(context);
+                          setState(() => _isLoading = true);
+                          try {
+                            await sessionCubit.confirmManualLocationPick();
+                            if (mounted) {
+                              Navigator.pop(context);
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() => _isLoading = false);
+                            }
                           }
                         },
                       ),

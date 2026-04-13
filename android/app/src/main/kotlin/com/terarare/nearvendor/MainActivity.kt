@@ -1,4 +1,4 @@
-package com.terarare.nearvendor.nearvendorapp
+package com.terarare.nearvendor
 
 import io.flutter.embedding.android.FlutterActivity
 

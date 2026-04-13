@@ -12,6 +12,9 @@ import 'package:upgrader/upgrader.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
+import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
+import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
+
 void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
@@ -51,37 +54,51 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => SessionCubit()..initialize()),
+        BlocProvider(create: (context) => ConnectivityCubit()),
       ],
-      child: BlocBuilder<SessionCubit, SessionState>(
-        builder: (context, state) {
-          final isApprovedVendor =
-              state.isVendor && state.vendorStatus == 'APPROVED';
-          return MaterialApp(
-            navigatorKey: navigatorKey,
-            debugShowCheckedModeBanner: false,
-            themeMode: ThemeMode.system,
-            theme: isApprovedVendor
-                ? AppThemeData.vendorLightTheme
-                : AppThemeData.normalLightTheme,
-            darkTheme: isApprovedVendor
-                ? AppThemeData.vendorDarkTheme
-                : AppThemeData.normalDarkTheme,
-            home: UpgradeAlert(
-              upgrader: Upgrader(
-                minAppVersion: '0.0.0',
-                durationUntilAlertAgain: const Duration(hours: 1),
-              ),
-              showIgnore: false,
-              showLater: false,
-              dialogStyle: Platform.isIOS
-                  ? UpgradeDialogStyle.cupertino
-                  : UpgradeDialogStyle.material,
-              child:
-                  (state.status == AuthStatus.authenticated ||
-                      state.hasOnboarded)
-                  ? const MainScreen()
-                  : const WelcomeScreen(),
-            ),
+      child: BlocBuilder<ConnectivityCubit, ConnectivityStatus>(
+        builder: (context, connectivity) {
+          return BlocBuilder<SessionCubit, SessionState>(
+            builder: (context, state) {
+              final isApprovedVendor =
+                  state.isVendor && state.vendorStatus == 'APPROVED';
+
+              Widget home;
+              if (connectivity == ConnectivityStatus.disconnected) {
+                home = NoInternetScreen(
+                  onRetry: () => context.read<ConnectivityCubit>().retry(),
+                );
+              } else {
+                home = (state.status == AuthStatus.authenticated ||
+                        state.hasOnboarded)
+                    ? const MainScreen()
+                    : const WelcomeScreen();
+              }
+
+              return MaterialApp(
+                navigatorKey: navigatorKey,
+                debugShowCheckedModeBanner: false,
+                themeMode: ThemeMode.system,
+                theme: isApprovedVendor
+                    ? AppThemeData.vendorLightTheme
+                    : AppThemeData.normalLightTheme,
+                darkTheme: isApprovedVendor
+                    ? AppThemeData.vendorDarkTheme
+                    : AppThemeData.normalDarkTheme,
+                home: UpgradeAlert(
+                  upgrader: Upgrader(
+                    minAppVersion: '0.0.0',
+                    durationUntilAlertAgain: const Duration(hours: 1),
+                  ),
+                  showIgnore: false,
+                  showLater: false,
+                  dialogStyle: Platform.isIOS
+                      ? UpgradeDialogStyle.cupertino
+                      : UpgradeDialogStyle.material,
+                  child: home,
+                ),
+              );
+            },
           );
         },
       ),

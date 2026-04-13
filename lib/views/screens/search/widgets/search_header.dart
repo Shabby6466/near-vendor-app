@@ -31,45 +31,54 @@ class SearchHeader extends StatelessWidget {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  context.read<SessionCubit>().startManualLocationPick();
-                  AppNavigator.push(context, const LocationPickerScreen());
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '      Current Location',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        fontSize: 12,
-                        color: theme.textTheme.bodySmall?.color?.withValues(
-                          alpha: 0.5,
-                        ),
-                      ),
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.location_on_rounded,
-                          size: 16,
-                          color: theme.primaryColor,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          locationText,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    context.read<SessionCubit>().startManualLocationPick();
+                    AppNavigator.push(context, const LocationPickerScreen());
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text(
+                          'Current Location',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            fontSize: 12,
+                            color: theme.textTheme.bodySmall?.color?.withValues(
+                              alpha: 0.5,
+                            ),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_rounded,
+                            size: 16,
+                            color: theme.primaryColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              locationText,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(width: 16),
               const _ProfileHeader(),
             ],
           );
