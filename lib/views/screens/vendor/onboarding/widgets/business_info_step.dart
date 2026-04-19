@@ -11,6 +11,7 @@ class BusinessInfoStep extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<OnboardingCubit, OnboardingState>(
       builder: (context, state) {
+        final theme = Theme.of(context);
         return SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
@@ -37,29 +38,56 @@ class BusinessInfoStep extends StatelessWidget {
                 onChanged: (val) => context.read<OnboardingCubit>().updateBusinessInfo(name: val),
               ),
               SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-              _buildLabel(context, 'Category'),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    hint: const Text('Select a category'),
-                    value: state.category.isEmpty ? null : state.category,
-                    items: ['Food', 'Retail', 'Services', 'Electronics'].map((category) {
-                      return DropdownMenuItem(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                    onChanged: (val) => context.read<OnboardingCubit>().updateBusinessInfo(category: val),
-                  ),
-                ),
-              ),
+              _buildLabel(context, 'Business Category'),
+              state.isLoadingCategories
+                  ? const Center(child: CircularProgressIndicator())
+                  : Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: theme.dividerColor.withValues(alpha: 0.1),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: theme.primaryColor,
+                          ),
+                          hint: Text(
+                            'Select a category',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                            ),
+                          ),
+                          value: state.category.isEmpty ? null : state.category,
+                          dropdownColor: theme.cardColor,
+                          borderRadius: BorderRadius.circular(16),
+                          items: state.availableCategories.map((category) {
+                            return DropdownMenuItem(
+                              value: category.name,
+                              child: Text(
+                                category.name,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (val) => context.read<OnboardingCubit>().updateBusinessInfo(category: val),
+                        ),
+                      ),
+                    ),
               SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
             ],
           ),

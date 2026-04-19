@@ -181,10 +181,21 @@ class Server {
         return response;
       } catch (e) {
         if (e is DioException && token != null) {
-          if (e.response?.statusCode == 401 && !retried) {
+          final int? httpStatus = e.response?.statusCode;
+          final dynamic responseData = e.response?.data;
+          int? bodyStatus;
+          if (responseData is Map) {
+            bodyStatus = int.tryParse(responseData['statusCode']?.toString() ?? '');
+          }
+
+          debugPrint('Network Error: HTTP $httpStatus, Body Status: $bodyStatus');
+
+          if ((httpStatus == 401 || bodyStatus == 401) && !retried) {
+            debugPrint('401 Unauthorized detected, attempting to refresh token...');
             final refreshSuccess = await _refreshAccessToken();
 
             if (refreshSuccess) {
+              debugPrint('Token refreshed successfully, retrying original request...');
               return await _call(
                 url,
                 apiType: apiType,
@@ -196,6 +207,7 @@ class Server {
               );
             }
 
+            debugPrint('Token refresh failed, logging out user.');
             if (navigatorKey.currentContext != null) {
               AppAlerts.showErrorSnackBar(
                 navigatorKey.currentContext!,
@@ -227,10 +239,10 @@ class Server {
         },
       );
       refreshDio.options.headers['Accept'] = 'application/json';
-      refreshDio.options.headers['Authorization'] = 'Bearer $refreshToken';
 
-      final refreshResponse = await refreshDio.get(
-        'ApiConstants.refreshToken',
+      final refreshResponse = await refreshDio.post(
+        ApiConstants.refreshToken,
+        data: {'refreshToken': refreshToken},
       );
 
       final refreshJson = refreshResponse.data;
@@ -246,9 +258,11 @@ class Server {
           return true;
         }
       }
+      logoutUser();
       return false;
     } catch (e) {
       debugPrint('Token refresh failed: $e');
+      logoutUser();
       return false;
     }
   }

@@ -7,8 +7,12 @@ import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_scre
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubits/user_wishlist_cubit.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart'; 
+import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart';
 import 'package:intl/intl.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+
+import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 
 class MyWishesView extends StatelessWidget {
   const MyWishesView({super.key});
@@ -23,10 +27,21 @@ class MyWishesView extends StatelessWidget {
       body: BlocBuilder<UserWishlistCubit, UserWishlistState>(
         builder: (context, state) {
           if (state is UserWishlistInitial || state is UserWishlistLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingIndicator();
           }
 
           if (state is UserWishlistError) {
+            final isConnectionError =
+                state.message.toLowerCase().contains('socketexception') ||
+                state.message.toLowerCase().contains('connection error');
+
+            if (isConnectionError) {
+              return NoInternetScreen(
+                onRetry: () => context.read<UserWishlistCubit>().getMyWishlists(
+                  refresh: true,
+                ),
+              );
+            }
             return _buildErrorState(context, isDark, state.message);
           }
 
@@ -40,7 +55,9 @@ class MyWishesView extends StatelessWidget {
                 context.read<UserWishlistCubit>().getMyWishlists(refresh: true);
               },
               child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
                 slivers: [
                   // How-it-works banner at top
                   SliverToBoxAdapter(
@@ -50,11 +67,17 @@ class MyWishesView extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: ColorName.primary.withValues(alpha: 0.06),
                         borderRadius: BorderRadius.circular(14),
-                        border: Border.all(color: ColorName.primary.withValues(alpha: 0.12)),
+                        border: Border.all(
+                          color: ColorName.primary.withValues(alpha: 0.12),
+                        ),
                       ),
                       child: Row(
                         children: [
-                          Icon(Icons.info_outline_rounded, color: ColorName.primary, size: 18),
+                          Icon(
+                            Icons.info_outline_rounded,
+                            color: ColorName.primary,
+                            size: 18,
+                          ),
                           const SizedBox(width: 10),
                           Expanded(
                             child: Text(
@@ -72,7 +95,11 @@ class MyWishesView extends StatelessWidget {
                     ),
                   ),
                   SliverPadding(
-                    padding: const EdgeInsets.only(left: 16, right: 16, bottom: 120),
+                    padding: const EdgeInsets.only(
+                      left: 16,
+                      right: 16,
+                      bottom: 120,
+                    ),
                     sliver: SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
@@ -81,18 +108,22 @@ class MyWishesView extends StatelessWidget {
                             return const Center(
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 16),
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: LoadingAnimation(size: 16),
                               ),
                             );
                           }
 
                           final wish = state.wishlists[index];
                           return Padding(
-                            padding: EdgeInsets.only(top: index == 0 ? 8 : 0, bottom: 12),
+                            padding: EdgeInsets.only(
+                              top: index == 0 ? 8 : 0,
+                              bottom: 12,
+                            ),
                             child: _WishlistCard(wish: wish, isDark: isDark),
                           );
                         },
-                        childCount: state.wishlists.length + (state.hasMore ? 1 : 0),
+                        childCount:
+                            state.wishlists.length + (state.hasMore ? 1 : 0),
                       ),
                     ),
                   ),
@@ -113,7 +144,11 @@ class MyWishesView extends StatelessWidget {
           icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
           label: const Text(
             'Make a Wish',
-            style: TextStyle(fontWeight: FontWeight.w700, color: Colors.white, fontSize: 13),
+            style: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+              fontSize: 13,
+            ),
           ),
           backgroundColor: ColorName.primary,
           elevation: 4,
@@ -129,7 +164,11 @@ class MyWishesView extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.error_outline, size: 64, color: Colors.red.withValues(alpha: 0.5)),
+            Icon(
+              Icons.error_outline,
+              size: 64,
+              color: Colors.red.withValues(alpha: 0.5),
+            ),
             const SizedBox(height: 20),
             Text(
               'Oops!',
@@ -143,7 +182,10 @@ class MyWishesView extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 14, color: isDark ? Colors.white70 : Colors.black54),
+              style: TextStyle(
+                fontSize: 14,
+                color: isDark ? Colors.white70 : Colors.black54,
+              ),
             ),
             const SizedBox(height: 24),
             ElevatedButton.icon(
@@ -151,12 +193,17 @@ class MyWishesView extends StatelessWidget {
                 context.read<UserWishlistCubit>().getMyWishlists(refresh: true);
               },
               icon: const Icon(Icons.refresh, color: Colors.white, size: 18),
-              label: const Text('Try Again', style: TextStyle(color: Colors.white)),
+              label: const Text(
+                'Try Again',
+                style: TextStyle(color: Colors.white),
+              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorName.primary,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -164,6 +211,7 @@ class MyWishesView extends StatelessWidget {
   }
 
   Widget _buildEmptyState(BuildContext context, bool isDark) {
+    final theme = Theme.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -173,10 +221,14 @@ class MyWishesView extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: ColorName.primary.withValues(alpha: 0.08),
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.08),
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.auto_awesome, size: 56, color: ColorName.primary.withValues(alpha: 0.6)),
+              child: Icon(
+                Icons.auto_awesome,
+                size: 56,
+                color: theme.primaryColor.withValues(alpha: 0.6),
+              ),
             ),
             const SizedBox(height: 24),
             Text(
@@ -229,20 +281,25 @@ class _HowItWorksStep extends StatelessWidget {
   final String text;
   final bool isDark;
 
-  const _HowItWorksStep({required this.icon, required this.text, required this.isDark});
+  const _HowItWorksStep({
+    required this.icon,
+    required this.text,
+    required this.isDark,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
           padding: const EdgeInsets.all(6),
           decoration: BoxDecoration(
-            color: ColorName.primary.withValues(alpha: 0.1),
+            color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(icon, color: ColorName.primary, size: 16),
+          child: Icon(icon, color: theme.colorScheme.onSurface, size: 16),
         ),
         const SizedBox(width: 12),
         Text(
@@ -276,11 +333,15 @@ class _WishlistCard extends StatelessWidget {
         color: isDark ? const Color(0xFF1E242B) : Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.black.withValues(alpha: 0.06),
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.06)
+              : Colors.black.withValues(alpha: 0.06),
         ),
         boxShadow: [
           BoxShadow(
-            color: isDark ? Colors.black.withValues(alpha: 0.2) : Colors.black.withValues(alpha: 0.04),
+            color: isDark
+                ? Colors.black.withValues(alpha: 0.2)
+                : Colors.black.withValues(alpha: 0.04),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -303,21 +364,21 @@ class _WishlistCard extends StatelessWidget {
                     color: wish.status == 'FULFILLED'
                         ? Colors.green.withValues(alpha: 0.12)
                         : hasMatches
-                            ? Colors.blue.withValues(alpha: 0.12)
-                            : ColorName.primary.withValues(alpha: 0.1),
+                        ? Colors.blue.withValues(alpha: 0.12)
+                        : ColorName.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     wish.status == 'FULFILLED'
                         ? Icons.check_circle_rounded
                         : hasMatches
-                            ? Icons.star_rounded
-                            : Icons.auto_awesome,
+                        ? Icons.star_rounded
+                        : Icons.auto_awesome,
                     color: wish.status == 'FULFILLED'
                         ? Colors.green
                         : hasMatches
-                            ? Colors.blue
-                            : ColorName.primary,
+                        ? Colors.blue
+                        : ColorName.primary,
                     size: 18,
                   ),
                 ),
@@ -333,7 +394,9 @@ class _WishlistCard extends StatelessWidget {
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
                           letterSpacing: -0.2,
-                          color: isDark ? Colors.white : const Color(0xFF111827),
+                          color: isDark
+                              ? Colors.white
+                              : const Color(0xFF111827),
                         ),
                       ),
                       const SizedBox(height: 3),
@@ -345,7 +408,9 @@ class _WishlistCard extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 11,
                                 fontWeight: FontWeight.w600,
-                                color: isDark ? Colors.white38 : Colors.grey.shade500,
+                                color: isDark
+                                    ? Colors.white38
+                                    : Colors.grey.shade500,
                               ),
                             ),
                             Container(
@@ -354,7 +419,9 @@ class _WishlistCard extends StatelessWidget {
                               margin: const EdgeInsets.symmetric(horizontal: 6),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: isDark ? Colors.white24 : Colors.grey.shade400,
+                                color: isDark
+                                    ? Colors.white24
+                                    : Colors.grey.shade400,
                               ),
                             ),
                           ],
@@ -362,16 +429,18 @@ class _WishlistCard extends StatelessWidget {
                             wish.status == 'FULFILLED'
                                 ? 'Fulfilled ✓'
                                 : hasMatches
-                                    ? '${wish.matchedItems.length} match${wish.matchedItems.length > 1 ? 'es' : ''} found'
-                                    : 'Searching vendors…',
+                                ? '${wish.matchedItems.length} match${wish.matchedItems.length > 1 ? 'es' : ''} found'
+                                : 'Searching vendors…',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
                               color: wish.status == 'FULFILLED'
                                   ? Colors.green.shade600
                                   : hasMatches
-                                      ? Colors.blue.shade600
-                                      : (isDark ? Colors.white38 : Colors.grey.shade500),
+                                  ? Colors.blue.shade600
+                                  : (isDark
+                                        ? Colors.white38
+                                        : Colors.grey.shade500),
                             ),
                           ),
                         ],
@@ -387,7 +456,8 @@ class _WishlistCard extends StatelessWidget {
                         width: 32,
                         height: 32,
                         child: IconButton(
-                          icon: Icon(Icons.check_circle_outline_rounded,
+                          icon: Icon(
+                            Icons.check_circle_outline_rounded,
                             color: ColorName.primary.withValues(alpha: 0.6),
                             size: 20,
                           ),
@@ -402,7 +472,8 @@ class _WishlistCard extends StatelessWidget {
                       width: 32,
                       height: 32,
                       child: IconButton(
-                        icon: Icon(Icons.close_rounded,
+                        icon: Icon(
+                          Icons.close_rounded,
                           color: isDark ? Colors.white30 : Colors.grey.shade400,
                           size: 18,
                         ),
@@ -427,7 +498,9 @@ class _WishlistCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   height: 1.4,
-                  color: isDark ? Colors.white.withValues(alpha: 0.5) : const Color(0xFF6B7280),
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.5)
+                      : const Color(0xFF6B7280),
                 ),
               ),
             ),
@@ -437,16 +510,25 @@ class _WishlistCard extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+                  top: BorderSide(
+                    color: isDark
+                        ? Colors.white10
+                        : Colors.black.withValues(alpha: 0.05),
+                  ),
                 ),
-                color: isDark ? Colors.black.withValues(alpha: 0.15) : const Color(0xFFF9FAFB),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.15)
+                    : const Color(0xFFF9FAFB),
               ),
               child: Column(
                 children: [
                   SizedBox(
-                    height: 80,
+                    height: 100,
                     child: ListView.separated(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 14,
+                        vertical: 10,
+                      ),
                       scrollDirection: Axis.horizontal,
                       itemCount: wish.matchedItems.length,
                       separatorBuilder: (_, __) => const SizedBox(width: 8),
@@ -465,10 +547,14 @@ class _WishlistCard extends StatelessWidget {
                           child: Container(
                             width: 160,
                             decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF2D3748) : Colors.white,
+                              color: isDark
+                                  ? const Color(0xFF2D3748)
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(10),
                               border: Border.all(
-                                color: isDark ? Colors.white10 : Colors.grey.shade200,
+                                color: isDark
+                                    ? Colors.white10
+                                    : Colors.grey.shade200,
                               ),
                             ),
                             clipBehavior: Clip.antiAlias,
@@ -484,19 +570,26 @@ class _WishlistCard extends StatelessWidget {
                                           height: double.infinity,
                                         )
                                       : Container(
-                                          color: isDark ? Colors.black26 : Colors.grey.shade100,
+                                          color: isDark
+                                              ? Colors.black26
+                                              : Colors.grey.shade100,
                                           child: const Center(
-                                            child: Icon(Icons.image_outlined, color: Colors.grey, size: 18),
+                                            child: LoadingAnimation(size: 16),
                                           ),
                                         ),
                                 ),
                                 // Info
                                 Expanded(
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 6,
+                                    ),
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           item.name,
@@ -506,7 +599,9 @@ class _WishlistCard extends StatelessWidget {
                                             fontSize: 11,
                                             fontWeight: FontWeight.w700,
                                             height: 1.2,
-                                            color: isDark ? Colors.white : const Color(0xFF111827),
+                                            color: isDark
+                                                ? Colors.white
+                                                : const Color(0xFF111827),
                                           ),
                                         ),
                                         const SizedBox(height: 4),
@@ -528,7 +623,9 @@ class _WishlistCard extends StatelessWidget {
                                   child: Icon(
                                     Icons.chevron_right_rounded,
                                     size: 16,
-                                    color: isDark ? Colors.white24 : Colors.grey.shade400,
+                                    color: isDark
+                                        ? Colors.white24
+                                        : Colors.grey.shade400,
                                   ),
                                 ),
                               ],
@@ -547,30 +644,26 @@ class _WishlistCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 border: Border(
-                  top: BorderSide(color: isDark ? Colors.white10 : Colors.black.withValues(alpha: 0.05)),
+                  top: BorderSide(
+                    color: isDark
+                        ? Colors.white10
+                        : Colors.black.withValues(alpha: 0.05),
+                  ),
                 ),
-                color: isDark ? Colors.black.withValues(alpha: 0.1) : const Color(0xFFFFFBEB),
+                color: isDark
+                    ? Colors.black.withValues(alpha: 0.1)
+                    : const Color(0xFFFFFBEB),
               ),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.hourglass_top_rounded,
-                    size: 14,
-                    color: Colors.amber.shade700,
+              child: Expanded(
+                child: Text(
+                  'No matches yet — vendors near you will be notified and can add this item to their shop.',
+                  style: TextStyle(
+                    color: isDark ? Colors.white : Colors.black,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    height: 1.3,
                   ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: Text(
-                      'No matches yet — vendors near you will be notified and can add this item to their shop.',
-                      style: TextStyle(
-                        color: isDark ? Colors.amber.shade200 : Colors.amber.shade800,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                        height: 1.3,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ],
@@ -597,7 +690,8 @@ class _WishlistCard extends StatelessWidget {
     _showPremiumConfirmation(
       context: context,
       title: 'Mark as Fulfilled',
-      content: 'Did you find what you were looking for? Marking this as fulfilled stops open demand for vendors.',
+      content:
+          'Did you find what you were looking for? Marking this as fulfilled stops open demand for vendors.',
       confirmLabel: 'Fulfill Wish',
       confirmColor: ColorName.primary,
       icon: Icons.check_circle_outline_rounded,
@@ -633,7 +727,9 @@ class _WishlistCard extends StatelessWidget {
           child: Opacity(
             opacity: anim1.value,
             child: AlertDialog(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              ),
               backgroundColor: isDark ? const Color(0xFF1E242B) : Colors.white,
               contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
               content: Column(
@@ -645,7 +741,7 @@ class _WishlistCard extends StatelessWidget {
                       color: confirmColor.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, color: confirmColor, size: 40),
+                    child: const LoadingAnimation(size: 24),
                   ),
                   const SizedBox(height: 24),
                   Text(
@@ -677,14 +773,18 @@ class _WishlistCard extends StatelessWidget {
                           onPressed: () => Navigator.pop(context),
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
                           child: Text(
                             'Cancel',
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.w700,
-                              color: isDark ? Colors.white30 : Colors.grey.shade400,
+                              color: isDark
+                                  ? Colors.white30
+                                  : Colors.grey.shade400,
                             ),
                           ),
                         ),
@@ -701,7 +801,9 @@ class _WishlistCard extends StatelessWidget {
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             elevation: 0,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
                           ),
                           child: Text(
                             confirmLabel,

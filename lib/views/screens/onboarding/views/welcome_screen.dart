@@ -1,122 +1,284 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/widget/onboaring_btns.dart';
-import 'package:nearvendorapp/views/screens/vendor/onboarding/screens/vendor_onboarding_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  State<WelcomeScreen> createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> {
+  int _currentPage = 0;
+
+  final List<OnboardingData> _onboardingData = [
+    OnboardingData(
+      image: 'assets/images/onboarding_proximity.png',
+      heading: 'Everything you need,\nclose to home.',
+      subHeading:
+          'Find local vendors easily. Skip the traffic and discover hidden gems on your street.',
+      buttonText: 'Next',
+    ),
+    OnboardingData(
+      image: 'assets/images/onboarding_search.png',
+      heading: 'Smart AI Search.\nJust say what you need.',
+      subHeading:
+          'No complex keywords. From repairs to snacks, our AI finds exactly what you need.',
+      buttonText: 'Next',
+    ),
+    OnboardingData(
+      image: 'assets/images/onboarding_offers.png',
+      heading: 'Local Deals &\nExclusive Offers.',
+      subHeading:
+          'Discover trending sales from your favorite neighbors, tailored for your daily life.',
+      buttonText: 'Get Started',
+    ),
+  ];
+
+  void _nextPage() {
+    if (_currentPage < _onboardingData.length - 1) {
+      setState(() => _currentPage++);
+    } else {
+      _finishOnboarding();
+    }
+  }
+
+  void _prevPage() {
+    if (_currentPage > 0) {
+      setState(() => _currentPage--);
+    }
+  }
+
+  Future<void> _finishOnboarding() async {
+    await Permission.location.request();
+    if (mounted) {
+      context.read<SessionCubit>().setOnboarded();
+      AppNavigator.pushReplacement(context, const MainScreen());
+    }
+  }
+
+  Widget _slideFadeTransition(Widget child, Animation<double> animation) {
+    final offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.05),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic));
+
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(position: offsetAnimation, child: child),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final size = MediaQuery.of(context).size;
 
     return AppScaffold(
-      bgColor: theme.scaffoldBackgroundColor,
-      body: Center(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
+      body: GestureDetector(
+        onHorizontalDragEnd: (details) {
+          if ((details.primaryVelocity ?? 0) < 0) {
+            _nextPage();
+          } else if ((details.primaryVelocity ?? 0) > 0) {
+            _prevPage();
+          }
+        },
+        child: Stack(
           children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Opacity(
-                opacity: isDark ? 0.3 : 1.0,
-                child: Assets.icons.hearts.svg(),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Assets.icons.everythingNearYouText.svg(
-                colorFilter: ColorFilter.mode(
-                  theme.primaryColor,
-                  BlendMode.srcIn,
-                ),
-              ),
-            ),
-            SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-            Align(
-              alignment: Alignment.topCenter,
-              child: Text(
-                'Nearvendor brings everything\nnear you!',
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withValues(
-                    alpha: (0.7),
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      theme.scaffoldBackgroundColor,
+                      theme.scaffoldBackgroundColor,
+                      theme.primaryColor.withValues(alpha: (0.05)),
+                    ],
                   ),
-                  fontFamily: 'Poppins',
-                  fontWeight: FontWeight.w500,
                 ),
               ),
             ),
-            const Spacer(),
-            Align(
-              alignment: Alignment.topRight,
-              child: Image.asset(
-                width: AppSpacing.screenWidth(context) * 0.7,
-                Assets.images.nearVendorSideCut.path,
-                color: isDark
-                    ? theme.primaryColor.withValues(alpha: (0.3))
-                    : null,
-                colorBlendMode: isDark ? BlendMode.srcIn : null,
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  SizedBox(height: size.height * 0.12),
+                  SizedBox(
+                    height: size.height * 0.40,
+                    width: double.infinity,
+                    child: AnimatedSwitcher(
+                      duration: 50.ms,
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(
+                          opacity: animation,
+                          child: ScaleTransition(
+                            scale: Tween<double>(begin: 0.98, end: 1.0).animate(
+                              CurvedAnimation(
+                                parent: animation,
+                                curve: Curves.easeOut,
+                              ),
+                            ),
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: Container(
+                        key: ValueKey(_currentPage),
+                        width: double.infinity,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(
+                              _onboardingData[_currentPage].image,
+                            ),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(height: 32),
+
+                  // Fixed-height Text Section to anchor UI below it
+                  SizedBox(
+                    height: size.height * 0.25,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        AnimatedSwitcher(
+                          duration: 400.ms,
+                          transitionBuilder: _slideFadeTransition,
+                          child: Text(
+                            _onboardingData[_currentPage].heading,
+                            key: ValueKey('h_$_currentPage'),
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              height: 1.2,
+                            ),
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        AnimatedSwitcher(
+                          duration: 500.ms,
+                          transitionBuilder: _slideFadeTransition,
+                          child: Text(
+                            _onboardingData[_currentPage].subHeading,
+                            key: ValueKey('s_$_currentPage'),
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withValues(alpha: (0.6)),
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
+
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 20,
+              right: 24,
+              child: AnimatedOpacity(
+                opacity: _currentPage < _onboardingData.length - 1 ? 1.0 : 0.0,
+                duration: 300.ms,
+                child: IgnorePointer(
+                  ignoring: _currentPage >= _onboardingData.length - 1,
+                  child: TextButton(
+                    onPressed: () => setState(
+                      () => _currentPage = _onboardingData.length - 1,
+                    ),
+                    child: Text(
+                      'Skip',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onSurface,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ).animate().fadeIn(delay: 200.ms),
           ],
         ),
       ),
       bottomNavigationBar: SafeArea(
         top: false,
         child: Padding(
-          padding: AppSpacing.bottomNavigationPadding(context),
-          child: Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 30),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              OnboardingBtns(
-                btnText: 'Be a Vendor',
-                color: theme.primaryColor,
-                textColor: Colors.white,
-                onTap: () {
-                  final isVendor = context.read<SessionCubit>().state.isVendor;
-                  if (isVendor) {
-                    AppNavigator.push(context, const VendorDashboardScreen());
-                  } else {
-                    AppNavigator.push(context, const VendorOnboardingScreen());
-                  }
-                },
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                  bottomLeft: Radius.circular(12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(
+                  _onboardingData.length,
+                  (index) => AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    margin: const EdgeInsets.only(right: 6),
+                    height: 8,
+                    width: _currentPage == index ? 24 : 8,
+                    decoration: BoxDecoration(
+                      color: _currentPage == index
+                          ? theme.colorScheme.onSurface
+                          : theme.colorScheme.onSurface.withValues(
+                              alpha: (0.2),
+                            ),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
                 ),
               ),
-              SizedBox(width: AppSpacing.mediumHorizontalSpacing(context)),
+              const SizedBox(height: 32),
+
               OnboardingBtns(
-                btnText: 'Let\'s explore',
-                color: theme.colorScheme.secondary.withValues(alpha: 0.2),
-                textColor: theme.textTheme.bodyLarge?.color ?? Colors.black,
-                onTap: () {
-                  context.read<SessionCubit>().setOnboarded();
-                  AppNavigator.pushReplacement(context, const MainScreen());
-                },
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(12),
-                  topRight: Radius.circular(12),
-                  bottomRight: Radius.circular(12),
-                ),
-              ),
+                    btnText: _onboardingData[_currentPage].buttonText,
+                    color: theme.primaryColor,
+                    textColor: Colors.white,
+                    onTap: _nextPage,
+                    borderRadius: BorderRadius.circular(16),
+                  )
+                  .animate(key: ValueKey(_currentPage))
+                  .scaleY(
+                    begin: 0.95,
+                    duration: 200.ms,
+                    curve: Curves.easeOutBack,
+                  )
+                  .fadeIn(),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+class OnboardingData {
+  final String image;
+  final String heading;
+  final String subHeading;
+  final String buttonText;
+
+  OnboardingData({
+    required this.image,
+    required this.heading,
+    required this.subHeading,
+    required this.buttonText,
+  });
 }

@@ -4,9 +4,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/widgets/app_text_field.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class SearchResultsScreen extends StatefulWidget {
   const SearchResultsScreen({super.key});
@@ -16,107 +16,95 @@ class SearchResultsScreen extends StatefulWidget {
 }
 
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
+  final MapController _mapController = MapController();
   String selectedFilter = 'Distance';
   final List<String> filters = ['Distance', 'Rating', 'Price'];
   bool isProductFound = true; // Toggle for demo purposes
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // Map Background
-          Positioned.fill(
-            child: FlutterMap(
-              options: const MapOptions(
-                initialCenter: LatLng(
-                  33.6844,
-                  73.0479,
-                ), // Islamabad coordinates
-                initialZoom: 15.0,
-              ),
+    return BlocListener<SessionCubit, SessionState>(
+      listenWhen: (previous, current) =>
+          previous.latitude != current.latitude ||
+          previous.longitude != current.longitude,
+      listener: (context, state) {
+        final center = LatLng(
+          state.latitude ?? 33.6844,
+          state.longitude ?? 73.0479,
+        );
+        _mapController.move(center, 15.0);
+      },
+      child: BlocBuilder<SessionCubit, SessionState>(
+        builder: (context, state) {
+          final currentLat = state.latitude ?? 33.6844;
+          final currentLon = state.longitude ?? 73.0479;
+          final center = LatLng(currentLat, currentLon);
+
+          return Scaffold(
+            body: Stack(
               children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'com.nearvendorapp.app',
-                ),
-                if (!isProductFound)
-                  CircleLayer(
-                    circles: [
-                      CircleMarker(
-                        point: const LatLng(33.6844, 73.0479),
-                        radius: 1200,
-                        useRadiusInMeter: true,
-                        color: Colors.blue.withValues(alpha: 0.15),
-                        borderColor: Colors.blue.withValues(alpha: 0.7),
-                        borderStrokeWidth: 2,
+                // Map Background
+                Positioned.fill(
+                  child: FlutterMap(
+                    mapController: _mapController,
+                    options: MapOptions(
+                      initialCenter: center,
+                      initialZoom: 15.0,
+                    ),
+                    children: [
+                      TileLayer(
+                        urlTemplate:
+                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        userAgentPackageName: 'com.nearvendorapp.app',
                       ),
+                      if (!isProductFound)
+                        CircleLayer(
+                          circles: [
+                            CircleMarker(
+                              point: center,
+                              radius: 1200,
+                              useRadiusInMeter: true,
+                              color: Colors.blue.withValues(alpha: 0.15),
+                              borderColor: Colors.blue.withValues(alpha: 0.7),
+                              borderStrokeWidth: 2,
+                            ),
+                          ],
+                        ),
                     ],
                   ),
-              ],
-            ),
-          ),
-
-          // Top Branding and Search Bar
-          SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(height: 16),
-                GestureDetector(
-                  onTap: () => setState(() => isProductFound = !isProductFound),
-                  child: Assets.icons.nearVendorBlueText.svg(height: 32),
                 ),
-                const SizedBox(height: 16),
-                _buildSearchBar(),
-                const SizedBox(height: 12),
-                _buildRadiusBadge(),
+
+                // Top Branding and Search Bar
+                SafeArea(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 16),
+                      GestureDetector(
+                        onTap: () =>
+                            setState(() => isProductFound = !isProductFound),
+                        child: Assets.icons.nearVendorBlueText.svg(height: 32),
+                      ),
+                      const SizedBox(height: 16),
+                      AppSearchBar(
+                        hintText: 'Jimmy ke jootay',
+                        showVisualSearch: true,
+                        padding: EdgeInsets.zero,
+                        onSearch: (value) {
+                          // Handle search
+                        },
+                      ),
+                      const SizedBox(height: 12),
+                      _buildRadiusBadge(),
+                    ],
+                  ),
+                ),
+
+                // Bottom Sheet for Results
+                _buildResultsSheet(),
               ],
             ),
-          ),
-
-          // Bottom Sheet for Results
-          _buildResultsSheet(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSearchBar() {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.mediumHorizontalSpacing(context),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: AppTextField(
-          prefixIcon: const Icon(Icons.search, color: Colors.black54),
-          hint: 'Jimmy ke jootay',
-          suffixIcon: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SvgPicture.asset(
-                'assets/icons/camera.svg',
-                colorFilter:
-                    const ColorFilter.mode(Colors.black54, BlendMode.srcIn),
-                width: 20,
-                height: 20,
-              ),
-              const SizedBox(width: 12),
-              const Icon(Icons.mic_none, color: Colors.black54),
-              const SizedBox(width: 16),
-            ],
-          ),
-        ),
+          );
+        },
       ),
     );
   }

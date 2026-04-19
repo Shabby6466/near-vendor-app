@@ -174,9 +174,7 @@ class _VendorOnboardingScreenState extends State<VendorOnboardingScreen> {
           Expanded(
             flex: 2,
             child: AppElevatedButton(
-              isEnabled: state.currentStep == OnboardingStep.verification
-                  ? state.termsAccepted
-                  : true,
+              isEnabled: state.canMoveToNext,
               isLoading: state.isSubmitting,
               onPressed: () {
                 if (state.currentStep == OnboardingStep.verification) {

@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/vendor/onboarding/cubit/onboarding_cubit.dart';
 
@@ -55,7 +56,7 @@ class VerificationLaunchStep extends StatelessWidget {
                     ),
                   ),
                   child: state.isUploadingImage
-                      ? const Center(child: CircularProgressIndicator())
+                      ? const AppLoadingIndicator()
                       : state.cnicImagePath != null
                       ? ClipRRect(
                           borderRadius: BorderRadius.circular(16),

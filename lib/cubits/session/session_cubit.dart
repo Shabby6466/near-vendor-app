@@ -22,8 +22,13 @@ class SessionCubit extends Cubit<SessionState> {
     if (token != null) {
       if (user != null) {
         String? cityName = user.cityName;
-        if (cityName == null && user.lastKnownLatitude != null && user.lastKnownLongitude != null) {
-          cityName = await _getCityName(user.lastKnownLatitude!, user.lastKnownLongitude!);
+        if (cityName == null &&
+            user.lastKnownLatitude != null &&
+            user.lastKnownLongitude != null) {
+          cityName = await _getCityName(
+            user.lastKnownLatitude!,
+            user.lastKnownLongitude!,
+          );
           if (cityName != null) {
             user.cityName = cityName;
             await CurrentUserStorage.storeUserData(user);
@@ -35,7 +40,9 @@ class SessionCubit extends Cubit<SessionState> {
             status: AuthStatus.authenticated,
             user: user,
             userName: user.fullName,
-            isVendor: (user.role?.toUpperCase() == 'VENDOR') || (vendorStatus != null),
+            isVendor:
+                (user.role?.toUpperCase() == 'VENDOR') ||
+                (vendorStatus != null),
             hasOnboarded: hasOnboarded,
             photoUrl: user.photoUrl,
             latitude: user.lastKnownLatitude,
@@ -56,12 +63,22 @@ class SessionCubit extends Cubit<SessionState> {
           } else if (response.user?.role?.toUpperCase() == 'VENDOR') {
             vendorStatus = 'APPROVED';
           }
-          final bool isVendor = (response.user?.role?.toUpperCase() == 'VENDOR') || (statusResponse.vendorStatus != null);
+          final bool isVendor =
+              (response.user?.role?.toUpperCase() == 'VENDOR') ||
+              (statusResponse.vendorStatus != null);
 
           String? cityName;
-          if (response.user?.lastKnownLatitude != null && response.user?.lastKnownLongitude != null) {
-            cityName = await _getCityName(response.user!.lastKnownLatitude!, response.user!.lastKnownLongitude!);
-            if (cityName == null && response.user!.lastKnownLatitude!.toStringAsFixed(3) == "37.422" && response.user!.lastKnownLongitude!.toStringAsFixed(3) == "-122.084") {
+          if (response.user?.lastKnownLatitude != null &&
+              response.user?.lastKnownLongitude != null) {
+            cityName = await _getCityName(
+              response.user!.lastKnownLatitude!,
+              response.user!.lastKnownLongitude!,
+            );
+            if (cityName == null &&
+                response.user!.lastKnownLatitude!.toStringAsFixed(3) ==
+                    "37.422" &&
+                response.user!.lastKnownLongitude!.toStringAsFixed(3) ==
+                    "-122.084") {
               cityName = "Mountain View";
             }
             response.user!.cityName = cityName;
@@ -82,34 +99,41 @@ class SessionCubit extends Cubit<SessionState> {
               vendorStatus: vendorStatus,
             ),
           );
+        } else {
+          await logout();
         }
       } catch (e) {
         debugPrint('Session refresh failed: $e');
+        await logout();
       }
     } else {
       // Fallback for Guest location from storage
       final lastLoc = CurrentUserStorage.getLastLocation();
-      emit(state.copyWith(
-        status: AuthStatus.guest,
-        userName: 'Guest User',
-        hasOnboarded: hasOnboarded,
-        latitude: lastLoc?['lat'],
-        longitude: lastLoc?['lon'],
-      ));
+      emit(
+        state.copyWith(
+          status: AuthStatus.guest,
+          userName: 'Guest User',
+          hasOnboarded: hasOnboarded,
+          latitude: lastLoc?['lat'],
+          longitude: lastLoc?['lon'],
+        ),
+      );
     }
   }
 
   void setAuthenticated(User? user) {
-    emit(state.copyWith(
-      status: AuthStatus.authenticated,
-      user: user,
-      userName: user?.fullName,
-      isVendor: user?.role?.toUpperCase() == 'VENDOR',
-      photoUrl: user?.photoUrl,
-      latitude: user?.lastKnownLatitude,
-      longitude: user?.lastKnownLongitude,
-      cityName: user?.cityName,
-    ));
+    emit(
+      state.copyWith(
+        status: AuthStatus.authenticated,
+        user: user,
+        userName: user?.fullName,
+        isVendor: user?.role?.toUpperCase() == 'VENDOR',
+        photoUrl: user?.photoUrl,
+        latitude: user?.lastKnownLatitude,
+        longitude: user?.lastKnownLongitude,
+        cityName: user?.cityName,
+      ),
+    );
     refreshVendorStatus();
   }
 
@@ -126,17 +150,44 @@ class SessionCubit extends Cubit<SessionState> {
     final response = await AuthServices().getVendorStatus();
     if (response.vendorStatus != null) {
       await CurrentUserStorage.storeVendorStatus(response.vendorStatus);
-      emit(state.copyWith(
-        vendorStatus: response.vendorStatus,
-        isVendor: (state.user?.role?.toUpperCase() == 'VENDOR') || (response.vendorStatus != null),
-      ));
-    } else {
-      await CurrentUserStorage.storeVendorStatus('PENDING');
-      emit(state.copyWith(
-        vendorStatus: 'PENDING',
-        isVendor: state.user?.role?.toUpperCase() == 'VENDOR',
-      ));
+      emit(
+        state.copyWith(
+          vendorStatus: response.vendorStatus,
+          isVendor:
+              (state.user?.role?.toUpperCase() == 'VENDOR') ||
+              (response.vendorStatus != null),
+        ),
+      );
     }
+  }
+
+  void startManualLocationPick({double? tempLatitude, double? tempLongitude}) {
+    emit(
+      state.copyWith(
+        tempLatitude: tempLatitude ?? state.latitude ?? 33.667306,
+        tempLongitude: tempLongitude ?? state.longitude ?? 73.075177,
+      ),
+    );
+  }
+
+  void updateTempLocation(double lat, double lng) {
+    emit(state.copyWith(tempLatitude: lat, tempLongitude: lng));
+  }
+
+  Future<void> confirmManualLocationPick() async {
+    if (state.tempLatitude != null && state.tempLongitude != null) {
+      final lat = state.tempLatitude!;
+      final lng = state.tempLongitude!;
+
+      // Clear temp location before updating manual location
+      emit(state.copyWith(clearTempLocation: true));
+
+      await updateManualLocation(latitude: lat, longitude: lng);
+    }
+  }
+
+  void cancelManualLocationPick() {
+    emit(state.copyWith(clearTempLocation: true));
   }
 
   void setVendorStatus(bool isVendor) {
@@ -163,27 +214,75 @@ class SessionCubit extends Cubit<SessionState> {
         final meResponse = await AuthServices().getMe();
         if (meResponse.user != null) {
           String? cityName;
-          if (meResponse.user?.lastKnownLatitude != null && meResponse.user?.lastKnownLongitude != null) {
-            cityName = await _getCityName(meResponse.user!.lastKnownLatitude!, meResponse.user!.lastKnownLongitude!);
-            if (cityName == null && meResponse.user!.lastKnownLatitude!.toStringAsFixed(3) == "37.422" && meResponse.user!.lastKnownLongitude!.toStringAsFixed(3) == "-122.084") {
+          if (meResponse.user?.lastKnownLatitude != null &&
+              meResponse.user?.lastKnownLongitude != null) {
+            cityName = await _getCityName(
+              meResponse.user!.lastKnownLatitude!,
+              meResponse.user!.lastKnownLongitude!,
+            );
+            if (cityName == null &&
+                meResponse.user!.lastKnownLatitude!.toStringAsFixed(3) ==
+                    "37.422" &&
+                meResponse.user!.lastKnownLongitude!.toStringAsFixed(3) ==
+                    "-122.084") {
               cityName = "Mountain View";
             }
             meResponse.user!.cityName = cityName;
           }
           await CurrentUserStorage.storeUserData(meResponse.user);
-          emit(state.copyWith(
-            user: meResponse.user,
-            userName: meResponse.user?.fullName,
-            isVendor: meResponse.user?.role?.toUpperCase() == 'VENDOR',
-            photoUrl: meResponse.user?.photoUrl,
-            latitude: meResponse.user?.lastKnownLatitude,
-            longitude: meResponse.user?.lastKnownLongitude,
-            cityName: cityName,
-          ));
+          emit(
+            state.copyWith(
+              user: meResponse.user,
+              userName: meResponse.user?.fullName,
+              isVendor: meResponse.user?.role?.toUpperCase() == 'VENDOR',
+              photoUrl: meResponse.user?.photoUrl,
+              latitude: meResponse.user?.lastKnownLatitude,
+              longitude: meResponse.user?.lastKnownLongitude,
+              cityName: cityName,
+            ),
+          );
         }
       }
     } catch (e) {
       debugPrint('Error updating user profile: $e');
+    }
+  }
+
+  Future<void> updateManualLocation({
+    required double latitude,
+    required double longitude,
+    String? cityName,
+  }) async {
+    try {
+      // Persist location locally
+      await CurrentUserStorage.setLastLocation(latitude, longitude);
+
+      String? finalCityName = cityName;
+      if (finalCityName == null) {
+        finalCityName = await _getCityName(latitude, longitude);
+        // Fallback for emulator if geocoding fails
+        if (finalCityName == null &&
+            latitude.toStringAsFixed(3) == "37.422" &&
+            longitude.toStringAsFixed(3) == "-122.084") {
+          finalCityName = "Mountain View";
+        }
+      }
+
+      if (isAuthenticated) {
+        await updateUserProfile(
+          UpdateUserInput(latitude: latitude, longitude: longitude),
+        );
+      }
+
+      emit(
+        state.copyWith(
+          latitude: latitude,
+          longitude: longitude,
+          cityName: finalCityName,
+        ),
+      );
+    } catch (e) {
+      debugPrint('Error updating manual location: $e');
     }
   }
 
@@ -210,33 +309,40 @@ class SessionCubit extends Cubit<SessionState> {
       }
 
       final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+        ),
       );
-      
-      // Persist location locally
-      await CurrentUserStorage.setLastLocation(position.latitude, position.longitude);
 
-      String? cityName = await _getCityName(position.latitude, position.longitude);
-      
-      // Fallback for emulator if geocoding fails
-      if (cityName == null && position.latitude.toStringAsFixed(3) == "37.422" && position.longitude.toStringAsFixed(3) == "-122.084") {
-        cityName = "Mountain View";
-      }
+      // Persist location locally
+      await CurrentUserStorage.setLastLocation(
+        position.latitude,
+        position.longitude,
+      );
+
+      String? cityName = await _getCityName(
+        position.latitude,
+        position.longitude,
+      );
 
       if (isAuthenticated) {
-        await updateUserProfile(UpdateUserInput(
-          latitude: position.latitude,
-          longitude: position.longitude,
-        ));
+        await updateUserProfile(
+          UpdateUserInput(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        );
       }
 
-      // The updateUserProfile will call emit if authenticated, 
+      // The updateUserProfile will call emit if authenticated,
       // but for guests we still want to update the local state with the city name etc.
-      emit(state.copyWith(
-        latitude: position.latitude,
-        longitude: position.longitude,
-        cityName: cityName,
-      ));
+      emit(
+        state.copyWith(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          cityName: cityName,
+        ),
+      );
     } catch (e) {
       debugPrint('Error updating location: $e');
     }
@@ -247,12 +353,20 @@ class SessionCubit extends Cubit<SessionState> {
       List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
       if (placemarks.isNotEmpty) {
         final Placemark place = placemarks.first;
-        return place.locality ?? place.subAdministrativeArea ?? place.administrativeArea;
+        final city =
+            place.locality ??
+            place.subAdministrativeArea ??
+            place.administrativeArea;
+        final country = place.country;
+        if (city != null && country != null) {
+          return "$city, $country";
+        }
+        return city;
       }
     } catch (e) {
       debugPrint('Error getting city name: $e');
     }
-    return null;
+    return "Unknown Location";
   }
 
   bool get isAuthenticated => state.status == AuthStatus.authenticated;

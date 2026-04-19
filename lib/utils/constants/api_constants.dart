@@ -9,8 +9,10 @@ class ApiConstants {
 
   ///AUTH
   static const String createUser = 'api/auth/create';
+  static const String resendOtp = 'api/auth/resend-otp';
   static const String verifyOTP = 'api/auth/verify-otp';
   static const String login = 'api/auth/login';
+  static const String refreshToken = 'api/auth/refresh-token';
   static const String changePassword = 'api/users/change-password';
   static const String getMe = 'api/users/me';
   static const String updateUser = 'api/users/update';
@@ -56,4 +58,9 @@ class ApiConstants {
   static const String getVendorPortfolioAnalytics = 'api/analytics/vendor/portfolio';
   static const String getVendorShopAnalytics = 'api/analytics/vendor/shop/';
   static const String getMarketInsightsSuffix = '/market-insights';
+
+  /// SAFETY
+  static const String reportContent = 'api/safety/report';
+  static const String blockUser = 'api/safety/block';
 }
+

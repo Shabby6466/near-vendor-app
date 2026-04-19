@@ -30,12 +30,16 @@ class AppBottomSheet {
             child: Container(
               padding: padding,
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.9),
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? const Color(0xFF1C1C23).withValues(alpha: 0.8)
+                    : Colors.white.withValues(alpha: 0.9),
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(22),
                 ),
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.19),
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white.withValues(alpha: 0.1)
+                      : Colors.white.withValues(alpha: 0.19),
                 ),
               ),
               child: AnimatedPadding(
@@ -93,12 +97,16 @@ class AppBottomSheet {
                             )
                           : EdgeInsets.zero,
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.9),
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? const Color(0xFF1C1C23).withValues(alpha: 0.8)
+                            : Colors.white.withValues(alpha: 0.9),
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(22),
                         ),
                         border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.19),
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white.withValues(alpha: 0.1)
+                              : Colors.white.withValues(alpha: 0.19),
                         ),
                       ),
                       child: Column(

@@ -3,12 +3,16 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'dart:async';
 import 'package:nearvendorapp/services/location_service.dart';
+import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class LocationPickerScreen extends StatefulWidget {
-  const LocationPickerScreen({super.key});
+  final LatLng? initialLocation;
+  const LocationPickerScreen({super.key, this.initialLocation});
 
   @override
   State<LocationPickerScreen> createState() => _LocationPickerScreenState();
@@ -18,14 +22,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   final MapController _mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
   final LocationService _locationService = LocationService();
-  Timer? _debounce;
   List<LocationSuggestion> _suggestions = [];
-  
-  LatLng _selectedLocation = const LatLng(
-    33.667306,
-    73.075177,
-  ); // Default fallback
-  bool _isSearching = false;
+  Timer? _debounce;
   bool _isLoading = false;
 
   @override
@@ -35,33 +33,49 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     super.dispose();
   }
 
-  void _onSearchChanged(String query) {
-    if (_debounce?.isActive ?? false) _debounce!.cancel();
-    _debounce = Timer(const Duration(milliseconds: 500), () async {
-      if (query.length > 2) {
-        setState(() => _isSearching = true);
-        final suggestions = await _locationService.getSuggestions(query);
-        setState(() {
-          _suggestions = suggestions;
-          _isSearching = false;
-        });
-      } else {
-        setState(() => _suggestions = []);
-      }
+  void _onSearchChanged(String query, {double? lat, double? lon}) {
+    if (_debounce?.isActive ?? false) _debounce?.cancel();
+    if (query.isEmpty) {
+      setState(() => _suggestions = []);
+      return;
+    }
+    _debounce = Timer(const Duration(milliseconds: 500), () {
+      _fetchSuggestions(query, lat: lat, lon: lon);
     });
+  }
+
+  Future<void> _fetchSuggestions(
+    String query, {
+    double? lat,
+    double? lon,
+  }) async {
+    final suggestions = await _locationService.getSuggestions(
+      query,
+      lat: lat,
+      lon: lon,
+    );
+    if (mounted) {
+      setState(() {
+        _suggestions = suggestions;
+      });
+    }
   }
 
   void _selectSuggestion(LocationSuggestion suggestion) {
+    FocusScope.of(context).unfocus();
     setState(() {
-      _selectedLocation = suggestion.location;
       _suggestions = [];
       _searchController.text = suggestion.displayName;
     });
-    _mapController.move(_selectedLocation, 15.0);
-    FocusScope.of(context).unfocus();
+
+    _mapController.move(suggestion.location, 15.0);
+    context.read<SessionCubit>().updateTempLocation(
+      suggestion.location.latitude,
+      suggestion.location.longitude,
+    );
   }
 
-  Future<void> _getCurrentLocation() async {
+  Future<void> _getCurrentLocation(BuildContext context) async {
     setState(() => _isLoading = true);
     try {
       LocationPermission permission = await Geolocator.checkPermission();
@@ -72,55 +86,19 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       if (permission == LocationPermission.whileInUse ||
           permission == LocationPermission.always) {
         Position position = await Geolocator.getCurrentPosition();
-        setState(() {
-          _selectedLocation = LatLng(position.latitude, position.longitude);
-        });
-        _mapController.move(_selectedLocation, 15.0);
+        final newLocation = LatLng(position.latitude, position.longitude);
+        if (mounted) {
+          context.read<SessionCubit>().updateTempLocation(
+            newLocation.latitude,
+            newLocation.longitude,
+          );
+          _mapController.move(newLocation, 15.0);
+        }
       }
     } catch (e) {
       debugPrint('Error getting location: $e');
     } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _searchLocation() async {
-    final query = _searchController.text.trim();
-    if (query.isEmpty) return;
-
-    setState(() {
-      _isLoading = true;
-      _isSearching = true;
-    });
-
-    try {
-      final suggestions = await _locationService.getSuggestions(query);
-      setState(() {
-        _suggestions = suggestions;
-        _isSearching = false;
-        _isLoading = false;
-      });
-
-      if (suggestions.isEmpty && mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('No matching locations found.'),
-          ),
-        );
-      }
-    } catch (e) {
-      debugPrint('Error searching location: $e');
-      setState(() {
-        _isSearching = false;
-        _isLoading = false;
-      });
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Error searching location. Please try again.'),
-          ),
-        );
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
@@ -128,166 +106,258 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Pin Your Location',
-          style: TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.bold),
-        ),
-        elevation: 0,
-        backgroundColor: theme.scaffoldBackgroundColor,
-        foregroundColor: theme.textTheme.titleLarge?.color,
-      ),
-      body: Stack(
-        children: [
-          FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              initialCenter: _selectedLocation,
-              initialZoom: 15.0,
-              onPositionChanged: (position, hasGesture) {
-                if (hasGesture) {
-                  setState(() {
-                    _selectedLocation = position.center;
-                  });
-                }
+    return BlocBuilder<SessionCubit, SessionState>(
+      builder: (context, state) {
+        final sessionCubit = context.read<SessionCubit>();
+        final currentLat =
+            state.tempLatitude ??
+            widget.initialLocation?.latitude ??
+            state.latitude ??
+            33.667306;
+        final currentLon =
+            state.tempLongitude ??
+            widget.initialLocation?.longitude ??
+            state.longitude ??
+            73.075177;
+        final currentLatLng = LatLng(currentLat, currentLon);
+
+        return Scaffold(
+          extendBodyBehindAppBar: true,
+          appBar: AppBar(
+            title: const Text(
+              'Location Picker',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                letterSpacing: -0.5,
+              ),
+            ),
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            flexibleSpace: ClipRect(
+              child: Container(
+                color: theme.scaffoldBackgroundColor.withValues(alpha: 0.7),
+              ),
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.close_rounded),
+              onPressed: () {
+                sessionCubit.cancelManualLocationPick();
+                Navigator.pop(context);
               },
             ),
-            children: [
-              TileLayer(
-                urlTemplate:
-                    'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-                userAgentPackageName: 'com.nearvendorapp.app',
-              ),
-            ],
           ),
-          // Search Bar & Suggestions
-          Positioned(
-            top: 20,
-            left: 20,
-            right: 20,
-            child: Column(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: theme.cardColor,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+          body: Stack(
+            children: [
+              FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  initialCenter: currentLatLng,
+                  initialZoom: 15.0,
+                  onPositionChanged: (position, hasGesture) {
+                    if (hasGesture) {
+                      sessionCubit.updateTempLocation(
+                        position.center.latitude,
+                        position.center.longitude,
+                      );
+                    }
+                  },
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+                    userAgentPackageName: 'com.nearvendorapp.app',
+                  ),
+                ],
+              ),
+
+              // Top Search Overlay
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 70,
+                left: 20,
+                right: 20,
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: AppSearchBar(
+                        controller: _searchController,
+                        hintText: 'Search for a place...',
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 4,
+                        ),
+                        onChanged: (value) => _onSearchChanged(
+                          value,
+                          lat: currentLat,
+                          lon: currentLon,
+                        ),
+                        onClear: () {
+                          _searchController.clear();
+                          _onSearchChanged('');
+                        },
+                      ),
+                    ),
+                    if (_suggestions.isNotEmpty)
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        margin: const EdgeInsets.only(top: 12),
+                        constraints: const BoxConstraints(maxHeight: 300),
+                        decoration: BoxDecoration(
+                          color: theme.cardColor.withValues(alpha: 0.95),
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 30,
+                              offset: const Offset(0, 15),
+                            ),
+                          ],
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: ListView.separated(
+                            shrinkWrap: true,
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            itemCount: _suggestions.length,
+                            separatorBuilder: (context, index) => Divider(
+                              color: theme.dividerColor.withValues(alpha: 0.1),
+                              indent: 20,
+                              endIndent: 20,
+                            ),
+                            itemBuilder: (context, index) {
+                              final suggestion = _suggestions[index];
+                              return ListTile(
+                                leading: Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.1,
+                                    ),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    Icons.location_on_outlined,
+                                    color: theme.colorScheme.onSurface,
+                                    size: 18,
+                                  ),
+                                ),
+                                title: Text(
+                                  suggestion.displayName,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                onTap: () => _selectSuggestion(suggestion),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+
+              // Center Target Indicator
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 40.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: theme.primaryColor.withValues(alpha: 0.4),
+                              blurRadius: 15,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          Icons.location_on_rounded,
+                          size: 44,
+                          color: theme.primaryColor,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withValues(alpha: 0.2),
+                          shape: BoxShape.circle,
+                        ),
                       ),
                     ],
                   ),
-                  child: TextField(
-                    controller: _searchController,
-                    onChanged: _onSearchChanged,
-                    decoration: InputDecoration(
-                      hintText: 'Search Location...',
-                      hintStyle: const TextStyle(fontFamily: 'Poppins'),
-                      prefixIcon: const Icon(Icons.search),
-                      suffixIcon: _isSearching
-                          ? const Padding(
-                              padding: EdgeInsets.all(12.0),
-                              child: SizedBox(
-                                width: 20,
-                                height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              ),
-                            )
-                          : IconButton(
-                              icon: const Icon(Icons.arrow_forward),
-                              onPressed: _searchLocation,
-                            ),
-                      border: InputBorder.none,
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 14,
+                ),
+              ),
+
+              // Bottom Actions Layout
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: Container(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          FloatingActionButton.small(
+                            heroTag: 'my_location',
+                            onPressed: _isLoading
+                                ? null
+                                : () => _getCurrentLocation(context),
+                            backgroundColor: theme.colorScheme.onSurface,
+                            foregroundColor: theme.colorScheme.surface,
+                            elevation: 4,
+                            child: _isLoading
+                                ? const LoadingAnimation(
+                                    color: Colors.white,
+                                    size: 18,
+                                  )
+                                : const Icon(Icons.my_location_rounded),
+                          ),
+                        ],
                       ),
-                    ),
-                    onSubmitted: (_) => _searchLocation(),
+                      const SizedBox(height: 20),
+                      AppElevatedButton(
+                        text: 'Confirm Location',
+                        isLoading: _isLoading,
+                        onPressed: () async {
+                          setState(() => _isLoading = true);
+                          try {
+                            await sessionCubit.confirmManualLocationPick();
+                            if (mounted) {
+                              Navigator.pop(context);
+                            }
+                          } finally {
+                            if (mounted) {
+                              setState(() => _isLoading = false);
+                            }
+                          }
+                        },
+                      ),
+                      SizedBox(height: MediaQuery.of(context).padding.bottom),
+                    ],
                   ),
                 ),
-                if (_suggestions.isNotEmpty)
-                  Container(
-                    margin: const EdgeInsets.only(top: 4),
-                    decoration: BoxDecoration(
-                      color: theme.cardColor,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    constraints: const BoxConstraints(maxHeight: 300),
-                    child: ListView.separated(
-                      shrinkWrap: true,
-                      padding: EdgeInsets.zero,
-                      itemCount: _suggestions.length,
-                      separatorBuilder: (context, index) => const Divider(height: 1),
-                      itemBuilder: (context, index) {
-                        final suggestion = _suggestions[index];
-                        return ListTile(
-                          leading: const Icon(Icons.location_on_outlined, size: 20),
-                          title: Text(
-                            suggestion.displayName,
-                            style: const TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: 14,
-                            ),
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          onTap: () => _selectSuggestion(suggestion),
-                        );
-                      },
-                    ),
-                  ),
-              ],
-            ),
-          ),
-          // My Location Button
-          Positioned(
-            bottom: 110,
-            right: 20,
-            child: FloatingActionButton(
-              heroTag: 'my_location',
-              onPressed: _isLoading ? null : _getCurrentLocation,
-              backgroundColor: theme.primaryColor,
-              child: _isLoading
-                  ? const CircularProgressIndicator(color: Colors.white)
-                  : const Icon(Icons.my_location, color: Colors.white),
-            ),
-          ),
-          // Center Marker
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 40.0),
-              child: Icon(
-                Icons.location_on,
-                size: 50,
-                color: theme.primaryColor,
               ),
-            ),
+            ],
           ),
-          // Confirm Button
-          Positioned(
-            bottom: 40,
-            left: 20,
-            right: 20,
-            child: AppElevatedButton(
-              text: 'Confirm Location',
-              onPressed: () {
-                Navigator.pop(context, _selectedLocation);
-              },
-            ),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

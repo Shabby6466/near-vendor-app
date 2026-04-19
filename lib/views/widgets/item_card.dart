@@ -68,31 +68,76 @@ class ItemCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Hero(
-                  tag: 'item_img_${item.id}',
-                  child: ClipRRect(
-                    borderRadius: const BorderRadius.vertical(
-                      top: Radius.circular(16),
-                    ),
-                    child: item.imageUrl != null && item.imageUrl!.isNotEmpty
-                        ? CachedNetworkImage(
-                            imageUrl: item.imageUrl!,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            errorWidget: (context, url, error) => Container(
-                              color: theme.dividerColor.withValues(alpha: 0.1),
-                              child: const Center(
-                                child: Icon(Icons.image_not_supported),
+                child: Stack(
+                  children: [
+                    Hero(
+                      tag: 'item_img_${item.id}',
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                        child:
+                            item.imageUrl != null && item.imageUrl!.isNotEmpty
+                            ? CachedNetworkImage(
+                                imageUrl: item.imageUrl!,
+                                fit: BoxFit.cover,
+                                width: double.infinity,
+                                errorWidget: (context, url, error) => Container(
+                                  color: theme.dividerColor.withValues(
+                                    alpha: 0.1,
+                                  ),
+                                  child: const Center(
+                                    child: Icon(Icons.image_not_supported),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                color: theme.dividerColor.withValues(
+                                  alpha: 0.1,
+                                ),
+                                child: const Center(
+                                  child: Icon(Icons.image_not_supported),
+                                ),
                               ),
-                            ),
-                          )
-                        : Container(
-                            color: theme.dividerColor.withValues(alpha: 0.1),
-                            child: const Center(
-                              child: Icon(Icons.image_not_supported),
-                            ),
+                      ),
+                    ),
+                    if (item.distanceM != null)
+                      Positioned(
+                        top: 8,
+                        left: 8,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
                           ),
-                  ),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.6),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.location_on_rounded,
+                                color: Colors.white,
+                                size: 10,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                item.distanceM! < 1000
+                                    ? '${item.distanceM!.toInt()}m'
+                                    : '${(item.distanceM! / 1000).toStringAsFixed(1)}km',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
               Padding(

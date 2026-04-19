@@ -3,7 +3,9 @@ import 'package:equatable/equatable.dart';
 class Item extends Equatable {
   final String id;
   final String? shopId;
+  final String? vendorId;
   final String name;
+
   final String description;
   final double price;
   final String unit;
@@ -21,7 +23,9 @@ class Item extends Equatable {
   const Item({
     required this.id,
     this.shopId,
+    this.vendorId,
     required this.name,
+
     required this.description,
     required this.price,
     required this.unit,
@@ -52,7 +56,9 @@ class Item extends Equatable {
     return Item(
       id: json['id'] as String? ?? '',
       shopId: json['shopId'] as String?,
+      vendorId: json['vendorId'] as String?,
       name: json['name'] as String? ?? '',
+
       description: json['description'] as String? ?? '',
       price: double.tryParse(json['price']?.toString() ?? '0.0') ?? 0.0,
       unit: json['unit'] as String? ?? '',
@@ -88,7 +94,9 @@ class Item extends Equatable {
   List<Object?> get props => [
         id,
         shopId,
+        vendorId,
         name,
+
         description,
         price,
         unit,

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -9,6 +8,7 @@ import 'package:nearvendorapp/models/api_inputs/item_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/item_management/cubit/item_management_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
 class AddProductScreen extends StatefulWidget {
@@ -46,11 +46,19 @@ class _AddProductScreenState extends State<AddProductScreen> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.item?.name);
-    _descriptionController = TextEditingController(text: widget.item?.description);
-    _priceController = TextEditingController(text: widget.item?.price.toString());
+    _descriptionController = TextEditingController(
+      text: widget.item?.description,
+    );
+    _priceController = TextEditingController(
+      text: widget.item?.price.toString(),
+    );
     _unitController = TextEditingController(text: widget.item?.unit ?? 'Piece');
-    _stockController = TextEditingController(text: widget.item?.stockCount.toString());
-    _discountController = TextEditingController(text: widget.item?.discount?.toString() ?? '0');
+    _stockController = TextEditingController(
+      text: widget.item?.stockCount.toString(),
+    );
+    _discountController = TextEditingController(
+      text: widget.item?.discount?.toString() ?? '0',
+    );
 
     if (widget.item != null) {
       _existingImageUrls.addAll(widget.item!.imageUrls);
@@ -109,7 +117,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
           ),
           backgroundColor: Colors.red.shade600,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
       return;
@@ -158,7 +168,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
         appBar: AppBar(
           title: Text(
             isEdit ? 'Edit Product' : 'Add New Product',
-            style: const TextStyle(fontFamily: 'Poppins', fontWeight: FontWeight.w700),
+            style: const TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.w700,
+            ),
           ),
           backgroundColor: theme.scaffoldBackgroundColor,
           elevation: 0,
@@ -183,7 +196,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 TextFormField(
                   controller: _descriptionController,
                   maxLines: 3,
-                  decoration: _inputDecoration('Tell details about your product'),
+                  decoration: _inputDecoration(
+                    'Tell details about your product',
+                  ),
                 ),
                 const SizedBox(height: 20),
                 Row(
@@ -253,7 +268,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                 BlocBuilder<ItemManagementCubit, ItemManagementState>(
                   builder: (context, state) {
                     final isLoading = state is ItemActionLoading;
-                    final message = state is ItemActionLoading ? state.message : null;
+                    final message = state is ItemActionLoading
+                        ? state.message
+                        : null;
                     return Column(
                       children: [
                         if (isLoading && message != null)
@@ -322,7 +339,9 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   fontFamily: 'Poppins',
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  color: _totalImages >= _minImages ? Colors.green : theme.primaryColor,
+                  color: _totalImages >= _minImages
+                      ? Colors.green
+                      : theme.primaryColor,
                 ),
               ),
             ),
@@ -353,7 +372,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
               // Existing URLs come first
               if (index < _existingImageUrls.length) {
                 return _buildNetworkImageTile(
-                  theme, isDark, _existingImageUrls[index], index,
+                  theme,
+                  isDark,
+                  _existingImageUrls[index],
+                  index,
                 );
               }
 
@@ -361,7 +383,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
               final newFileIndex = index - _existingImageUrls.length;
               if (newFileIndex < _imageFiles.length) {
                 return _buildFileImageTile(
-                  theme, isDark, _imageFiles[newFileIndex], newFileIndex,
+                  theme,
+                  isDark,
+                  _imageFiles[newFileIndex],
+                  newFileIndex,
                 );
               }
 
@@ -385,7 +410,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  Widget _buildNetworkImageTile(ThemeData theme, bool isDark, String url, int index) {
+  Widget _buildNetworkImageTile(
+    ThemeData theme,
+    bool isDark,
+    String url,
+    int index,
+  ) {
     return _buildImageTileWrapper(
       theme: theme,
       isDark: isDark,
@@ -398,10 +428,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
           child: SizedBox(
             width: 24,
             height: 24,
-            child: CircularProgressIndicator(
-              strokeWidth: 2,
-              color: theme.primaryColor,
-            ),
+            child: const LoadingAnimation(size: 20, color: Colors.white),
           ),
         ),
         errorWidget: (_, __, ___) => Icon(
@@ -412,7 +439,12 @@ class _AddProductScreenState extends State<AddProductScreen> {
     );
   }
 
-  Widget _buildFileImageTile(ThemeData theme, bool isDark, File file, int index) {
+  Widget _buildFileImageTile(
+    ThemeData theme,
+    bool isDark,
+    File file,
+    int index,
+  ) {
     return _buildImageTileWrapper(
       theme: theme,
       isDark: isDark,
@@ -467,7 +499,11 @@ class _AddProductScreenState extends State<AddProductScreen> {
                   color: Colors.black.withValues(alpha: 0.6),
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.close_rounded, color: Colors.white, size: 16),
+                child: const Icon(
+                  Icons.close_rounded,
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
             ),
           ),
@@ -536,8 +572,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
               ),
               child: SvgPicture.asset(
                 'assets/icons/camera.svg',
-                colorFilter:
-                    ColorFilter.mode(theme.primaryColor, BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(
+                  theme.primaryColor,
+                  BlendMode.srcIn,
+                ),
                 width: 24,
                 height: 24,
               ),

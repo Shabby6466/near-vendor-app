@@ -8,8 +8,9 @@ import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_state.dart';
-import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
 
 class MapScreen extends StatefulWidget {
   final double initialLat;
@@ -38,80 +39,102 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          BlocBuilder<MapCubit, MapState>(
-            builder: (context, state) {
-              return FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  initialCenter: LatLng(widget.initialLat, widget.initialLon),
-                  initialZoom: 13,
-                  onPositionChanged: (position, hasGesture) {
-                    if (hasGesture) {
-                      // Optional: Fetch as user drags?
-                      // For now, only fetch on radius change or explicit button.
-                    }
-                  },
-                ),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.nearvendor.app',
+    return BlocListener<SessionCubit, SessionState>(
+      listenWhen: (previous, current) =>
+          previous.latitude != current.latitude ||
+          previous.longitude != current.longitude,
+      listener: (context, sessionState) {
+        if (sessionState.latitude != null && sessionState.longitude != null) {
+          final center = LatLng(
+            sessionState.latitude!,
+            sessionState.longitude!,
+          );
+          _mapController.move(center, 13);
+          context.read<MapCubit>().fetchShops(
+            lat: sessionState.latitude!,
+            lon: sessionState.longitude!,
+          );
+        }
+      },
+      child: Scaffold(
+        body: Stack(
+          children: [
+            BlocBuilder<MapCubit, MapState>(
+              builder: (context, state) {
+                return FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: LatLng(widget.initialLat, widget.initialLon),
+                    initialZoom: 13,
+                    onPositionChanged: (position, hasGesture) {
+                      if (hasGesture) {
+                        // Optional: Fetch as user drags?
+                      }
+                    },
                   ),
-                  CircleLayer(
-                    circles: [
-                      CircleMarker(
-                        point: LatLng(state.latitude, state.longitude),
-                        radius: state.radius,
-                        useRadiusInMeter: true,
-                        color: theme.primaryColor.withValues(alpha: 0.1),
-                        borderColor: theme.primaryColor.withValues(alpha: 0.3),
-                        borderStrokeWidth: 2,
-                      ),
-                    ],
-                  ),
-                  MarkerLayer(
-                    markers: state.shops.map((shop) {
-                      return Marker(
-                        point: LatLng(shop.shopLatitude, shop.shopLongitude),
-                        width: 100,
-                        height: 100,
-                        child: _buildShopMarker(context, shop),
-                      );
-                    }).toList(),
-                  ),
-                ],
-              );
-            },
-          ),
-
-          // Control Panel
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 16,
-            right: 16,
-            child: _buildControlPanel(context),
-          ),
-          // Recenter Button
-          Positioned(
-            bottom: 100,
-            right: 24,
-            child: FloatingActionButton(
-              heroTag: 'recenter_map',
-              onPressed: () {
-                _mapController.move(
-                  LatLng(widget.initialLat, widget.initialLon),
-                  13,
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.nearvendor.app',
+                    ),
+                    CircleLayer(
+                      circles: [
+                        CircleMarker(
+                          point: LatLng(state.latitude, state.longitude),
+                          radius: state.radius,
+                          useRadiusInMeter: true,
+                          color: theme.primaryColor.withValues(alpha: 0.1),
+                          borderColor: theme.primaryColor.withValues(
+                            alpha: 0.3,
+                          ),
+                          borderStrokeWidth: 2,
+                        ),
+                      ],
+                    ),
+                    MarkerLayer(
+                      markers: state.shops.map((shop) {
+                        return Marker(
+                          point: LatLng(shop.shopLatitude, shop.shopLongitude),
+                          width: 100,
+                          height: 100,
+                          child: _buildShopMarker(context, shop),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 );
               },
-              backgroundColor: theme.primaryColor,
-              child: const Icon(Icons.my_location_rounded, color: Colors.white),
             ),
-          ),
-        ],
+
+            // Control Panel
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              left: 16,
+              right: 16,
+              child: _buildControlPanel(context),
+            ),
+            // Recenter Button
+            Positioned(
+              bottom: 100,
+              right: 24,
+              child: FloatingActionButton(
+                heroTag: 'recenter_map',
+                onPressed: () {
+                  _mapController.move(
+                    LatLng(widget.initialLat, widget.initialLon),
+                    13,
+                  );
+                },
+                backgroundColor: theme.primaryColor,
+                child: const Icon(
+                  Icons.my_location_rounded,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -150,7 +173,7 @@ class _MapScreenState extends State<MapScreen> {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontWeight: FontWeight.w900,
-                          color: theme.primaryColor,
+                          color: theme.colorScheme.onSurface,
                           fontSize: 16,
                         ),
                       ),
@@ -161,9 +184,8 @@ class _MapScreenState extends State<MapScreen> {
                     data: SliderTheme.of(context).copyWith(
                       trackHeight: 6,
                       activeTrackColor: theme.primaryColor,
-                      inactiveTrackColor: theme.primaryColor.withValues(
-                        alpha: 0.1,
-                      ),
+                      inactiveTrackColor: theme.colorScheme.onSurface
+                          .withValues(alpha: 0.1),
                       thumbColor: theme.primaryColor,
                       overlayColor: theme.primaryColor.withValues(alpha: 0.1),
                     ),
@@ -210,8 +232,9 @@ class _MapScreenState extends State<MapScreen> {
                               child: Text(
                                 category.name,
                                 style: TextStyle(
-                                  color:
-                                      isSelected ? Colors.white : theme.primaryColor,
+                                  color: isSelected
+                                      ? Colors.white
+                                      : theme.primaryColor,
                                   fontFamily: 'Poppins',
                                   fontSize: 12,
                                   fontWeight: isSelected
@@ -240,7 +263,7 @@ class _MapScreenState extends State<MapScreen> {
       onTap: () {
         AppNavigator.push(
           context,
-          ShopDetailsScreen(
+          CustomerShopDetailsScreen(
             shop: ui.ShopModel(
               id: shop.id,
               name: shop.shopName,

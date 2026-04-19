@@ -8,8 +8,9 @@ import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:toasty_box/toasty_box.dart';
+import 'package:toasty_box/toast_service.dart';
 
 class NoResultSheet extends StatefulWidget {
   final String? message;
@@ -102,7 +103,8 @@ class _NoResultSheetState extends State<NoResultSheet> {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final isAuthenticated = context.read<SessionCubit>().isAuthenticated;
-    final hasQuery = widget.searchQuery != null && widget.searchQuery!.isNotEmpty;
+    final hasQuery =
+        widget.searchQuery != null && widget.searchQuery!.isNotEmpty;
 
     return SingleChildScrollView(
       child: Container(
@@ -125,10 +127,16 @@ class _NoResultSheetState extends State<NoResultSheet> {
               ),
             ),
 
-            Icon(Icons.search_off_rounded, size: 52, color: Colors.grey.shade400),
+            Icon(
+              Icons.search_off_rounded,
+              size: 52,
+              color: Colors.grey.shade400,
+            ),
             const SizedBox(height: 16),
             Text(
-              hasQuery ? '"${widget.searchQuery}" not found nearby' : 'No Items Found Nearby',
+              hasQuery
+                  ? '"${widget.searchQuery}" not found nearby'
+                  : 'No Items Found Nearby',
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
@@ -138,7 +146,8 @@ class _NoResultSheetState extends State<NoResultSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.message ?? 'We couldn\'t find this product within your discovery radius.',
+              widget.message ??
+                  'We couldn\'t find this product within your discovery radius.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -152,15 +161,25 @@ class _NoResultSheetState extends State<NoResultSheet> {
             // Option 1: Increase radius
             ElevatedButton.icon(
               onPressed: widget.onIncreaseRadius,
-              icon: const Icon(Icons.radar_rounded, size: 18, color: Colors.white),
+              icon: const Icon(
+                Icons.radar_rounded,
+                size: 18,
+                color: Colors.white,
+              ),
               label: const Text(
                 'Increase Discovery Radius',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF004AAD),
                 minimumSize: const Size(double.infinity, 52),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
                 elevation: 0,
               ),
             ),
@@ -170,7 +189,11 @@ class _NoResultSheetState extends State<NoResultSheet> {
             // Divider with "or"
             Row(
               children: [
-                Expanded(child: Divider(color: isDark ? Colors.white12 : Colors.grey.shade300)),
+                Expanded(
+                  child: Divider(
+                    color: isDark ? Colors.white12 : Colors.grey.shade300,
+                  ),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Text(
@@ -182,7 +205,11 @@ class _NoResultSheetState extends State<NoResultSheet> {
                     ),
                   ),
                 ),
-                Expanded(child: Divider(color: isDark ? Colors.white12 : Colors.grey.shade300)),
+                Expanded(
+                  child: Divider(
+                    color: isDark ? Colors.white12 : Colors.grey.shade300,
+                  ),
+                ),
               ],
             ),
 
@@ -195,13 +222,19 @@ class _NoResultSheetState extends State<NoResultSheet> {
               decoration: BoxDecoration(
                 color: ColorName.primary.withValues(alpha: 0.05),
                 borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: ColorName.primary.withValues(alpha: 0.12)),
+                border: Border.all(
+                  color: ColorName.primary.withValues(alpha: 0.12),
+                ),
               ),
               child: Column(
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.auto_awesome, color: ColorName.primary, size: 18),
+                      Icon(
+                        Icons.auto_awesome,
+                        color: ColorName.primary,
+                        size: 18,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'Make a Wish Instead',
@@ -229,16 +262,27 @@ class _NoResultSheetState extends State<NoResultSheet> {
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton.icon(
-                        onPressed: _isCreatingWish ? null : _showCategoryPickerAndCreateWish,
+                        onPressed: _isCreatingWish
+                            ? null
+                            : _showCategoryPickerAndCreateWish,
                         icon: _isCreatingWish
                             ? const SizedBox(
-                                width: 14,
-                                height: 14,
-                                child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                                width: 20,
+                                height: 20,
+                                child: LoadingAnimation(
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
                               )
-                            : const Icon(Icons.add_rounded, size: 16, color: Colors.white),
+                            : const Icon(
+                                Icons.add_rounded,
+                                size: 16,
+                                color: Colors.white,
+                              ),
                         label: Text(
-                          _isCreatingWish ? 'Adding…' : 'Wish for "${widget.searchQuery}"',
+                          _isCreatingWish
+                              ? 'Adding…'
+                              : 'Wish for "${widget.searchQuery}"',
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Poppins',
@@ -249,7 +293,9 @@ class _NoResultSheetState extends State<NoResultSheet> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: ColorName.primary,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
                           elevation: 0,
                         ),
                       ),
@@ -265,13 +311,21 @@ class _NoResultSheetState extends State<NoResultSheet> {
                         icon: const Icon(Icons.login_rounded, size: 16),
                         label: const Text(
                           'Sign in to make a wish',
-                          style: TextStyle(fontWeight: FontWeight.w700, fontFamily: 'Poppins', fontSize: 13),
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'Poppins',
+                            fontSize: 13,
+                          ),
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: ColorName.primary,
                           padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                          side: BorderSide(color: ColorName.primary.withValues(alpha: 0.3)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          side: BorderSide(
+                            color: ColorName.primary.withValues(alpha: 0.3),
+                          ),
                         ),
                       ),
                     ),
@@ -284,7 +338,10 @@ class _NoResultSheetState extends State<NoResultSheet> {
               onPressed: widget.onDismiss,
               child: Text(
                 'Dismiss',
-                style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
@@ -333,8 +390,11 @@ class _CategoryPickerSheet extends StatelessWidget {
                     color: ColorName.primary.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Icon(Icons.category_rounded,
-                      color: ColorName.primary, size: 18),
+                  child: const Icon(
+                    Icons.category_rounded,
+                    color: ColorName.primary,
+                    size: 18,
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -384,7 +444,9 @@ class _CategoryPickerSheet extends StatelessWidget {
                       ? SvgPicture.asset(
                           iconPath,
                           colorFilter: const ColorFilter.mode(
-                              ColorName.primary, BlendMode.srcIn),
+                            ColorName.primary,
+                            BlendMode.srcIn,
+                          ),
                           width: 20,
                           height: 20,
                         )

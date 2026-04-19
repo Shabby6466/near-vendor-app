@@ -23,16 +23,27 @@ final class HomeScreenSuccess extends HomeScreenState {
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
   final String? message;
+  final bool isGlobalFallback;
+  final String? rangeMessage;
 
   const HomeScreenSuccess({
     required this.shops,
     required this.categories,
     required this.selectedCategory,
     this.message,
+    this.isGlobalFallback = false,
+    this.rangeMessage,
   });
 
   @override
-  List<Object?> get props => [shops, categories, selectedCategory, message];
+  List<Object?> get props => [
+        shops,
+        categories,
+        selectedCategory,
+        message,
+        isGlobalFallback,
+        rangeMessage,
+      ];
 }
 
 final class HomeScreenFailure extends HomeScreenState {

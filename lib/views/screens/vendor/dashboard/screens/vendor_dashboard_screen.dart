@@ -7,7 +7,7 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/cubit/vendor_shop_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/widgets/shop_card.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/shop_details/screens/shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/vendor/dashboard/shop_details/screens/vendor_shop_details_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/create_shop_screen.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/cubit/analytics_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/analytics/screens/analytics_screen.dart';
@@ -16,7 +16,6 @@ import 'package:nearvendorapp/views/screens/vendor/dashboard/support/screens/sup
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/screens/portfolio_screen.dart';
-import 'package:nearvendorapp/utils/app_theme_data.dart';
 
 class VendorDashboardScreen extends StatefulWidget {
   const VendorDashboardScreen({super.key});
@@ -80,8 +79,6 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
               slivers: [
                 _buildSliverHeader(context, firstName),
 
-                _buildInsightsScroller(context),
-
                 SliverToBoxAdapter(
                   child: Padding(
                     padding: const EdgeInsets.fromLTRB(24, 24, 24, 12),
@@ -120,7 +117,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                               return Text(
                                 '${shops.length} Active',
                                 style: theme.textTheme.labelLarge?.copyWith(
-                                  color: theme.primaryColor,
+                                  color: theme.colorScheme.onSurface,
                                   fontSize: 13,
                                 ),
                               );
@@ -196,23 +193,29 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           StretchMode.zoomBackground,
           StretchMode.blurBackground,
         ],
-        background: Stack(
-          fit: StackFit.expand,
-          children: [
-            Positioned(
-              right: -50,
-              top: -50,
-              child: Opacity(
-                opacity: 0.1,
-                child: Icon(
-                  Icons.dashboard_rounded,
-                  size: 250,
-                  color: Colors.white,
+        background: ClipRRect(
+          borderRadius: const BorderRadius.vertical(
+            bottom: Radius.circular(26),
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Assets.images.headerImg.image(fit: BoxFit.cover),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      theme.primaryColor.withValues(alpha: 0.7),
+                      theme.primaryColor.withValues(alpha: 0.95),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            if (!_isCollapsed) _buildExpandedHeader(context, name),
-          ],
+              if (!_isCollapsed) _buildExpandedHeader(context, name),
+            ],
+          ),
         ),
       ),
     );
@@ -276,11 +279,16 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
+                  border: Border.all(
+                    color: Colors.white.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -351,7 +359,6 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                 totalShops.toString(),
                 Icons.store_mall_directory_rounded,
               ),
-              _buildStatItem('GROWTH', '+12%', Icons.trending_up_rounded),
             ],
           ),
         );
@@ -391,127 +398,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
     );
   }
 
-  Widget _buildInsightsScroller(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(24, 24, 24, 16),
-            child: Text(
-              'Market Insights',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                letterSpacing: -0.5,
-                fontSize: 18,
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 140,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              physics: const BouncingScrollPhysics(),
-              children: [
-                _buildInsightCard(
-                  context,
-                  'Weekly Reach',
-                  '1.2k Views',
-                  '+12.5%',
-                  Icons.trending_up_rounded,
-                  const Color(0xFFFF4D00),
-                ),
-                _buildInsightCard(
-                  context,
-                  'Market Gap',
-                  'High Demand',
-                  'Electronics',
-                  Icons.lightbulb_outline_rounded,
-                  const Color(0xFFFF4D00),
-                ),
-                _buildInsightCard(
-                  context,
-                  'Profile Sync',
-                  '98% Rating',
-                  'Top Tier',
-                  Icons.verified_user_outlined,
-                  const Color(0xFFFF4D00),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInsightCard(
-    BuildContext context,
-    String title,
-    String value,
-    String subtext,
-    IconData icon,
-    Color color,
-  ) {
-    final theme = Theme.of(context);
-    return Container(
-      width: 160,
-      margin: const EdgeInsets.only(right: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.cardColor,
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: color.withValues(alpha: 0.1), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Icon(icon, color: color, size: 20),
-              Text(
-                subtext,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontWeight: FontWeight.w800,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-          const Spacer(),
-          Text(
-            value,
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w800,
-              letterSpacing: -0.5,
-              fontSize: 18,
-            ),
-          ),
-          Text(
-            title,
-            style: theme.textTheme.bodySmall?.copyWith(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildQuickActionsGrid(BuildContext context) {
-    final theme = Theme.of(context);
-    final dashboardTheme = theme.extension<DashboardThemeExtension>();
-    
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       sliver: SliverGrid(
@@ -526,10 +413,12 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             context,
             'Add Shop',
             'Expand your reach',
-            Icon(Icons.add_business_rounded,
-                color: const Color(0xFFFF4D00),
-                size: 22),
-            const Color(0xFFFF4D00),
+            Icon(
+              Icons.add_business_rounded,
+              color: Theme.of(context).colorScheme.onSurface,
+              size: 22,
+            ),
+            Theme.of(context).colorScheme.onSurface,
             () {
               AppNavigator.push(
                 context,
@@ -545,13 +434,14 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Analytics',
             'Performance data',
             Assets.icons.graph1.svg(
-              colorFilter: const ColorFilter.mode(
-                  Color(0xFFFF4D00),
-                  BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
+                BlendMode.srcIn,
+              ),
               width: 22,
               height: 22,
             ),
-            const Color(0xFFFF4D00),
+            Theme.of(context).primaryColor,
             () {
               AppNavigator.push(
                 context,
@@ -571,13 +461,14 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Manage items',
             SvgPicture.asset(
               'assets/icons/inventory.svg',
-              colorFilter: const ColorFilter.mode(
-                  Color(0xFFFF4D00),
-                  BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
+                BlendMode.srcIn,
+              ),
               width: 22,
               height: 22,
             ),
-            const Color(0xFFFF4D00),
+            Theme.of(context).primaryColor,
             () {
               AppNavigator.push(
                 context,
@@ -594,18 +485,16 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
             'Get assistance',
             SvgPicture.asset(
               'assets/icons/support.svg',
-              colorFilter: const ColorFilter.mode(
-                  Color(0xFFFF4D00),
-                  BlendMode.srcIn),
+              colorFilter: ColorFilter.mode(
+                Theme.of(context).colorScheme.onSurface,
+                BlendMode.srcIn,
+              ),
               width: 22,
               height: 22,
             ),
-            const Color(0xFFFF4D00),
+            Theme.of(context).primaryColor,
             () {
-              AppNavigator.push(
-                context,
-                const SupportScreen(),
-              );
+              AppNavigator.push(context, const SupportScreen());
             },
           ),
         ]),
@@ -631,16 +520,8 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: theme.cardColor,
-            borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: color.withValues(alpha: 0.1), width: 1.5),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.05),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            color: theme.cardColor.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(16),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -664,8 +545,9 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontSize: 10,
                         fontWeight: FontWeight.w500,
-                        color: theme.textTheme.bodySmall?.color
-                            ?.withValues(alpha: 0.5),
+                        color: theme.textTheme.bodySmall?.color?.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                     ),
                   ],
@@ -732,7 +614,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
                 context,
                 BlocProvider.value(
                   value: context.read<VendorShopCubit>(),
-                  child: ShopDetailsScreen(shop: shop),
+                  child: VendorShopDetailsScreen(shop: shop),
                 ),
               ),
             ),
@@ -802,7 +684,7 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
               );
             },
             icon: const Icon(Icons.rocket_launch_rounded),
-            label:  Text(
+            label: Text(
               'Establish Digital Shop',
               style: Theme.of(context).textTheme.labelLarge?.copyWith(
                 fontWeight: FontWeight.w800,
@@ -858,11 +740,11 @@ class _VendorDashboardScreenState extends State<VendorDashboardScreen> {
           TextButton.icon(
             onPressed: () => context.read<VendorShopCubit>().fetchShops(),
             icon: const Icon(Icons.refresh_rounded),
-            label:  Text(
+            label: Text(
               'RETRY SYNC',
-              style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w800),
             ),
             style: TextButton.styleFrom(
               foregroundColor: theme.primaryColor,

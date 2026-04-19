@@ -1,6 +1,8 @@
 class ShopModel {
   final String id;
+  final String? vendorId;
   final String name;
+
   final String image;
   final String category;
   final String? location;
@@ -9,9 +11,11 @@ class ShopModel {
   final int? itemCount;
   final bool? isVerifiedBadge;
   final bool? isRecentlyActive;
+  final double? distance;
 
   ShopModel({
     required this.id,
+    this.vendorId,
     required this.name,
     required this.image,
     required this.category,
@@ -21,25 +25,31 @@ class ShopModel {
     this.itemCount,
     this.isVerifiedBadge,
     this.isRecentlyActive,
+    this.distance,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
+      'vendorId': vendorId,
       'name': name,
+
       'image': image,
       'category': category,
       'location': location,
       'itemCount': itemCount,
       'isVerifiedBadge': isVerifiedBadge,
       'isRecentlyActive': isRecentlyActive,
+      'distance': distance,
     };
   }
 
   factory ShopModel.fromJson(Map<String, dynamic> json) {
     return ShopModel(
       id: json['id']?.toString() ?? '',
+      vendorId: json['vendorId']?.toString(),
       name: json['name']?.toString() ?? '',
+
       image: json['image']?.toString() ?? '',
       category: json['category']?.toString() ?? '',
       location: json['location']?.toString(),
@@ -48,6 +58,7 @@ class ShopModel {
       itemCount: json['itemCount'] as int?,
       isVerifiedBadge: json['isVerifiedBadge'] as bool?,
       isRecentlyActive: json['isRecentlyActive'] as bool?,
+      distance: double.tryParse(json['distance']?.toString() ?? ''),
     );
   }
 
@@ -62,7 +73,8 @@ class ShopModel {
         other.location == location &&
         other.itemCount == itemCount &&
         other.isVerifiedBadge == isVerifiedBadge &&
-        other.isRecentlyActive == isRecentlyActive;
+        other.isRecentlyActive == isRecentlyActive &&
+        other.distance == distance;
   }
 
   @override
@@ -74,10 +86,11 @@ class ShopModel {
       location.hashCode ^
       itemCount.hashCode ^
       isVerifiedBadge.hashCode ^
-      isRecentlyActive.hashCode;
+      isRecentlyActive.hashCode ^
+      distance.hashCode;
 
   @override
   String toString() {
-    return 'ShopModel(id: $id, name: $name, image: $image, category: $category, location: $location)';
+    return 'ShopModel(id: $id, name: $name, distance: $distance)';
   }
 }

@@ -23,6 +23,9 @@ class AppTextField extends StatefulWidget {
   final Iterable<String>? autofillHints;
   final EdgeInsetsGeometry? contentPadding;
   final Color? hintColor;
+  final TextStyle? style;
+  final TextStyle? hintStyle;
+  final InputDecoration? decoration;
 
   const AppTextField({
     super.key,
@@ -30,6 +33,9 @@ class AppTextField extends StatefulWidget {
     this.textAlign,
     this.contentPadding,
     this.hintColor,
+    this.style,
+    this.hintStyle,
+    this.decoration,
     this.hint,
     this.isPassword = false,
     this.keyboardType,
@@ -89,70 +95,69 @@ class _AppTextFieldState extends State<AppTextField> {
               validator: widget.validator,
               textInputAction: widget.textInputAction,
               onFieldSubmitted: widget.onFieldSubmitted,
-              style: theme.textTheme.bodyMedium?.copyWith(
+              style: widget.style ?? theme.textTheme.bodyMedium?.copyWith(
                 fontFamily: 'Poppins',
               ),
-              decoration:
-                  InputDecoration(
+              decoration: (widget.decoration ??
+                      InputDecoration(
                         contentPadding: widget.contentPadding,
-                        hintStyle: TextStyle(
-                          color:
-                              widget.hintColor ??
-                              theme.textTheme.bodySmall?.color?.withValues(
-                                alpha: (0.5),
-                              ),
-                          fontFamily: 'Poppins',
-                        ),
-                      )
-                      .applyDefaults(theme.inputDecorationTheme)
-                      .copyWith(
-                        focusedBorder: widget.isMultiline
-                            ? OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )
-                            : null,
-                        enabledBorder: widget.isMultiline
-                            ? OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )
-                            : null,
-                        disabledBorder: widget.isMultiline
-                            ? OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide.none,
-                              )
-                            : null,
-                        hintText: widget.hint,
-                        prefix: widget.prefix,
-                        prefixIcon: widget.prefixIcon != null
-                            ? Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 10,
-                                ),
-                                child: widget.prefixIcon,
-                              )
-                            : null,
-                        suffixIcon: widget.isPassword
-                            ? IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureText = !_obscureText;
-                                  });
-                                },
-                                icon: Icon(
-                                  _obscureText
-                                      ? Icons.visibility_off
-                                      : Icons.visibility,
-                                  color: theme.iconTheme.color?.withValues(
+                        hintStyle: widget.hintStyle ??
+                            TextStyle(
+                              color:
+                                  widget.hintColor ??
+                                  theme.textTheme.bodySmall?.color?.withValues(
                                     alpha: (0.5),
                                   ),
-                                ),
-                              )
-                            : widget.suffixIcon,
-                        errorMaxLines: 2,
-                      ),
+                              fontFamily: 'Poppins',
+                            ),
+                      ))
+                  .applyDefaults(theme.inputDecorationTheme)
+                  .copyWith(
+                    focusedBorder: widget.isMultiline
+                        ? OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          )
+                        : null,
+                    enabledBorder: widget.isMultiline
+                        ? OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          )
+                        : null,
+                    disabledBorder: widget.isMultiline
+                        ? OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                            borderSide: BorderSide.none,
+                          )
+                        : null,
+                    hintText: widget.hint,
+                    prefix: widget.prefix,
+                    prefixIcon: widget.prefixIcon != null
+                        ? Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: widget.prefixIcon,
+                          )
+                        : null,
+                    suffixIcon: widget.isPassword
+                        ? IconButton(
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: theme.iconTheme.color?.withValues(
+                                alpha: (0.5),
+                              ),
+                            ),
+                          )
+                        : widget.suffixIcon,
+                    errorMaxLines: 2,
+                  ),
             ),
           ),
         ),

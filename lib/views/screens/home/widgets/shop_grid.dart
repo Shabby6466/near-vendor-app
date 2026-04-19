@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -19,7 +21,7 @@ class ShopGrid extends StatelessWidget {
       builder: (context, state) {
         if (state is HomeScreenLoading) {
           return const SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator()),
+            child: Center(child: LoadingAnimation()),
           );
         }
 
@@ -36,7 +38,6 @@ class ShopGrid extends StatelessWidget {
 
         if (state is HomeScreenSuccess) {
           final shops = state.shops;
-          final message = state.message;
 
           if (shops.isEmpty) {
             return SliverFillRemaining(
@@ -90,51 +91,18 @@ class ShopGrid extends StatelessWidget {
 
           return SliverMainAxisGroup(
             slivers: [
-              if (message != null)
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: AppSpacing.mediumHorizontalSpacing(context),
-                      vertical: 8,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 12,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.amber.shade50,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.amber.shade200),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline_rounded,
-                            color: Colors.amber.shade900,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              message,
-                              style: TextStyle(
-                                color: Colors.amber.shade900,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+              if (state.isGlobalFallback && state.rangeMessage != null)
+                SliverPadding(
+                  padding: const EdgeInsets.only(top: 12),
+                  sliver: SliverToBoxAdapter(
+                    child: FallbackBanner(message: state.rangeMessage!),
                   ),
                 ),
               SliverPadding(
                 padding: EdgeInsets.only(
                   left: AppSpacing.mediumHorizontalSpacing(context),
                   right: AppSpacing.mediumHorizontalSpacing(context),
-                  top: 12,
+                  top: state.isGlobalFallback ? 8 : 12,
                   bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
                 ),
                 sliver: SliverGrid(
@@ -150,7 +118,7 @@ class ShopGrid extends StatelessWidget {
                       onTap: () {
                         AppNavigator.push(
                           context,
-                          ShopDetailsScreen(shop: shop),
+                          CustomerShopDetailsScreen(shop: shop),
                         );
                       },
                       child: VisibilityDetector(
@@ -158,8 +126,8 @@ class ShopGrid extends StatelessWidget {
                         onVisibilityChanged: (info) {
                           if (info.visibleFraction > 0.5) {
                             context.read<HomeScreenCubit>().trackImpression(
-                                  shop.id,
-                                );
+                              shop.id,
+                            );
                           }
                         },
                         child: ShopCard(shop: shop),
@@ -233,12 +201,12 @@ class ShopCard extends StatelessWidget {
                           Icons.storefront_outlined,
                           color: theme.primaryColor.withValues(alpha: 0.4),
                           size: 32,
-                        ),
+                         ),
                       ),
                     ),
                     errorWidget: (context, error, stackTrace) => Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
+                         gradient: LinearGradient(
                           colors: [
                             theme.primaryColor.withValues(alpha: 0.1),
                             theme.primaryColor.withValues(alpha: 0.05),
@@ -257,6 +225,42 @@ class ShopCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (shop.distance != null)
+                  Positioned(
+                    top: 8,
+                    right: 8,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.location_on_rounded,
+                            color: Colors.white,
+                            size: 10,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            shop.distance! < 1000
+                                ? '${shop.distance!.toInt()}m'
+                                : '${(shop.distance! / 1000).toStringAsFixed(1)}km',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 10,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                       ),
+                    ),
+                  ),
                 // Badge Overlays
                 Positioned(
                   top: 8,
@@ -312,8 +316,10 @@ class ShopCard extends StatelessWidget {
                   bottom: 8,
                   left: 8,
                   child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.black.withValues(alpha: 0.6),
                       borderRadius: BorderRadius.circular(4),
@@ -363,8 +369,9 @@ class ShopCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(
                           fontSize: 11,
-                          color: theme.textTheme.bodySmall?.color
-                              ?.withValues(alpha: 0.6),
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: 0.6,
+                          ),
                         ),
                       ),
                     ),

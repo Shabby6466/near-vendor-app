@@ -1,45 +1,78 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 
 class AuthTextFieldWidget extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final bool isPassword;
+  final IconData? prefixIcon;
 
   const AuthTextFieldWidget({
     super.key,
     required this.label,
     required this.controller,
     this.isPassword = false,
+    this.prefixIcon,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
+    final onSurface = theme.colorScheme.onSurface;
 
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.mediumHorizontalSpacing(context),
-        vertical: 4,
+    final baseBorder = OutlineInputBorder(
+      borderRadius: BorderRadius.circular(12),
+      borderSide: BorderSide(
+        color: onSurface.withValues(alpha: 0.08),
+        width: 1,
       ),
-      width: AppSpacing.screenWidth(context),
-      decoration: BoxDecoration(
-        color: isDark
-            ? Colors.white.withValues(alpha: (0.05))
-            : Colors.white.withValues(alpha: (0.9)),
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: (0.1)),
-          width: 1,
+    );
+
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 400),
+        child: AppTextField(
+          controller: controller,
+          hint: label.toUpperCase(),
+          isPassword: isPassword,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w600,
+            fontSize: 15,
+            letterSpacing: 0.3,
+            color: onSurface,
+          ),
+          hintStyle: theme.textTheme.bodySmall?.copyWith(
+            fontSize: 10,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1.5,
+            color: onSurface.withValues(alpha: 0.35),
+          ),
+          decoration: InputDecoration(
+            filled: true,
+            fillColor: onSurface.withValues(alpha: 0.1),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 22,
+              horizontal: 16,
+            ),
+            prefixIcon: prefixIcon != null
+                ? Icon(
+                    prefixIcon,
+                    size: 20,
+                    color: onSurface.withValues(alpha: 0.6),
+                  )
+                : null,
+            border: baseBorder,
+            enabledBorder: baseBorder,
+            focusedBorder: baseBorder.copyWith(
+              borderSide: const BorderSide(
+                color: AppThemeData.vendorAccent,
+                width: 1.5,
+              ),
+            ),
+            hintText: label.toUpperCase(),
+          ),
         ),
-      ),
-      child: AppTextField(
-        controller: controller,
-        hint: label,
-        isPassword: isPassword,
-        contentPadding: const EdgeInsets.symmetric(vertical: 16),
       ),
     );
   }

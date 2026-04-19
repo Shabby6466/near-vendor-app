@@ -31,7 +31,16 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+        // Drag Handle
+        Container(
+          height: 4,
+          width: 40,
+          decoration: BoxDecoration(
+            color: theme.dividerColor.withValues(alpha: (0.2)),
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
         Text(
           'Discovery Radius',
           style: theme.textTheme.titleLarge?.copyWith(
@@ -45,7 +54,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
             color: theme.textTheme.bodyMedium?.color?.withValues(alpha: (0.6)),
           ),
         ),
-        SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+        SizedBox(height: AppSpacing.extraLargeVerticalSpacing(context)),
         Slider(
           value: _currentRadius,
           min: 1,
@@ -60,6 +69,16 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
             });
             widget.onRadiusChanged(value);
           },
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('1 km', style: theme.textTheme.labelSmall),
+              Text('100 km', style: theme.textTheme.labelSmall),
+            ],
+          ),
         ),
         SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
       ],

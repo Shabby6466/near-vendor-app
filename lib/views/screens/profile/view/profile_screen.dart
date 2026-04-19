@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
@@ -27,17 +28,12 @@ class ProfileScreen extends StatelessWidget {
         body: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {
-              return Center(
-                child: CircularProgressIndicator(color: theme.primaryColor),
-              );
+              return Center(child: const LoadingAnimation(size: 24));
             }
 
             if (state is ProfileFailure) {
               return Center(
-                child: Text(
-                  state.error,
-                  style: theme.textTheme.bodyMedium,
-                ),
+                child: Text(state.error, style: theme.textTheme.bodyMedium),
               );
             }
 
@@ -47,10 +43,13 @@ class ProfileScreen extends StatelessWidget {
                   final bool isGuest = sessionState.status == AuthStatus.guest;
 
                   return CustomScrollView(
-                    physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+                    physics: const BouncingScrollPhysics(
+                      parent: AlwaysScrollableScrollPhysics(),
+                    ),
                     slivers: [
                       SliverAppBar(
-                        backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.9),
+                        backgroundColor: theme.scaffoldBackgroundColor
+                            .withValues(alpha: 0.9),
                         surfaceTintColor: Colors.transparent,
                         elevation: 0,
                         pinned: true,
@@ -70,16 +69,25 @@ class ProfileScreen extends StatelessWidget {
                         sliver: SliverList(
                           delegate: SliverChildListDelegate([
                             if (isGuest) ...[
-                              SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.05,
+                              ),
                               const GuestAuthBanner(),
-                              SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                              SizedBox(
+                                height: AppSpacing.largeVerticalSpacing(
+                                  context,
+                                ),
+                              ),
                               DiscoverySettings(
                                 radius: state.discoveryRadius,
                                 newOfferAlerts: state.newOfferAlerts,
-                                onRadiusChanged: (value) =>
-                                    context.read<ProfileCubit>().updateRadius(value),
-                                onAlertsToggled: (value) =>
-                                    context.read<ProfileCubit>().toggleOfferAlerts(value),
+                                onRadiusChanged: (value) => context
+                                    .read<ProfileCubit>()
+                                    .updateRadius(value),
+                                onAlertsToggled: (value) => context
+                                    .read<ProfileCubit>()
+                                    .toggleOfferAlerts(value),
                               ),
                             ] else ...[
                               ProfileHeader(
@@ -87,22 +95,33 @@ class ProfileScreen extends StatelessWidget {
                                 userLocation: state.userLocation,
                                 photoUrl: state.photoUrl,
                                 isUploadingImage: state.isUploadingImage,
-                                onEditProfile: () =>
-                                    context.read<ProfileCubit>().pickImageFromGallery(),
+                                onEditProfile: () => context
+                                    .read<ProfileCubit>()
+                                    .pickImageFromGallery(),
                               ),
-                              SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                              SizedBox(
+                                height: AppSpacing.largeVerticalSpacing(
+                                  context,
+                                ),
+                              ),
 
                               // Preferences Section
                               _buildSectionTitle(context, 'PREFERENCES'),
                               DiscoverySettings(
                                 radius: state.discoveryRadius,
                                 newOfferAlerts: state.newOfferAlerts,
-                                onRadiusChanged: (value) =>
-                                    context.read<ProfileCubit>().updateRadius(value),
-                                onAlertsToggled: (value) =>
-                                    context.read<ProfileCubit>().toggleOfferAlerts(value),
+                                onRadiusChanged: (value) => context
+                                    .read<ProfileCubit>()
+                                    .updateRadius(value),
+                                onAlertsToggled: (value) => context
+                                    .read<ProfileCubit>()
+                                    .toggleOfferAlerts(value),
                               ),
-                              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+                              SizedBox(
+                                height: AppSpacing.mediumVerticalSpacing(
+                                  context,
+                                ),
+                              ),
 
                               // Account Section
                               _buildSectionTitle(context, 'ACCOUNT SETTINGS'),
@@ -114,30 +133,57 @@ class ProfileScreen extends StatelessWidget {
                                       icon: Icons.storefront_outlined,
                                       title: 'Merchant Console',
                                       subtitle: 'Vendor Account Status',
-                                      trailing: sessionState.vendorStatus == null
+                                      trailing:
+                                          sessionState.vendorStatus == null
                                           ? const SizedBox(
                                               width: 20,
                                               height: 20,
-                                              child: CircularProgressIndicator(strokeWidth: 2),
+                                              child: const LoadingAnimation(
+                                                size: 16,
+                                              ),
                                             )
                                           : Container(
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 10, vertical: 4),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 10,
+                                                    vertical: 4,
+                                                  ),
                                               decoration: BoxDecoration(
-                                                color: sessionState.vendorStatus == 'APPROVED'
-                                                    ? Colors.green.withValues(alpha: 0.1)
-                                                    : theme.dividerColor.withValues(alpha: 0.1),
-                                                borderRadius: BorderRadius.circular(10),
+                                                color:
+                                                    sessionState.vendorStatus ==
+                                                        'APPROVED'
+                                                    ? Colors.green.withValues(
+                                                        alpha: 0.1,
+                                                      )
+                                                    : theme.dividerColor
+                                                          .withValues(
+                                                            alpha: 0.1,
+                                                          ),
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
                                               child: Text(
-                                                sessionState.vendorStatus ?? 'PENDING',
-                                                style: theme.textTheme.labelSmall?.copyWith(
-                                                  color: sessionState.vendorStatus == 'APPROVED'
-                                                      ? Colors.green
-                                                      : theme.textTheme.bodyMedium?.color
-                                                          ?.withValues(alpha: 0.6),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
+                                                sessionState.vendorStatus ??
+                                                    'PENDING',
+                                                style: theme
+                                                    .textTheme
+                                                    .labelSmall
+                                                    ?.copyWith(
+                                                      color:
+                                                          sessionState
+                                                                  .vendorStatus ==
+                                                              'APPROVED'
+                                                          ? Colors.green
+                                                          : theme
+                                                                .textTheme
+                                                                .bodyMedium
+                                                                ?.color
+                                                                ?.withValues(
+                                                                  alpha: 0.6,
+                                                                ),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
                                               ),
                                             ),
                                     )
@@ -145,24 +191,40 @@ class ProfileScreen extends StatelessWidget {
                                     ProfileMenuItem(
                                       icon: Icons.storefront_outlined,
                                       title: 'Merchant Console',
-                                      subtitle: 'Become a vendor and start selling',
+                                      subtitle:
+                                          'Become a vendor and start selling',
                                       onTap: () {
-                                        AppNavigator.push(context, const VendorOnboardingScreen());
+                                        AppNavigator.push(
+                                          context,
+                                          const VendorOnboardingScreen(),
+                                        );
                                       },
                                     ),
-                                  const Divider(height: 1, indent: 64, endIndent: 20),
+                                  const Divider(
+                                    height: 1,
+                                    indent: 64,
+                                    endIndent: 20,
+                                  ),
                                   ProfileMenuItem(
                                     icon: Icons.lock_outline_rounded,
                                     title: 'Change Password',
-                                    subtitle: 'Update your security credentials',
+                                    subtitle:
+                                        'Update your security credentials',
                                     onTap: () {
-                                      AppNavigator.push(context, const ChangePasswordScreen());
+                                      AppNavigator.push(
+                                        context,
+                                        const ChangePasswordScreen(),
+                                      );
                                     },
                                   ),
                                 ],
                               ),
 
-                              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+                              SizedBox(
+                                height: AppSpacing.mediumVerticalSpacing(
+                                  context,
+                                ),
+                              ),
 
                               // Support Section
                               _buildSectionTitle(context, 'SUPPORT'),
@@ -175,7 +237,11 @@ class ProfileScreen extends StatelessWidget {
                                     subtitle: 'FAQs and contact information',
                                     onTap: () {},
                                   ),
-                                  const Divider(height: 1, indent: 64, endIndent: 20),
+                                  const Divider(
+                                    height: 1,
+                                    indent: 64,
+                                    endIndent: 20,
+                                  ),
                                   ProfileMenuItem(
                                     icon: Icons.privacy_tip_outlined,
                                     title: 'Privacy Policy',
@@ -185,7 +251,11 @@ class ProfileScreen extends StatelessWidget {
                                 ],
                               ),
 
-                              SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                              SizedBox(
+                                height: AppSpacing.largeVerticalSpacing(
+                                  context,
+                                ),
+                              ),
                               _buildLogoutButton(context),
                             ],
                             const SizedBox(height: 100),
@@ -214,13 +284,18 @@ class ProfileScreen extends StatelessWidget {
           fontSize: 12,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.2,
-          color: Theme.of(context).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+          color: Theme.of(
+            context,
+          ).textTheme.bodySmall?.color?.withValues(alpha: 0.5),
         ),
       ),
     );
   }
 
-  Widget _buildSettingsGroup(BuildContext context, {required List<Widget> children}) {
+  Widget _buildSettingsGroup(
+    BuildContext context, {
+    required List<Widget> children,
+  }) {
     final theme = Theme.of(context);
     return Container(
       decoration: BoxDecoration(
@@ -246,7 +321,6 @@ class ProfileScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Material(
-        color: Colors.red.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
@@ -259,10 +333,6 @@ class ProfileScreen extends StatelessWidget {
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 18),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.red.withValues(alpha: 0.2), width: 1.5),
-              borderRadius: BorderRadius.circular(20),
-            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -289,4 +359,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-

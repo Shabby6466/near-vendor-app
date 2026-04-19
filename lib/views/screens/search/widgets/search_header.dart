@@ -5,6 +5,7 @@ import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/view/profile_screen.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 
@@ -21,7 +22,8 @@ class SearchHeader extends StatelessWidget {
       ),
       child: BlocBuilder<SessionCubit, SessionState>(
         builder: (context, state) {
-          final locationText = state.cityName ??
+          final locationText =
+              state.cityName ??
               (state.latitude != null && state.longitude != null
                   ? '${state.latitude!.toStringAsFixed(4)}, ${state.longitude!.toStringAsFixed(4)}'
                   : 'Select Location');
@@ -29,18 +31,19 @@ class SearchHeader extends StatelessWidget {
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                onTap: () {
-                  HapticFeedback.lightImpact();
-                  context.read<SessionCubit>().updateLocation();
-                },
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text(
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    HapticFeedback.lightImpact();
+                    context.read<SessionCubit>().startManualLocationPick();
+                    AppNavigator.push(context, const LocationPickerScreen());
+                  },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Text(
                           'Current Location',
                           style: theme.textTheme.labelSmall?.copyWith(
                             fontSize: 12,
@@ -49,35 +52,33 @@ class SearchHeader extends StatelessWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(width: 4),
-                        Icon(
-                          Icons.keyboard_arrow_down_rounded,
-                          size: 16,
-                          color: theme.primaryColor.withValues(alpha: .5),
-                        ),
-                      ],
-                    ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.location_on_rounded,
-                          size: 16,
-                          color: theme.primaryColor,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          locationText,
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_rounded,
+                            size: 16,
+                            color: theme.primaryColor,
                           ),
-                        ),
-                      ],
-                    ),
-                  ],
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              locationText,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.titleMedium?.copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
+              const SizedBox(width: 16),
               const _ProfileHeader(),
             ],
           );
@@ -123,9 +124,7 @@ class _ProfileHeader extends StatelessWidget {
                     ),
                   Text(
                     name,
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      fontSize: 13,
-                    ),
+                    style: theme.textTheme.labelLarge?.copyWith(fontSize: 13),
                   ),
                 ],
               ),

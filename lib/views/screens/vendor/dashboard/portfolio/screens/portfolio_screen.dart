@@ -5,6 +5,7 @@ import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_cubit.dart';
 import 'package:nearvendorapp/views/screens/vendor/dashboard/portfolio/cubit/portfolio_state.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'dart:ui';
@@ -27,7 +28,6 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
 
   @override
   Widget build(BuildContext context) {
-
     return AppScaffold(
       appBar: AppBar(
         title: const Text(
@@ -41,7 +41,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       body: BlocBuilder<PortfolioCubit, PortfolioState>(
         builder: (context, state) {
           if (state is PortfolioLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingIndicator();
           }
 
           if (state is PortfolioFailure) {
@@ -61,7 +61,8 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                 ),
 
                 // Performance Section (only show if not searching)
-                if (state.searchQuery == null || state.searchQuery!.isEmpty) ...[
+                if (state.searchQuery == null ||
+                    state.searchQuery!.isEmpty) ...[
                   SliverToBoxAdapter(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -74,7 +75,8 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                 ],
 
                 // Search Results
-                if (state.searchQuery != null && state.searchQuery!.isNotEmpty) ...[
+                if (state.searchQuery != null &&
+                    state.searchQuery!.isNotEmpty) ...[
                   if (state.shops.isNotEmpty) ...[
                     _buildSectionHeader('Shops found'),
                     _buildShopsGrid(state.shops),
@@ -94,7 +96,7 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       ),
                     ),
                 ],
-                
+
                 const SliverToBoxAdapter(child: SizedBox(height: 100)),
               ],
             );
@@ -122,7 +124,11 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
       ),
       child: TextField(
         controller: _searchController,
-        onChanged: (val) => context.read<PortfolioCubit>().searchPortfolio(val),
+        onChanged: (val) {
+          setState(() {});
+          context.read<PortfolioCubit>().searchPortfolio(val);
+        },
+        style: const TextStyle(fontFamily: 'Poppins'),
         decoration: InputDecoration(
           hintText: 'Search shops or items...',
           hintStyle: TextStyle(
@@ -132,15 +138,33 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
           prefixIcon: Icon(Icons.search_rounded, color: theme.primaryColor),
           suffixIcon: _searchController.text.isNotEmpty
               ? IconButton(
-                  icon: const Icon(Icons.clear_rounded),
+                  icon: const Icon(Icons.clear_rounded, size: 20),
                   onPressed: () {
-                    _searchController.clear();
+                    setState(() {
+                      _searchController.clear();
+                    });
                     context.read<PortfolioCubit>().searchPortfolio('');
                   },
                 )
               : null,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 15),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(20),
+            borderSide: BorderSide.none,
+          ),
+          filled: true,
+          fillColor: theme.cardColor,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 15,
+            horizontal: 20,
+          ),
         ),
       ),
     );
@@ -181,37 +205,70 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
   Widget _buildTimeRangePicker(BuildContext context, PortfolioSuccess state) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       decoration: BoxDecoration(
-        color: theme.primaryColor.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
+        color: theme.primaryColor.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.primaryColor.withValues(alpha: 0.15)),
       ),
-      child: DropdownButton<int>(
-        value: state.days,
-        underline: const SizedBox(),
-        icon: Icon(Icons.keyboard_arrow_down_rounded, color: theme.primaryColor, size: 20),
-        items: [1, 7, 30].map((int value) {
-          return DropdownMenuItem<int>(
-            value: value,
-            child: Text(
-              'Last $value days',
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                color: theme.primaryColor,
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<int>(
+          value: state.days,
+          icon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: theme.primaryColor,
+            size: 22,
+          ),
+          dropdownColor: theme.cardColor,
+          borderRadius: BorderRadius.circular(16),
+          style: theme.textTheme.labelLarge?.copyWith(
+            fontWeight: FontWeight.w500,
+            color: theme.primaryColor,
+            fontFamily: 'Poppins',
+          ),
+          items: [1, 7, 30].map((int value) {
+            return DropdownMenuItem<int>(
+              value: value,
+              child: Text(
+                'Last $value days',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 13,
+                  fontWeight: state.days == value
+                      ? FontWeight.w500
+                      : FontWeight.w400,
+                ),
               ),
-            ),
-          );
-        }).toList(),
-        onChanged: (val) {
-          if (val != null) context.read<PortfolioCubit>().changeTimeRange(val);
-        },
+            );
+          }).toList(),
+          selectedItemBuilder: (BuildContext context) {
+            return [1, 7, 30].map((int value) {
+              return Center(
+                child: Text(
+                  'Last $value days',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    color: theme.primaryColor,
+                    fontFamily: 'Poppins',
+                    letterSpacing: -0.5,
+                  ),
+                ),
+              );
+            }).toList();
+          },
+          onChanged: (val) {
+            if (val != null)
+              context.read<PortfolioCubit>().changeTimeRange(val);
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildPerformanceSection(BuildContext context, PortfolioSuccess state) {
+  Widget _buildPerformanceSection(
+    BuildContext context,
+    PortfolioSuccess state,
+  ) {
     return Column(
       children: [
         _buildPerformanceList(
@@ -263,7 +320,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                 style: TextStyle(
                   fontFamily: 'Poppins',
                   fontSize: 12,
-                  color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                  color: theme.textTheme.bodyMedium?.color?.withValues(
+                    alpha: 0.4,
+                  ),
                 ),
               ),
             ],
@@ -276,18 +335,23 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
             scrollDirection: Axis.horizontal,
             itemCount: items.length,
             separatorBuilder: (context, index) => const SizedBox(width: 16),
-            itemBuilder: (context, index) => _buildPerformanceCard(context, items[index], isPositive),
+            itemBuilder: (context, index) =>
+                _buildPerformanceCard(context, items[index], isPositive),
           ),
         ),
       ],
     );
   }
 
-  Widget _buildPerformanceCard(BuildContext context, Item item, bool isPositive) {
+  Widget _buildPerformanceCard(
+    BuildContext context,
+    Item item,
+    bool isPositive,
+  ) {
     final theme = Theme.of(context);
     final dashboardTheme = theme.extension<DashboardThemeExtension>();
-    final indicatorColor = isPositive 
-        ? (dashboardTheme?.successColor ?? Colors.green) 
+    final indicatorColor = isPositive
+        ? (dashboardTheme?.successColor ?? Colors.green)
         : (dashboardTheme?.analyticsColor ?? Colors.orange);
 
     return Container(
@@ -302,7 +366,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               child: Stack(
                 fit: StackFit.expand,
                 children: [
@@ -312,12 +378,17 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                       fit: BoxFit.cover,
                     )
                   else
-                    Container(color: theme.primaryColor.withValues(alpha: 0.05)),
+                    Container(
+                      color: theme.primaryColor.withValues(alpha: 0.05),
+                    ),
                   Positioned(
                     top: 8,
                     right: 8,
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
                       decoration: BoxDecoration(
                         color: indicatorColor.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(8),
@@ -326,7 +397,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
-                            isPositive ? Icons.trending_up_rounded : Icons.trending_flat_rounded,
+                            isPositive
+                                ? Icons.trending_up_rounded
+                                : Icons.trending_flat_rounded,
                             size: 12,
                             color: Colors.white,
                           ),
@@ -370,7 +443,9 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
                   style: TextStyle(
                     fontFamily: 'Poppins',
                     fontSize: 10,
-                    color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                    color: theme.textTheme.bodyMedium?.color?.withValues(
+                      alpha: 0.4,
+                    ),
                   ),
                 ),
               ],
@@ -407,64 +482,65 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
           crossAxisSpacing: 16,
           childAspectRatio: 1.5,
         ),
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final shop = shops[index];
-            return Container(
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final shop = shops[index];
+          return Container(
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
               ),
-              child: Stack(
-                children: [
-                  if (shop.coverImageUrl != null)
-                   ClipRRect(
-                     borderRadius: BorderRadius.circular(16),
-                     child: Opacity(
-                       opacity: 0.2,
-                       child: CachedNetworkImage(
-                         imageUrl: shop.coverImageUrl!,
-                         fit: BoxFit.cover,
-                         width: double.infinity,
-                         height: double.infinity,
-                       ),
-                     ),
-                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          shop.shopName,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w800,
-                            fontSize: 14,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          shop.shopAddress,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 10,
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-                          ),
-                        ),
-                      ],
+            ),
+            child: Stack(
+              children: [
+                if (shop.coverImageUrl != null)
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(16),
+                    child: Opacity(
+                      opacity: 0.2,
+                      child: CachedNetworkImage(
+                        imageUrl: shop.coverImageUrl!,
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
                     ),
                   ),
-                ],
-              ),
-            );
-          },
-          childCount: shops.length,
-        ),
+                Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        shop.shopName,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 14,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        shop.shopAddress,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 10,
+                          color: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        }, childCount: shops.length),
       ),
     );
   }
@@ -473,73 +549,80 @@ class _PortfolioScreenState extends State<PortfolioScreen> {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
       sliver: SliverList(
-        delegate: SliverChildBuilderDelegate(
-          (context, index) {
-            final item = items[index];
-            return Container(
-              margin: const EdgeInsets.only(bottom: 12),
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.1)),
+        delegate: SliverChildBuilderDelegate((context, index) {
+          final item = items[index];
+          return Container(
+            margin: const EdgeInsets.only(bottom: 12),
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: Theme.of(context).dividerColor.withValues(alpha: 0.1),
               ),
-              child: Row(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: item.imageUrl != null
-                        ? CachedNetworkImage(
-                            imageUrl: item.imageUrl!,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                        : Container(
-                            width: 50,
-                            height: 50,
-                            color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                            child: Icon(Icons.inventory_2_rounded, color: Theme.of(context).primaryColor, size: 24),
-                          ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          item.name,
-                          style: const TextStyle(
-                            fontFamily: 'Poppins',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
+            ),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: item.imageUrl != null
+                      ? CachedNetworkImage(
+                          imageUrl: item.imageUrl!,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        )
+                      : Container(
+                          width: 50,
+                          height: 50,
+                          color: Theme.of(
+                            context,
+                          ).primaryColor.withValues(alpha: 0.1),
+                          child: Icon(
+                            Icons.inventory_2_rounded,
+                            color: Theme.of(context).primaryColor,
+                            size: 24,
                           ),
                         ),
-                        Text(
-                          item.shop?['shopName']?.toString() ?? '',
-                          style: TextStyle(
-                            fontFamily: 'Poppins',
-                            fontSize: 11,
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
-                          ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
                         ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        item.shop?['shopName']?.toString() ?? '',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontSize: 11,
+                          color: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'PKR ${item.price}',
-                    style: TextStyle(
-                      fontFamily: 'Poppins',
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    ),
+                ),
+                Text(
+                  'PKR ${item.price}',
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontWeight: FontWeight.w900,
+                    color: Colors.white,
                   ),
-                ],
-              ),
-            );
-          },
-          childCount: items.length,
-        ),
+                ),
+              ],
+            ),
+          );
+        }, childCount: items.length),
       ),
     );
   }

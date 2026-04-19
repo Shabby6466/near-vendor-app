@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/globals.dart';
+import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
 
 void hideKeyBoard() {
@@ -102,7 +103,8 @@ bool verifyPassword(String enteredPassword, String storedHash) {
   return enteredHash == storedHash;
 }
 
-void logoutUser() {
+Future<void> logoutUser() async {
+  await CurrentUserStorage.clearUserData();
   final context = navigatorKey.currentContext;
   if (context?.mounted ?? false) {
     AppNavigator.pushAndRemoveUntil(context!, const WelcomeScreen());

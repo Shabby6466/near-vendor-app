@@ -7,8 +7,18 @@ import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cub
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_state.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
+import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
+import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
+import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 
 class ExploreItemDetailScreen extends StatefulWidget {
   final String itemId;
@@ -16,7 +26,8 @@ class ExploreItemDetailScreen extends StatefulWidget {
   const ExploreItemDetailScreen({super.key, required this.itemId});
 
   @override
-  State<ExploreItemDetailScreen> createState() => _ExploreItemDetailScreenState();
+  State<ExploreItemDetailScreen> createState() =>
+      _ExploreItemDetailScreenState();
 }
 
 class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
@@ -41,7 +52,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
       body: BlocBuilder<ExploreItemDetailCubit, ExploreItemDetailState>(
         builder: (context, state) {
           if (state is ExploreItemDetailLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoadingIndicator();
           }
           if (state is ExploreItemDetailSuccess) {
             return _buildMainContent(context, state.item, state.shop);
@@ -58,7 +69,9 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
   Widget _buildMainContent(BuildContext context, Item item, Shop shop) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
-    final images = item.imageUrls.isNotEmpty ? item.imageUrls : (item.imageUrl != null ? [item.imageUrl!] : <String>[]);
+    final images = item.imageUrls.isNotEmpty
+        ? item.imageUrls
+        : (item.imageUrl != null ? [item.imageUrl!] : <String>[]);
 
     return Stack(
       children: [
@@ -72,7 +85,8 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
               Stack(
                 children: [
                   Container(
-                    height: size.height * 0.55, // Slightly taller for better impact
+                    height:
+                        size.height * 0.55, // Slightly taller for better impact
                     width: double.infinity,
                     color: theme.primaryColor.withValues(alpha: 0.05),
                     child: images.isNotEmpty
@@ -91,13 +105,17 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                                 width: double.infinity,
                                 height: double.infinity,
                                 placeholder: (context, url) => Container(
-                                  color: theme.primaryColor.withValues(alpha: 0.05),
-                                  child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+                                  color: theme.primaryColor.withValues(
+                                    alpha: 0.05,
+                                  ),
+                                  child: const LoadingAnimation(size: 16),
                                 ),
                                 errorWidget: (context, url, error) => Icon(
                                   Icons.image_not_supported_rounded,
                                   size: 50,
-                                  color: theme.primaryColor.withValues(alpha: 0.2),
+                                  color: theme.primaryColor.withValues(
+                                    alpha: 0.2,
+                                  ),
                                 ),
                               );
 
@@ -129,7 +147,10 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
                             decoration: BoxDecoration(
                               color: Colors.black.withValues(alpha: 0.4),
                               borderRadius: BorderRadius.circular(20),
@@ -140,11 +161,15 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                                 images.length,
                                 (index) => AnimatedContainer(
                                   duration: const Duration(milliseconds: 300),
-                                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                                  margin: const EdgeInsets.symmetric(
+                                    horizontal: 3,
+                                  ),
                                   width: _currentPage == index ? 12 : 6,
                                   height: 6,
                                   decoration: BoxDecoration(
-                                    color: _currentPage == index ? theme.primaryColor : Colors.white.withValues(alpha: 0.5),
+                                    color: _currentPage == index
+                                        ? theme.primaryColor
+                                        : Colors.white.withValues(alpha: 0.5),
                                     borderRadius: BorderRadius.circular(3),
                                   ),
                                 ),
@@ -165,7 +190,10 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                         child: BackdropFilter(
                           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             color: Colors.black.withValues(alpha: 0.5),
                             child: Text(
                               '${_currentPage + 1}/${images.length}',
@@ -227,7 +255,8 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                                 shop.businessCategory,
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontSize: 16,
-                                  color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                                  color: theme.textTheme.bodySmall?.color
+                                      ?.withValues(alpha: 0.6),
                                 ),
                               ),
                             ],
@@ -247,7 +276,6 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                     ),
                     const SizedBox(height: 24),
 
-
                     // Description
                     Text(
                       'Description',
@@ -257,19 +285,25 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      item.description.isNotEmpty ? item.description : 'Explore this amazing product at ${shop.shopName}.',
+                      item.description.isNotEmpty
+                          ? item.description
+                          : 'Explore this amazing product at ${shop.shopName}.',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontSize: 15,
                         height: 1.6,
-                        color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.8),
+                        color: theme.textTheme.bodyMedium?.color?.withValues(
+                          alpha: 0.8,
+                        ),
                       ),
                     ),
-                    
+
                     const SizedBox(height: 24),
                     // Vendor Info Small Card
                     _buildVendorMiniCard(context, shop),
 
-                    const SizedBox(height: 120), // Bottom padding for floating bar
+                    const SizedBox(
+                      height: 120,
+                    ), // Bottom padding for floating bar
                   ],
                 ),
               ),
@@ -283,7 +317,10 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
           left: 0,
           right: 0,
           child: Container(
-            padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 10, bottom: 10),
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).padding.top + 10,
+              bottom: 10,
+            ),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
@@ -294,30 +331,59 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                 ],
               ),
             ),
-            child: Row(
-              children: [
-                const SizedBox(width: 16),
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  child: IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.black, size: 18),
-                    onPressed: () => Navigator.pop(context),
-                  ),
-                ),
-                Expanded(
-                  child: Text(
-                    'Product Details',
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 18),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new_rounded,
+                        color: Colors.black,
+                        size: 18,
+                      ),
+                      onPressed: () => Navigator.pop(context),
                     ),
                   ),
-                ),
-                // Spacer for centering
-                const SizedBox(width: 56),
-              ],
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.flag_outlined,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        final session = context.read<SessionCubit>().state;
+                        if (session.status != AuthStatus.authenticated) {
+                          AppBottomSheet.showConfirmationBottomSheet(
+                            context: context,
+                            title: 'Sign In Required',
+                            message: 'You need to sign in to report items.',
+                            confirmButtonText: 'Sign In',
+                            onConfirm: () {
+                              Navigator.pop(context);
+                              AppNavigator.push(context, const LoginScreen());
+                            },
+                          );
+                          return;
+                        }
+
+                        showDialog(
+                          context: context,
+                          builder: (ctx) => SafetyReportDialog(
+                            targetId: item.id,
+                            targetType: 'ITEM',
+                            targetName: item.name,
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -357,32 +423,40 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
           _buildPillIconButton(
             context,
             icon: Icons.call_rounded,
-            color: Colors.blue,
+            color: Colors.white,
             onTap: () => _launchCaller(shop.shopContactPhone),
           ),
           _buildPillIconButton(
             context,
             icon: Icons.chat_rounded,
-            color: Colors.green,
+            color: Colors.white,
             onTap: () => _launchWhatsApp(shop.whatsappNumber),
           ),
-          
+
           const SizedBox(width: 8),
-          
+
           // Right Side: Directions Button (Full width expansion)
           Expanded(
             child: GestureDetector(
-              onTap: () => _launchMap(shop.shopLatitude, shop.shopLongitude, shop.shopName),
+              onTap: () => _launchMap(
+                shop.shopLatitude,
+                shop.shopLongitude,
+                shop.shopName,
+              ),
               child: Container(
                 height: 54,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFFB300),
+                  color: theme.colorScheme.secondary,
                   borderRadius: BorderRadius.circular(27),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.directions_rounded, color: Colors.black, size: 20),
+                    const Icon(
+                      Icons.directions_rounded,
+                      color: Colors.black,
+                      size: 20,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       'Directions',
@@ -403,7 +477,12 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     );
   }
 
-  Widget _buildPillIconButton(BuildContext context, {required IconData icon, required Color color, required VoidCallback onTap}) {
+  Widget _buildPillIconButton(
+    BuildContext context, {
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
     return Padding(
       padding: const EdgeInsets.only(left: 6),
       child: IconButton(
@@ -425,49 +504,68 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
   Widget _buildVendorMiniCard(BuildContext context, Shop shop) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 20,
-            backgroundImage: shop.storeLogoUrl != null && shop.storeLogoUrl!.isNotEmpty
-                ? CachedNetworkImageProvider(shop.storeLogoUrl!)
-                : null,
-            child: shop.storeLogoUrl == null || shop.storeLogoUrl!.isEmpty
-                ? const Icon(Icons.storefront_rounded)
-                : null,
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  shop.shopName,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  'Vendor',
-                  style: theme.textTheme.bodySmall,
-                ),
-              ],
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        final uiModel = ui.ShopModel(
+          id: shop.id,
+          vendorId: shop.vendorId,
+          name: shop.shopName,
+          image: shop.coverImageUrl ?? shop.storeLogoUrl ?? '',
+          category: shop.businessCategory,
+          latitude: shop.shopLatitude,
+          longitude: shop.shopLongitude,
+          location: shop.shopAddress,
+          isVerifiedBadge: shop.isVerifiedBadge,
+          isRecentlyActive: shop.isRecentlyActive,
+          itemCount: shop.itemCount,
+        );
+
+        AppNavigator.push(context, CustomerShopDetailsScreen(shop: uiModel));
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF1C1C23) : const Color(0xFFF8F9FA),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 20,
+              backgroundImage:
+                  shop.storeLogoUrl != null && shop.storeLogoUrl!.isNotEmpty
+                  ? CachedNetworkImageProvider(shop.storeLogoUrl!)
+                  : null,
+              child: shop.storeLogoUrl == null || shop.storeLogoUrl!.isEmpty
+                  ? const Icon(Icons.storefront_rounded)
+                  : null,
             ),
-          ),
-          const Icon(Icons.chevron_right_rounded),
-        ],
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    shop.shopName,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text('Vendor', style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            const Icon(Icons.chevron_right_rounded),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildDistanceBadge(BuildContext context, Shop shop) {
+    final theme = Theme.of(context);
     return FutureBuilder<Position?>(
       future: Geolocator.getLastKnownPosition(),
       builder: (context, snapshot) {
@@ -488,20 +586,26 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFB300).withValues(alpha: 0.1),
+            color: theme.primaryColor.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: const Color(0xFFFFB300).withValues(alpha: 0.2)),
+            border: Border.all(
+              color: theme.primaryColor.withValues(alpha: 0.2),
+            ),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.location_on_rounded, size: 12, color: Color(0xFFFFB300)),
+              Icon(
+                Icons.location_on_rounded,
+                size: 12,
+                color: theme.primaryColor,
+              ),
               const SizedBox(width: 4),
               Text(
                 distanceText,
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: Colors.white,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -527,8 +631,10 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
 
   Future<void> _launchMap(double lat, double lon, String title) async {
     final url = Uri.parse('google.navigation:q=$lat,$lon');
-    final fallbackUrl = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lon');
-    
+    final fallbackUrl = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$lat,$lon',
+    );
+
     if (await canLaunchUrl(url)) {
       await launchUrl(url);
     } else if (await canLaunchUrl(fallbackUrl)) {
@@ -546,7 +652,9 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
           Text(message, textAlign: TextAlign.center),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: () => context.read<ExploreItemDetailCubit>().fetchDetails(widget.itemId),
+            onPressed: () => context
+                .read<ExploreItemDetailCubit>()
+                .fetchDetails(widget.itemId),
             child: const Text('Try Again'),
           ),
         ],
