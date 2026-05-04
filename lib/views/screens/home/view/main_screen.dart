@@ -4,7 +4,6 @@ import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
-import 'package:nearvendorapp/views/screens/vendor/dashboard/screens/vendor_dashboard_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/view/wishlist_main_screen.dart';
 
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
@@ -19,9 +18,11 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return MultiBlocProvider(
-      providers: [BlocProvider(create: (context) => MainScreenCubit(initialIndex))],
+      providers: [
+        BlocProvider(create: (context) => MainScreenCubit(initialIndex)),
+      ],
       child: BlocBuilder<MainScreenCubit, int>(
         builder: (context, currentIndex) {
           return Scaffold(
@@ -59,15 +60,12 @@ class MainScreen extends StatelessWidget {
                   isVisible: currentIndex == 3,
                   child: const WishlistMainScreen(),
                 ),
-                LazyLoadWrapper(
-                  isVisible: currentIndex == 4,
-                  child: const VendorDashboardScreen(),
-                ),
               ],
             ),
             bottomNavigationBar: CustomBottomBar(
               currentIndex: currentIndex,
-              onTap: (index) => context.read<MainScreenCubit>().switchTab(index),
+              onTap: (index) =>
+                  context.read<MainScreenCubit>().switchTab(index),
             ),
           );
         },

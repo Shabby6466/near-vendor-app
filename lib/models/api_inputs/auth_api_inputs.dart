@@ -27,7 +27,7 @@ class CreateUserInput {
   }
 }
 
-enum UserRoles { BUYER, VENDOR, ADMIN }
+enum UserRoles { BUYER, ADMIN }
 
 class VerifyOtpInput {
   VerifyOtpInput({required this.email, required this.otp});
@@ -67,35 +67,6 @@ class ChangePasswordInput {
       'email': email,
       'oldPassword': oldPassword,
       'newPassword': newPassword,
-    };
-  }
-}
-
-class RegisterInput {
-  RegisterInput({
-    required this.businessName,
-    required this.businessCategory,
-    required this.taxId,
-    required this.supportContact,
-    required this.cnic,
-    required this.cnicImageUrl,
-  });
-
-  final String businessName;
-  final String businessCategory;
-  final String taxId;
-  final String supportContact;
-  final String cnic;
-  final String cnicImageUrl;
-
-  Map<String, dynamic> toJson() {
-    return {
-      'businessName': businessName,
-      'businessCategory': businessCategory,
-      'taxId': taxId,
-      'supportContact': supportContact,
-      'cnic': cnic,
-      'cnicImageUrl': cnicImageUrl,
     };
   }
 }

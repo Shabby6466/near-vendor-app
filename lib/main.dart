@@ -60,16 +60,14 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
         builder: (context, connectivity) {
           return BlocBuilder<SessionCubit, SessionState>(
             builder: (context, state) {
-              final isApprovedVendor =
-                  state.isVendor && state.vendorStatus == 'APPROVED';
-
               Widget home;
               if (connectivity == ConnectivityStatus.disconnected) {
                 home = NoInternetScreen(
                   onRetry: () => context.read<ConnectivityCubit>().retry(),
                 );
               } else {
-                home = (state.status == AuthStatus.authenticated ||
+                home =
+                    (state.status == AuthStatus.authenticated ||
                         state.hasOnboarded)
                     ? const MainScreen()
                     : const WelcomeScreen();
@@ -79,12 +77,8 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
                 navigatorKey: navigatorKey,
                 debugShowCheckedModeBanner: false,
                 themeMode: ThemeMode.system,
-                theme: isApprovedVendor
-                    ? AppThemeData.vendorLightTheme
-                    : AppThemeData.normalLightTheme,
-                darkTheme: isApprovedVendor
-                    ? AppThemeData.vendorDarkTheme
-                    : AppThemeData.normalDarkTheme,
+                theme: AppThemeData.normalLightTheme,
+                darkTheme: AppThemeData.normalDarkTheme,
                 home: UpgradeAlert(
                   upgrader: Upgrader(
                     minAppVersion: '0.0.0',

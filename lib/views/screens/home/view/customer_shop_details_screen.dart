@@ -569,7 +569,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
               onTap: () async {
                 Navigator.pop(ctx);
                 final result = await SafetyServices().blockUser(
-                  blockedId: shop.vendorId ?? '',
+                  blockedId: shop.vendorId,
                 );
                 if (context.mounted) {
                   if (result.success == true) {

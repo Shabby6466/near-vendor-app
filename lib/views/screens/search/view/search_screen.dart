@@ -7,8 +7,6 @@ import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_header.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
-import 'package:nearvendorapp/utils/category_utils.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:nearvendorapp/utils/app_navigation.dart';
@@ -94,9 +92,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: [
                       const SizedBox(height: 16),
                       SearchBarField(
-                        key: _searchBarKey,
-                        focusNode: _searchFocusNode,
-                      )
+                            key: _searchBarKey,
+                            focusNode: _searchFocusNode,
+                          )
                           .animate()
                           .fadeIn(delay: 80.ms)
                           .slideY(begin: 0.1, end: 0),
@@ -210,7 +208,8 @@ class _HowToSearchSection extends StatelessWidget {
                 _SearchTipItem(
                   icon: Icons.search_rounded,
                   title: 'Exact Search',
-                  subtitle: 'Type precisely what you need (e.g., "Organic Milk")',
+                  subtitle:
+                      'Type precisely what you need (e.g., "Organic Milk")',
                   theme: theme,
                   onTap: onExactSearch,
                 ),
@@ -233,7 +232,8 @@ class _HowToSearchSection extends StatelessWidget {
                 _SearchTipItem(
                   icon: Icons.auto_awesome_rounded,
                   title: 'Make a Wish',
-                  subtitle: 'Can\'t find it? Make a wish to alert local vendors',
+                  subtitle:
+                      'Can\'t find it? Make a wish to alert local vendors',
                   theme: theme,
                   iconColor: Colors.purple,
                   onTap: onMakeAWish,
@@ -316,7 +316,9 @@ class _SearchTipItem extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right_rounded,
-              color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.2),
+              color: (isDark ? Colors.white : Colors.black).withValues(
+                alpha: 0.2,
+              ),
               size: 20,
             ),
           ],

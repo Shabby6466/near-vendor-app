@@ -20,18 +20,20 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
 
   Future<void> loadInitialData() async {
     final recentSearches = SearchStorage.getRecentSearches();
-    
+
     // Show initial state with local searches first (fast)
     emit(SearchInitial(recentSearches: recentSearches));
-    
+
     // Fetch recent items from API only if authenticated
     if (CurrentUserStorage.getUserAuthToken() != null) {
       final response = await _searchServices.getRecentItems();
       if (response.success) {
-        emit(SearchInitial(
-          recentSearches: recentSearches,
-          recentItems: response.items,
-        ));
+        emit(
+          SearchInitial(
+            recentSearches: recentSearches,
+            recentItems: response.items,
+          ),
+        );
       }
     }
   }
@@ -76,19 +78,17 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
     final response = await _searchServices.searchItems(input);
 
     if (response.success) {
-      updateAnalyticsMetadata({
-        'lat': lat,
-        'lon': lon,
-        'query': query,
-      });
-      emit(SearchSuccess(
-        items: response.items,
-        meta: response.meta,
-        message: response.message,
-        query: query.isNotEmpty ? query : null,
-        isGlobalFallback: response.isGlobalFallback,
-        rangeMessage: response.rangeMessage,
-      ));
+      updateAnalyticsMetadata({'lat': lat, 'lon': lon, 'query': query});
+      emit(
+        SearchSuccess(
+          items: response.items,
+          meta: response.meta,
+          message: response.message,
+          query: query.isNotEmpty ? query : null,
+          isGlobalFallback: response.isGlobalFallback,
+          rangeMessage: response.rangeMessage,
+        ),
+      );
     } else {
       emit(SearchFailure(response.message ?? 'Search failed'));
     }

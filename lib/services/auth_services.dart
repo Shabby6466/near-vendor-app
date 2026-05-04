@@ -1,22 +1,18 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/auth_api_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
-import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/models/api_responses/media_upload_response.dart';
-import 'package:nearvendorapp/models/api_responses/vendor_status_response.dart';
 
 class AuthServices {
   AuthServices();
+
   Future<LoginResponse> createUser(CreateUserInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-
       final response = await Server.post(ApiConstants.createUser, data: data);
-      print('response inside $response');
       return LoginResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
@@ -51,7 +47,6 @@ class AuthServices {
     try {
       final Map<String, dynamic> data = input.toJson();
       final response = await Server.post(ApiConstants.login, data: data);
-
       return LoginResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
@@ -68,14 +63,10 @@ class AuthServices {
   Future<GenericApiResponse> changePassword(ChangePasswordInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-      debugPrint(
-        'ChangePassword Token: ${CurrentUserStorage.getUserAuthToken()}',
-      );
       final response = await Server.post(
         ApiConstants.changePassword,
         data: data,
       );
-      print('response inside-> $response');
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
@@ -86,44 +77,6 @@ class AuthServices {
         }
       }
       return GenericApiResponse(message: e.toString());
-    }
-  }
-
-  Future<GenericApiResponse> registerVendor(RegisterInput input) async {
-    try {
-      final Map<String, dynamic> data = input.toJson();
-      debugPrint('Register Token: ${CurrentUserStorage.getUserAuthToken()}');
-      final response = await Server.post(
-        ApiConstants.registerVendor,
-        data: data,
-      );
-      print('response inside-> $response');
-      return GenericApiResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return GenericApiResponse.fromJson(e.response?.data);
-        } else {
-          return GenericApiResponse(message: e.message);
-        }
-      }
-      return GenericApiResponse(message: e.toString());
-    }
-  }
-
-  Future<VendorStatusResponse> getVendorStatus() async {
-    try {
-      final response = await Server.get(ApiConstants.getVendorStatus);
-      return VendorStatusResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return VendorStatusResponse.fromJson(e.response?.data);
-        } else {
-          return VendorStatusResponse(message: e.message);
-        }
-      }
-      return VendorStatusResponse(message: e.toString());
     }
   }
 
@@ -146,10 +99,7 @@ class AuthServices {
   Future<GenericApiResponse> updateUser(UpdateUserInput input) async {
     try {
       final Map<String, dynamic> data = input.toJson();
-      final response = await Server.patch(
-        ApiConstants.updateUser,
-        data: data,
-      );
+      final response = await Server.patch(ApiConstants.updateUser, data: data);
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
@@ -207,41 +157,3 @@ class AuthServices {
     }
   }
 }
-
-// Future<GenericApiResponse> refreshToken() async {
-//   try {
-//     final refreshToken = CurrentUserStorage.getUserRefreshAuthToken();
-//     if (refreshToken == null) {
-//       return GenericApiResponse(message: AppStrings.noRefreshTokenFound);
-//     }
-//
-//     final response = await Server.get(
-//       ApiConstants.refreshToken,
-//       headers: {
-//         'Authorization': 'Bearer $refreshToken',
-//       },
-//     );
-//
-//     final data = response.data;
-//     if (data is Map) {
-//       final String? newAccessToken = data['token'] as String?;
-//       final String? newRefreshToken = data['refreshToken'] as String?;
-//       if (newAccessToken != null) {
-//         await CurrentUserStorage.storeUserAuthToken(
-//           newAccessToken,
-//           newRefreshToken,
-//         );
-//       }
-//     }
-//     return GenericApiResponse.fromJson(response.data);
-//   } catch (e) {
-//     if (e is DioException) {
-//       if (e.response?.data != null) {
-//         return GenericApiResponse.fromJson(e.response?.data);
-//       } else {
-//         return GenericApiResponse(message: e.message);
-//       }
-//     }
-//     return GenericApiResponse(message: e.toString());
-//   }
-// }

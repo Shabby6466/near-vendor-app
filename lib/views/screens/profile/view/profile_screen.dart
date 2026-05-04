@@ -8,7 +8,6 @@ import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
-import 'package:nearvendorapp/views/screens/vendor/onboarding/screens/vendor_onboarding_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/guest_auth_banner.dart';
@@ -128,83 +127,6 @@ class ProfileScreen extends StatelessWidget {
                               _buildSettingsGroup(
                                 context,
                                 children: [
-                                  if (sessionState.isVendor)
-                                    ProfileMenuItem(
-                                      icon: Icons.storefront_outlined,
-                                      title: 'Merchant Console',
-                                      subtitle: 'Vendor Account Status',
-                                      trailing:
-                                          sessionState.vendorStatus == null
-                                          ? const SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child: const LoadingAnimation(
-                                                size: 16,
-                                              ),
-                                            )
-                                          : Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 10,
-                                                    vertical: 4,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color:
-                                                    sessionState.vendorStatus ==
-                                                        'APPROVED'
-                                                    ? Colors.green.withValues(
-                                                        alpha: 0.1,
-                                                      )
-                                                    : theme.dividerColor
-                                                          .withValues(
-                                                            alpha: 0.1,
-                                                          ),
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                              ),
-                                              child: Text(
-                                                sessionState.vendorStatus ??
-                                                    'PENDING',
-                                                style: theme
-                                                    .textTheme
-                                                    .labelSmall
-                                                    ?.copyWith(
-                                                      color:
-                                                          sessionState
-                                                                  .vendorStatus ==
-                                                              'APPROVED'
-                                                          ? Colors.green
-                                                          : theme
-                                                                .textTheme
-                                                                .bodyMedium
-                                                                ?.color
-                                                                ?.withValues(
-                                                                  alpha: 0.6,
-                                                                ),
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                              ),
-                                            ),
-                                    )
-                                  else
-                                    ProfileMenuItem(
-                                      icon: Icons.storefront_outlined,
-                                      title: 'Merchant Console',
-                                      subtitle:
-                                          'Become a vendor and start selling',
-                                      onTap: () {
-                                        AppNavigator.push(
-                                          context,
-                                          const VendorOnboardingScreen(),
-                                        );
-                                      },
-                                    ),
-                                  const Divider(
-                                    height: 1,
-                                    indent: 64,
-                                    endIndent: 20,
-                                  ),
                                   ProfileMenuItem(
                                     icon: Icons.lock_outline_rounded,
                                     title: 'Change Password',

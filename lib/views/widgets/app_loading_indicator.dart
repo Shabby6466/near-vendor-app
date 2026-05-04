@@ -5,18 +5,14 @@ class AppLoadingIndicator extends StatelessWidget {
   final double size;
   final double strokeWidth;
 
-  const AppLoadingIndicator({
-    super.key,
-    this.size = 28,
-    this.strokeWidth = 3,
-  });
+  const AppLoadingIndicator({super.key, this.size = 28, this.strokeWidth = 3});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
-    // As per latest user request: always orange (vendorAccent)
+
+    // Always use orange accent color
     const orangeColor = Color(0xFFFF4D00);
 
     return Center(
@@ -26,7 +22,9 @@ class AppLoadingIndicator extends StatelessWidget {
           color: (isDark ? Colors.black : Colors.white).withValues(alpha: 0.2),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: (isDark ? Colors.white : Colors.black).withValues(alpha: 0.1),
+            color: (isDark ? Colors.white : Colors.black).withValues(
+              alpha: 0.1,
+            ),
           ),
         ),
         child: SizedBox(

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 
 class AuthTextFieldWidget extends StatelessWidget {
@@ -65,8 +64,8 @@ class AuthTextFieldWidget extends StatelessWidget {
             border: baseBorder,
             enabledBorder: baseBorder,
             focusedBorder: baseBorder.copyWith(
-              borderSide: const BorderSide(
-                color: AppThemeData.vendorAccent,
+              borderSide: BorderSide(
+                color: Theme.of(context).primaryColor,
                 width: 1.5,
               ),
             ),

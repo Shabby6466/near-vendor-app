@@ -49,7 +49,7 @@ class SignUpScreen extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<SignupCubit>();
           return Theme(
-            data: AppThemeData.vendorDarkTheme,
+            data: AppThemeData.normalDarkTheme,
             child: LoadingScreenView(
               isLoading: state is SignupLoading,
               child: AppScaffold(

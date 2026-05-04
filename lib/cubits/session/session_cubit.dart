@@ -17,7 +17,6 @@ class SessionCubit extends Cubit<SessionState> {
     final token = CurrentUserStorage.getUserAuthToken();
     final user = CurrentUserStorage.getCurrentUser();
     final hasOnboarded = CurrentUserStorage.getHasOnboarded();
-    final vendorStatus = CurrentUserStorage.getVendorStatus();
 
     if (token != null) {
       if (user != null) {
@@ -40,15 +39,11 @@ class SessionCubit extends Cubit<SessionState> {
             status: AuthStatus.authenticated,
             user: user,
             userName: user.fullName,
-            isVendor:
-                (user.role?.toUpperCase() == 'VENDOR') ||
-                (vendorStatus != null),
             hasOnboarded: hasOnboarded,
             photoUrl: user.photoUrl,
             latitude: user.lastKnownLatitude,
             longitude: user.lastKnownLongitude,
             cityName: cityName,
-            vendorStatus: vendorStatus,
           ),
         );
       }
@@ -56,17 +51,6 @@ class SessionCubit extends Cubit<SessionState> {
       try {
         final response = await AuthServices().getMe();
         if (response.user != null) {
-          String? vendorStatus;
-          final statusResponse = await AuthServices().getVendorStatus();
-          if (statusResponse.vendorStatus != null) {
-            vendorStatus = statusResponse.vendorStatus;
-          } else if (response.user?.role?.toUpperCase() == 'VENDOR') {
-            vendorStatus = 'APPROVED';
-          }
-          final bool isVendor =
-              (response.user?.role?.toUpperCase() == 'VENDOR') ||
-              (statusResponse.vendorStatus != null);
-
           String? cityName;
           if (response.user?.lastKnownLatitude != null &&
               response.user?.lastKnownLongitude != null) {
@@ -84,19 +68,16 @@ class SessionCubit extends Cubit<SessionState> {
             response.user!.cityName = cityName;
           }
           await CurrentUserStorage.storeUserData(response.user);
-          await CurrentUserStorage.storeVendorStatus(vendorStatus);
           emit(
             state.copyWith(
               status: AuthStatus.authenticated,
               user: response.user,
               userName: response.user?.fullName,
-              isVendor: isVendor,
               hasOnboarded: hasOnboarded,
               photoUrl: response.user?.photoUrl,
               latitude: response.user?.lastKnownLatitude,
               longitude: response.user?.lastKnownLongitude,
               cityName: cityName,
-              vendorStatus: vendorStatus,
             ),
           );
         } else {
@@ -127,14 +108,12 @@ class SessionCubit extends Cubit<SessionState> {
         status: AuthStatus.authenticated,
         user: user,
         userName: user?.fullName,
-        isVendor: user?.role?.toUpperCase() == 'VENDOR',
         photoUrl: user?.photoUrl,
         latitude: user?.lastKnownLatitude,
         longitude: user?.lastKnownLongitude,
         cityName: user?.cityName,
       ),
     );
-    refreshVendorStatus();
   }
 
   void setGuest() {
@@ -144,21 +123,6 @@ class SessionCubit extends Cubit<SessionState> {
   Future<void> logout() async {
     await CurrentUserStorage.clearUserData();
     emit(const SessionState(status: AuthStatus.guest, userName: 'Guest User'));
-  }
-
-  Future<void> refreshVendorStatus() async {
-    final response = await AuthServices().getVendorStatus();
-    if (response.vendorStatus != null) {
-      await CurrentUserStorage.storeVendorStatus(response.vendorStatus);
-      emit(
-        state.copyWith(
-          vendorStatus: response.vendorStatus,
-          isVendor:
-              (state.user?.role?.toUpperCase() == 'VENDOR') ||
-              (response.vendorStatus != null),
-        ),
-      );
-    }
   }
 
   void startManualLocationPick({double? tempLatitude, double? tempLongitude}) {
@@ -188,17 +152,6 @@ class SessionCubit extends Cubit<SessionState> {
 
   void cancelManualLocationPick() {
     emit(state.copyWith(clearTempLocation: true));
-  }
-
-  void setVendorStatus(bool isVendor) {
-    if (state.user != null) {
-      state.user!.role = isVendor ? 'VENDOR' : 'USER';
-      CurrentUserStorage.storeUserData(state.user!);
-    }
-    emit(state.copyWith(isVendor: isVendor, clearVendorStatus: isVendor));
-    if (isVendor) {
-      refreshVendorStatus();
-    }
   }
 
   void setOnboarded() {
@@ -234,7 +187,6 @@ class SessionCubit extends Cubit<SessionState> {
             state.copyWith(
               user: meResponse.user,
               userName: meResponse.user?.fullName,
-              isVendor: meResponse.user?.role?.toUpperCase() == 'VENDOR',
               photoUrl: meResponse.user?.photoUrl,
               latitude: meResponse.user?.lastKnownLatitude,
               longitude: meResponse.user?.lastKnownLongitude,

@@ -6,13 +6,11 @@ class SessionState extends Equatable {
   final AuthStatus status;
   final User? user;
   final String? userName;
-  final bool isVendor;
   final bool hasOnboarded;
   final String? photoUrl;
   final double? latitude;
   final double? longitude;
   final String? cityName;
-  final String? vendorStatus;
   final double? tempLatitude;
   final double? tempLongitude;
 
@@ -20,62 +18,57 @@ class SessionState extends Equatable {
     this.status = AuthStatus.unauthenticated,
     this.user,
     this.userName,
-    this.isVendor = false,
     this.hasOnboarded = false,
     this.photoUrl,
     this.latitude,
     this.longitude,
     this.cityName,
-    this.vendorStatus,
     this.tempLatitude,
     this.tempLongitude,
   });
 
   @override
   List<Object?> get props => [
-        status,
-        user,
-        userName,
-        isVendor,
-        hasOnboarded,
-        photoUrl,
-        latitude,
-        longitude,
-        cityName,
-        vendorStatus,
-        tempLatitude,
-        tempLongitude,
-      ];
+    status,
+    user,
+    userName,
+    hasOnboarded,
+    photoUrl,
+    latitude,
+    longitude,
+    cityName,
+    tempLatitude,
+    tempLongitude,
+  ];
 
   SessionState copyWith({
     AuthStatus? status,
     User? user,
     String? userName,
-    bool? isVendor,
     bool? hasOnboarded,
     String? photoUrl,
     double? latitude,
     double? longitude,
     String? cityName,
-    String? vendorStatus,
     double? tempLatitude,
     double? tempLongitude,
-    bool clearVendorStatus = false,
     bool clearTempLocation = false,
   }) {
     return SessionState(
       status: status ?? this.status,
       user: user ?? this.user,
       userName: userName ?? this.userName,
-      isVendor: isVendor ?? this.isVendor,
       hasOnboarded: hasOnboarded ?? this.hasOnboarded,
       photoUrl: photoUrl ?? this.photoUrl,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       cityName: cityName ?? this.cityName,
-      vendorStatus: clearVendorStatus ? null : (vendorStatus ?? this.vendorStatus),
-      tempLatitude: clearTempLocation ? null : (tempLatitude ?? this.tempLatitude),
-      tempLongitude: clearTempLocation ? null : (tempLongitude ?? this.tempLongitude),
+      tempLatitude: clearTempLocation
+          ? null
+          : (tempLatitude ?? this.tempLatitude),
+      tempLongitude: clearTempLocation
+          ? null
+          : (tempLongitude ?? this.tempLongitude),
     );
   }
 }

@@ -38,7 +38,7 @@ class LoginScreen extends StatelessWidget {
         builder: (context, state) {
           final cubit = context.read<LoginCubit>();
           return Theme(
-            data: AppThemeData.vendorDarkTheme,
+            data: AppThemeData.normalDarkTheme,
             child: LoadingScreenView(
               isLoading: state is LoginLoading,
               child: AppScaffold(

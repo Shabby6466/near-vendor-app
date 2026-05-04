@@ -17,13 +17,6 @@ class ApiConstants {
   static const String getMe = 'api/users/me';
   static const String updateUser = 'api/users/update';
   static const String uploadMedia = 'api/media/upload-simple';
-  static const String registerVendor = 'api/vendor/register';
-  static const String getVendorStatus = 'api/vendor/me/status';
-  static const String updateVendor = 'api/vendor/update';
-  static const String createShop = 'api/shops/create';
-  static const String updateShopProfile = 'api/shops/update';
-  static const String deleteShop = 'api/shops/delete';
-  static const String getMyShops = 'api/shops/me/shops';
   static const String getNearbyShops = 'api/explore/shops/nearby';
   static const String getShopsByMap = 'api/explore/shops/map';
 
@@ -41,7 +34,7 @@ class ApiConstants {
   static const String batchAnalytics = 'api/analytics/batch';
   static const String updateUserLocation = 'api/users/location';
   static const String visualSearch = 'api/explore/search/visual';
-  
+
   ///WISHLIST
   static const String createWishlist = 'api/wishlist';
   static const String getMyWishlists = 'api/wishlist/me';
@@ -49,18 +42,10 @@ class ApiConstants {
   static const String completeWishlist = 'api/wishlist/'; // + id + '/complete'
   static const String exploreWishlists = 'api/wishlist/explore';
 
-  ///PORTFOLIO
-  static const String searchPortfolio = 'api/vendor/portfolio/search';
-  static const String getPortfolioPerformance = 'api/vendor/portfolio/performance';
-
   // Analytics
   static const String getAnalyticsStats = 'api/analytics/stats/';
-  static const String getVendorPortfolioAnalytics = 'api/analytics/vendor/portfolio';
-  static const String getVendorShopAnalytics = 'api/analytics/vendor/shop/';
-  static const String getMarketInsightsSuffix = '/market-insights';
 
   /// SAFETY
   static const String reportContent = 'api/safety/report';
   static const String blockUser = 'api/safety/block';
 }
-

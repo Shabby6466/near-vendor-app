@@ -33,8 +33,10 @@ class CurrentUserStorage {
     return null;
   }
 
-  static Future<void> storeUserAuthToken(String token,
-      String? refreshToken,) async {
+  static Future<void> storeUserAuthToken(
+    String token,
+    String? refreshToken,
+  ) async {
     try {
       await _userBox.put(HiveKeys.currentUserAuthTokenKey, token);
       if (refreshToken != null) {
@@ -46,48 +48,23 @@ class CurrentUserStorage {
   }
 
   static String? getUserAuthToken() {
-    return _userBox.get(
-      HiveKeys.currentUserAuthTokenKey,
-      defaultValue: null,
-    )
-    as String?;
+    return _userBox.get(HiveKeys.currentUserAuthTokenKey, defaultValue: null)
+        as String?;
   }
 
   static String? getUserRefreshAuthToken() {
-    return _userBox.get(
-      HiveKeys.currentUserRefreshTokenKey,
-      defaultValue: null,
-    )
-    as String?;
+    return _userBox.get(HiveKeys.currentUserRefreshTokenKey, defaultValue: null)
+        as String?;
   }
+
   static Future<void> clearUserData() async {
     try {
       await _userBox.delete(HiveKeys.currentUserKey);
       await _userBox.delete(HiveKeys.currentUserAuthTokenKey);
       await _userBox.delete(HiveKeys.currentUserRefreshTokenKey);
-      await _userBox.delete(HiveKeys.vendorStatusKey);
     } catch (e) {
       debugPrint('Error clearing user data: $e');
     }
-  }
-
-  static Future<void> storeVendorStatus(String? status) async {
-    try {
-      if (status != null) {
-        await _userBox.put(HiveKeys.vendorStatusKey, status);
-      } else {
-        await _userBox.delete(HiveKeys.vendorStatusKey);
-      }
-    } catch (e) {
-      debugPrint('Error storing vendor status: $e');
-    }
-  }
-
-  static String? getVendorStatus() {
-    return _userBox.get(
-      HiveKeys.vendorStatusKey,
-      defaultValue: null,
-    ) as String?;
   }
 
   static Future<void> setHasOnboarded(bool value) async {
@@ -99,10 +76,7 @@ class CurrentUserStorage {
   }
 
   static bool getHasOnboarded() {
-    return _userBox.get(
-      HiveKeys.hasOnboardedKey,
-      defaultValue: false,
-    ) as bool;
+    return _userBox.get(HiveKeys.hasOnboardedKey, defaultValue: false) as bool;
   }
 
   static Future<void> setDiscoveryRadius(double radius) async {
@@ -114,10 +88,8 @@ class CurrentUserStorage {
   }
 
   static double getDiscoveryRadius() {
-    return _userBox.get(
-      HiveKeys.discoveryRadiusKey,
-      defaultValue: 10.0,
-    ) as double;
+    return _userBox.get(HiveKeys.discoveryRadiusKey, defaultValue: 10.0)
+        as double;
   }
 
   static Future<void> setLastLocation(double lat, double lon) async {
@@ -133,10 +105,7 @@ class CurrentUserStorage {
     final lat = _userBox.get(HiveKeys.lastLatitudeKey);
     final lon = _userBox.get(HiveKeys.lastLongitudeKey);
     if (lat != null && lon != null) {
-      return {
-        'lat': lat as double,
-        'lon': lon as double,
-      };
+      return {'lat': lat as double, 'lon': lon as double};
     }
     return null;
   }
