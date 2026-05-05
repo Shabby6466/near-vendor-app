@@ -654,15 +654,13 @@ class _WishlistCard extends StatelessWidget {
                     ? Colors.black.withValues(alpha: 0.1)
                     : const Color(0xFFFFFBEB),
               ),
-              child: Expanded(
-                child: Text(
-                  'No matches yet — vendors near you will be notified and can add this item to their shop.',
-                  style: TextStyle(
-                    color: isDark ? Colors.white : Colors.black,
-                    fontSize: 11,
-                    fontWeight: FontWeight.w500,
-                    height: 1.3,
-                  ),
+              child: Text(
+                'No matches yet — vendors near you will be notified and can add this item to their shop.',
+                style: TextStyle(
+                  color: isDark ? Colors.white : Colors.black,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                  height: 1.3,
                 ),
               ),
             ),
