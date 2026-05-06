@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
@@ -89,13 +90,13 @@ class SearchBarFieldState extends State<SearchBarField> {
                 Container(
                   padding: const EdgeInsets.all(12),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFF4D00).withValues(alpha: 0.1),
+                    color: ColorName.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
                   child: SvgPicture.asset(
                     'assets/icons/camera.svg',
                     colorFilter: const ColorFilter.mode(
-                      Color(0xFFFF4D00),
+                      ColorName.primary,
                       BlendMode.srcIn,
                     ),
                     width: 32,
@@ -198,7 +199,7 @@ class SearchBarFieldState extends State<SearchBarField> {
         ),
         child: Column(
           children: [
-            Icon(icon, color: const Color(0xFFFF4D00), size: 28),
+            Icon(icon, color: ColorName.primary, size: 28),
             const SizedBox(height: 12),
             Text(
               label,

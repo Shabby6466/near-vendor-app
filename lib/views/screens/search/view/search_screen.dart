@@ -135,7 +135,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   Widget _buildStateContent(BuildContext context, SearchState state) {
-    final theme = Theme.of(context);
+    // final theme = Theme.of(context);
     // final isDark = theme.brightness == Brightness.dark;
 
     if (state is SearchInitial) {
@@ -222,7 +222,6 @@ class _HowToSearchSection extends StatelessWidget {
                   title: 'Visual Search',
                   subtitle: 'Snap a photo to find high-value matches nearby',
                   theme: theme,
-                  iconColor: Colors.deepOrange,
                   onTap: onVisualSearch,
                 ),
                 const Padding(

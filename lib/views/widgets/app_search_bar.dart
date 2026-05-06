@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 
 class AppSearchBar extends StatefulWidget {
   final String hintText;
@@ -175,8 +176,8 @@ class _AppSearchBarState extends State<AppSearchBar> {
                   child:
                       SvgPicture.asset(
                             'assets/icons/camera.svg',
-                            colorFilter: const ColorFilter.mode(
-                              Color(0xFFFF4D00),
+                            colorFilter: ColorFilter.mode(
+                              ColorName.primary,
                               BlendMode.srcIn,
                             ),
                             width: 24,
