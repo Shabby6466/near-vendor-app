@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Nearvendorapp</string>
+	<string>Nearvendor</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>nearvendorapp</string>
+	<string>Nearvendor</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -29,6 +29,8 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Near Vendor needs access to your camera to search for items by taking a photo.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Near Vendor needs your location to connect you with nearby shops and vendors.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>Near Vendor needs your location to connect you with nearby shops and vendors.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Near Vendor needs access to your photo library to search for items using existing images.</string>
