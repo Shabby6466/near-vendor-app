@@ -434,15 +434,14 @@ class _CategoryPickerSheet extends StatelessWidget {
               separatorBuilder: (_, __) => const SizedBox(height: 4),
               itemBuilder: (context, index) {
                 final cat = categories[index];
-                final iconPath = CategoryUtils.getCategoryIconPath(cat.name);
+                final iconPath = CategoryUtils.getCategoryIcon(cat.name);
                 return ListTile(
                   dense: true,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   leading: iconPath != null
-                      ? SvgPicture.asset(
-                          iconPath,
+                      ? iconPath.svg(
                           colorFilter: const ColorFilter.mode(
                             ColorName.primary,
                             BlendMode.srcIn,

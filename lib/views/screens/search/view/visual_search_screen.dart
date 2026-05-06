@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
@@ -10,7 +11,6 @@ import 'package:nearvendorapp/views/screens/search/view/visual_search_map_result
 import 'package:nearvendorapp/views/screens/search/widgets/scanning_area.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/visual_search_result_sheet.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/no_result_sheet.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class VisualSearchScreen extends StatefulWidget {
   final File? initialImage;
@@ -145,8 +145,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     return Container(
       color: Colors.grey[900],
       child: Center(
-        child: SvgPicture.asset(
-          'assets/icons/camera.svg',
+        child: Assets.icons.camera.svg(
           height: 80,
           width: 80,
           colorFilter: ColorFilter.mode(
@@ -263,8 +262,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: SvgPicture.asset(
-                    'assets/icons/camera.svg',
+                  child: Assets.icons.camera.svg(
                     colorFilter: const ColorFilter.mode(
                       Colors.blue,
                       BlendMode.srcIn,

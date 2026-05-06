@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 
 class CustomBottomBar extends StatefulWidget {
@@ -147,17 +146,17 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                         children: [
                           _NavButton(
                             label: 'Search',
-                            icon: Assets.icons.searchIcon.path,
+                            icon: Assets.icons.searchIcon,
                             isActive: widget.currentIndex == 0,
                           ),
                           _NavButton(
                             label: 'Explore',
-                            icon: 'assets/icons/explore.svg',
+                            icon: Assets.icons.explore,
                             isActive: widget.currentIndex == 1,
                           ),
                           _NavButton(
                             label: 'Map',
-                            icon: 'assets/icons/map.svg',
+                            icon: Assets.icons.map,
                             isActive: widget.currentIndex == 2,
                           ),
                           _NavButton(
@@ -225,9 +224,8 @@ class _NavButton extends StatelessWidget {
     if (icon is IconData) {
       return Icon(icon as IconData, color: color, size: 22);
     }
-    if (icon is String && (icon as String).contains('.svg')) {
-      return SvgPicture.asset(
-        icon as String,
+    if (icon is SvgGenImage) {
+      return (icon as SvgGenImage).svg(
         colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
         height: 22,
         width: 22,

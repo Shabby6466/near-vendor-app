@@ -377,9 +377,7 @@ class _EmptyStateState extends State<_EmptyState> {
                   separatorBuilder: (_, __) => const SizedBox(height: 4),
                   itemBuilder: (context, index) {
                     final cat = categories[index];
-                    final iconPath = CategoryUtils.getCategoryIconPath(
-                      cat.name,
-                    );
+                    final iconPath = CategoryUtils.getCategoryIcon(cat.name);
 
                     return ListTile(
                       dense: true,
@@ -387,8 +385,7 @@ class _EmptyStateState extends State<_EmptyState> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       leading: iconPath != null
-                          ? SvgPicture.asset(
-                              iconPath,
+                          ? iconPath.svg(
                               colorFilter: const ColorFilter.mode(
                                 ColorName.primary,
                                 BlendMode.srcIn,
@@ -678,7 +675,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
   bool _isCreatingWish = false;
 
   void _createWish() async {
-     if (widget.query == null || widget.query!.isEmpty) return;
+    if (widget.query == null || widget.query!.isEmpty) return;
 
     final session = context.read<SessionCubit>().state;
     if (session.latitude == null || session.longitude == null) {
@@ -697,7 +694,10 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
     // Show category picker bottom sheet (reusing the one from _EmptyState logic)
     // For simplicity, I will implement a similar helper here or make the other one static.
     // I will implement a quick one here for now.
-    final selectedCategory = await _showCategoryPickerQuick(context, categories);
+    final selectedCategory = await _showCategoryPickerQuick(
+      context,
+      categories,
+    );
     if (!mounted) return;
     if (selectedCategory == null) return;
 
@@ -752,7 +752,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
       isScrollControlled: true,
       builder: (ctx) {
         return Container(
-           padding: const EdgeInsets.only(bottom: 24),
+          padding: const EdgeInsets.only(bottom: 24),
           decoration: BoxDecoration(
             color: isDark ? const Color(0xFF171D25) : Colors.white,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
@@ -810,9 +810,9 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-         color: ColorName.primary.withValues(alpha: 0.04),
-         borderRadius: BorderRadius.circular(20),
-         border: Border.all(color: ColorName.primary.withValues(alpha: 0.1)),
+        color: ColorName.primary.withValues(alpha: 0.04),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: ColorName.primary.withValues(alpha: 0.1)),
       ),
       child: Row(
         children: [
@@ -839,20 +839,33 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
             ),
           ),
           ElevatedButton(
-            onPressed: _isCreatingWish ? null : (isAuthenticated ? _createWish : () => AppNavigator.push(context, const LoginScreen())),
+            onPressed: _isCreatingWish
+                ? null
+                : (isAuthenticated
+                      ? _createWish
+                      : () => AppNavigator.push(context, const LoginScreen())),
             style: ElevatedButton.styleFrom(
               backgroundColor: ColorName.primary,
               foregroundColor: Colors.white,
               elevation: 0,
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
-            child: _isCreatingWish 
-              ? const SizedBox(width: 16, height: 16, child: LoadingAnimation(size: 20))
-              : Text(
-                  isAuthenticated ? 'Make a Wish' : 'Sign In',
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 13),
-                ),
+            child: _isCreatingWish
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: LoadingAnimation(size: 20),
+                  )
+                : Text(
+                    isAuthenticated ? 'Make a Wish' : 'Sign In',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                    ),
+                  ),
           ),
         ],
       ),

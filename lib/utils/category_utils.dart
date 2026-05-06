@@ -1,56 +1,45 @@
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/gen/assets.gen.dart';
 
 class CategoryUtils {
-  static String? getCategoryIconPath(String categoryName) {
+  CategoryUtils._();
+  static final CategoryUtils instance = CategoryUtils._();
+
+  static SvgGenImage? getCategoryIcon(String categoryName) {
     final normalized = categoryName.toLowerCase().trim();
-    
-    if (normalized == 'fashion' || normalized == 'clothing' || normalized == 'apparel') {
-      return 'assets/icons/fashion_icon.svg';
-    }
-    
-    if (normalized == 'grocery' || normalized == 'groceries' || normalized == 'supermarket' || normalized == 'mart') {
-      return 'assets/icons/grocery.svg';
-    }
 
-    if (normalized == 'electronics' || normalized == 'tech' || normalized == 'appliances' || normalized == 'gadgets') {
-      return 'assets/icons/electronics.svg';
+    switch (normalized) {
+      case 'fashion' || 'clothing' || 'apparel':
+        return Assets.icons.fashionIcon;
+      case 'grocery' || 'groceries' || 'supermarket' || 'mart':
+        return Assets.icons.grocery;
+      case 'electronics' || 'tech' || 'appliances' || 'gadgets':
+        return Assets.icons.electronics;
+      case 'health' || 'medical' || 'wellness' || 'pharmacy':
+        return Assets.icons.health;
+      case 'furniture' || 'decor' || 'home_decor' || 'home decor':
+        return Assets.icons.furniture;
+      default:
+        return null;
     }
-
-    if (normalized == 'health' || normalized == 'medical' || normalized == 'wellness' || normalized == 'pharmacy') {
-      return 'assets/icons/health.svg';
-    }
-
-    if (normalized == 'furniture' || normalized == 'decor' || normalized == 'home_decor' || normalized == 'home decor') {
-      return 'assets/icons/furniture.svg';
-    }
-    
-    // Add more mappings here as needed
-    return null;
   }
 
   static IconData getDefaultIcon(String categoryName) {
     final normalized = categoryName.toLowerCase().trim();
-    
-    if (normalized == 'fashion' || normalized == 'clothing' || normalized == 'apparel') {
-      return Icons.checkroom_rounded; // Fallback if SVG fails or in some contexts
-    }
-    
-    if (normalized == 'grocery' || normalized == 'groceries' || normalized == 'supermarket' || normalized == 'mart') {
-      return Icons.shopping_basket_rounded;
-    }
 
-    if (normalized == 'electronics' || normalized == 'tech' || normalized == 'appliances' || normalized == 'gadgets') {
-      return Icons.electrical_services_rounded;
+    switch (normalized) {
+      case 'fashion' || 'clothing' || 'apparel':
+        return Icons.checkroom_rounded;
+      case 'grocery' || 'groceries' || 'supermarket' || 'mart':
+        return Icons.shopping_basket_rounded;
+      case 'electronics' || 'tech' || 'appliances' || 'gadgets':
+        return Icons.electrical_services_rounded;
+      case 'health' || 'medical' || 'wellness' || 'pharmacy':
+        return Icons.health_and_safety_rounded;
+      case 'furniture' || 'decor' || 'home_decor' || 'home decor':
+        return Icons.chair_rounded;
+      default:
+        return Icons.category_rounded;
     }
-
-    if (normalized == 'health' || normalized == 'medical' || normalized == 'wellness' || normalized == 'pharmacy') {
-      return Icons.health_and_safety_rounded;
-    }
-
-    if (normalized == 'furniture' || normalized == 'decor' || normalized == 'home_decor' || normalized == 'home decor') {
-      return Icons.chair_rounded;
-    }
-    
-    return Icons.category_rounded;
   }
 }

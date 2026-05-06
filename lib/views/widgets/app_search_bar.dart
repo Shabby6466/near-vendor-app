@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 
 class AppSearchBar extends StatefulWidget {
@@ -173,26 +173,25 @@ class _AppSearchBarState extends State<AppSearchBar> {
                     HapticFeedback.lightImpact();
                     widget.onVisualSearchTap?.call();
                   },
-                  child:
-                      SvgPicture.asset(
-                            'assets/icons/camera.svg',
-                            colorFilter: ColorFilter.mode(
-                              ColorName.primary,
-                              BlendMode.srcIn,
-                            ),
-                            width: 24,
-                            height: 24,
-                          )
-                          .animate(
-                            onPlay: (controller) =>
-                                controller.repeat(reverse: true),
-                          )
-                          .scale(
-                            begin: const Offset(1, 1),
-                            end: const Offset(1.1, 1.1),
-                            duration: 1.seconds,
-                            curve: Curves.easeInOut,
-                          ),
+                  child: Assets.icons.camera
+                      .svg(
+                        colorFilter: ColorFilter.mode(
+                          ColorName.primary,
+                          BlendMode.srcIn,
+                        ),
+                        width: 24,
+                        height: 24,
+                      )
+                      .animate(
+                        onPlay: (controller) =>
+                            controller.repeat(reverse: true),
+                      )
+                      .scale(
+                        begin: const Offset(1, 1),
+                        end: const Offset(1.1, 1.1),
+                        duration: 1.seconds,
+                        curve: Curves.easeInOut,
+                      ),
                 ),
                 const SizedBox(width: 16),
               ] else

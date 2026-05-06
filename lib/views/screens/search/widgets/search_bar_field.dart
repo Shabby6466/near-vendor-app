@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
@@ -93,8 +93,7 @@ class SearchBarFieldState extends State<SearchBarField> {
                     color: ColorName.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: SvgPicture.asset(
-                    'assets/icons/camera.svg',
+                  child: Assets.icons.camera.svg(
                     colorFilter: const ColorFilter.mode(
                       ColorName.primary,
                       BlendMode.srcIn,

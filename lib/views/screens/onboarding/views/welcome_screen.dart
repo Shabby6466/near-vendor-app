@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/widget/onboaring_btns.dart';
@@ -20,21 +21,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   final List<OnboardingData> _onboardingData = [
     OnboardingData(
-      image: 'assets/images/onboarding_proximity.png',
+      image: Assets.images.onboardingProximity,
       heading: 'Everything you need,\nclose to home.',
       subHeading:
           'Find local vendors easily. Skip the traffic and discover hidden gems on your street.',
       buttonText: 'Next',
     ),
     OnboardingData(
-      image: 'assets/images/onboarding_search.png',
+      image: Assets.images.onboardingSearch,
       heading: 'Smart AI Search.\nJust say what you need.',
       subHeading:
           'No complex keywords. From repairs to snacks, our AI finds exactly what you need.',
       buttonText: 'Next',
     ),
     OnboardingData(
-      image: 'assets/images/onboarding_offers.png',
+      image: Assets.images.onboardingOffers,
       heading: 'Local Deals &\nExclusive Offers.',
       subHeading:
           'Discover trending sales from your favorite neighbors, tailored for your daily life.',
@@ -137,9 +138,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                         width: double.infinity,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage(
-                              _onboardingData[_currentPage].image,
-                            ),
+                            image: _onboardingData[_currentPage].image
+                                .provider(),
                             fit: BoxFit.contain,
                           ),
                         ),
@@ -270,7 +270,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 }
 
 class OnboardingData {
-  final String image;
+  final AssetGenImage image;
   final String heading;
   final String subHeading;
   final String buttonText;
