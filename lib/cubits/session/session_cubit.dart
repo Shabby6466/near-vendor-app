@@ -162,7 +162,7 @@ class SessionCubit extends Cubit<SessionState> {
   Future<void> updateUserProfile(UpdateUserInput input) async {
     try {
       final response = await AuthServices().updateUser(input);
-      if (response.status == true) {
+      if (response.status == 200 || response.status == 201) {
         // Refresh user data from server to stay in sync
         final meResponse = await AuthServices().getMe();
         if (meResponse.user != null) {

@@ -27,7 +27,7 @@ class CreateUserInput {
   }
 }
 
-enum UserRoles { BUYER, ADMIN }
+enum UserRoles { buyer, admin }
 
 class VerifyOtpInput {
   VerifyOtpInput({required this.email, required this.otp});

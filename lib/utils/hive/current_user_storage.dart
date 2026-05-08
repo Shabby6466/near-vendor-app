@@ -62,6 +62,7 @@ class CurrentUserStorage {
       await _userBox.delete(HiveKeys.currentUserKey);
       await _userBox.delete(HiveKeys.currentUserAuthTokenKey);
       await _userBox.delete(HiveKeys.currentUserRefreshTokenKey);
+      await _userBox.delete(HiveKeys.hasOnboardedKey);
     } catch (e) {
       debugPrint('Error clearing user data: $e');
     }

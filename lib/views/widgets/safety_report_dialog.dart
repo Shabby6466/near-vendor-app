@@ -57,7 +57,7 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
     }
 
     setState(() => _isLoading = true);
-    
+
     final result = await SafetyServices().reportContent(
       targetId: widget.targetId,
       targetType: widget.targetType,
@@ -71,10 +71,12 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
         Navigator.pop(context);
         AppAlerts.showSuccessSnackBar(context, 'Report submitted for review.');
       } else {
-        AppAlerts.showErrorSnackBar(context, result.message ?? 'Failed to submit report');
+        AppAlerts.showErrorSnackBar(
+          context,
+          result.message ?? 'Failed to submit report',
+        );
       }
     }
-
   }
 
   @override
@@ -90,14 +92,25 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
               style: TextStyle(fontSize: 13, color: Colors.grey),
             ),
             const SizedBox(height: 16),
-            ..._reasons.map((reason) => RadioListTile<String>(
-              title: Text(reason, style: const TextStyle(fontSize: 14)),
-              value: reason,
+            RadioGroup<String>(
               groupValue: _selectedReason,
               onChanged: (val) => setState(() => _selectedReason = val),
-              dense: true,
-              contentPadding: EdgeInsets.zero,
-            )),
+              child: Column(
+                children: _reasons
+                    .map(
+                      (reason) => RadioListTile<String>(
+                        title: Text(
+                          reason,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        value: reason,
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                    )
+                    .toList(),
+              ),
+            ),
             if (_selectedReason == 'Other')
               TextField(
                 controller: _detailsController,
@@ -116,14 +129,23 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: _selectedReason == null || _isLoading ? null : _submitReport,
+          onPressed: _selectedReason == null || _isLoading
+              ? null
+              : _submitReport,
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red.shade700,
             foregroundColor: Colors.white,
           ),
-          child: _isLoading 
-            ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-            : const Text('Submit Report'),
+          child: _isLoading
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : const Text('Submit Report'),
         ),
       ],
     );

@@ -5,6 +5,7 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
+import 'package:nearvendorapp/views/screens/profile/cubit/delete_account_cubit/delete_account_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
@@ -12,6 +13,7 @@ import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/guest_auth_banner.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
+import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -27,7 +29,7 @@ class ProfileScreen extends StatelessWidget {
         body: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {
-              return Center(child: const LoadingAnimation(size: 24));
+              return const Center(child: LoadingAnimation(size: 24));
             }
 
             if (state is ProfileFailure) {
@@ -104,7 +106,6 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              // Preferences Section
                               _buildSectionTitle(context, 'PREFERENCES'),
                               DiscoverySettings(
                                 radius: state.discoveryRadius,
@@ -122,7 +123,6 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              // Account Section
                               _buildSectionTitle(context, 'ACCOUNT SETTINGS'),
                               _buildSettingsGroup(
                                 context,
@@ -148,7 +148,6 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
 
-                              // Support Section
                               _buildSectionTitle(context, 'SUPPORT'),
                               _buildSettingsGroup(
                                 context,
@@ -179,6 +178,8 @@ class ProfileScreen extends StatelessWidget {
                                 ),
                               ),
                               _buildLogoutButton(context),
+                              const SizedBox(height: 12),
+                              _buildDeleteAccountButton(context),
                             ],
                             const SizedBox(height: 100),
                           ]),
@@ -199,7 +200,7 @@ class ProfileScreen extends StatelessWidget {
 
   Widget _buildSectionTitle(BuildContext context, String title) {
     return Padding(
-      padding: EdgeInsets.only(left: 16, bottom: 8, top: 8),
+      padding: const EdgeInsets.only(left: 16, bottom: 8, top: 8),
       child: Text(
         title,
         style: Theme.of(context).textTheme.labelSmall?.copyWith(
@@ -278,6 +279,291 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildDeleteAccountButton(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(20),
+        onTap: () => _showDeleteAccountDialog(context),
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: Colors.red.withValues(alpha: isDark ? 0.25 : 0.15),
+            ),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.delete_forever_rounded,
+                color: Colors.red.withValues(alpha: 0.7),
+                size: 20,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                'Delete Account',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: Colors.red.withValues(alpha: 0.7),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteAccountDialog(BuildContext context) {
+    final sessionCubit = context.read<SessionCubit>();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => BlocProvider(
+        create: (_) => DeleteAccountCubit(),
+        child: _DeleteAccountDialog(isDark: isDark, sessionCubit: sessionCubit),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Dialog widget — driven entirely by DeleteAccountCubit
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _DeleteAccountDialog extends StatefulWidget {
+  final bool isDark;
+  final SessionCubit sessionCubit;
+
+  const _DeleteAccountDialog({
+    required this.isDark,
+    required this.sessionCubit,
+  });
+
+  @override
+  State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
+}
+
+class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
+  final _passwordController = TextEditingController();
+  bool _obscure = true;
+
+  @override
+  void dispose() {
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = widget.isDark;
+
+    return BlocConsumer<DeleteAccountCubit, DeleteAccountState>(
+      listener: (context, state) async {
+        if (state is DeleteAccountSuccess) {
+          // Pop the dialog, then clear session and navigate to WelcomeScreen,
+          // removing all existing routes from the stack.
+          Navigator.of(context).pop();
+          await widget.sessionCubit.logout();
+          if (context.mounted) {
+            Navigator.of(context).pushAndRemoveUntil(
+              MaterialPageRoute(builder: (_) => const WelcomeScreen()),
+              (route) => false,
+            );
+          }
+        }
+      },
+      builder: (context, state) {
+        final isLoading = state is DeleteAccountLoading;
+        final errorMessage = state is DeleteAccountFailure ? state.error : null;
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(28),
+          ),
+          backgroundColor: isDark ? const Color(0xFF1E242B) : Colors.white,
+          contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon
+              Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  color: Colors.red.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.delete_forever_rounded,
+                  color: Colors.red.shade600,
+                  size: 32,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Delete Account',
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 20,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'This will permanently delete your account and all associated data. This action cannot be undone.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 13,
+                  height: 1.5,
+                  color: isDark ? Colors.white60 : Colors.black54,
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              // Password field
+              TextField(
+                controller: _passwordController,
+                obscureText: _obscure,
+                enabled: !isLoading,
+                style: TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  color: isDark ? Colors.white : Colors.black87,
+                ),
+                decoration: InputDecoration(
+                  hintText: 'Enter your password to confirm',
+                  hintStyle: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 13,
+                    color: isDark ? Colors.white38 : Colors.black38,
+                  ),
+                  filled: true,
+                  fillColor: isDark
+                      ? Colors.white.withValues(alpha: 0.06)
+                      : Colors.black.withValues(alpha: 0.04),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      _obscure
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                      size: 18,
+                      color: isDark ? Colors.white38 : Colors.black38,
+                    ),
+                    onPressed: isLoading
+                        ? null
+                        : () => setState(() => _obscure = !_obscure),
+                  ),
+                ),
+              ),
+
+              // Error message
+              if (errorMessage != null) ...[
+                const SizedBox(height: 10),
+                Text(
+                  errorMessage,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 12,
+                    color: Colors.red.shade400,
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 24),
+
+              // Action buttons
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: isLoading
+                          ? null
+                          : () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.w700,
+                          color: isDark ? Colors.white38 : Colors.grey.shade500,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: isLoading
+                          ? null
+                          : () => context
+                                .read<DeleteAccountCubit>()
+                                .deleteAccount(_passwordController.text.trim()),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red.shade600,
+                        foregroundColor: Colors.white,
+                        disabledBackgroundColor: Colors.red.shade600.withValues(
+                          alpha: 0.6,
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                      ),
+                      child: isLoading
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text(
+                              'Delete',
+                              style: TextStyle(
+                                fontFamily: 'Poppins',
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

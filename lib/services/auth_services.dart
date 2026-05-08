@@ -113,6 +113,32 @@ class AuthServices {
     }
   }
 
+  Future<GenericApiResponse> deleteAccount(String password) async {
+    try {
+      final response = await Server.delete(
+        ApiConstants.deleteAccount,
+        data: {'password': password},
+      );
+      // Backend returns { success: true, message: "..." } with no statusCode field.
+      // Use the HTTP status code directly from the Dio response.
+      return GenericApiResponse(
+        status: response.statusCode,
+        message: response.data is Map
+            ? response.data['message'] as String?
+            : null,
+      );
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
+      return GenericApiResponse(message: e.toString());
+    }
+  }
+
   Future<MediaUploadResponse> uploadMedia(String filePath) async {
     try {
       final formData = FormData.fromMap({

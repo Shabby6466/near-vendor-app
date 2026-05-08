@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:nearvendorapp/models/api_inputs/search_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
 import 'package:nearvendorapp/services/server.dart';
@@ -39,7 +40,7 @@ class SearchServices {
   Future<SearchItemResponse> getRecentItems() async {
     try {
       final response = await Server.get(ApiConstants.getRecentItems);
-      // Even though it's recent items, we can use SearchItemResponse.fromJson 
+      // Even though it's recent items, we can use SearchItemResponse.fromJson
       // if the structure matches {success, data: [items...]}
       return SearchItemResponse.fromJson(response.data);
     } catch (e) {
@@ -79,7 +80,9 @@ class SearchServices {
         ),
       });
 
-      print('VISUAL SEARCH: radius=$radius, lat=$lat, lon=$lon, path=$imagePath');
+      debugPrint(
+        'VISUAL SEARCH: radius=$radius, lat=$lat, lon=$lon, path=$imagePath',
+      );
       final response = await Server.post(
         ApiConstants.visualSearch,
         data: formData,

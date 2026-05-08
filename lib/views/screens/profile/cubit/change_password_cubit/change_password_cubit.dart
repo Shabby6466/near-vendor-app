@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
@@ -17,7 +17,11 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     try {
       final user = CurrentUserStorage.getCurrentUser();
       if (user == null || user.email == null) {
-        emit(const ChangePasswordFailure('User session not found. Please login again.'));
+        emit(
+          const ChangePasswordFailure(
+            'User session not found. Please login again.',
+          ),
+        );
         return;
       }
 
@@ -30,9 +34,17 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
       );
 
       if (response.status == 200 || response.status == 201) {
-        emit(ChangePasswordSuccess(response.message ?? 'Password changed successfully'));
+        emit(
+          ChangePasswordSuccess(
+            response.message ?? 'Password changed successfully',
+          ),
+        );
       } else {
-        emit(ChangePasswordFailure(response.message ?? 'Failed to change password'));
+        emit(
+          ChangePasswordFailure(
+            response.message ?? 'Failed to change password',
+          ),
+        );
       }
     } catch (e) {
       emit(ChangePasswordFailure(e.toString()));

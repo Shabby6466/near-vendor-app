@@ -9,7 +9,6 @@ import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 part 'profile_state.dart';
 
-
 class ProfileCubit extends Cubit<ProfileState> {
   final ImagePicker _picker = ImagePicker();
   final SessionCubit sessionCubit;
@@ -22,14 +21,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ProfileLoading());
     final user = CurrentUserStorage.getCurrentUser();
     final radius = CurrentUserStorage.getDiscoveryRadius();
-    
-    emit(ProfileSuccess(
-      userName: user?.fullName ?? 'Guest User',
-      userLocation: user?.cityName ?? 'Location not set',
-      photoUrl: user?.photoUrl,
-      discoveryRadius: radius,
-      newOfferAlerts: true,
-    ));
+
+    emit(
+      ProfileSuccess(
+        userName: user?.fullName ?? 'Guest User',
+        userLocation: user?.cityName ?? 'Location not set',
+        photoUrl: user?.photoUrl,
+        discoveryRadius: radius,
+        newOfferAlerts: true,
+      ),
+    );
   }
 
   Future<void> pickImageFromGallery() async {
@@ -39,15 +40,20 @@ class ProfileCubit extends Cubit<ProfileState> {
     try {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
-        // 1. Set uploading state
         emit(currentState.copyWith(isUploadingImage: true));
-        // 2. Upload image
-        final String? uploadedUrl = await MediaServices.uploadImage(File(image.path));
+        final String? uploadedUrl = await MediaServices.uploadImage(
+          File(image.path),
+        );
         if (uploadedUrl != null) {
-          // 3. Update profile
-          await sessionCubit.updateUserProfile(UpdateUserInput(photoUrl: uploadedUrl));
-          // 4. Update local state
-          emit(currentState.copyWith(photoUrl: uploadedUrl, isUploadingImage: false));
+          await sessionCubit.updateUserProfile(
+            UpdateUserInput(photoUrl: uploadedUrl),
+          );
+          emit(
+            currentState.copyWith(
+              photoUrl: uploadedUrl,
+              isUploadingImage: false,
+            ),
+          );
         } else {
           emit(currentState.copyWith(isUploadingImage: false));
         }

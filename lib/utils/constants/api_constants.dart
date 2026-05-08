@@ -16,6 +16,7 @@ class ApiConstants {
   static const String changePassword = 'api/users/change-password';
   static const String getMe = 'api/users/me';
   static const String updateUser = 'api/users/update';
+  static const String deleteAccount = 'api/users/delete-account';
   static const String uploadMedia = 'api/media/upload-simple';
   static const String getNearbyShops = 'api/explore/shops/nearby';
   static const String getShopsByMap = 'api/explore/shops/map';

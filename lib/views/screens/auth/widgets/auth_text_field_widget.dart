@@ -6,6 +6,8 @@ class AuthTextFieldWidget extends StatelessWidget {
   final TextEditingController controller;
   final bool isPassword;
   final IconData? prefixIcon;
+  final String? Function(String?)? validator;
+  final TextInputType? keyboardType;
 
   const AuthTextFieldWidget({
     super.key,
@@ -13,6 +15,8 @@ class AuthTextFieldWidget extends StatelessWidget {
     required this.controller,
     this.isPassword = false,
     this.prefixIcon,
+    this.validator,
+    this.keyboardType,
   });
 
   @override
@@ -35,6 +39,8 @@ class AuthTextFieldWidget extends StatelessWidget {
           controller: controller,
           hint: label.toUpperCase(),
           isPassword: isPassword,
+          validator: validator,
+          keyboardType: keyboardType,
           style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w600,
             fontSize: 15,

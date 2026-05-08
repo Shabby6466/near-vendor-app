@@ -1,5 +1,5 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/services/location_service.dart';
 
@@ -9,9 +9,12 @@ class LocationPickerCubit extends Cubit<LocationPickerState> {
   final LocationService _locationService = LocationService();
 
   LocationPickerCubit({LatLng? initialLocation})
-      : super(LocationPickerState(
-          selectedLocation: initialLocation ?? const LatLng(33.667306, 73.075177),
-        ));
+    : super(
+        LocationPickerState(
+          selectedLocation:
+              initialLocation ?? const LatLng(33.667306, 73.075177),
+        ),
+      );
 
   void updateLocation(LatLng location) {
     emit(state.copyWith(selectedLocation: location));
@@ -33,10 +36,9 @@ class LocationPickerCubit extends Cubit<LocationPickerState> {
   }
 
   void selectSuggestion(LocationSuggestion suggestion) {
-    emit(state.copyWith(
-      selectedLocation: suggestion.location,
-      suggestions: [],
-    ));
+    emit(
+      state.copyWith(selectedLocation: suggestion.location, suggestions: []),
+    );
   }
 
   void confirmLocation() {

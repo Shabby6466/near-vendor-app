@@ -8,6 +8,7 @@ import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
+import 'package:nearvendorapp/utils/textfield_validations.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/login_cubit/login_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/views/sign_up_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
@@ -168,6 +169,10 @@ class LoginScreen extends StatelessWidget {
                                                       cubit.emailController,
                                                   prefixIcon:
                                                       Icons.email_outlined,
+                                                  keyboardType: TextInputType
+                                                      .emailAddress,
+                                                  validator: TextFieldValidators
+                                                      .emailFieldValidation,
                                                 )
                                                 .animate()
                                                 .fadeIn(delay: 400.ms)
@@ -182,6 +187,8 @@ class LoginScreen extends StatelessWidget {
                                                       cubit.passwordController,
                                                   prefixIcon:
                                                       Icons.lock_outline,
+                                                  validator: TextFieldValidators
+                                                      .passwordFieldValidator,
                                                 )
                                                 .animate()
                                                 .fadeIn(delay: 500.ms)

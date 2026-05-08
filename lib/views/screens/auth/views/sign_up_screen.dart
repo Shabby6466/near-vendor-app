@@ -7,6 +7,7 @@ import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
+import 'package:nearvendorapp/utils/textfield_validations.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/signup_cubit/signup_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/views/verification_code_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
@@ -30,6 +31,7 @@ class SignUpScreen extends StatelessWidget {
               context,
               const LocationPickerScreen(),
             );
+            if (!context.mounted) return;
             if (result != null) {
               context.read<SignupCubit>().handleSignupWithLocation(
                 result.latitude,
@@ -38,11 +40,13 @@ class SignUpScreen extends StatelessWidget {
             }
           }
           if (state is SignupSuccess) {
+            if (!context.mounted) return;
             AppNavigator.push(
               context,
               VerificationCodeScreen(email: state.email),
             );
           } else if (state is SignupFailure) {
+            if (!context.mounted) return;
             AppAlerts.showErrorSnackBar(context, state.message);
           }
         },
@@ -180,6 +184,11 @@ class SignUpScreen extends StatelessWidget {
                                                       cubit.fullNameController,
                                                   prefixIcon:
                                                       Icons.person_outline,
+                                                  validator: (v) =>
+                                                      TextFieldValidators.emptyFieldValidator(
+                                                        v,
+                                                        'Please enter your full name',
+                                                      ),
                                                 )
                                                 .animate()
                                                 .fadeIn(delay: 200.ms)
@@ -193,6 +202,10 @@ class SignUpScreen extends StatelessWidget {
                                                       cubit.emailController,
                                                   prefixIcon:
                                                       Icons.email_outlined,
+                                                  keyboardType: TextInputType
+                                                      .emailAddress,
+                                                  validator: TextFieldValidators
+                                                      .emailFieldValidation,
                                                 )
                                                 .animate()
                                                 .fadeIn(delay: 200.ms)
@@ -207,6 +220,8 @@ class SignUpScreen extends StatelessWidget {
                                                       cubit.passwordController,
                                                   prefixIcon:
                                                       Icons.lock_outline,
+                                                  validator: TextFieldValidators
+                                                      .passwordFieldValidator,
                                                 )
                                                 .animate()
                                                 .fadeIn(delay: 200.ms)
@@ -221,6 +236,13 @@ class SignUpScreen extends StatelessWidget {
                                                       .confirmPasswordController,
                                                   prefixIcon:
                                                       Icons.lock_reset_outlined,
+                                                  validator: (v) =>
+                                                      TextFieldValidators.confirmPasswordValidator(
+                                                        v,
+                                                        cubit
+                                                            .passwordController
+                                                            .text,
+                                                      ),
                                                 )
                                                 .animate()
                                                 .fadeIn(delay: 200.ms)

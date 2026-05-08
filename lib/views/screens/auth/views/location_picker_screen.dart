@@ -77,6 +77,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
   Future<void> _getCurrentLocation(BuildContext context) async {
     setState(() => _isLoading = true);
+    // Capture cubit reference before any await so we don't use context across gaps
+    final sessionCubit = context.read<SessionCubit>();
     try {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -85,15 +87,14 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
       if (permission == LocationPermission.whileInUse ||
           permission == LocationPermission.always) {
-        Position position = await Geolocator.getCurrentPosition();
+        final position = await Geolocator.getCurrentPosition();
         final newLocation = LatLng(position.latitude, position.longitude);
-        if (mounted) {
-          context.read<SessionCubit>().updateTempLocation(
-            newLocation.latitude,
-            newLocation.longitude,
-          );
-          _mapController.move(newLocation, 15.0);
-        }
+        if (!mounted) return;
+        sessionCubit.updateTempLocation(
+          newLocation.latitude,
+          newLocation.longitude,
+        );
+        _mapController.move(newLocation, 15.0);
       }
     } catch (e) {
       debugPrint('Error getting location: $e');
@@ -337,15 +338,14 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                         isLoading: _isLoading,
                         onPressed: () async {
                           setState(() => _isLoading = true);
+                          // Capture navigator before await to avoid context-across-gap lint
+                          final nav = Navigator.of(context);
                           try {
                             await sessionCubit.confirmManualLocationPick();
-                            if (mounted) {
-                              Navigator.pop(context);
-                            }
+                            if (!mounted) return;
+                            nav.pop();
                           } finally {
-                            if (mounted) {
-                              setState(() => _isLoading = false);
-                            }
+                            if (mounted) setState(() => _isLoading = false);
                           }
                         },
                       ),

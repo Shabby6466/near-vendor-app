@@ -48,13 +48,13 @@ class ProfileSuccess extends ProfileState {
 
   @override
   List<Object?> get props => [
-        userName,
-        userLocation,
-        photoUrl,
-        discoveryRadius,
-        newOfferAlerts,
-        isUploadingImage,
-      ];
+    userName,
+    userLocation,
+    photoUrl,
+    discoveryRadius,
+    newOfferAlerts,
+    isUploadingImage,
+  ];
 }
 
 class ProfileFailure extends ProfileState {

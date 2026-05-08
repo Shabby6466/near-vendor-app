@@ -106,8 +106,8 @@ bool verifyPassword(String enteredPassword, String storedHash) {
 Future<void> logoutUser() async {
   await CurrentUserStorage.clearUserData();
   final context = navigatorKey.currentContext;
-  if (context?.mounted ?? false) {
-    AppNavigator.pushAndRemoveUntil(context!, const WelcomeScreen());
+  if (context != null && context.mounted) {
+    AppNavigator.pushAndRemoveUntil(context, const WelcomeScreen());
   }
 }
 

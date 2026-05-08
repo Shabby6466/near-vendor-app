@@ -1,39 +1,37 @@
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/utils/globals.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'signup_state.dart';
 
 class SignupCubit extends Cubit<SignupState> {
   SignupCubit() : super(SignupInitial());
 
+  final _authServices = AuthServices();
+
+  final formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final fullNameController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
-  final formKey = GlobalKey<FormState>();
 
   Future<void> handleSignup() async {
+    // Validate form before doing anything — matches vendor_app reference pattern
+    if (!formKey.currentState!.validate()) return;
+
     emit(SignupLoading());
 
-    // Request Location Permissions
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       emit(SignupRequiresManualLocation());
       return;
     }
 
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -41,69 +39,70 @@ class SignupCubit extends Cubit<SignupState> {
         return;
       }
     }
-    
+
     if (permission == LocationPermission.deniedForever) {
       emit(SignupRequiresManualLocation());
       return;
     }
 
-    double lat = 0.0;
-    double lng = 0.0;
-
     try {
+      // Use non-deprecated LocationSettings API
       final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 10),
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.medium,
+          timeLimit: Duration(seconds: 10),
+        ),
       );
-      lat = position.latitude;
-      lng = position.longitude;
+      await _submitSignup(position.latitude, position.longitude);
     } catch (e) {
       emit(SignupRequiresManualLocation());
-      return;
     }
-
-    await _submitSignup(lat, lng);
   }
 
   Future<void> handleSignupWithLocation(double lat, double lng) async {
+    // Called after the user manually picks a location — still validate the form
+    if (!formKey.currentState!.validate()) return;
     emit(SignupLoading());
     await _submitSignup(lat, lng);
   }
 
   Future<void> _submitSignup(double lat, double lng) async {
-    final response = await AuthServices().createUser(
-      CreateUserInput(
-        fullName: fullNameController.text,
-        email: emailController.text,
-        password: passwordController.text,
-        latitude: lat,
-        longitude: lng,
-        role: UserRoles.BUYER,
-      ),
-    );
-    print('response --> ${response.toJson()}');
-    if (response.status == 200 || response.status == 201) {
-      if (response.user != null && response.token != null) {
-        await CurrentUserStorage.storeUserData(response.user);
-        await CurrentUserStorage.storeUserAuthToken(
-          response.token!,
-          response.refreshToken,
-        );
-        // ignore: use_build_context_synchronously
-        final context = navigatorKey.currentContext;
-        if (context != null) {
-          context.read<SessionCubit>().setAuthenticated(response.user);
+    try {
+      final response = await _authServices.createUser(
+        CreateUserInput(
+          fullName: fullNameController.text.trim(),
+          email: emailController.text.trim(),
+          password: passwordController.text,
+          latitude: lat,
+          longitude: lng,
+          role: UserRoles.buyer,
+        ),
+      );
+
+      if (response.status == 200 || response.status == 201) {
+        if (response.user != null && response.token != null) {
+          await CurrentUserStorage.storeUserData(response.user);
+          await CurrentUserStorage.storeUserAuthToken(
+            response.token!,
+            response.refreshToken,
+          );
         }
+        // Emit success with the email so the view can navigate to OTP screen.
+        // SessionCubit.setAuthenticated() is called by the view's BlocListener
+        // after OTP verification — not here — so we don't need navigatorKey.
+        emit(SignupSuccess(emailController.text.trim()));
+      } else {
+        emit(SignupFailure(response.message ?? 'Signup failed'));
       }
-      emit(SignupSuccess(emailController.text));
-    } else {
-      emit(SignupFailure(response.message ?? 'Signup failed'));
+    } catch (e) {
+      emit(SignupFailure(e.toString()));
     }
   }
 
   @override
   Future<void> close() async {
     emailController.dispose();
+    fullNameController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     await super.close();
