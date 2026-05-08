@@ -15,11 +15,11 @@ class ItemServices {
         ApiConstants.createItem,
         data: data,
       );
-      return ItemResponse.fromJson(response.data);
+      return ItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ItemResponse.fromJson(e.response?.data);
+          return ItemResponse.fromJson(e.response?.data as Map<String, dynamic>);
         } else {
           return ItemResponse(
             success: false,
@@ -43,11 +43,11 @@ class ItemServices {
         '${ApiConstants.updateItem}${input.id}',
         data: data,
       );
-      return ItemResponse.fromJson(response.data);
+      return ItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ItemResponse.fromJson(e.response?.data);
+          return ItemResponse.fromJson(e.response?.data as Map<String, dynamic>);
         } else {
           return ItemResponse(
             success: false,
@@ -118,11 +118,11 @@ class ItemServices {
       final response = await Server.get(
         '${ApiConstants.getItemById}/$id',
       );
-      return ItemResponse.fromJson(response.data);
+      return ItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ItemResponse.fromJson(e.response?.data);
+          return ItemResponse.fromJson(e.response?.data as Map<String, dynamic>);
         } else {
           return ItemResponse(
             success: false,

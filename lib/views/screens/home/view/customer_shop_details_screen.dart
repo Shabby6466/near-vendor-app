@@ -1,30 +1,31 @@
 import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
+import 'package:nearvendorapp/services/safety_services.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/shop_details_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
-import 'package:visibility_detector/visibility_detector.dart';
-import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
-import 'package:nearvendorapp/services/safety_services.dart';
-import 'package:nearvendorapp/utils/app_alerts.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class CustomerShopDetailsScreen extends StatelessWidget {
   final ui.ShopModel shop;
@@ -151,11 +152,11 @@ class CustomerShopDetailsScreen extends StatelessWidget {
           child: CachedNetworkImage(
             imageUrl: fullShop.coverImageUrl ?? shop.image,
             fit: BoxFit.cover,
-            placeholder: (context, url) => Container(
+            placeholder: (context, url) => ColoredBox(
               color: theme.dividerColor.withValues(alpha: 0.1),
               child: const Center(child: CircularProgressIndicator()),
             ),
-            errorWidget: (context, error, stackTrace) => Container(
+            errorWidget: (context, error, stackTrace) => ColoredBox(
               color: theme.dividerColor.withValues(alpha: 0.1),
               child: const Icon(Icons.store, size: 50),
             ),
@@ -490,7 +491,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
           height: 44,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
             color: color.withValues(alpha: 0.1),
           ),
           child: Icon(icon, color: color, size: 20),
@@ -631,7 +632,6 @@ class ItemCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
               color: theme.dividerColor.withValues(alpha: isDark ? 0.1 : 0.05),
-              width: 1,
             ),
             boxShadow: [
               BoxShadow(
@@ -653,7 +653,7 @@ class ItemCard extends StatelessWidget {
                     imageUrl: item.imageUrl ?? '',
                     fit: BoxFit.cover,
                     width: double.infinity,
-                    errorWidget: (context, error, stackTrace) => Container(
+                    errorWidget: (context, error, stackTrace) => ColoredBox(
                       color: ColorName.primary.withValues(alpha: 0.1),
                       child: const Icon(
                         Icons.inventory_2_outlined,

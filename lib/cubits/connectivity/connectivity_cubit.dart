@@ -12,7 +12,7 @@ class ConnectivityCubit extends Cubit<ConnectivityStatus> {
     _init();
   }
 
-  void _init() async {
+  Future<void> _init() async {
     final result = await _connectivity.checkConnectivity();
     _updateStatus(result);
 

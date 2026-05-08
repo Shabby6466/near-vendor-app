@@ -29,7 +29,7 @@ class CategoryModel {
     return CategoryModel(id: '', name: 'Unknown');
   }
 
-  static CategoryModel all() => CategoryModel(id: 'all', name: 'All Items');
+   CategoryModel.all() : this(id: 'all', name: 'All Items');
 
   @override
   bool operator ==(Object other) =>

@@ -38,7 +38,7 @@ class SearchStorage {
       final List? searches = _userBox.get(
         HiveKeys.recentSearchesKey,
         defaultValue: [],
-      );
+      ) as List?;
       if (searches != null) {
         return List<String>.from(searches);
       }

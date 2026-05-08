@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class ProfileHeader extends StatelessWidget {
   final String userName;
@@ -33,10 +33,10 @@ class ProfileHeader extends StatelessWidget {
             alignment: Alignment.center,
             children: [
               if (isUploadingImage)
-                SizedBox(
+                const SizedBox(
                   width: 140,
                   height: 140,
-                  child: const LoadingAnimation(size: 20, color: Colors.white),
+                  child: LoadingAnimation(size: 20, color: Colors.white),
                 ),
               SizedBox(
                 width: 130,

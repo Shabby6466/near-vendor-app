@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
+import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_state.dart';
 import 'package:nearvendorapp/services/item_services.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
-import 'explore_item_detail_state.dart';
 
 class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> with AnalyticsMixin<ExploreItemDetailState> {
   final ItemServices _itemServices = ItemServices();

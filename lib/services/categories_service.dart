@@ -2,7 +2,10 @@ import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 
-class CategoriesService {
+final class CategoriesService {
+  // Private constructor to prevent instantiation
+  CategoriesService._();
+  
   static List<CategoryModel>? _cachedCategories;
 
   static Future<List<CategoryModel>> getCategories() async {

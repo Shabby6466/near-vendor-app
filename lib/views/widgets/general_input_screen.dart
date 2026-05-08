@@ -54,7 +54,7 @@ class GeneralPinScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: theme.dividerColor.withValues(alpha: (0.1))),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
       ),
     );
 
@@ -130,7 +130,7 @@ class GeneralPinScreen extends StatelessWidget {
                           text: subtitle,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.textTheme.bodyMedium?.color
-                                ?.withValues(alpha: (0.7)),
+                                ?.withValues(alpha: 0.7),
                             fontFamily: 'Poppins',
                           ),
                           children: [

@@ -1,7 +1,9 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
@@ -9,13 +11,12 @@ import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/utils/textfield_validations.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/signup_cubit/signup_cubit.dart';
+import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/views/verification_code_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
-import 'package:latlong2/latlong.dart';
-import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -30,7 +31,7 @@ class SignUpScreen extends StatelessWidget {
             final LatLng? result = await AppNavigator.push(
               context,
               const LocationPickerScreen(),
-            );
+            ) as LatLng?;
             if (!context.mounted) return;
             if (result != null) {
               context.read<SignupCubit>().handleSignupWithLocation(

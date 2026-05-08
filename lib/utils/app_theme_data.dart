@@ -63,7 +63,7 @@ class AppThemeData {
     );
   }
 
-  static final _appBarTheme = const AppBarTheme(
+  static const _appBarTheme = AppBarTheme(
     backgroundColor: Colors.transparent,
     elevation: 0,
     centerTitle: true,
@@ -92,7 +92,6 @@ class AppThemeData {
     cardColor: Colors.white,
     colorScheme: ColorScheme.fromSeed(
       seedColor: ColorName.primary,
-      brightness: Brightness.light,
       primary: ColorName.primary,
       secondary: ColorName.secondary,
     ),

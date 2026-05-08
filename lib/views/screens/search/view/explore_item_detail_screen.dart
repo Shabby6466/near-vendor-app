@@ -1,24 +1,25 @@
 import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_state.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
 import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/services.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ExploreItemDetailScreen extends StatefulWidget {
   final String itemId;
@@ -104,7 +105,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                                 fit: BoxFit.cover,
                                 width: double.infinity,
                                 height: double.infinity,
-                                placeholder: (context, url) => Container(
+                                placeholder: (context, url) => ColoredBox(
                                   color: theme.primaryColor.withValues(
                                     alpha: 0.05,
                                   ),
@@ -492,7 +493,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
           height: 44,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: color.withValues(alpha: 0.3), width: 1),
+            border: Border.all(color: color.withValues(alpha: 0.3)),
             color: color.withValues(alpha: 0.1),
           ),
           child: Icon(icon, color: color, size: 20),

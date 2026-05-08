@@ -102,7 +102,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     colors: [
                       theme.scaffoldBackgroundColor,
                       theme.scaffoldBackgroundColor,
-                      theme.primaryColor.withValues(alpha: (0.05)),
+                      theme.primaryColor.withValues(alpha: 0.05),
                     ],
                   ),
                 ),
@@ -153,7 +153,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   SizedBox(
                     height: size.height * 0.25,
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         AnimatedSwitcher(
                           duration: 400.ms,
@@ -180,7 +179,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                             textAlign: TextAlign.center,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.textTheme.bodyMedium?.color
-                                  ?.withValues(alpha: (0.6)),
+                                  ?.withValues(alpha: 0.6),
                               height: 1.5,
                             ),
                           ),
@@ -238,7 +237,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                       color: _currentPage == index
                           ? theme.colorScheme.onSurface
                           : theme.colorScheme.onSurface.withValues(
-                              alpha: (0.2),
+                              alpha: 0.2,
                             ),
                       borderRadius: BorderRadius.circular(4),
                     ),

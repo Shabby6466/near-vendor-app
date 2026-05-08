@@ -15,7 +15,6 @@ class ShimmerEffect extends StatelessWidget {
       interval: const Duration(milliseconds: 200),
       color: isDark ? Colors.white.withValues(alpha: 0.3) : Colors.white,
       colorOpacity: isDark ? 0.1 : 0.3,
-      enabled: true,
       direction: const ShimmerDirection.fromLBRT(),
       child: Container(
         decoration: BoxDecoration(

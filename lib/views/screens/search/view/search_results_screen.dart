@@ -1,11 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class SearchResultsScreen extends StatefulWidget {
@@ -119,9 +119,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4),
         ],
       ),
-      child: Row(
+      child: const Row(
         mainAxisSize: MainAxisSize.min,
-        children: const [
+        children: [
           Icon(Icons.gps_fixed, size: 16, color: Colors.black54),
           SizedBox(width: 6),
           Text(
@@ -135,7 +135,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   Widget _buildResultsSheet() {
     return DraggableScrollableSheet(
-      initialChildSize: 0.5,
       minChildSize: 0.2,
       maxChildSize: 0.9,
       builder: (context, scrollController) {
@@ -259,9 +258,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
       ),
       child: Row(
         children: [
-          CircleAvatar(
+          const CircleAvatar(
             radius: 35,
-            backgroundImage: const CachedNetworkImageProvider(
+            backgroundImage: CachedNetworkImageProvider(
               'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&q=80&w=200',
             ),
           ),
@@ -271,17 +270,17 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 RichText(
-                  text: TextSpan(
-                    style: const TextStyle(
+                  text: const TextSpan(
+                    style: TextStyle(
                       color: Colors.black,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                     children: [
-                      const TextSpan(text: 'Al Fateh Store - '),
+                      TextSpan(text: 'Al Fateh Store - '),
                       TextSpan(
                         text: '130 PKR',
-                        style: const TextStyle(color: Color(0xFF004AAD)),
+                        style: TextStyle(color: Color(0xFF004AAD)),
                       ),
                     ],
                   ),
@@ -378,7 +377,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                     child: CachedNetworkImage(
                       imageUrl: imageUrl,
                       fit: BoxFit.contain,
-                      errorWidget: (context, error, stackTrace) => Container(
+                      errorWidget: (context, error, stackTrace) => ColoredBox(
                         color: ColorName.primary.withValues(alpha: 0.1),
                         child: const Icon(
                           Icons.inventory_2_outlined,
@@ -474,9 +473,9 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             borderRadius: BorderRadius.circular(28),
           ),
         ),
-        child: Row(
+        child: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text('View All Nearby Options'),
             SizedBox(width: 12),
             Icon(Icons.arrow_forward, size: 20),

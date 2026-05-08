@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopGrid extends StatelessWidget {

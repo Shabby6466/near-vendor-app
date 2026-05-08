@@ -1,14 +1,15 @@
 import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_state.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
 
@@ -51,8 +52,8 @@ class _MapScreenState extends State<MapScreen> {
           );
           _mapController.move(center, 13);
           context.read<MapCubit>().fetchShops(
-            lat: sessionState.latitude!,
-            lon: sessionState.longitude!,
+            lat: sessionState.latitude,
+            lon: sessionState.longitude,
           );
         }
       },
@@ -65,7 +66,6 @@ class _MapScreenState extends State<MapScreen> {
                   mapController: _mapController,
                   options: MapOptions(
                     initialCenter: LatLng(widget.initialLat, widget.initialLon),
-                    initialZoom: 13,
                     onPositionChanged: (position, hasGesture) {
                       if (hasGesture) {
                         // Optional: Fetch as user drags?

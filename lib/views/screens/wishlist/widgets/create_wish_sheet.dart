@@ -33,14 +33,13 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
   
   bool _isLoading = false;
 
-  void _submit() async {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     
     final session = context.read<SessionCubit>().state;
     if (session.latitude == null || session.longitude == null) {
       ToastService.showErrorToast(
         context,
-        expandedHeight: 100,
         message: 'Location required to make a wish.',
       );
       return;
@@ -63,13 +62,11 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
       Navigator.pop(context);
       ToastService.showSuccessToast(
         context,
-        expandedHeight: 100,
         message: 'Wish submitted! We will notify local vendors.',
       );
     } else if (mounted) {
       ToastService.showErrorToast(
         context,
-        expandedHeight: 100,
         message: 'Failed to create wish. Please try again.',
       );
     }

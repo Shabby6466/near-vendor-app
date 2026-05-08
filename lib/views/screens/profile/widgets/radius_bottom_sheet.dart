@@ -36,7 +36,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
           height: 4,
           width: 40,
           decoration: BoxDecoration(
-            color: theme.dividerColor.withValues(alpha: (0.2)),
+            color: theme.dividerColor.withValues(alpha: 0.2),
             borderRadius: BorderRadius.circular(20),
           ),
         ),
@@ -51,7 +51,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
         Text(
           'Find vendors within ${_currentRadius.toInt()} kilometers',
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: (0.6)),
+            color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
           ),
         ),
         SizedBox(height: AppSpacing.extraLargeVerticalSpacing(context)),
@@ -61,7 +61,7 @@ class _RadiusBottomSheetState extends State<RadiusBottomSheet> {
           max: 100,
           divisions: 99,
           activeColor: theme.primaryColor,
-          inactiveColor: theme.primaryColor.withValues(alpha: (0.1)),
+          inactiveColor: theme.primaryColor.withValues(alpha: 0.1),
           label: '${_currentRadius.toInt()} km',
           onChanged: (value) {
             setState(() {

@@ -1,10 +1,11 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
-import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/globals.dart';
+import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 
 class AppBottomSheet {
   AppBottomSheet._();

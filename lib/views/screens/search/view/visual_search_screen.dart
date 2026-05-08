@@ -1,16 +1,17 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_map_results_screen.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/no_result_sheet.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/scanning_area.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/visual_search_result_sheet.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/no_result_sheet.dart';
+import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 
 class VisualSearchScreen extends StatefulWidget {
   final File? initialImage;
@@ -241,7 +242,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildActionIconButton(
-            Icon(Icons.collections_outlined, color: Colors.white, size: 28),
+            const Icon(Icons.collections_outlined, color: Colors.white, size: 28),
             "GALLERY",
             () => _pickImage(ImageSource.gallery),
           ),

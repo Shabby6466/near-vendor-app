@@ -106,7 +106,7 @@ class _AppTextFieldState extends State<AppTextField> {
                               color:
                                   widget.hintColor ??
                                   theme.textTheme.bodySmall?.color?.withValues(
-                                    alpha: (0.5),
+                                    alpha: 0.5,
                                   ),
                               fontFamily: 'Poppins',
                             ),
@@ -151,7 +151,7 @@ class _AppTextFieldState extends State<AppTextField> {
                                   ? Icons.visibility_off
                                   : Icons.visibility,
                               color: theme.iconTheme.color?.withValues(
-                                alpha: (0.5),
+                                alpha: 0.5,
                               ),
                             ),
                           )

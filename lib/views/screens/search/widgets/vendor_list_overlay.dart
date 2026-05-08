@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
@@ -80,9 +80,9 @@ class VendorListOverlay extends StatelessWidget {
                     final item = searchResults[index];
                     final distanceKm = ((item.distanceM ?? 0) / 1000)
                         .toStringAsFixed(1);
-                    final shopName = item.shop?['name'] ?? 'Vendor Shop';
+                    final shopName = (item.shop?['name'] as String?) ?? 'Vendor Shop';
                     final shopRating =
-                        item.shop?['rating']?.toString() ?? '4.8';
+                        (item.shop?['rating'] as String?)?.toString() ?? '4.8';
 
                     return InkWell(
                       onTap: () {

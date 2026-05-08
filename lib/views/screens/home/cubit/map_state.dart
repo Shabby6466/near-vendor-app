@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
-import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
+import 'package:nearvendorapp/models/data_models/shop_model.dart';
 
 abstract class MapState extends Equatable {
   final double latitude;

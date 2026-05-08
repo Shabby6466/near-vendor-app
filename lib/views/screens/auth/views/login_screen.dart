@@ -223,7 +223,7 @@ class LoginScreen extends StatelessWidget {
                                             MainAxisAlignment.center,
                                         children: [
                                           Text(
-                                            'Don\'t have an account? ',
+                                            "Don't have an account? ",
                                             style: theme.textTheme.bodySmall
                                                 ?.copyWith(
                                                   color: theme

@@ -1,6 +1,7 @@
 import 'dart:io';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/services/search_services.dart';
@@ -59,7 +60,7 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
         emit(const VisualSearchFailure('No matching products found nearby.'));
       }
     } catch (e) {
-      emit(VisualSearchFailure('Search failed: ${e.toString()}'));
+      emit(VisualSearchFailure('Search failed: $e'));
     }
   }
 

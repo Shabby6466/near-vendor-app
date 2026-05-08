@@ -28,7 +28,7 @@ class AppLoadingIndicator extends StatelessWidget {
         child: SizedBox(
           width: size,
           height: size,
-          child: LoadingAnimation(color: ColorName.primary),
+          child: const LoadingAnimation(color: ColorName.primary),
         ),
       ),
     );

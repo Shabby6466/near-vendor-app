@@ -82,7 +82,7 @@ class ItemCard extends StatelessWidget {
                                 imageUrl: item.imageUrl!,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
-                                errorWidget: (context, url, error) => Container(
+                                errorWidget: (context, url, error) => ColoredBox(
                                   color: theme.dividerColor.withValues(
                                     alpha: 0.1,
                                   ),
@@ -91,7 +91,7 @@ class ItemCard extends StatelessWidget {
                                   ),
                                 ),
                               )
-                            : Container(
+                            : ColoredBox(
                                 color: theme.dividerColor.withValues(
                                   alpha: 0.1,
                                 ),

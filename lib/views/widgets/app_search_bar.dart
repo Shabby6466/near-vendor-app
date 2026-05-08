@@ -175,7 +175,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
                   },
                   child: Assets.icons.camera
                       .svg(
-                        colorFilter: ColorFilter.mode(
+                        colorFilter: const ColorFilter.mode(
                           ColorName.primary,
                           BlendMode.srcIn,
                         ),

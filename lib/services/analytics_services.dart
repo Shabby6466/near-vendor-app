@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/analytics_response.dart';
+import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
-import 'package:nearvendorapp/services/server.dart';
 
 class AnalyticsServices {
   AnalyticsServices();
@@ -16,7 +16,7 @@ class AnalyticsServices {
         '${ApiConstants.getAnalyticsStats}$shopId',
         queryParameters: {'days': days},
       );
-      return AnalyticsStatsResponse.fromJson(response.data);
+      return AnalyticsStatsResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       return AnalyticsStatsResponse(success: false, statusCode: 500, data: []);
     }

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubits/user_wishlist_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/my_wishes_view.dart';
-import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 
 class WishlistMainScreen extends StatelessWidget {
   const WishlistMainScreen({super.key});
@@ -84,7 +84,7 @@ class _GuestStateView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Create a wish list to alert local vendors when you can\'t find what you need. Please sign in to continue.',
+              "Create a wish list to alert local vendors when you can't find what you need. Please sign in to continue.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 16,

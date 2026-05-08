@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/vendor_list_overlay.dart';
 
 class VisualSearchMapResultsScreen extends StatefulWidget {
@@ -70,7 +70,6 @@ class _VisualSearchMapResultsScreenState
                     mapController: _mapController,
                     options: MapOptions(
                       initialCenter: initialCenter,
-                      initialZoom: 13.0,
                     ),
                     children: [
                       TileLayer(

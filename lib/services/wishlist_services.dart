@@ -35,7 +35,7 @@ class WishlistServices {
       ApiConstants.createWishlist,
       data: input.toJson(),
     );
-    return response.data;
+    return response.data as Map<String, dynamic>;
   }
 
   Future<Map<String, dynamic>> getMyWishlists(
@@ -47,21 +47,21 @@ class WishlistServices {
         'limit': limit,
       },
     );
-    return response.data;
+    return response.data as Map<String, dynamic>;
   }
 
   Future<Map<String, dynamic>> deleteWishlist(String id) async {
     final response = await Server.delete(
       "${ApiConstants.deleteWishlist}$id",
     );
-    return response.data;
+    return response.data as Map<String, dynamic>;
   }
 
   Future<Map<String, dynamic>> completeWishlist(String id) async {
     final response = await Server.patch(
       "${ApiConstants.completeWishlist}$id/complete",
     );
-    return response.data;
+    return response.data as Map<String, dynamic>;
   }
 
   Future<Map<String, dynamic>> exploreLocalDemand({
@@ -77,6 +77,6 @@ class WishlistServices {
         'radius': radius,
       },
     );
-    return response.data;
+    return response.data as Map<String, dynamic>;
   }
 }

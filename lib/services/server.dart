@@ -124,10 +124,6 @@ class Server {
           requestHeader: true,
           requestBody: true,
           responseHeader: true,
-          responseBody: true,
-          error: true,
-          compact: true,
-          maxWidth: 90,
         ));
         if (headers != null) {
           for (final String key in headers.keys) {

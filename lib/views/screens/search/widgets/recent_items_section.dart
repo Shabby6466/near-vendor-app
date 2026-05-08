@@ -1,8 +1,9 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
+import 'package:nearvendorapp/cubits/search/search_cubit.dart';
+import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
 
@@ -80,7 +81,7 @@ class RecentItemsSection extends StatelessWidget {
 }
 
 class _MemoryCard extends StatelessWidget {
-  final dynamic item;
+  final Item item;
   const _MemoryCard({required this.item});
 
   @override
@@ -130,7 +131,7 @@ class _MemoryCard extends StatelessWidget {
                       width: double.infinity,
                       height: double.infinity,
                       fit: BoxFit.cover,
-                      errorWidget: (context, url, error) => Container(
+                      errorWidget: (context, url, error) => ColoredBox(
                         color: isDark ? Colors.black26 : Colors.grey.shade50,
                         child: const Icon(
                           Icons.image_not_supported_outlined,
@@ -161,7 +162,7 @@ class _MemoryCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${item.stockCount ?? 0} left',
+                            '${item.stockCount} left',
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontSize: 10,
                               color: Colors.white,

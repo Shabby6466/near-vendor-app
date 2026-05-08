@@ -1,18 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
-import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubits/user_wishlist_cubit.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart';
-import 'package:intl/intl.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-
-import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 
 class MyWishesView extends StatelessWidget {
   const MyWishesView({super.key});
@@ -73,7 +72,7 @@ class MyWishesView extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.info_outline_rounded,
                             color: ColorName.primary,
                             size: 18,
@@ -242,7 +241,7 @@ class MyWishesView extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              'Can\'t find what you\'re looking for nearby?\nMake a wish and local vendors will be notified — if they stock it, you\'ll see it here.',
+              "Can't find what you're looking for nearby?\nMake a wish and local vendors will be notified — if they stock it, you'll see it here.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -531,7 +530,7 @@ class _WishlistCard extends StatelessWidget {
                       ),
                       scrollDirection: Axis.horizontal,
                       itemCount: wish.matchedItems.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 8),
+                      separatorBuilder: (_, _) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
                         final item = wish.matchedItems[index];
                         return GestureDetector(
@@ -569,7 +568,7 @@ class _WishlistCard extends StatelessWidget {
                                           fit: BoxFit.cover,
                                           height: double.infinity,
                                         )
-                                      : Container(
+                                      : ColoredBox(
                                           color: isDark
                                               ? Colors.black26
                                               : Colors.grey.shade100,
@@ -739,7 +738,7 @@ class _WishlistCard extends StatelessWidget {
                       color: confirmColor.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const LoadingAnimation(size: 24),
+                    child: const LoadingAnimation(),
                   ),
                   const SizedBox(height: 24),
                   Text(

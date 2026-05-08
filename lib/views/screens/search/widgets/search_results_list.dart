@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
+import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
-import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
+import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/widgets/item_card.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 import 'package:toasty_box/toast_service.dart';
 
 class SearchResultsList extends StatelessWidget {
@@ -229,14 +229,13 @@ class _EmptyState extends StatefulWidget {
 class _EmptyStateState extends State<_EmptyState> {
   bool _isCreatingWish = false;
 
-  void _showCategoryPickerAndCreateWish() async {
+  Future<void> _showCategoryPickerAndCreateWish() async {
     if (widget.query == null || widget.query!.isEmpty) return;
 
     final session = context.read<SessionCubit>().state;
     if (session.latitude == null || session.longitude == null) {
       ToastService.showErrorToast(
         context,
-        expandedHeight: 100,
         message: 'Location required to make a wish.',
       );
       return;
@@ -270,28 +269,25 @@ class _EmptyStateState extends State<_EmptyState> {
       if (response['success'] == true) {
         ToastService.showSuccessToast(
           context,
-          expandedHeight: 100,
           message: '✨ Wish added! Local vendors will be notified.',
         );
       } else {
         ToastService.showErrorToast(
           context,
-          expandedHeight: 100,
-          message: response['message'] ?? 'Failed to create wish.',
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _isCreatingWish = false);
-      ToastService.showErrorToast(
-        context,
-        expandedHeight: 100,
-        message: 'Failed to create wish. Please try again.',
-      );
-    }
-  }
+           message: (response['message'] as String?) ?? 'Failed to create wish.',
+         );
+       }
+     } catch (e) {
+       if (!mounted) return;
+       setState(() => _isCreatingWish = false);
+       ToastService.showErrorToast(
+         context,
+         message: 'Failed to create wish. Please try again.',
+       );
+     }
+   }
 
-  Future<CategoryModel?> _showCategoryPicker(
+   Future<CategoryModel?> _showCategoryPicker(
     BuildContext context,
     List<CategoryModel> categories,
   ) {
@@ -373,7 +369,7 @@ class _EmptyStateState extends State<_EmptyState> {
                   shrinkWrap: true,
                   padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                   itemCount: categories.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 4),
+                  separatorBuilder: (_, _) => const SizedBox(height: 4),
                   itemBuilder: (context, index) {
                     final cat = categories[index];
                     final iconPath = CategoryUtils.getCategoryIcon(cat.name);
@@ -529,7 +525,7 @@ class _EmptyStateState extends State<_EmptyState> {
 
                   // Description
                   Text(
-                    'Add this to your wishlist and nearby vendors will be notified. When a vendor stocks it, you\'ll be matched automatically.',
+                    "Add this to your wishlist and nearby vendors will be notified. When a vendor stocks it, you'll be matched automatically.",
                     style: TextStyle(
                       fontSize: 12.5,
                       height: 1.5,
@@ -673,14 +669,13 @@ class _CompactWishlistCTA extends StatefulWidget {
 class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
   bool _isCreatingWish = false;
 
-  void _createWish() async {
+  Future<void> _createWish() async {
     if (widget.query == null || widget.query!.isEmpty) return;
 
     final session = context.read<SessionCubit>().state;
     if (session.latitude == null || session.longitude == null) {
       ToastService.showErrorToast(
         context,
-        expandedHeight: 100,
         message: 'Location required to make a wish.',
       );
       return;
@@ -718,28 +713,25 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
       if (response['success'] == true) {
         ToastService.showSuccessToast(
           context,
-          expandedHeight: 100,
           message: '✨ Wish added! Vendors will be notified.',
         );
       } else {
         ToastService.showErrorToast(
           context,
-          expandedHeight: 100,
-          message: response['message'] ?? 'Failed to create wish.',
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _isCreatingWish = false);
-      ToastService.showErrorToast(
-        context,
-        expandedHeight: 100,
-        message: 'Failed to create wish.',
-      );
-    }
-  }
+           message: (response['message'] as String?) ?? 'Failed to create wish.',
+         );
+       }
+     } catch (e) {
+       if (!mounted) return;
+       setState(() => _isCreatingWish = false);
+       ToastService.showErrorToast(
+         context,
+         message: 'Failed to create wish.',
+       );
+     }
+   }
 
-  Future<CategoryModel?> _showCategoryPickerQuick(
+   Future<CategoryModel?> _showCategoryPickerQuick(
     BuildContext context,
     List<CategoryModel> categories,
   ) {
@@ -783,7 +775,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
                   shrinkWrap: true,
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: categories.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 4),
+                  separatorBuilder: (_, _) => const SizedBox(height: 4),
                   itemBuilder: (context, index) {
                     final cat = categories[index];
                     return ListTile(

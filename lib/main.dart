@@ -1,25 +1,25 @@
 import 'dart:async';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
+import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
 import 'package:upgrader/upgrader.dart';
-import 'package:nearvendorapp/utils/app_theme_data.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
-import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
-import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 
 void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await HiveManager.init();
-    await dotenv.load(fileName: ".env");
+    await dotenv.load();
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
@@ -76,7 +76,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
               return MaterialApp(
                 navigatorKey: navigatorKey,
                 debugShowCheckedModeBanner: false,
-                themeMode: ThemeMode.system,
                 theme: AppThemeData.normalLightTheme,
                 darkTheme: AppThemeData.normalDarkTheme,
                 home: UpgradeAlert(

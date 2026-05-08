@@ -48,7 +48,7 @@ class Item extends Equatable {
     // Support both new 'imageUrls' array and legacy 'imageUrl' string
     List<String> urls = [];
     if (json['imageUrls'] != null) {
-      urls = List<String>.from(json['imageUrls']);
+      urls = List<String>.from(json['imageUrls'] as List);
     } else if (json['imageUrl'] != null && (json['imageUrl'] as String).isNotEmpty) {
       urls = [json['imageUrl'] as String];
     }

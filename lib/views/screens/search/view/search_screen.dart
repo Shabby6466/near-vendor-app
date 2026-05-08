@@ -1,18 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
+import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_items_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_header.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
-
-import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
-import 'package:nearvendorapp/utils/app_navigation.dart';
-
-import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
-import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -232,7 +230,7 @@ class _HowToSearchSection extends StatelessWidget {
                   icon: Icons.auto_awesome_rounded,
                   title: 'Make a Wish',
                   subtitle:
-                      'Can\'t find it? Make a wish to alert local vendors',
+                      "Can't find it? Make a wish to alert local vendors",
                   theme: theme,
                   iconColor: Colors.purple,
                   onTap: onMakeAWish,

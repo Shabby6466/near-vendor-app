@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
+import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/map_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/view/wishlist_main_screen.dart';
-
-import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/view/map_screen.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/views/widgets/lazy_load_wrapper.dart';
 
 class MainScreen extends StatelessWidget {

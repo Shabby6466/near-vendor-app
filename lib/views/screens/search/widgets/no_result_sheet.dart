@@ -5,10 +5,10 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
+import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:toasty_box/toast_service.dart';
 
 class NoResultSheet extends StatefulWidget {
@@ -32,14 +32,13 @@ class NoResultSheet extends StatefulWidget {
 class _NoResultSheetState extends State<NoResultSheet> {
   bool _isCreatingWish = false;
 
-  void _showCategoryPickerAndCreateWish() async {
+  Future<void> _showCategoryPickerAndCreateWish() async {
     if (widget.searchQuery == null || widget.searchQuery!.isEmpty) return;
 
     final session = context.read<SessionCubit>().state;
     if (session.latitude == null || session.longitude == null) {
       ToastService.showErrorToast(
         context,
-        expandedHeight: 100,
         message: 'Location required to make a wish.',
       );
       return;
@@ -76,23 +75,20 @@ class _NoResultSheetState extends State<NoResultSheet> {
       if (response['success'] == true) {
         ToastService.showSuccessToast(
           context,
-          expandedHeight: 100,
           message: '✨ Wish added! Local vendors will be notified.',
         );
         widget.onDismiss();
       } else {
-        ToastService.showErrorToast(
-          context,
-          expandedHeight: 100,
-          message: response['message'] ?? 'Failed to create wish.',
-        );
+         ToastService.showErrorToast(
+           context,
+           message: (response['message'] as String?) ?? 'Failed to create wish.',
+         );
       }
     } catch (e) {
       if (!mounted) return;
       setState(() => _isCreatingWish = false);
       ToastService.showErrorToast(
         context,
-        expandedHeight: 100,
         message: 'Failed to create wish. Please try again.',
       );
     }
@@ -146,7 +142,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
             const SizedBox(height: 8),
             Text(
               widget.message ??
-                  'We couldn\'t find this product within your discovery radius.',
+                  "We couldn't find this product within your discovery radius.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -229,7 +225,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.auto_awesome,
                         color: ColorName.primary,
                         size: 18,
@@ -248,7 +244,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    'Notify nearby vendors that you need this item. When they stock it, you\'ll be matched automatically.',
+                    "Notify nearby vendors that you need this item. When they stock it, you'll be matched automatically.",
                     style: TextStyle(
                       fontSize: 12,
                       height: 1.4,
@@ -430,7 +426,7 @@ class _CategoryPickerSheet extends StatelessWidget {
               shrinkWrap: true,
               padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               itemCount: categories.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 4),
+              separatorBuilder: (_, _) => const SizedBox(height: 4),
               itemBuilder: (context, index) {
                 final cat = categories[index];
                 final iconPath = CategoryUtils.getCategoryIcon(cat.name);

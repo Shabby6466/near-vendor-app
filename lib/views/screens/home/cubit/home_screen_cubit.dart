@@ -58,7 +58,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
         await _fetchShops(lat: lastLoc['lat']!, lon: lastLoc['lon']!);
         return;
       }
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         _handleNoLocationFound();
         return;

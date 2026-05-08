@@ -38,7 +38,6 @@ class AppAlerts {
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
               color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-              width: 1,
             ),
           ),
           child: ClipRRect(

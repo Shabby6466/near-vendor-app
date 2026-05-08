@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 
@@ -26,23 +26,23 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
 
     try {
       final response = await _wishlistServices.getMyWishlists(
-          page: _currentPage, limit: 10);
+          page: _currentPage);
       if (response['statusCode'] == 200 || response['statusCode'] == 2000 || response['success'] == true) {
         final data = response['data'];
-        List itemsJson = [];
-        Map? meta;
+        List<dynamic> itemsJson = [];
+        Map<String, dynamic>? meta;
 
         if (data is List) {
           itemsJson = data;
         } else if (data is Map) {
-          itemsJson = data['items'] ?? [];
-          meta = data['meta'];
+          itemsJson = data['items'] as List<dynamic>? ?? [];
+          meta = data['meta'] as Map<String, dynamic>?;
         }
 
-        final items = itemsJson.map((e) => WishlistItem.fromJson(e)).toList();
+        final items = itemsJson.map((e) => WishlistItem.fromJson(e as Map<String, dynamic>)).toList();
 
         if (meta != null) {
-          final totalPages = meta['totalPages'] ?? 1;
+          final totalPages = meta['totalPages'] as int? ?? 1;
           _hasMore = _currentPage < totalPages;
         } else {
           _hasMore = false;
@@ -63,7 +63,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
         _currentPage++;
       } else {
         emit(UserWishlistError(
-            message: response['message'] ?? 'Failed to fetch wishlists'));
+            message: (response['message'] as String?) ?? 'Failed to fetch wishlists'));
       }
     } catch (e) {
       emit(UserWishlistError(message: e.toString()));

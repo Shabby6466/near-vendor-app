@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/auth_api_response.dart';
+import 'package:nearvendorapp/models/api_responses/media_upload_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
-import 'package:nearvendorapp/models/api_responses/media_upload_response.dart';
 
 class AuthServices {
   AuthServices();
@@ -124,7 +124,7 @@ class AuthServices {
       return GenericApiResponse(
         status: response.statusCode,
         message: response.data is Map
-            ? response.data['message'] as String?
+            ? (response.data as Map<String, dynamic>)['message'] as String?
             : null,
       );
     } catch (e) {

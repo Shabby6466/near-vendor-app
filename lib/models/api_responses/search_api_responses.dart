@@ -27,7 +27,7 @@ class SearchItemResponse {
               ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [],
-      meta: json['meta'] != null ? SearchMeta.fromJson(json['meta']) : null,
+      meta: json['meta'] != null ? SearchMeta.fromJson(json['meta'] as Map<String, dynamic>) : null,
       message: json['message'] as String?,
       isGlobalFallback: json['isGlobalFallback'] as bool? ?? false,
       rangeMessage: json['rangeMessage'] as String?,

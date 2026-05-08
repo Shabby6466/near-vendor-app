@@ -45,7 +45,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
       _lastDragX = newDragX;
     });
 
-    int index = (newDragX / itemWidth).floor().clamp(0, 3);
+    final int index = (newDragX / itemWidth).floor().clamp(0, 3);
     if (index != widget.currentIndex) {
       _onItemTapped(index);
     }
@@ -67,7 +67,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
     return SafeArea(
       bottom: false,
       child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15, top: 0, bottom: 20),
+        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
         child: AnimatedScale(
           scale: _isDragging ? 1.01 : 1.0,
           duration: const Duration(milliseconds: 600),
@@ -129,7 +129,6 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                           child: Container(
                             decoration: BoxDecoration(
                               gradient: RadialGradient(
-                                center: const Alignment(0, 0),
                                 radius: 1.0,
                                 colors: [
                                   (isDark ? Colors.white : theme.primaryColor)
@@ -198,7 +197,7 @@ class _NavButton extends StatelessWidget {
         : (isDark ? Colors.white.withValues(alpha: 0.4) : Colors.grey.shade400);
 
     return Expanded(
-      child: Container(
+      child: ColoredBox(
         color: Colors.transparent,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

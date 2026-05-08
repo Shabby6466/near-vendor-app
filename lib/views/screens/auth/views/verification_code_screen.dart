@@ -99,7 +99,6 @@ class VerificationCodeScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                               border: Border.all(
                                 color: onSurface.withValues(alpha: 0.08),
-                                width: 1,
                               ),
                             ),
                           );

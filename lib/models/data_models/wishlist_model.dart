@@ -21,7 +21,7 @@ class WishlistItem extends Equatable {
   });
 
   factory WishlistItem.fromJson(Map<String, dynamic> json) {
-    var matches = json['matchedItems'] as List?;
+    final matches = json['matchedItems'] as List?;
     return WishlistItem(
       id: json['id'] as String? ?? '',
       itemName: json['itemName'] as String? ?? '',
@@ -29,10 +29,10 @@ class WishlistItem extends Equatable {
       categoryId: json['categoryId'] as String?,
       status: json['status'] as String? ?? 'PENDING',
       createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
+          ? DateTime.tryParse(json['createdAt'] as String)
           : null,
       matchedItems: matches != null
-          ? matches.map((i) => Item.fromJson(Map<String, dynamic>.from(i))).toList()
+          ? matches.map((i) => Item.fromJson(i as Map<String, dynamic>)).toList()
           : [],
     );
   }

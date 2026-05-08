@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 
 class VisualSearchResultSheet extends StatelessWidget {
@@ -204,9 +204,9 @@ class VisualSearchResultSheet extends StatelessWidget {
                         borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                    child: Row(
+                    child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Icon(Icons.refresh, size: 20, color: Color(0xFF004AAD)),
                         SizedBox(width: 8),
                         Text("Try again",

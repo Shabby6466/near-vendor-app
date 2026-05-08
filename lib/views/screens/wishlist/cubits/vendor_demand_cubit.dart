@@ -1,5 +1,5 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 
@@ -17,13 +17,13 @@ class VendorDemandCubit extends Cubit<VendorDemandState> {
       final response = await _wishlistServices.exploreLocalDemand(
           lat: lat, lon: lon, radius: radius);
       if (response['success'] == true && response['data'] != null) {
-        final List itemsJson = response['data'] ?? [];
-        final items = itemsJson.map((e) => WishlistItem.fromJson(e)).toList();
+        final List itemsJson = response['data'] as List? ?? [];
+        final items = itemsJson.map((e) => WishlistItem.fromJson(e as Map<String, dynamic>)).toList();
 
         emit(VendorDemandLoaded(demands: items));
       } else {
         emit(VendorDemandError(
-            message: response['message'] ?? 'Failed to fetch local demand'));
+            message: (response['message'] as String?) ?? 'Failed to fetch local demand'));
       }
     } catch (e) {
       emit(VendorDemandError(message: e.toString()));

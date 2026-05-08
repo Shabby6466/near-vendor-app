@@ -10,8 +10,11 @@ class LocationSuggestion {
 
   factory LocationSuggestion.fromJson(Map<String, dynamic> json) {
     return LocationSuggestion(
-      displayName: json['display_name'] ?? '',
-      location: LatLng(double.parse(json['lat']), double.parse(json['lon'])),
+      displayName: json['display_name'] as String? ?? '',
+      location: LatLng(
+        double.parse(json['lat'] as String),
+        double.parse(json['lon'] as String),
+      ),
     );
   }
 }
@@ -51,8 +54,8 @@ class LocationService {
       );
 
       if (response.statusCode == 200) {
-        final List data = response.data;
-        return data.map((json) => LocationSuggestion.fromJson(json)).toList();
+        final List data = response.data as List;
+        return data.map((json) => LocationSuggestion.fromJson(json as Map<String, dynamic>)).toList();
       }
       return [];
     } catch (e) {

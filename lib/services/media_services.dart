@@ -20,7 +20,7 @@ class MediaServices {
       );
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return response.data['url'] as String?;
+        return (response.data as Map<String, dynamic>)['url'] as String?;
       }
     } catch (e) {
       debugPrint('Error uploading image: $e');

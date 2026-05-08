@@ -31,7 +31,7 @@ class DiscoverySettings extends StatelessWidget {
             color: theme.cardColor,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: theme.dividerColor.withValues(alpha: (0.05)),
+              color: theme.dividerColor.withValues(alpha: 0.05),
             ),
             boxShadow: [
               BoxShadow(
@@ -67,7 +67,7 @@ class DiscoverySettings extends StatelessWidget {
               ),
               Divider(
                 height: 32,
-                color: theme.dividerColor.withValues(alpha: (0.1)),
+                color: theme.dividerColor.withValues(alpha: 0.1),
               ),
               _buildSettingItem(
                 context,
@@ -78,7 +78,7 @@ class DiscoverySettings extends StatelessWidget {
                   value: newOfferAlerts,
                   onChanged: onAlertsToggled,
                   activeThumbColor: theme.iconTheme.color,
-                  activeTrackColor: theme.primaryColor.withValues(alpha: (0.3)),
+                  activeTrackColor: theme.primaryColor.withValues(alpha: 0.3),
                 ),
               ),
             ],
@@ -108,7 +108,7 @@ class DiscoverySettings extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: theme.primaryColor.withValues(alpha: (0.1)),
+                color: theme.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: theme.iconTheme.color, size: 22),
@@ -130,7 +130,7 @@ class DiscoverySettings extends StatelessWidget {
                     subtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: theme.textTheme.bodySmall?.color?.withValues(
-                        alpha: (0.6),
+                        alpha: 0.6,
                       ),
                       fontSize: 12,
                     ),

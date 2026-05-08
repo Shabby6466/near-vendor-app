@@ -1,19 +1,19 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
-import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:flutter/foundation.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
 
 part 'session_state.dart';
 
 class SessionCubit extends Cubit<SessionState> {
   SessionCubit() : super(const SessionState());
 
-  void initialize() async {
+  Future<void> initialize() async {
     final token = CurrentUserStorage.getUserAuthToken();
     final user = CurrentUserStorage.getCurrentUser();
     final hasOnboarded = CurrentUserStorage.getHasOnboarded();
@@ -272,7 +272,7 @@ class SessionCubit extends Cubit<SessionState> {
         position.longitude,
       );
 
-      String? cityName = await _getCityName(
+      final String? cityName = await _getCityName(
         position.latitude,
         position.longitude,
       );
@@ -302,7 +302,7 @@ class SessionCubit extends Cubit<SessionState> {
 
   Future<String?> _getCityName(double lat, double lon) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
+      final List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
       if (placemarks.isNotEmpty) {
         final Placemark place = placemarks.first;
         final city =

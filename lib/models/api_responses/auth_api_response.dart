@@ -150,4 +150,3 @@ class MeResponse extends BaseApiResponse {
     return map;
   }
 }
-

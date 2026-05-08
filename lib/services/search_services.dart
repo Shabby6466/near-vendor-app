@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nearvendorapp/models/api_inputs/search_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
+import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
 
 class SearchServices {
   SearchServices();
@@ -15,11 +15,11 @@ class SearchServices {
         ApiConstants.searchItems,
         queryParameters: input.toJson(),
       );
-      return SearchItemResponse.fromJson(response.data);
+      return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return SearchItemResponse.fromJson(e.response!.data);
+          return SearchItemResponse.fromJson(e.response!.data as Map<String, dynamic>);
         }
         return SearchItemResponse(
           success: false,
@@ -42,11 +42,11 @@ class SearchServices {
       final response = await Server.get(ApiConstants.getRecentItems);
       // Even though it's recent items, we can use SearchItemResponse.fromJson
       // if the structure matches {success, data: [items...]}
-      return SearchItemResponse.fromJson(response.data);
+      return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return SearchItemResponse.fromJson(e.response!.data);
+          return SearchItemResponse.fromJson(e.response!.data as Map<String, dynamic>);
         }
         return SearchItemResponse(
           success: false,
@@ -95,9 +95,9 @@ class SearchServices {
         },
       );
 
-      if (response.data['success'] == true) {
-        final List<dynamic> data = response.data['data'];
-        return data.map((json) => Item.fromJson(json)).toList();
+      if ((response.data as Map<String, dynamic>)['success'] == true) {
+        final List<dynamic> data = (response.data as Map<String, dynamic>)['data'] as List<dynamic>;
+        return data.map((json) => Item.fromJson(json as Map<String, dynamic>)).toList();
       }
       return [];
     } catch (e) {

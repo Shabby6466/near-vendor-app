@@ -25,7 +25,7 @@ class SignupCubit extends Cubit<SignupState> {
 
     emit(SignupLoading());
 
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       emit(SignupRequiresManualLocation());
       return;

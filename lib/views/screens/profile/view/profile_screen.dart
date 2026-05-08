@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
+import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
+import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/delete_account_cubit/delete_account_cubit.dart';
+import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
+import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
-import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/guest_auth_banner.dart';
-import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
-import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -29,7 +29,7 @@ class ProfileScreen extends StatelessWidget {
         body: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {
-              return const Center(child: LoadingAnimation(size: 24));
+              return const Center(child: LoadingAnimation());
             }
 
             if (state is ProfileFailure) {

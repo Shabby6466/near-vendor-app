@@ -28,7 +28,6 @@ class AuthTextFieldWidget extends StatelessWidget {
       borderRadius: BorderRadius.circular(12),
       borderSide: BorderSide(
         color: onSurface.withValues(alpha: 0.08),
-        width: 1,
       ),
     );
 

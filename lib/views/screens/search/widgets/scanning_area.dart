@@ -18,7 +18,7 @@ class ScanningArea extends StatelessWidget {
       width: areaWidth,
       height: areaHeight,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.white12, width: 1),
+        border: Border.all(color: Colors.white12),
         borderRadius: BorderRadius.circular(24),
       ),
       child: Stack(
@@ -54,22 +54,22 @@ class ScanningArea extends StatelessWidget {
             },
           ),
           // Corners
-          Positioned(
+          const Positioned(
             top: 20,
             left: 20,
             child: _ScanningCorner(isTop: true, isLeft: true),
           ),
-          Positioned(
+          const Positioned(
             top: 20,
             right: 20,
             child: _ScanningCorner(isTop: true, isLeft: false),
           ),
-          Positioned(
+          const Positioned(
             bottom: 20,
             left: 20,
             child: _ScanningCorner(isTop: false, isLeft: true),
           ),
-          Positioned(
+          const Positioned(
             bottom: 20,
             right: 20,
             child: _ScanningCorner(isTop: false, isLeft: false),

@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/shop_response.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
+import 'package:nearvendorapp/services/categories_service.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
-import 'package:nearvendorapp/services/categories_service.dart';
 
 class ShopServices {
   ShopServices();
@@ -11,11 +11,11 @@ class ShopServices {
   Future<ShopResponse> getShopById(String id) async {
     try {
       final response = await Server.get('${ApiConstants.getShopById}$id');
-      return ShopResponse.fromJson(response.data);
+      return ShopResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopResponse.fromJson(e.response?.data);
+          return ShopResponse.fromJson(e.response?.data as Map<String, dynamic>);
         } else {
           return ShopResponse(
             success: false,
@@ -57,11 +57,11 @@ class ShopServices {
         ApiConstants.getShopsByMap,
         queryParameters: params,
       );
-      return ShopListResponse.fromJson(response.data);
+      return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopListResponse.fromJson(e.response?.data);
+          return ShopListResponse.fromJson(e.response?.data as Map<String, dynamic>);
         } else {
           return ShopListResponse(
             success: false,
@@ -104,11 +104,11 @@ class ShopServices {
         ApiConstants.getNearbyShops,
         queryParameters: params,
       );
-      return ShopListResponse.fromJson(response.data);
+      return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopListResponse.fromJson(e.response?.data);
+          return ShopListResponse.fromJson(e.response?.data as Map<String, dynamic>);
         } else {
           return ShopListResponse(
             success: false,
@@ -149,11 +149,11 @@ class ShopServices {
         ApiConstants.searchShops,
         queryParameters: params,
       );
-      return ShopListResponse.fromJson(response.data);
+      return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopListResponse.fromJson(e.response?.data);
+          return ShopListResponse.fromJson(e.response?.data as Map<String, dynamic>);
         } else {
           return ShopListResponse(
             success: false,
@@ -172,7 +172,7 @@ class ShopServices {
     }
   }
 
-  Future<List<CategoryModel>> getCategoryNames() async {
+  Future<List<CategoryModel>> getCategoryNames() {
     return CategoriesService.getCategories();
   }
 }
