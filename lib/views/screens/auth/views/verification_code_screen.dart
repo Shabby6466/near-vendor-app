@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
@@ -28,7 +29,7 @@ class VerificationCodeScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is VerificationSuccess) {
             context.read<SessionCubit>().setAuthenticated(state.user);
-            context.read<SessionCubit>().updateLocation();
+            context.read<LocationCubit>().updateLocation();
             AppNavigator.pushAndRemoveUntil(context, const MainScreen());
           } else if (state is VerificationInvalidCode) {
             AppAlerts.showActionError(

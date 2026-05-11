@@ -1,13 +1,13 @@
 part of 'search_cubit.dart';
 
-abstract class SearchState extends Equatable {
+sealed class SearchState extends Equatable {
   const SearchState();
 
   @override
   List<Object?> get props => [];
 }
 
-class SearchInitial extends SearchState {
+final class SearchInitial extends SearchState {
   final List<String> recentSearches;
   final List<Item> recentItems;
 
@@ -20,11 +20,9 @@ class SearchInitial extends SearchState {
   List<Object?> get props => [recentSearches, recentItems];
 }
 
-class SearchLoading extends SearchState {
-  const SearchLoading();
-}
+final class SearchLoading extends SearchState {}
 
-class SearchSuccess extends SearchState {
+final class SearchSuccess extends SearchState {
   final List<Item> items;
   final SearchMeta? meta;
   final String? message;
@@ -52,7 +50,7 @@ class SearchSuccess extends SearchState {
       ];
 }
 
-class SearchFailure extends SearchState {
+final class SearchFailure extends SearchState {
   final String message;
 
   const SearchFailure(this.message);

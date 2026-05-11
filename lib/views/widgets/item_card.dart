@@ -1,12 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
-import 'package:nearvendorapp/cubits/search/search_cubit.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/shop_details_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -82,14 +82,15 @@ class ItemCard extends StatelessWidget {
                                 imageUrl: item.imageUrl!,
                                 fit: BoxFit.cover,
                                 width: double.infinity,
-                                errorWidget: (context, url, error) => ColoredBox(
-                                  color: theme.dividerColor.withValues(
-                                    alpha: 0.1,
-                                  ),
-                                  child: const Center(
-                                    child: Icon(Icons.image_not_supported),
-                                  ),
-                                ),
+                                errorWidget: (context, url, error) =>
+                                    ColoredBox(
+                                      color: theme.dividerColor.withValues(
+                                        alpha: 0.1,
+                                      ),
+                                      child: const Center(
+                                        child: Icon(Icons.image_not_supported),
+                                      ),
+                                    ),
                               )
                             : ColoredBox(
                                 color: theme.dividerColor.withValues(

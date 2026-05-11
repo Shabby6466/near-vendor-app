@@ -93,6 +93,40 @@ class User {
     }
   }
 
+  User copyWith({
+    String? id,
+    String? fullName,
+    String? email,
+    String? role,
+    double? lastKnownLatitude,
+    double? lastKnownLongitude,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    bool? mustChangePassword,
+    bool? isActive,
+    DateTime? deletedAt,
+    String? photoUrl,
+    String? phone,
+    String? cityName,
+  }) {
+    return User(
+      id: id ?? _id,
+      fullName: fullName ?? _fullName,
+      email: email ?? _email,
+      role: role ?? this.role,
+      lastKnownLatitude: lastKnownLatitude ?? _lastKnownLatitude,
+      lastKnownLongitude: lastKnownLongitude ?? _lastKnownLongitude,
+      createdAt: createdAt ?? _createdAt,
+      updatedAt: updatedAt ?? _updatedAt,
+      mustChangePassword: mustChangePassword ?? _mustChangePassword,
+      isActive: isActive ?? _isActive,
+      deletedAt: deletedAt ?? _deletedAt,
+      photoUrl: photoUrl ?? _photoUrl,
+      phone: phone ?? _phone,
+      cityName: cityName ?? this.cityName,
+    );
+  }
+
   Map<String, dynamic> toJson() => {
     'id': _id,
     'fullName': _fullName,

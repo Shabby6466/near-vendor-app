@@ -1,11 +1,16 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
+import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
+import 'package:nearvendorapp/utils/app_alerts.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/globals.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 part 'home_screen_state.dart';
 
@@ -51,32 +56,16 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       // Use AppData for location
       final lat = AppData().latitude;
       final lon = AppData().longitude;
-      
       if (lat == null || lon == null) {
+        // No location set - show error
         _handleNoLocationFound();
         return;
       }
-      
       await _fetchShops(lat: lat, lon: lon);
     } catch (e) {
       _handleNoLocationFound();
     }
   }
-
-  void _handleNoLocationFound() {
-    // Emit state instead of calling UI directly
-    emit(
-      HomeScreenNoLocation(
-        categories: _categories,
-        selectedCategory: _selectedCategory,
-      ),
-    );
-
-    // Fallback to default coordinates if everything fails
-    _fetchShops(lat: 24.860734, lon: 67.001122);
-  }
-
-  Future<void> _fetchShops({required double lat, required double lon}) async {
     final cacheKey = _selectedCategory.id;
 
     // Check cache first - only if not searching
@@ -95,8 +84,9 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
     }
 
     try {
-      // Use AppData for radius
-      final radiusKm = AppData().discoveryRadius ?? 10.0;
+      // Get discovery radius from AppData, fall back to storage
+      final radiusKm = AppData().discoveryRadius ??
+          CurrentUserStorage.getDiscoveryRadius();
       final radius = (radiusKm * 1000).toInt();
 
       final response = _searchQuery != null && _searchQuery!.isNotEmpty
@@ -172,6 +162,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       distance: shop.distance,
     );
   }
+
 
   void selectCategory(CategoryModel category) {
     if (_selectedCategory == category) return;

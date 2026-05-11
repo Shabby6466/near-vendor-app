@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
@@ -23,21 +23,21 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<SessionCubit, SessionState>(
+    return BlocListener<LocationCubit, LocationState>(
       listenWhen: (previous, current) =>
           previous.latitude != current.latitude ||
           previous.longitude != current.longitude,
-      listener: (context, state) {
+      listener: (context, location) {
         final center = LatLng(
-          state.latitude ?? 33.6844,
-          state.longitude ?? 73.0479,
+          location.latitude ?? 33.6844,
+          location.longitude ?? 73.0479,
         );
         _mapController.move(center, 15.0);
       },
-      child: BlocBuilder<SessionCubit, SessionState>(
-        builder: (context, state) {
-          final currentLat = state.latitude ?? 33.6844;
-          final currentLon = state.longitude ?? 73.0479;
+      child: BlocBuilder<LocationCubit, LocationState>(
+        builder: (context, location) {
+          final currentLat = location.latitude ?? 33.6844;
+          final currentLon = location.longitude ?? 73.0479;
           final center = LatLng(currentLat, currentLon);
 
           return Scaffold(

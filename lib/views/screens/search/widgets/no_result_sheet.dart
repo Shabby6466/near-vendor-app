@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
@@ -35,8 +36,8 @@ class _NoResultSheetState extends State<NoResultSheet> {
   Future<void> _showCategoryPickerAndCreateWish() async {
     if (widget.searchQuery == null || widget.searchQuery!.isEmpty) return;
 
-    final session = context.read<SessionCubit>().state;
-    if (session.latitude == null || session.longitude == null) {
+    final location = context.read<LocationCubit>().state;
+    if (location.latitude == null || location.longitude == null) {
       ToastService.showErrorToast(
         context,
         message: 'Location required to make a wish.',
@@ -63,8 +64,8 @@ class _NoResultSheetState extends State<NoResultSheet> {
       itemName: widget.searchQuery!,
       description: '',
       categoryId: selectedCategory.id.isNotEmpty ? selectedCategory.id : null,
-      lat: session.latitude!,
-      lon: session.longitude!,
+      lat: location.latitude!,
+      lon: location.longitude!,
     );
 
     try {
@@ -72,7 +73,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
       if (!mounted) return;
       setState(() => _isCreatingWish = false);
 
-      if (response['success'] == true) {
+      if (response.success) {
         ToastService.showSuccessToast(
           context,
           message: '✨ Wish added! Local vendors will be notified.',
@@ -81,7 +82,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
       } else {
          ToastService.showErrorToast(
            context,
-           message: (response['message'] as String?) ?? 'Failed to create wish.',
+           message: (response.message) ?? 'Failed to create wish.',
          );
       }
     } catch (e) {

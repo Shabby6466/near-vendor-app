@@ -2,157 +2,168 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
-import 'package:nearvendorapp/views/screens/wishlist/cubits/user_wishlist_cubit.dart';
-import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart';
+import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
-class MyWishesView extends StatelessWidget {
+class MyWishesView extends StatefulWidget {
   const MyWishesView({super.key});
+
+  @override
+  State<MyWishesView> createState() => _MyWishesViewState();
+}
+
+class _MyWishesViewState extends State<MyWishesView> {
+  final _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    // Trigger pagination when within 200px of the bottom
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      final cubit = context.read<UserWishlistCubit>();
+      final state = cubit.state;
+      if (state is UserWishlistLoaded &&
+          state.hasMore &&
+          !state.isFetchingMore) {
+        cubit.getMyWishlists();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: BlocBuilder<UserWishlistCubit, UserWishlistState>(
-        builder: (context, state) {
-          if (state is UserWishlistInitial || state is UserWishlistLoading) {
-            return const AppLoadingIndicator();
-          }
+    return BlocBuilder<UserWishlistCubit, UserWishlistState>(
+      builder: (context, state) {
+        if (state is UserWishlistInitial || state is UserWishlistLoading) {
+          return const AppLoadingIndicator();
+        }
 
-          if (state is UserWishlistError) {
-            final isConnectionError =
-                state.message.toLowerCase().contains('socketexception') ||
-                state.message.toLowerCase().contains('connection error');
+        if (state is UserWishlistError) {
+          final isConnectionError =
+              state.message.toLowerCase().contains('socketexception') ||
+              state.message.toLowerCase().contains('connection error');
 
-            if (isConnectionError) {
-              return NoInternetScreen(
-                onRetry: () => context.read<UserWishlistCubit>().getMyWishlists(
-                  refresh: true,
-                ),
-              );
-            }
-            return _buildErrorState(context, isDark, state.message);
-          }
-
-          if (state is UserWishlistLoaded) {
-            if (state.wishlists.isEmpty) {
-              return _buildEmptyState(context, isDark);
-            }
-
-            return RefreshIndicator(
-              onRefresh: () async {
-                context.read<UserWishlistCubit>().getMyWishlists(refresh: true);
-              },
-              child: CustomScrollView(
-                physics: const AlwaysScrollableScrollPhysics(
-                  parent: BouncingScrollPhysics(),
-                ),
-                slivers: [
-                  // How-it-works banner at top
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                      padding: const EdgeInsets.all(14),
-                      decoration: BoxDecoration(
-                        color: ColorName.primary.withValues(alpha: 0.06),
-                        borderRadius: BorderRadius.circular(14),
-                        border: Border.all(
-                          color: ColorName.primary.withValues(alpha: 0.12),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.info_outline_rounded,
-                            color: ColorName.primary,
-                            size: 18,
-                          ),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: Text(
-                              'Your wishes are visible to nearby vendors. When they stock a matching item, it appears here automatically.',
-                              style: TextStyle(
-                                fontSize: 12,
-                                height: 1.4,
-                                fontWeight: FontWeight.w500,
-                                color: isDark ? Colors.white70 : Colors.black54,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.only(
-                      left: 16,
-                      right: 16,
-                      bottom: 120,
-                    ),
-                    sliver: SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          if (index == state.wishlists.length) {
-                            context.read<UserWishlistCubit>().getMyWishlists();
-                            return const Center(
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: LoadingAnimation(size: 16),
-                              ),
-                            );
-                          }
-
-                          final wish = state.wishlists[index];
-                          return Padding(
-                            padding: EdgeInsets.only(
-                              top: index == 0 ? 8 : 0,
-                              bottom: 12,
-                            ),
-                            child: _WishlistCard(wish: wish, isDark: isDark),
-                          );
-                        },
-                        childCount:
-                            state.wishlists.length + (state.hasMore ? 1 : 0),
-                      ),
-                    ),
-                  ),
-                ],
+          if (isConnectionError) {
+            return NoInternetScreen(
+              onRetry: () => context.read<UserWishlistCubit>().getMyWishlists(
+                refresh: true,
               ),
             );
           }
+          return _buildErrorState(context, isDark, state.message);
+        }
 
-          return const SizedBox.shrink();
-        },
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 110.0),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            CreateWishSheet.show(context, context.read<UserWishlistCubit>());
-          },
-          icon: const Icon(Icons.add_rounded, color: Colors.white, size: 20),
-          label: const Text(
-            'Make a Wish',
-            style: TextStyle(
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-              fontSize: 13,
+        if (state is UserWishlistLoaded) {
+          if (state.wishlists.isEmpty) {
+            return _buildEmptyState(context, isDark);
+          }
+
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<UserWishlistCubit>().getMyWishlists(refresh: true);
+            },
+            child: CustomScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(
+                parent: BouncingScrollPhysics(),
+              ),
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
+                    margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    padding: const EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: ColorName.primary.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: ColorName.primary.withValues(alpha: 0.12),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          color: ColorName.primary,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            'Your wishes are visible to nearby vendors. When they stock a matching item, it appears here automatically.',
+                            style: TextStyle(
+                              fontSize: 12,
+                              height: 1.4,
+                              fontWeight: FontWeight.w500,
+                              color: isDark ? Colors.white70 : Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    bottom: 120,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        if (index == state.wishlists.length) {
+                          // Loading indicator shown while fetching next page.
+                          // Actual trigger is the ScrollController listener above.
+                          return const Center(
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: LoadingAnimation(size: 16),
+                            ),
+                          );
+                        }
+
+                        final wish = state.wishlists[index];
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            top: index == 0 ? 8 : 0,
+                            bottom: 12,
+                          ),
+                          child: _WishlistCard(wish: wish, isDark: isDark),
+                        );
+                      },
+                      childCount:
+                          state.wishlists.length + (state.hasMore ? 1 : 0),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-          backgroundColor: ColorName.primary,
-          elevation: 4,
-        ),
-      ),
+          );
+        }
+
+        return const SizedBox.shrink();
+      },
     );
   }
 
@@ -738,7 +749,7 @@ class _WishlistCard extends StatelessWidget {
                       color: confirmColor.withValues(alpha: 0.1),
                       shape: BoxShape.circle,
                     ),
-                    child: const LoadingAnimation(),
+                    child: Icon(icon, color: confirmColor, size: 32),
                   ),
                   const SizedBox(height: 24),
                   Text(

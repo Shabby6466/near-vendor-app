@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
-import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 
 part 'change_password_state.dart';
 
@@ -15,7 +15,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
   }) async {
     emit(ChangePasswordLoading());
     try {
-      final user = CurrentUserStorage.getCurrentUser();
+      final user = AppData().currentUser;
       if (user == null || user.email == null) {
         emit(
           const ChangePasswordFailure(

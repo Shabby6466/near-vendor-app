@@ -1,17 +1,17 @@
 part of 'profile_cubit.dart';
 
-abstract class ProfileState extends Equatable {
+sealed class ProfileState extends Equatable {
   const ProfileState();
 
   @override
   List<Object?> get props => [];
 }
 
-class ProfileInitial extends ProfileState {}
+final class ProfileInitial extends ProfileState {}
 
-class ProfileLoading extends ProfileState {}
+final class ProfileLoading extends ProfileState {}
 
-class ProfileSuccess extends ProfileState {
+final class ProfileSuccess extends ProfileState {
   final String userName;
   final String userLocation;
   final String? photoUrl;
@@ -57,7 +57,7 @@ class ProfileSuccess extends ProfileState {
   ];
 }
 
-class ProfileFailure extends ProfileState {
+final class ProfileFailure extends ProfileState {
   final String error;
 
   const ProfileFailure(this.error);

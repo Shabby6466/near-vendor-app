@@ -1,8 +1,13 @@
+import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
-import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_state.dart';
+import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/services/item_services.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
+
+part 'explore_item_detail_state.dart';
 
 class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> with AnalyticsMixin<ExploreItemDetailState> {
   final ItemServices _itemServices = ItemServices();
@@ -28,38 +33,27 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> with Analytic
         return;
       }
 
-      final shopId = item.shopId;
-      if (shopId == null) {
-        emit(const ExploreItemDetailFailure('Shop ID not found for this item'));
-        return;
+      // 2. Fetch Shop Details (for the portfolio view)
+      Shop? shop;
+      if (item.shopId != null) {
+        try {
+          final shopResponse = await _shopServices.getShopById(item.shopId!);
+          if (shopResponse.success) {
+            shop = shopResponse.shop;
+          }
+        } catch (e) {
+          debugPrint('Error fetching shop details: $e');
+        }
       }
 
-      // 2. Fetch Shop Details
-      final shopResponse = await _shopServices.getShopById(shopId);
-      if (!shopResponse.success) {
-        emit(ExploreItemDetailFailure(shopResponse.message));
-        return;
-      }
-
-      final shop = shopResponse.shop;
-      if (shop == null) {
-        emit(const ExploreItemDetailFailure('Shop details not found'));
-        return;
-      }
-
-      // 3. Track Impression with metadata
-      updateAnalyticsMetadata({'shopId': shopId});
-      trackImpression(itemId);
-
-      emit(ExploreItemDetailSuccess(item, shop));
+      emit(
+        ExploreItemDetailSuccess(
+          item: item,
+          shop: shop,
+        ),
+      );
     } catch (e) {
       emit(ExploreItemDetailFailure(e.toString()));
     }
-  }
-
-  @override
-  Future<void> close() async {
-    await closeAnalytics();
-    return super.close();
   }
 }

@@ -26,44 +26,39 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
 
     try {
       final response = await _wishlistServices.getMyWishlists(
-          page: _currentPage);
-      if (response['statusCode'] == 200 || response['statusCode'] == 2000 || response['success'] == true) {
-        final data = response['data'];
-        List<dynamic> itemsJson = [];
-        Map<String, dynamic>? meta;
+        page: _currentPage,
+      );
 
-        if (data is List) {
-          itemsJson = data;
-        } else if (data is Map) {
-          itemsJson = data['items'] as List<dynamic>? ?? [];
-          meta = data['meta'] as Map<String, dynamic>?;
-        }
-
-        final items = itemsJson.map((e) => WishlistItem.fromJson(e as Map<String, dynamic>)).toList();
-
-        if (meta != null) {
-          final totalPages = meta['totalPages'] as int? ?? 1;
-          _hasMore = _currentPage < totalPages;
+      if (response.success) {
+        if (response.totalPages != null) {
+          _hasMore = _currentPage < response.totalPages!;
         } else {
           _hasMore = false;
         }
 
         if (state is UserWishlistLoaded && !refresh) {
           final currentItems = (state as UserWishlistLoaded).wishlists;
-          emit(UserWishlistLoaded(
-            wishlists: [...currentItems, ...items],
-            hasMore: _hasMore,
-          ));
+          emit(
+            UserWishlistLoaded(
+              wishlists: [...currentItems, ...response.wishlists],
+              hasMore: _hasMore,
+            ),
+          );
         } else {
-          emit(UserWishlistLoaded(
-            wishlists: items,
-            hasMore: _hasMore,
-          ));
+          emit(
+            UserWishlistLoaded(
+              wishlists: response.wishlists,
+              hasMore: _hasMore,
+            ),
+          );
         }
         _currentPage++;
       } else {
-        emit(UserWishlistError(
-            message: (response['message'] as String?) ?? 'Failed to fetch wishlists'));
+        emit(
+          UserWishlistError(
+            message: response.message ?? 'Failed to fetch wishlists',
+          ),
+        );
       }
     } catch (e) {
       emit(UserWishlistError(message: e.toString()));
@@ -73,8 +68,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
   Future<bool> createWishlist(CreateWishlistInput input) async {
     try {
       final response = await _wishlistServices.createWishlist(input);
-      if (response['statusCode'] == 200 || response['statusCode'] == 2000 || response['success'] == true) {
-        // Refresh the list after successfully creating
+      if (response.success) {
         getMyWishlists(refresh: true);
         return true;
       }
@@ -87,13 +81,15 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
   Future<bool> deleteWishlist(String id) async {
     try {
       final response = await _wishlistServices.deleteWishlist(id);
-      if (response['statusCode'] == 200 || response['statusCode'] == 2000 || response['success'] == true) {
+      if (response.success) {
         if (state is UserWishlistLoaded) {
           final currentItems = (state as UserWishlistLoaded).wishlists;
-          emit(UserWishlistLoaded(
-            wishlists: currentItems.where((w) => w.id != id).toList(),
-            hasMore: _hasMore,
-          ));
+          emit(
+            UserWishlistLoaded(
+              wishlists: currentItems.where((w) => w.id != id).toList(),
+              hasMore: _hasMore,
+            ),
+          );
         }
         return true;
       }
@@ -106,7 +102,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
   Future<bool> completeWishlist(String id) async {
     try {
       final response = await _wishlistServices.completeWishlist(id);
-      if (response['statusCode'] == 200 || response['statusCode'] == 2000 || response['success'] == true) {
+      if (response.success) {
         if (state is UserWishlistLoaded) {
           final currentItems = (state as UserWishlistLoaded).wishlists;
           final updatedItems = currentItems.map((w) {
@@ -123,11 +119,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
             }
             return w;
           }).toList();
-          
-          emit(UserWishlistLoaded(
-            wishlists: updatedItems,
-            hasMore: _hasMore,
-          ));
+          emit(UserWishlistLoaded(wishlists: updatedItems, hasMore: _hasMore));
         }
         return true;
       }

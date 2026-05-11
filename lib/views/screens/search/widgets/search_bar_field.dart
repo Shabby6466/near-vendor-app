@@ -7,11 +7,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:nearvendorapp/cubits/search/search_cubit.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
@@ -49,9 +49,9 @@ class SearchBarFieldState extends State<SearchBarField> {
 
   void _onSearch(String query) {
     HapticFeedback.mediumImpact();
-    final sessionState = context.read<SessionCubit>().state;
-    final lat = sessionState.latitude ?? 0.0;
-    final lon = sessionState.longitude ?? 0.0;
+    final locationState = context.read<LocationCubit>().state;
+    final lat = locationState.latitude ?? 0.0;
+    final lon = locationState.longitude ?? 0.0;
 
     context.read<SearchCubit>().searchItems(lat: lat, lon: lon, query: query);
   }

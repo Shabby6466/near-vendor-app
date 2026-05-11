@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
@@ -29,7 +30,7 @@ class LoginScreen extends StatelessWidget {
           if (state is LoginSuccess) {
             context.read<SessionCubit>().setAuthenticated(state.user);
             context
-                .read<SessionCubit>()
+                .read<LocationCubit>()
                 .updateLocation(); // Auto update location
             AppNavigator.pushAndRemoveUntil(context, const MainScreen());
           } else if (state is LoginFailure) {

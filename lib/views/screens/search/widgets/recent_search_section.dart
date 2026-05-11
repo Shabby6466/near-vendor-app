@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/search/search_cubit.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 
 class RecentSearchSection extends StatelessWidget {
   const RecentSearchSection({super.key});
@@ -63,27 +63,38 @@ class RecentSearchSection extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        final sessionState = context.read<SessionCubit>().state;
+                        final locationState = context.read<LocationCubit>().state;
                         context.read<SearchCubit>().searchItems(
-                              lat: sessionState.latitude ?? 0.0,
-                              lon: sessionState.longitude ?? 0.0,
-                              query: keyword,
-                            );
+                          lat: locationState.latitude ?? 0.0,
+                          lon: locationState.longitude ?? 0.0,
+                          query: keyword,
+                        );
                       },
                       borderRadius: BorderRadius.circular(14),
                       child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
-                          color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.03),
+                          color: isDark
+                              ? Colors.white.withValues(alpha: 0.05)
+                              : Colors.black.withValues(alpha: 0.03),
                           borderRadius: BorderRadius.circular(14),
                           border: Border.all(
-                            color: isDark ? Colors.white.withValues(alpha: 0.05) : Colors.black.withValues(alpha: 0.05),
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.05)
+                                : Colors.black.withValues(alpha: 0.05),
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(Icons.history_rounded, size: 14, color: isDark ? Colors.white30 : Colors.black38),
+                            Icon(
+                              Icons.history_rounded,
+                              size: 14,
+                              color: isDark ? Colors.white30 : Colors.black38,
+                            ),
                             const SizedBox(width: 8),
                             Text(
                               keyword,

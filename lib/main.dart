@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
@@ -13,6 +14,7 @@ import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
+import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit/profile_cubit.dart';
 import 'package:upgrader/upgrader.dart';
 
 void main() {
@@ -55,6 +57,12 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       providers: [
         BlocProvider(create: (context) => SessionCubit()..initialize()),
         BlocProvider(create: (context) => ConnectivityCubit()),
+        // ProfileCubit is app-level so LocationCubit can inject it
+        BlocProvider(create: (context) => ProfileCubit()),
+        BlocProvider(
+          create: (context) =>
+              LocationCubit(profileCubit: context.read<ProfileCubit>()),
+        ),
       ],
       child: BlocBuilder<ConnectivityCubit, ConnectivityStatus>(
         builder: (context, connectivity) {

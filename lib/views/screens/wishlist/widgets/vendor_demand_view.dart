@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
-import 'package:nearvendorapp/views/screens/wishlist/cubits/vendor_demand_cubit.dart';
+import 'package:nearvendorapp/views/screens/wishlist/cubit/vendor_demand_cubit.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 
 class VendorDemandView extends StatelessWidget {
@@ -104,12 +104,12 @@ class VendorDemandView extends StatelessWidget {
             return AnimatedErrorState(
               message: state.message,
               onRetry: () {
-                final sessionState = context.read<SessionCubit>().state;
-                if (sessionState.latitude != null &&
-                    sessionState.longitude != null) {
+                final locationState = context.read<LocationCubit>().state;
+                if (locationState.latitude != null &&
+                    locationState.longitude != null) {
                   context.read<VendorDemandCubit>().exploreLocalDemand(
-                    lat: sessionState.latitude!,
-                    lon: sessionState.longitude!,
+                    lat: locationState.latitude!,
+                    lon: locationState.longitude!,
                   );
                 }
               },
@@ -124,12 +124,12 @@ class VendorDemandView extends StatelessWidget {
             return RefreshIndicator(
               color: ColorName.primary,
               onRefresh: () async {
-                final sessionState = context.read<SessionCubit>().state;
-                if (sessionState.latitude != null &&
-                    sessionState.longitude != null) {
+                final locationState = context.read<LocationCubit>().state;
+                if (locationState.latitude != null &&
+                    locationState.longitude != null) {
                   context.read<VendorDemandCubit>().exploreLocalDemand(
-                    lat: sessionState.latitude!,
-                    lon: sessionState.longitude!,
+                    lat: locationState.latitude!,
+                    lon: locationState.longitude!,
                   );
                 }
               },

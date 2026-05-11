@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
-import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 
 part 'signup_state.dart';
 
@@ -81,10 +81,10 @@ class SignupCubit extends Cubit<SignupState> {
 
       if (response.status == 200 || response.status == 201) {
         if (response.user != null && response.token != null) {
-          await CurrentUserStorage.storeUserData(response.user);
-          await CurrentUserStorage.storeUserAuthToken(
-            response.token!,
-            response.refreshToken,
+          await AppData().setUser(
+            response.user,
+            token: response.token,
+            refreshToken: response.refreshToken,
           );
         }
         // Emit success with the email so the view can navigate to OTP screen.

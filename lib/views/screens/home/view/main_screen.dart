@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
@@ -40,16 +40,16 @@ class MainScreen extends StatelessWidget {
                 ),
                 LazyLoadWrapper(
                   isVisible: currentIndex == 2,
-                  child: BlocBuilder<SessionCubit, SessionState>(
-                    builder: (context, session) {
+                  child: BlocBuilder<LocationCubit, LocationState>(
+                    builder: (context, location) {
                       return BlocProvider(
                         create: (context) => MapCubit(
-                          lat: session.latitude ?? 33.68,
-                          lon: session.longitude ?? 73.04,
+                          lat: location.latitude ?? 33.68,
+                          lon: location.longitude ?? 73.04,
                         ),
                         child: MapScreen(
-                          initialLat: session.latitude ?? 33.68,
-                          initialLon: session.longitude ?? 73.04,
+                          initialLat: location.latitude ?? 33.68,
+                          initialLon: location.longitude ?? 73.04,
                         ),
                       );
                     },

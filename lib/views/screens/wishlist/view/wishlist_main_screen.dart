@@ -4,7 +4,8 @@ import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
-import 'package:nearvendorapp/views/screens/wishlist/cubits/user_wishlist_cubit.dart';
+import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
+import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/my_wishes_view.dart';
 
 class WishlistMainScreen extends StatelessWidget {
@@ -12,29 +13,35 @@ class WishlistMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SessionCubit, SessionState>(
-      builder: (context, session) {
+    return BlocProvider(
+      create: (context) {
         final isAuthenticated = context.read<SessionCubit>().isAuthenticated;
-
-        if (!isAuthenticated) {
-          return Scaffold(
-            backgroundColor: Colors.transparent,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              title: const Text(
-                'My Wishes',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-            ),
-            body: const _GuestStateView(),
-          );
+        if (isAuthenticated) {
+          return UserWishlistCubit()..getMyWishlists();
         }
+        return UserWishlistCubit(); // Return empty cubit for guests, won't fetch
+      },
+      child: BlocBuilder<SessionCubit, SessionState>(
+        builder: (context, session) {
+          final isAuthenticated = context.read<SessionCubit>().isAuthenticated;
 
-        return BlocProvider(
-          create: (context) => UserWishlistCubit()..getMyWishlists(),
-          child: Scaffold(
+          if (!isAuthenticated) {
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                centerTitle: true,
+                title: const Text(
+                  'My Wishes',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+              body: const _GuestStateView(),
+            );
+          }
+
+          return Scaffold(
             backgroundColor: Colors.transparent,
             // Add minimal app bar for context
             appBar: AppBar(
@@ -47,9 +54,13 @@ class WishlistMainScreen extends StatelessWidget {
               ),
             ),
             body: const MyWishesView(),
-          ),
-        );
-      },
+            floatingActionButton: FloatingActionButton(
+              onPressed: () => CreateWishSheet.show(context, context.read<UserWishlistCubit>()),
+              child: const Icon(Icons.add),
+            ),
+          );
+        },
+      ),
     );
   }
 }

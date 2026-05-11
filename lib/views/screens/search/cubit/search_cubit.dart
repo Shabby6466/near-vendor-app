@@ -5,6 +5,7 @@ import 'package:nearvendorapp/models/api_inputs/search_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/services/search_services.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/utils/hive/search_storage.dart';
 
@@ -25,7 +26,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
     emit(SearchInitial(recentSearches: recentSearches));
 
     // Fetch recent items from API only if authenticated
-    if (CurrentUserStorage.getUserAuthToken() != null) {
+    if (AppData().token != null) {
       final response = await _searchServices.getRecentItems();
       if (response.success) {
         emit(
@@ -53,7 +54,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
       return;
     }
 
-    emit(const SearchLoading());
+    emit(SearchLoading());
 
     // Save search history if query is not empty
     if (query.isNotEmpty) {

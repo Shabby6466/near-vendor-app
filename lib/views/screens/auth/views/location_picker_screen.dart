@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/services/location_service.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
@@ -70,7 +70,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     });
 
     _mapController.move(suggestion.location, 15.0);
-    context.read<SessionCubit>().updateTempLocation(
+    context.read<LocationCubit>().updateTempLocation(
       suggestion.location.latitude,
       suggestion.location.longitude,
     );
@@ -79,7 +79,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   Future<void> _getCurrentLocation(BuildContext context) async {
     setState(() => _isLoading = true);
     // Capture cubit reference before any await so we don't use context across gaps
-    final sessionCubit = context.read<SessionCubit>();
+    final locationCubit = context.read<LocationCubit>();
     try {
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
@@ -91,7 +91,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
         final position = await Geolocator.getCurrentPosition();
         final newLocation = LatLng(position.latitude, position.longitude);
         if (!mounted) return;
-        sessionCubit.updateTempLocation(
+        locationCubit.updateTempLocation(
           newLocation.latitude,
           newLocation.longitude,
         );
@@ -108,9 +108,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<SessionCubit, SessionState>(
+    return BlocBuilder<LocationCubit, LocationState>(
       builder: (context, state) {
-        final sessionCubit = context.read<SessionCubit>();
+        final locationCubit = context.read<LocationCubit>();
         final currentLat =
             state.tempLatitude ??
             widget.initialLocation?.latitude ??
@@ -143,7 +143,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             leading: IconButton(
               icon: const Icon(Icons.close_rounded),
               onPressed: () {
-                sessionCubit.cancelManualLocationPick();
+                locationCubit.cancelManualLocationPick();
                 Navigator.pop(context);
               },
             ),
@@ -157,7 +157,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                   initialZoom: 15.0,
                   onPositionChanged: (position, hasGesture) {
                     if (hasGesture) {
-                      sessionCubit.updateTempLocation(
+                      locationCubit.updateTempLocation(
                         position.center.latitude,
                         position.center.longitude,
                       );
@@ -338,10 +338,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                         isLoading: _isLoading,
                         onPressed: () async {
                           setState(() => _isLoading = true);
-                          // Capture navigator before await to avoid context-across-gap lint
                           final nav = Navigator.of(context);
                           try {
-                            await sessionCubit.confirmManualLocationPick();
+                            await locationCubit.confirmManualLocationPick();
                             if (!mounted) return;
                             nav.pop();
                           } finally {

@@ -51,8 +51,27 @@ final class HomeScreenFailure extends HomeScreenState {
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
 
-  const HomeScreenFailure(this.message, {required this.categories, required this.selectedCategory});
+  const HomeScreenFailure(
+    this.message, {
+    required this.categories,
+    required this.selectedCategory,
+  });
 
   @override
   List<Object?> get props => [message, categories, selectedCategory];
+}
+
+final class HomeScreenNoLocation extends HomeScreenState {
+  final List<CategoryModel> categories;
+  final CategoryModel selectedCategory;
+  final String message;
+
+  const HomeScreenNoLocation({
+    required this.categories,
+    required this.selectedCategory,
+    this.message = 'Location not found. Please set it manually.',
+  });
+
+  @override
+  List<Object?> get props => [categories, selectedCategory, message];
 }

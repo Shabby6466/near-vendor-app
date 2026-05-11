@@ -1,17 +1,17 @@
 part of 'user_wishlist_cubit.dart';
 
-abstract class UserWishlistState extends Equatable {
+sealed class UserWishlistState extends Equatable {
   const UserWishlistState();
 
   @override
   List<Object> get props => [];
 }
 
-class UserWishlistInitial extends UserWishlistState {}
+final class UserWishlistInitial extends UserWishlistState {}
 
-class UserWishlistLoading extends UserWishlistState {}
+final class UserWishlistLoading extends UserWishlistState {}
 
-class UserWishlistLoaded extends UserWishlistState {
+final class UserWishlistLoaded extends UserWishlistState {
   final List<WishlistItem> wishlists;
   final bool hasMore;
   final bool isFetchingMore;
@@ -38,7 +38,7 @@ class UserWishlistLoaded extends UserWishlistState {
   List<Object> get props => [wishlists, hasMore, isFetchingMore];
 }
 
-class UserWishlistError extends UserWishlistState {
+final class UserWishlistError extends UserWishlistState {
   final String message;
 
   const UserWishlistError({required this.message});

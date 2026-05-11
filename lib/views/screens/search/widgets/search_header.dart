@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
@@ -20,12 +21,12 @@ class SearchHeader extends StatelessWidget {
         horizontal: AppSpacing.mediumHorizontalSpacing(context),
         vertical: 12.0,
       ),
-      child: BlocBuilder<SessionCubit, SessionState>(
-        builder: (context, state) {
+      child: BlocBuilder<LocationCubit, LocationState>(
+        builder: (context, location) {
           final locationText =
-              state.cityName ??
-              (state.latitude != null && state.longitude != null
-                  ? '${state.latitude!.toStringAsFixed(4)}, ${state.longitude!.toStringAsFixed(4)}'
+              location.cityName ??
+              (location.latitude != null && location.longitude != null
+                  ? '${location.latitude!.toStringAsFixed(4)}, ${location.longitude!.toStringAsFixed(4)}'
                   : 'Select Location');
 
           return Row(
@@ -35,7 +36,7 @@ class SearchHeader extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () {
                     HapticFeedback.lightImpact();
-                    context.read<SessionCubit>().startManualLocationPick();
+                    context.read<LocationCubit>().startManualLocationPick();
                     AppNavigator.push(context, const LocationPickerScreen());
                   },
                   child: Column(

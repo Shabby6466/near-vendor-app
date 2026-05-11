@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/search/search_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_items_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
@@ -56,18 +57,18 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return BlocProvider(
       create: (context) => SearchCubit(),
-      child: BlocListener<SessionCubit, SessionState>(
+      child: BlocListener<LocationCubit, LocationState>(
         listenWhen: (previous, current) =>
             previous.latitude != current.latitude ||
             previous.longitude != current.longitude,
-        listener: (context, sessionState) {
+        listener: (context, locationState) {
           final searchCubit = context.read<SearchCubit>();
           final searchState = searchCubit.state;
 
           if (searchState is SearchSuccess && searchState.query != null) {
             searchCubit.searchItems(
-              lat: sessionState.latitude ?? 0,
-              lon: sessionState.longitude ?? 0,
+              lat: locationState.latitude ?? 0,
+              lon: locationState.longitude ?? 0,
               query: searchState.query!,
             );
           } else if (searchState is SearchInitial) {
@@ -229,8 +230,7 @@ class _HowToSearchSection extends StatelessWidget {
                 _SearchTipItem(
                   icon: Icons.auto_awesome_rounded,
                   title: 'Make a Wish',
-                  subtitle:
-                      "Can't find it? Make a wish to alert local vendors",
+                  subtitle: "Can't find it? Make a wish to alert local vendors",
                   theme: theme,
                   iconColor: Colors.purple,
                   onTap: onMakeAWish,

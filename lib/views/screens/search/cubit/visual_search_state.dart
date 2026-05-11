@@ -1,17 +1,17 @@
 part of 'visual_search_cubit.dart';
 
-abstract class VisualSearchState extends Equatable {
+sealed class VisualSearchState extends Equatable {
   const VisualSearchState();
 
   @override
   List<Object?> get props => [];
 }
 
-class VisualSearchInitial extends VisualSearchState {}
+final class VisualSearchInitial extends VisualSearchState {}
 
-class VisualSearchLoading extends VisualSearchState {}
+final class VisualSearchLoading extends VisualSearchState {}
 
-class VisualSearchSuccess extends VisualSearchState {
+final class VisualSearchSuccess extends VisualSearchState {
   final List<Item> results;
 
   const VisualSearchSuccess(this.results);
@@ -20,7 +20,7 @@ class VisualSearchSuccess extends VisualSearchState {
   List<Object?> get props => [results];
 }
 
-class VisualSearchFailure extends VisualSearchState {
+final class VisualSearchFailure extends VisualSearchState {
   final String message;
 
   const VisualSearchFailure(this.message);

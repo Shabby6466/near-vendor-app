@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_cubit.dart';
-import 'package:nearvendorapp/cubits/explore_item_detail/explore_item_detail_state.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
@@ -14,6 +12,7 @@ import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
@@ -67,7 +66,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     );
   }
 
-  Widget _buildMainContent(BuildContext context, Item item, Shop shop) {
+  Widget _buildMainContent(BuildContext context, Item item, Shop? shop) {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
     final images = item.imageUrls.isNotEmpty
@@ -253,7 +252,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                                 ),
                               ),
                               Text(
-                                shop.businessCategory,
+                                shop?.businessCategory ?? '',
                                 style: theme.textTheme.titleMedium?.copyWith(
                                   fontSize: 16,
                                   color: theme.textTheme.bodySmall?.color
@@ -288,7 +287,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                     Text(
                       item.description.isNotEmpty
                           ? item.description
-                          : 'Explore this amazing product at ${shop.shopName}.',
+                          : 'Explore this amazing product at ${shop?.shopName ?? ''}.',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontSize: 15,
                         height: 1.6,
@@ -400,7 +399,8 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     );
   }
 
-  Widget _buildFloatingActionPill(BuildContext context, Shop shop) {
+  Widget _buildFloatingActionPill(BuildContext context, Shop? shop) {
+    if (shop == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -502,7 +502,8 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     );
   }
 
-  Widget _buildVendorMiniCard(BuildContext context, Shop shop) {
+  Widget _buildVendorMiniCard(BuildContext context, Shop? shop) {
+    if (shop == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     return GestureDetector(
@@ -565,7 +566,8 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     );
   }
 
-  Widget _buildDistanceBadge(BuildContext context, Shop shop) {
+  Widget _buildDistanceBadge(BuildContext context, Shop? shop) {
+    if (shop == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
     return FutureBuilder<Position?>(
       future: Geolocator.getLastKnownPosition(),

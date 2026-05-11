@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
 import 'package:nearvendorapp/utils/app_navigation.dart';
@@ -40,20 +40,20 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocListener<SessionCubit, SessionState>(
+    return BlocListener<LocationCubit, LocationState>(
       listenWhen: (previous, current) =>
           previous.latitude != current.latitude ||
           previous.longitude != current.longitude,
-      listener: (context, sessionState) {
-        if (sessionState.latitude != null && sessionState.longitude != null) {
+      listener: (context, locationState) {
+        if (locationState.latitude != null && locationState.longitude != null) {
           final center = LatLng(
-            sessionState.latitude!,
-            sessionState.longitude!,
+            locationState.latitude!,
+            locationState.longitude!,
           );
           _mapController.move(center, 13);
           context.read<MapCubit>().fetchShops(
-            lat: sessionState.latitude,
-            lon: sessionState.longitude,
+            lat: locationState.latitude,
+            lon: locationState.longitude,
           );
         }
       },

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 part 'login_state.dart';
@@ -32,10 +33,10 @@ class LoginCubit extends Cubit<LoginState> {
 
       if (response.status == 200 || response.status == 201) {
         if (response.user != null && response.token != null) {
-          await CurrentUserStorage.storeUserData(response.user);
-          await CurrentUserStorage.storeUserAuthToken(
-            response.token!,
-            response.refreshToken,
+          await AppData().setUser(
+            response.user,
+            token: response.token,
+            refreshToken: response.refreshToken,
           );
 
           // Sync last known location to server upon login (fire-and-forget)

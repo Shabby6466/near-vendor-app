@@ -10,20 +10,27 @@ class VendorDemandCubit extends Cubit<VendorDemandState> {
 
   VendorDemandCubit() : super(VendorDemandInitial());
 
-  Future<void> exploreLocalDemand(
-      {required double lat, required double lon, double radius = 5000}) async {
+  Future<void> exploreLocalDemand({
+    required double lat,
+    required double lon,
+    double radius = 5000,
+  }) async {
     emit(VendorDemandLoading());
     try {
       final response = await _wishlistServices.exploreLocalDemand(
-          lat: lat, lon: lon, radius: radius);
-      if (response['success'] == true && response['data'] != null) {
-        final List itemsJson = response['data'] as List? ?? [];
-        final items = itemsJson.map((e) => WishlistItem.fromJson(e as Map<String, dynamic>)).toList();
+        lat: lat,
+        lon: lon,
+        radius: radius,
+      );
 
-        emit(VendorDemandLoaded(demands: items));
+      if (response.success) {
+        emit(VendorDemandLoaded(demands: response.demands));
       } else {
-        emit(VendorDemandError(
-            message: (response['message'] as String?) ?? 'Failed to fetch local demand'));
+        emit(
+          VendorDemandError(
+            message: response.message ?? 'Failed to fetch local demand',
+          ),
+        );
       }
     } catch (e) {
       emit(VendorDemandError(message: e.toString()));
