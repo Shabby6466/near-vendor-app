@@ -5,7 +5,6 @@ import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 
 class AppData {
-
   // Factory constructor immediately after
   factory AppData() => _instance;
   // Unnamed constructor FIRST (required by lint)
@@ -16,7 +15,9 @@ class AppData {
 
   // Reactive user — widgets use ValueListenableBuilder to auto-update
   final ValueNotifier<User?> userNotifier = ValueNotifier(null);
-  final ValueNotifier<AuthStatus> authStatusNotifier = ValueNotifier(AuthStatus.guest);
+  final ValueNotifier<AuthStatus> authStatusNotifier = ValueNotifier(
+    AuthStatus.guest,
+  );
   final ValueNotifier<bool> hasOnboardedNotifier = ValueNotifier(false);
   final ValueNotifier<bool> showMainScreenNotifier = ValueNotifier(false);
 
@@ -39,7 +40,11 @@ class AppData {
   double? get discoveryRadius => _discoveryRadiusKm;
 
   // Called on login / session restore
-  Future<void> setUser(User? user, {String? token, String? refreshToken}) async {
+  Future<void> setUser(
+    User? user, {
+    String? token,
+    String? refreshToken,
+  }) async {
     userNotifier.value = user;
     if (user != null) {
       authStatusNotifier.value = AuthStatus.authenticated;
@@ -83,7 +88,8 @@ class AppData {
   }
 
   void _updateShowMainScreen() {
-    showMainScreenNotifier.value = authStatus == AuthStatus.authenticated || hasOnboarded;
+    showMainScreenNotifier.value =
+        authStatus == AuthStatus.authenticated || hasOnboarded;
   }
 
   Future<void> clear() async {

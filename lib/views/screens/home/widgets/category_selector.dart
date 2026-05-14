@@ -24,10 +24,10 @@ class CategorySelector extends StatelessWidget {
             itemCount: state is HomeScreenSuccess
                 ? state.categories.length
                 : (state is HomeScreenLoading
-                    ? state.categories.length
-                    : (state is HomeScreenFailure
-                        ? state.categories.length
-                        : 0)),
+                      ? state.categories.length
+                      : (state is HomeScreenFailure
+                            ? state.categories.length
+                            : 0)),
             separatorBuilder: (context, index) => const SizedBox(width: 10),
             itemBuilder: (context, index) {
               late CategoryModel category;
@@ -52,9 +52,7 @@ class CategorySelector extends StatelessWidget {
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 18,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
                   decoration: BoxDecoration(
                     color: isSelected
                         ? theme.primaryColor.withValues(alpha: 0.1)
@@ -64,8 +62,8 @@ class CategorySelector extends StatelessWidget {
                       color: isSelected
                           ? theme.primaryColor
                           : (isDark
-                              ? theme.dividerColor.withValues(alpha: 0.1)
-                              : Colors.grey.shade200),
+                                ? theme.dividerColor.withValues(alpha: 0.1)
+                                : Colors.grey.shade200),
                       width: isSelected ? 1.5 : 1,
                     ),
                   ),
@@ -75,10 +73,12 @@ class CategorySelector extends StatelessWidget {
                       style: TextStyle(
                         color: isSelected
                             ? theme.primaryColor
-                            : theme.textTheme.bodyMedium?.color
-                                ?.withValues(alpha: 0.7),
-                        fontWeight:
-                            isSelected ? FontWeight.w800 : FontWeight.w600,
+                            : theme.textTheme.bodyMedium?.color?.withValues(
+                                alpha: 0.7,
+                              ),
+                        fontWeight: isSelected
+                            ? FontWeight.w800
+                            : FontWeight.w600,
                         fontSize: 13,
                         letterSpacing: -0.2,
                       ),

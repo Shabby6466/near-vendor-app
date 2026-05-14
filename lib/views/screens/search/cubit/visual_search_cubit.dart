@@ -44,12 +44,13 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
       final radiusMeters = radiusKm * 1000;
 
       // 3. API Call
-      final results = await _searchServices.visualSearch(
+      final response = await _searchServices.visualSearch(
         imagePath: image.path,
         lat: position.latitude,
         lon: position.longitude,
         radius: radiusMeters,
       );
+      final results = response.items;
 
       if (results.isNotEmpty) {
         results.sort(

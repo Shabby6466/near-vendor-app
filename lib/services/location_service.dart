@@ -55,7 +55,12 @@ class LocationService {
 
       if (response.statusCode == 200) {
         final List data = response.data as List;
-        return data.map((json) => LocationSuggestion.fromJson(json as Map<String, dynamic>)).toList();
+        return data
+            .map(
+              (json) =>
+                  LocationSuggestion.fromJson(json as Map<String, dynamic>),
+            )
+            .toList();
       }
       return [];
     } catch (e) {

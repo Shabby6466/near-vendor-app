@@ -43,20 +43,20 @@ class _LoadingAnimationState extends State<LoadingAnimation>
             children: List.generate(8, (index) {
               final double position = index / 8;
               final double angle = position * 2 * math.pi;
-              
+
               // Calculate opacity based on controller value and dot position
-              final double opacity = ((_controller.value - position + 1) % 1).clamp(0.2, 1.0);
-              
+              final double opacity = ((_controller.value - position + 1) % 1)
+                  .clamp(0.2, 1.0);
+
               return Align(
-                alignment: Alignment(
-                  math.cos(angle),
-                  math.sin(angle),
-                ),
+                alignment: Alignment(math.cos(angle), math.sin(angle)),
                 child: Container(
                   width: widget.size * 0.22,
                   height: widget.size * 0.22,
                   decoration: BoxDecoration(
-                    color: (widget.color ?? Colors.white).withValues(alpha: opacity),
+                    color: (widget.color ?? Colors.white).withValues(
+                      alpha: opacity,
+                    ),
                     shape: BoxShape.circle,
                   ),
                 ),

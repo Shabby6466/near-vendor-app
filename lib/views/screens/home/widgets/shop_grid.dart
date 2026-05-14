@@ -201,12 +201,12 @@ class ShopCard extends StatelessWidget {
                           Icons.storefront_outlined,
                           color: theme.primaryColor.withValues(alpha: 0.4),
                           size: 32,
-                         ),
+                        ),
                       ),
                     ),
                     errorWidget: (context, error, stackTrace) => Container(
                       decoration: BoxDecoration(
-                         gradient: LinearGradient(
+                        gradient: LinearGradient(
                           colors: [
                             theme.primaryColor.withValues(alpha: 0.1),
                             theme.primaryColor.withValues(alpha: 0.05),
@@ -258,7 +258,7 @@ class ShopCard extends StatelessWidget {
                             ),
                           ),
                         ],
-                       ),
+                      ),
                     ),
                   ),
                 // Badge Overlays

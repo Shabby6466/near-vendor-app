@@ -31,7 +31,8 @@ class ShopLocationWidget extends StatelessWidget {
         ),
         children: [
           TileLayer(
-            urlTemplate: 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+            urlTemplate:
+                'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
             userAgentPackageName: 'com.nearvendorapp.app',
           ),
           MarkerLayer(

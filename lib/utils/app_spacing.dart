@@ -48,9 +48,7 @@ class AppSpacing {
   }
 
   static EdgeInsets screenPadding(BuildContext context) {
-    return EdgeInsets.symmetric(
-      horizontal: screenHorizontalPadding(context),
-    );
+    return EdgeInsets.symmetric(horizontal: screenHorizontalPadding(context));
   }
 
   static EdgeInsets bottomNavigationPadding(BuildContext context) {

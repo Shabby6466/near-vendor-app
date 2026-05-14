@@ -28,10 +28,9 @@ class SignUpScreen extends StatelessWidget {
       child: BlocConsumer<SignupCubit, SignupState>(
         listener: (context, state) async {
           if (state is SignupRequiresManualLocation) {
-            final LatLng? result = await AppNavigator.push(
-              context,
-              const LocationPickerScreen(),
-            ) as LatLng?;
+            final LatLng? result =
+                await AppNavigator.push(context, const LocationPickerScreen())
+                    as LatLng?;
             if (!context.mounted) return;
             if (result != null) {
               context.read<SignupCubit>().handleSignupWithLocation(

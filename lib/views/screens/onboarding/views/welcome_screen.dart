@@ -236,9 +236,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     decoration: BoxDecoration(
                       color: _currentPage == index
                           ? theme.colorScheme.onSurface
-                          : theme.colorScheme.onSurface.withValues(
-                              alpha: 0.2,
-                            ),
+                          : theme.colorScheme.onSurface.withValues(alpha: 0.2),
                       borderRadius: BorderRadius.circular(4),
                     ),
                   ),

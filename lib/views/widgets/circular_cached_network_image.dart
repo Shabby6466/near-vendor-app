@@ -30,8 +30,10 @@ class CircularCachedNetworkImage extends StatelessWidget {
         width: size,
         height: size,
         fit: fit,
-        placeholder: (context, url) => placeholder ?? ShimmerEffect(borderRadius: size / 2),
-        errorWidget: (context, url, error) => errorWidget ?? _buildPlaceholder(),
+        placeholder: (context, url) =>
+            placeholder ?? ShimmerEffect(borderRadius: size / 2),
+        errorWidget: (context, url, error) =>
+            errorWidget ?? _buildPlaceholder(),
       ),
     );
   }
@@ -44,11 +46,7 @@ class CircularCachedNetworkImage extends StatelessWidget {
         color: Colors.grey,
         shape: BoxShape.circle,
       ),
-      child: Icon(
-        Icons.person,
-        size: size * 0.6,
-        color: Colors.white,
-      ),
+      child: Icon(Icons.person, size: size * 0.6, color: Colors.white),
     );
   }
 }

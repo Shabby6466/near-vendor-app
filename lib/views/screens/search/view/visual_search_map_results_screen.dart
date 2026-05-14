@@ -68,9 +68,7 @@ class _VisualSearchMapResultsScreenState
                 Positioned.fill(
                   child: FlutterMap(
                     mapController: _mapController,
-                    options: MapOptions(
-                      initialCenter: initialCenter,
-                    ),
+                    options: MapOptions(initialCenter: initialCenter),
                     children: [
                       TileLayer(
                         urlTemplate:

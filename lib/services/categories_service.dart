@@ -1,33 +1,23 @@
-import 'package:nearvendorapp/models/data_models/category_model.dart';
+import 'package:nearvendorapp/models/api_responses/category_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 
 final class CategoriesService {
   // Private constructor to prevent instantiation
   CategoriesService._();
-  
-  static List<CategoryModel>? _cachedCategories;
 
-  static Future<List<CategoryModel>> getCategories() async {
-    if (_cachedCategories != null && _cachedCategories!.isNotEmpty) {
+  static CategoryListResponse? _cachedCategories;
+
+  static Future<CategoryListResponse> getCategories() async {
+    if (_cachedCategories != null && _cachedCategories!.categories.isNotEmpty) {
       return _cachedCategories!;
     }
 
     final response = await Server.get(ApiConstants.getCategoriesNames);
     if (response.statusCode == 200) {
-      final dynamic data = response.data;
-      List<CategoryModel> categories = [];
-      
-      if (data is List) {
-        categories = data.map((e) => CategoryModel.fromJson(e)).toList();
-      } else if (data is Map<String, dynamic>) {
-        final listData = (data['data'] as List<dynamic>?) ?? 
-                        (data['categories'] as List<dynamic>?);
-        if (listData != null) {
-          categories = listData.map((e) => CategoryModel.fromJson(e)).toList();
-        }
-      }
-      
+      final categories = CategoryListResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
       _cachedCategories = categories;
       return categories;
     } else {

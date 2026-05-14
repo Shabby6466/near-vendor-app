@@ -9,7 +9,8 @@ import 'package:nearvendorapp/services/shop_services.dart';
 
 part 'explore_item_detail_state.dart';
 
-class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> with AnalyticsMixin<ExploreItemDetailState> {
+class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState>
+    with AnalyticsMixin<ExploreItemDetailState> {
   final ItemServices _itemServices = ItemServices();
   final ShopServices _shopServices = ShopServices();
 
@@ -46,12 +47,7 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> with Analytic
         }
       }
 
-      emit(
-        ExploreItemDetailSuccess(
-          item: item,
-          shop: shop,
-        ),
-      );
+      emit(ExploreItemDetailSuccess(item: item, shop: shop));
     } catch (e) {
       emit(ExploreItemDetailFailure(e.toString()));
     }

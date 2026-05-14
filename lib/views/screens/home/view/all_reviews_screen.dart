@@ -9,7 +9,10 @@ class AllReviewsScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('All Reviews', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: const Text(
+          'All Reviews',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -31,7 +34,9 @@ class AllReviewsScreen extends StatelessWidget {
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundImage: NetworkImage('https://i.pravatar.cc/150?u=${index + 50}'),
+                  backgroundImage: NetworkImage(
+                    'https://i.pravatar.cc/150?u=${index + 50}',
+                  ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -41,8 +46,20 @@ class AllReviewsScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('User ${index + 1}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                          Text('2 days ago', style: TextStyle(color: Colors.grey.shade500, fontSize: 10)),
+                          Text(
+                            'User ${index + 1}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                          Text(
+                            '2 days ago',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 10,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 4),
@@ -58,10 +75,7 @@ class AllReviewsScreen extends StatelessWidget {
                       const SizedBox(height: 8),
                       const Text(
                         '"Best Products of my life everything went smoothly. Shop owner was very professional and honest"',
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.black87,
-                        ),
+                        style: TextStyle(fontSize: 12, color: Colors.black87),
                       ),
                     ],
                   ),

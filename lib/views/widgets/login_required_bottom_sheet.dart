@@ -13,11 +13,7 @@ class LoginRequiredBottomSheet extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
-        const Icon(
-          Icons.lock_outline,
-          size: 64,
-          color: ColorName.primary,
-        ),
+        const Icon(Icons.lock_outline, size: 64, color: ColorName.primary),
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
         Text(
           'Login Required',
@@ -30,10 +26,9 @@ class LoginRequiredBottomSheet extends StatelessWidget {
         Text(
           'Please login or create an account to access this feature and connect with vendors.',
           textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-            fontSize: 14,
-            color: Colors.grey,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.headlineSmall!.copyWith(fontSize: 14, color: Colors.grey),
         ),
         SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
         SizedBox(
@@ -41,10 +36,7 @@ class LoginRequiredBottomSheet extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () {
               AppNavigator.pop(context);
-              AppNavigator.pushReplacement(
-                context,
-                const LoginScreen(),
-              );
+              AppNavigator.pushReplacement(context, const LoginScreen());
             },
             child: const Text('Login / Sign Up'),
           ),
@@ -56,7 +48,7 @@ class LoginRequiredBottomSheet extends StatelessWidget {
             'Maybe Later',
             style: Theme.of(
               context,
-            ).textTheme.bodySmall!.copyWith(color: Colors.grey,fontSize: 14),
+            ).textTheme.bodySmall!.copyWith(color: Colors.grey, fontSize: 14),
           ),
         ),
         SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),

@@ -135,7 +135,8 @@ class AppStrings {
   static const String search = 'Search';
   static const String contacts = 'Contacts';
   static const String noContactsYet = 'No contacts yet';
-  static const String createContactListDescription = 'Create a contact list for secure and efficient asset transfers to saved addresses';
+  static const String createContactListDescription =
+      'Create a contact list for secure and efficient asset transfers to saved addresses';
   static const String createContact = 'Create Contact';
   static const String copy = 'Copy';
   static const String edit = 'Edit';
@@ -268,22 +269,34 @@ class AppStrings {
 
   // Security Settings - Biometric
   static const String enableFaceIdTitle = 'Enable Biometric ID';
-  static const String enableFaceIdDescription = 'Use Biometric ID to unlock the app';
-  static const String faceIdEnabledSuccess = 'Biometric ID enabled successfully';
+  static const String enableFaceIdDescription =
+      'Use Biometric ID to unlock the app';
+  static const String faceIdEnabledSuccess =
+      'Biometric ID enabled successfully';
   static const String faceIdDisabled = 'Biometric ID disabled';
-  static const String faceIdNotAvailable = 'Biometric authentication is not available on this device';
-  static const String faceIdEnableReason = 'Enable Biometric ID for app authentication';
+  static const String faceIdNotAvailable =
+      'Biometric authentication is not available on this device';
+  static const String faceIdEnableReason =
+      'Enable Biometric ID for app authentication';
   static const String faceIdEnableFailed = 'Failed to enable Biometric ID';
 
   // Dynamic methods for biometric-specific text
-  static String getEnableBiometricTitle(String biometricType) => 'Enable $biometricType ID';
-  static String getEnableBiometricDescription(String biometricType) => 'Use $biometricType ID to unlock the app';
-  static String getBiometricEnabledSuccess(String biometricType) => '$biometricType ID enabled successfully';
-  static String getBiometricDisabled(String biometricType) => '$biometricType ID disabled';
-  static const String getBiometricNotAvailableText = 'authentication is not available on this device';
-  static String getBiometricNotAvailable(String biometricType) => '$biometricType $getBiometricNotAvailableText';
-  static String getBiometricEnableReason(String biometricType) => 'Enable $biometricType ID for app authentication';
-  static String getBiometricEnableFailed(String biometricType) => 'Failed to enable $biometricType ID';
+  static String getEnableBiometricTitle(String biometricType) =>
+      'Enable $biometricType ID';
+  static String getEnableBiometricDescription(String biometricType) =>
+      'Use $biometricType ID to unlock the app';
+  static String getBiometricEnabledSuccess(String biometricType) =>
+      '$biometricType ID enabled successfully';
+  static String getBiometricDisabled(String biometricType) =>
+      '$biometricType ID disabled';
+  static const String getBiometricNotAvailableText =
+      'authentication is not available on this device';
+  static String getBiometricNotAvailable(String biometricType) =>
+      '$biometricType $getBiometricNotAvailableText';
+  static String getBiometricEnableReason(String biometricType) =>
+      'Enable $biometricType ID for app authentication';
+  static String getBiometricEnableFailed(String biometricType) =>
+      'Failed to enable $biometricType ID';
 
   // Security Settings - Passcode
   static const String changePasscodeTitle = 'Change Passcode';
@@ -293,15 +306,18 @@ class AppStrings {
   static const String timeoutUpdatedSuccess = 'Timeout updated successfully';
   static const String timeoutUpdateFailed = 'Failed to save timeout setting';
   static const String verifyCurrentPasscodeTitle = 'Verify Current Passcode';
-  static const String verifyCurrentPasscodeMessage = 'Enter your current passcode to continue';
+  static const String verifyCurrentPasscodeMessage =
+      'Enter your current passcode to continue';
   static const String setNewPasscodeTitle = 'Set New Passcode';
   static const String setNewPasscodeMessage = 'Enter your new 6-digit passcode';
   static const String passcodeChangedSuccess = 'Passcode changed successfully';
   static const String passcodeMustBeSixDigits = 'Passcode must be 6 digits';
   static const String incorrectCurrentPasscode = 'Incorrect current passcode';
   static const String changePasscodeFailed = 'Failed to change passcode';
-  static const String noPasscodeSetError = 'No passcode set. Please set up a passcode first.';
-  static const String failedToLoadSecuritySettings = 'Failed to load security settings';
+  static const String noPasscodeSetError =
+      'No passcode set. Please set up a passcode first.';
+  static const String failedToLoadSecuritySettings =
+      'Failed to load security settings';
   static const String errorTogglingBiometricId = 'Error toggling Biometric ID';
   static const String failedToChangeTimeout = 'Failed to change timeout';
   static const String failedToSaveTimeout = 'Failed to save timeout';

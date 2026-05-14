@@ -3,18 +3,10 @@ class ContactsModel {
   String address;
   String? note;
 
-  ContactsModel({
-    required this.name,
-    required this.address,
-    this.note,
-  });
+  ContactsModel({required this.name, required this.address, this.note});
 
   Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'address': address,
-      'note': note,
-    };
+    return {'name': name, 'address': address, 'note': note};
   }
 
   factory ContactsModel.fromJson(Map<String, dynamic> json) {

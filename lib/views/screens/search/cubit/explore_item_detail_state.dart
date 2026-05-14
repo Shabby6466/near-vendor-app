@@ -15,10 +15,7 @@ final class ExploreItemDetailSuccess extends ExploreItemDetailState {
   final Item item;
   final Shop? shop;
 
-  const ExploreItemDetailSuccess({
-    required this.item,
-    this.shop,
-  });
+  const ExploreItemDetailSuccess({required this.item, this.shop});
 
   @override
   List<Object?> get props => [item, shop];

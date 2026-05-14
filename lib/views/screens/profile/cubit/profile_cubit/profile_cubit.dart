@@ -51,9 +51,10 @@ class ProfileCubit extends Cubit<ProfileState> {
       final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
       if (image != null) {
         emit(currentState.copyWith(isUploadingImage: true));
-        final String? uploadedUrl = await MediaServices.uploadImage(
+        final uploadResponse = await MediaServices.uploadImage(
           File(image.path),
         );
+        final String? uploadedUrl = uploadResponse.url;
         if (uploadedUrl != null) {
           // Emit state change - AppData will be updated when profile reloads
           emit(

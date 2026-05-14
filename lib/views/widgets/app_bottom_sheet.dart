@@ -37,9 +37,7 @@ class AppBottomSheet {
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(22),
                 ),
-                border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.19),
-                ),
+                border: Border.all(color: Colors.white.withValues(alpha: 0.19)),
               ),
               child: AnimatedPadding(
                 duration: const Duration(milliseconds: 200),
@@ -60,7 +58,8 @@ class AppBottomSheet {
   static Future<T?> showScrollableBottomSheet<T>({
     required BuildContext context,
     double minChildSize = 0.8,
-    Widget Function(BuildContext context, ScrollController scrollController)? builder,
+    Widget Function(BuildContext context, ScrollController scrollController)?
+    builder,
     bool isDismissible = true,
     bool showScrollHandle = true,
   }) {
@@ -92,10 +91,10 @@ class AppBottomSheet {
                     child: Container(
                       padding: showScrollHandle
                           ? EdgeInsets.symmetric(
-                        vertical: AppSpacing.mediumVerticalSpacing(
-                          context,
-                        ),
-                      )
+                              vertical: AppSpacing.mediumVerticalSpacing(
+                                context,
+                              ),
+                            )
                           : EdgeInsets.zero,
                       decoration: BoxDecoration(
                         color: ColorName.primary.withValues(alpha: 0.7),
@@ -118,7 +117,8 @@ class AppBottomSheet {
                                 color: Colors.white.withValues(alpha: 0.3),
                               ),
                             ),
-                          if (builder != null) Flexible(child: builder(context, scrollController)),
+                          if (builder != null)
+                            Flexible(child: builder(context, scrollController)),
                         ],
                       ),
                     ),

@@ -15,13 +15,11 @@ class FallbackBanner extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: isDark 
-              ? theme.primaryColor.withValues(alpha: 0.1) 
+          color: isDark
+              ? theme.primaryColor.withValues(alpha: 0.1)
               : theme.primaryColor.withValues(alpha: 0.05),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(
-            color: theme.primaryColor.withValues(alpha: 0.2),
-          ),
+          border: Border.all(color: theme.primaryColor.withValues(alpha: 0.2)),
         ),
         child: Row(
           children: [
@@ -42,7 +40,7 @@ class FallbackBanner extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                   Text(
+                  Text(
                     'No Local Matches Found',
                     style: TextStyle(
                       color: isDark ? Colors.white : Colors.black87,

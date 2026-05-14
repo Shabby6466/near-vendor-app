@@ -1,4 +1,5 @@
 import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 
 class SearchItemResponse {
   final bool success;
@@ -20,17 +21,25 @@ class SearchItemResponse {
   });
 
   factory SearchItemResponse.fromJson(Map<String, dynamic> json) {
+    final data = apiResponseData(json);
+    final itemsData = apiResponseDataList(json);
+    final metaJson = data is Map<String, dynamic>
+        ? data['meta'] as Map<String, dynamic>?
+        : json['meta'] as Map<String, dynamic>?;
     return SearchItemResponse(
       success: json['success'] as bool? ?? false,
       statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
-      items: (json['data'] as List<dynamic>?)
-              ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          [],
-      meta: json['meta'] != null ? SearchMeta.fromJson(json['meta'] as Map<String, dynamic>) : null,
+      items: itemsData
+          .map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      meta: metaJson != null ? SearchMeta.fromJson(metaJson) : null,
       message: json['message'] as String?,
-      isGlobalFallback: json['isGlobalFallback'] as bool? ?? false,
-      rangeMessage: json['rangeMessage'] as String?,
+      isGlobalFallback: data is Map<String, dynamic>
+          ? data['isGlobalFallback'] as bool? ?? false
+          : json['isGlobalFallback'] as bool? ?? false,
+      rangeMessage: data is Map<String, dynamic>
+          ? data['rangeMessage'] as String?
+          : json['rangeMessage'] as String?,
     );
   }
 }

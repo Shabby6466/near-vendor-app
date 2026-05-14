@@ -242,7 +242,11 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildActionIconButton(
-            const Icon(Icons.collections_outlined, color: Colors.white, size: 28),
+            const Icon(
+              Icons.collections_outlined,
+              color: Colors.white,
+              size: 28,
+            ),
             "GALLERY",
             () => _pickImage(ImageSource.gallery),
           ),

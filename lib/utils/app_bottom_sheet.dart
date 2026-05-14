@@ -60,7 +60,8 @@ class AppBottomSheet {
   static Future<T?> showScrollableBottomSheet<T>({
     required BuildContext context,
     double minChildSize = 0.5,
-    Widget Function(BuildContext context, ScrollController scrollController)? builder,
+    Widget Function(BuildContext context, ScrollController scrollController)?
+    builder,
     bool isDismissible = true,
     bool showScrollHandle = true,
   }) {
@@ -121,7 +122,8 @@ class AppBottomSheet {
                                 color: Colors.grey.withValues(alpha: 0.3),
                               ),
                             ),
-                          if (builder != null) Flexible(child: builder(context, scrollController)),
+                          if (builder != null)
+                            Flexible(child: builder(context, scrollController)),
                         ],
                       ),
                     ),
@@ -155,13 +157,11 @@ class AppBottomSheet {
           Text(
             title,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
           ),
-          SizedBox(
-            height: AppSpacing.mediumVerticalSpacing(context),
-          ),
+          SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
           Text(
             subtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -170,19 +170,15 @@ class AppBottomSheet {
             ),
             textAlign: TextAlign.center,
           ),
-          SizedBox(
-            height: AppSpacing.mediumVerticalSpacing(context),
-          ),
+          SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
           Text(
             message,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              fontWeight: FontWeight.w400,
-            ),
+            style: Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w400),
           ),
-          SizedBox(
-            height: AppSpacing.mediumVerticalSpacing(context),
-          ),
+          SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
           ElevatedButton(
             onPressed: onConfirm,
             style: ElevatedButton.styleFrom(
@@ -190,9 +186,7 @@ class AppBottomSheet {
             ),
             child: Text(confirmButtonText),
           ),
-          SizedBox(
-            height: AppSpacing.smallVerticalSpacing(context),
-          ),
+          SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
           TextButton(
             onPressed: onCancel ?? () => AppNavigator.pop(context),
             child: Text(cancelButtonText),

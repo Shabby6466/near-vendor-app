@@ -49,7 +49,8 @@ class Item extends Equatable {
     List<String> urls = [];
     if (json['imageUrls'] != null) {
       urls = List<String>.from(json['imageUrls'] as List);
-    } else if (json['imageUrl'] != null && (json['imageUrl'] as String).isNotEmpty) {
+    } else if (json['imageUrl'] != null &&
+        (json['imageUrl'] as String).isNotEmpty) {
       urls = [json['imageUrl'] as String];
     }
 
@@ -65,7 +66,9 @@ class Item extends Equatable {
       stockCount: json['stockCount'] as int? ?? 0,
       imageUrls: urls,
       isAvailable: json['isAvailable'] as bool? ?? true,
-      discount: json['discount'] != null ? double.tryParse(json['discount'].toString()) : null,
+      discount: json['discount'] != null
+          ? double.tryParse(json['discount'].toString())
+          : null,
       shop: json['shop'] as Map<String, dynamic>?,
       count: json['count'] as int?,
       distanceM: double.tryParse(json['distance_m']?.toString() ?? ''),
@@ -137,23 +140,23 @@ class Item extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        shopId,
-        vendorId,
-        name,
+    id,
+    shopId,
+    vendorId,
+    name,
 
-        description,
-        price,
-        unit,
-        stockCount,
-        imageUrls,
-        isAvailable,
-        discount,
-        shop,
-        count,
-        distanceM,
-        visualScore,
-        lat,
-        long,
-      ];
+    description,
+    price,
+    unit,
+    stockCount,
+    imageUrls,
+    isAvailable,
+    discount,
+    shop,
+    count,
+    distanceM,
+    visualScore,
+    lat,
+    long,
+  ];
 }

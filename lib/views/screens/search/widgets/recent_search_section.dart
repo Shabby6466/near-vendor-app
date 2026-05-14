@@ -63,7 +63,9 @@ class RecentSearchSection extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        final locationState = context.read<LocationCubit>().state;
+                        final locationState = context
+                            .read<LocationCubit>()
+                            .state;
                         context.read<SearchCubit>().searchItems(
                           lat: locationState.latitude ?? 0.0,
                           lon: locationState.longitude ?? 0.0,

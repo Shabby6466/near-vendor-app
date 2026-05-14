@@ -9,18 +9,22 @@ class CategoryModel {
       return CategoryModel(id: json, name: json);
     }
     if (json is Map) {
-      final id = (json['id'] ?? 
-                  json['_id'] ?? 
-                  json['uuid'] ?? 
-                  json['categoryId'] ?? 
-                  json['category_id'] ?? 
-                  '').toString();
-      final name = (json['name'] ?? 
-                    json['categoryName'] ?? 
-                    json['title'] ?? 
-                    json['category_name'] ?? 
-                    '').toString();
-      
+      final id =
+          (json['id'] ??
+                  json['_id'] ??
+                  json['uuid'] ??
+                  json['categoryId'] ??
+                  json['category_id'] ??
+                  '')
+              .toString();
+      final name =
+          (json['name'] ??
+                  json['categoryName'] ??
+                  json['title'] ??
+                  json['category_name'] ??
+                  '')
+              .toString();
+
       return CategoryModel(
         id: id.isNotEmpty ? id : name,
         name: name.isNotEmpty ? name : id,
@@ -29,7 +33,7 @@ class CategoryModel {
     return CategoryModel(id: '', name: 'Unknown');
   }
 
-   CategoryModel.all() : this(id: 'all', name: 'All Items');
+  CategoryModel.all() : this(id: 'all', name: 'All Items');
 
   @override
   bool operator ==(Object other) =>

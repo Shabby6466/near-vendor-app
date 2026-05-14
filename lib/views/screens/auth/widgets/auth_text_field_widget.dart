@@ -26,9 +26,7 @@ class AuthTextFieldWidget extends StatelessWidget {
 
     final baseBorder = OutlineInputBorder(
       borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(
-        color: onSurface.withValues(alpha: 0.08),
-      ),
+      borderSide: BorderSide(color: onSurface.withValues(alpha: 0.08)),
     );
 
     return Center(

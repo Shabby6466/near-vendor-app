@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class ScanningArea extends StatelessWidget {
   final Animation<double> scannerAnimation;
 
-  const ScanningArea({
-    super.key,
-    required this.scannerAnimation,
-  });
+  const ScanningArea({super.key, required this.scannerAnimation});
 
   @override
   Widget build(BuildContext context) {
@@ -39,13 +36,13 @@ class ScanningArea extends StatelessWidget {
                         color: Colors.blue.withValues(alpha: 0.8),
                         blurRadius: 12,
                         spreadRadius: 2,
-                      )
+                      ),
                     ],
                     gradient: const LinearGradient(
                       colors: [
                         Colors.transparent,
                         Colors.blue,
-                        Colors.transparent
+                        Colors.transparent,
                       ],
                     ),
                   ),

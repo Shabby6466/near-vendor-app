@@ -12,7 +12,10 @@ final class HomeScreenInitial extends HomeScreenState {}
 final class HomeScreenLoading extends HomeScreenState {
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
-  const HomeScreenLoading({required this.categories, required this.selectedCategory});
+  const HomeScreenLoading({
+    required this.categories,
+    required this.selectedCategory,
+  });
 
   @override
   List<Object?> get props => [categories, selectedCategory];
@@ -37,13 +40,13 @@ final class HomeScreenSuccess extends HomeScreenState {
 
   @override
   List<Object?> get props => [
-        shops,
-        categories,
-        selectedCategory,
-        message,
-        isGlobalFallback,
-        rangeMessage,
-      ];
+    shops,
+    categories,
+    selectedCategory,
+    message,
+    isGlobalFallback,
+    rangeMessage,
+  ];
 }
 
 final class HomeScreenFailure extends HomeScreenState {

@@ -4,7 +4,7 @@ import 'package:nearvendorapp/services/analytics_services.dart';
 
 mixin AnalyticsMixin<S> on Cubit<S> {
   final AnalyticsServices _analyticsServices = AnalyticsServices();
-  
+
   final Set<String> _pendingImpressions = {};
   final Set<String> _sentImpressions = {};
   Timer? _analyticsTimer;
@@ -47,10 +47,7 @@ mixin AnalyticsMixin<S> on Cubit<S> {
     await _analyticsServices.sendBatchAnalytics(
       targetIds: targetIds,
       eventType: 'IMPRESSION',
-      metadata: {
-        'source': _analyticsSource ?? 'unknown',
-        ..._extraMetadata,
-      },
+      metadata: {'source': _analyticsSource ?? 'unknown', ..._extraMetadata},
     );
   }
 

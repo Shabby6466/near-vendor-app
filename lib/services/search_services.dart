@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:nearvendorapp/models/api_inputs/search_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 
@@ -19,7 +18,9 @@ class SearchServices {
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return SearchItemResponse.fromJson(e.response!.data as Map<String, dynamic>);
+          return SearchItemResponse.fromJson(
+            e.response!.data as Map<String, dynamic>,
+          );
         }
         return SearchItemResponse(
           success: false,
@@ -46,7 +47,9 @@ class SearchServices {
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return SearchItemResponse.fromJson(e.response!.data as Map<String, dynamic>);
+          return SearchItemResponse.fromJson(
+            e.response!.data as Map<String, dynamic>,
+          );
         }
         return SearchItemResponse(
           success: false,
@@ -64,7 +67,7 @@ class SearchServices {
     }
   }
 
-  Future<List<Item>> visualSearch({
+  Future<SearchItemResponse> visualSearch({
     required String imagePath,
     required double lat,
     required double lon,
@@ -95,13 +98,19 @@ class SearchServices {
         },
       );
 
-      if ((response.data as Map<String, dynamic>)['success'] == true) {
-        final List<dynamic> data = (response.data as Map<String, dynamic>)['data'] as List<dynamic>;
-        return data.map((json) => Item.fromJson(json as Map<String, dynamic>)).toList();
-      }
-      return [];
+      return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      return [];
+      if (e is DioException && e.response?.data is Map<String, dynamic>) {
+        return SearchItemResponse.fromJson(
+          e.response!.data as Map<String, dynamic>,
+        );
+      }
+      return SearchItemResponse(
+        success: false,
+        statusCode: 500,
+        items: [],
+        message: e.toString(),
+      );
     }
   }
 }

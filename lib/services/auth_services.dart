@@ -9,133 +9,155 @@ import 'package:nearvendorapp/utils/generic_api_response.dart';
 class AuthServices {
   AuthServices();
 
-   Future<LoginResponse> createUser(CreateUserInput input) async {
-     try {
-       final Map<String, dynamic> data = input.toJson();
-       final response = await Server.post(ApiConstants.createUser, data: data);
-       if (response.data is Map<String, dynamic>) {
-         return LoginResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return LoginResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return LoginResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return LoginResponse(message: e.message);
-         }
-       }
-       return LoginResponse(message: e.toString());
-     }
-   }
+  Future<LoginResponse> createUser(CreateUserInput input) async {
+    try {
+      final Map<String, dynamic> data = input.toJson();
+      final response = await Server.post(ApiConstants.createUser, data: data);
+      if (response.data is Map<String, dynamic>) {
+        return LoginResponse.fromJson(response.data as Map<String, dynamic>);
+      } else {
+        return LoginResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return LoginResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return LoginResponse(message: e.message);
+        }
+      }
+      return LoginResponse(message: e.toString());
+    }
+  }
 
-   Future<VerifyOtpResponse> verifyOtp(VerifyOtpInput input) async {
-     try {
-       final Map<String, dynamic> data = input.toJson();
-       final response = await Server.post(ApiConstants.verifyOTP, data: data);
-       if (response.data is Map<String, dynamic>) {
-         return VerifyOtpResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return VerifyOtpResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return VerifyOtpResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return VerifyOtpResponse(message: e.message);
-         }
-       }
-       return VerifyOtpResponse(message: e.toString());
-     }
-   }
+  Future<VerifyOtpResponse> verifyOtp(VerifyOtpInput input) async {
+    try {
+      final Map<String, dynamic> data = input.toJson();
+      final response = await Server.post(ApiConstants.verifyOTP, data: data);
+      if (response.data is Map<String, dynamic>) {
+        return VerifyOtpResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        return VerifyOtpResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return VerifyOtpResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return VerifyOtpResponse(message: e.message);
+        }
+      }
+      return VerifyOtpResponse(message: e.toString());
+    }
+  }
 
-   Future<LoginResponse> login(LoginInput input) async {
-     try {
-       final Map<String, dynamic> data = input.toJson();
-       final response = await Server.post(ApiConstants.login, data: data);
-       if (response.data is Map<String, dynamic>) {
-         return LoginResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return LoginResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return LoginResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return LoginResponse(message: e.message);
-         }
-       }
-       return LoginResponse(message: e.toString());
-     }
-   }
+  Future<LoginResponse> login(LoginInput input) async {
+    try {
+      final Map<String, dynamic> data = input.toJson();
+      final response = await Server.post(ApiConstants.login, data: data);
+      if (response.data is Map<String, dynamic>) {
+        return LoginResponse.fromJson(response.data as Map<String, dynamic>);
+      } else {
+        return LoginResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return LoginResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return LoginResponse(message: e.message);
+        }
+      }
+      return LoginResponse(message: e.toString());
+    }
+  }
 
-   Future<GenericApiResponse> changePassword(ChangePasswordInput input) async {
-     try {
-       final Map<String, dynamic> data = input.toJson();
-       final response = await Server.post(
-         ApiConstants.changePassword,
-         data: data,
-       );
-       if (response.data is Map<String, dynamic>) {
-         return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return GenericApiResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return GenericApiResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return GenericApiResponse(message: e.message);
-         }
-       }
-       return GenericApiResponse(message: e.toString());
-     }
-   }
+  Future<GenericApiResponse> changePassword(ChangePasswordInput input) async {
+    try {
+      final Map<String, dynamic> data = input.toJson();
+      final response = await Server.post(
+        ApiConstants.changePassword,
+        data: data,
+      );
+      if (response.data is Map<String, dynamic>) {
+        return GenericApiResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        return GenericApiResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return GenericApiResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
+      return GenericApiResponse(message: e.toString());
+    }
+  }
 
-   Future<MeResponse> getMe() async {
-     try {
-       final response = await Server.get(ApiConstants.getMe);
-       if (response.data is Map<String, dynamic>) {
-         return MeResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return MeResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return MeResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return MeResponse(message: e.message);
-         }
-       }
-       return MeResponse(message: e.toString());
-     }
-   }
+  Future<MeResponse> getMe() async {
+    try {
+      final response = await Server.get(ApiConstants.getMe);
+      if (response.data is Map<String, dynamic>) {
+        return MeResponse.fromJson(response.data as Map<String, dynamic>);
+      } else {
+        return MeResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return MeResponse.fromJson(e.response?.data as Map<String, dynamic>);
+        } else {
+          return MeResponse(message: e.message);
+        }
+      }
+      return MeResponse(message: e.toString());
+    }
+  }
 
-   Future<GenericApiResponse> updateUser(UpdateUserInput input) async {
-     try {
-       final Map<String, dynamic> data = input.toJson();
-       final response = await Server.patch(ApiConstants.updateUser, data: data);
-       if (response.data is Map<String, dynamic>) {
-         return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return GenericApiResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return GenericApiResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return GenericApiResponse(message: e.message);
-         }
-       }
-       return GenericApiResponse(message: e.toString());
-     }
-   }
+  Future<GenericApiResponse> updateUser(UpdateUserInput input) async {
+    try {
+      final Map<String, dynamic> data = input.toJson();
+      final response = await Server.patch(ApiConstants.updateUser, data: data);
+      if (response.data is Map<String, dynamic>) {
+        return GenericApiResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        return GenericApiResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return GenericApiResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
+      return GenericApiResponse(message: e.toString());
+    }
+  }
 
   Future<GenericApiResponse> deleteAccount(String password) async {
     try {
@@ -143,22 +165,26 @@ class AuthServices {
         ApiConstants.deleteAccount,
         data: {'password': password},
       );
-      // Backend returns { success: true, message: "..." } with no statusCode field.
-      // Use the HTTP status code directly from the Dio response.
+      if (response.data is Map<String, dynamic>) {
+        return GenericApiResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      }
       return GenericApiResponse(
         status: response.statusCode,
-        message: response.data is Map
-            ? (response.data as Map<String, dynamic>)['message'] as String?
-            : null,
+        message: 'Invalid response format',
       );
     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return GenericApiResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return GenericApiResponse(message: e.message);
-         }
-       }
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return GenericApiResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -168,50 +194,60 @@ class AuthServices {
       final formData = FormData.fromMap({
         'file': await MultipartFile.fromFile(filePath),
       });
-       final response = await Server.post(
-         ApiConstants.uploadMedia,
-         data: formData,
-       );
-       if (response.data is Map<String, dynamic>) {
-         return MediaUploadResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return MediaUploadResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return MediaUploadResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return MediaUploadResponse(message: e.message);
-         }
-       }
-       return MediaUploadResponse(message: e.toString());
-     }
+      final response = await Server.post(
+        ApiConstants.uploadMedia,
+        data: formData,
+      );
+      if (response.data is Map<String, dynamic>) {
+        return MediaUploadResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        return MediaUploadResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return MediaUploadResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return MediaUploadResponse(message: e.message);
+        }
+      }
+      return MediaUploadResponse(message: e.toString());
+    }
   }
 
-   Future<GenericApiResponse> updateUserLocation(double lat, double lon) async {
-     try {
-       final response = await Server.post(
-         ApiConstants.updateUserLocation,
-         data: {
-           'latitude': double.parse(lat.toStringAsFixed(7)),
-           'longitude': double.parse(lon.toStringAsFixed(7)),
-         },
-       );
-       if (response.data is Map<String, dynamic>) {
-         return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
-       } else {
-         return GenericApiResponse(message: 'Invalid response format');
-       }
-     } catch (e) {
-       if (e is DioException) {
-         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-           return GenericApiResponse.fromJson(e.response?.data as Map<String, dynamic>);
-         } else {
-           return GenericApiResponse(message: e.message);
-         }
-       }
-       return GenericApiResponse(message: e.toString());
-     }
-   }
+  Future<GenericApiResponse> updateUserLocation(double lat, double lon) async {
+    try {
+      final response = await Server.post(
+        ApiConstants.updateUserLocation,
+        data: {
+          'latitude': double.parse(lat.toStringAsFixed(7)),
+          'longitude': double.parse(lon.toStringAsFixed(7)),
+        },
+      );
+      if (response.data is Map<String, dynamic>) {
+        return GenericApiResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
+      } else {
+        return GenericApiResponse(message: 'Invalid response format');
+      }
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null &&
+            e.response?.data is Map<String, dynamic>) {
+          return GenericApiResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
+      return GenericApiResponse(message: e.toString());
+    }
+  }
 }

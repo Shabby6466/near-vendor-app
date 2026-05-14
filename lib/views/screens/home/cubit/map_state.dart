@@ -21,13 +21,13 @@ abstract class MapState extends Equatable {
 
   @override
   List<Object?> get props => [
-        latitude,
-        longitude,
-        radius,
-        shops,
-        categories,
-        selectedCategory,
-      ];
+    latitude,
+    longitude,
+    radius,
+    shops,
+    categories,
+    selectedCategory,
+  ];
 }
 
 class MapInitial extends MapState {
@@ -77,12 +77,12 @@ class MapFailure extends MapState {
 
   @override
   List<Object?> get props => [
-        latitude,
-        longitude,
-        radius,
-        shops,
-        categories,
-        selectedCategory,
-        message,
-      ];
+    latitude,
+    longitude,
+    radius,
+    shops,
+    categories,
+    selectedCategory,
+    message,
+  ];
 }

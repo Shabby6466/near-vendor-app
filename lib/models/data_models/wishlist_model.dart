@@ -32,19 +32,21 @@ class WishlistItem extends Equatable {
           ? DateTime.tryParse(json['createdAt'] as String)
           : null,
       matchedItems: matches != null
-          ? matches.map((i) => Item.fromJson(i as Map<String, dynamic>)).toList()
+          ? matches
+                .map((i) => Item.fromJson(i as Map<String, dynamic>))
+                .toList()
           : [],
     );
   }
 
   @override
   List<Object?> get props => [
-        id,
-        itemName,
-        description,
-        categoryId,
-        status,
-        createdAt,
-        matchedItems,
-      ];
+    id,
+    itemName,
+    description,
+    categoryId,
+    status,
+    createdAt,
+    matchedItems,
+  ];
 }

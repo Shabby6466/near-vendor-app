@@ -30,5 +30,10 @@ class LocationPickerState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [selectedLocation, suggestions, isSearching, status];
+  List<Object?> get props => [
+    selectedLocation,
+    suggestions,
+    isSearching,
+    status,
+  ];
 }

@@ -15,7 +15,9 @@ class ShopServices {
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopResponse.fromJson(e.response?.data as Map<String, dynamic>);
+          return ShopResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
         } else {
           return ShopResponse(
             success: false,
@@ -61,7 +63,9 @@ class ShopServices {
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopListResponse.fromJson(e.response?.data as Map<String, dynamic>);
+          return ShopListResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
         } else {
           return ShopListResponse(
             success: false,
@@ -108,7 +112,9 @@ class ShopServices {
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopListResponse.fromJson(e.response?.data as Map<String, dynamic>);
+          return ShopListResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
         } else {
           return ShopListResponse(
             success: false,
@@ -153,7 +159,9 @@ class ShopServices {
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
-          return ShopListResponse.fromJson(e.response?.data as Map<String, dynamic>);
+          return ShopListResponse.fromJson(
+            e.response?.data as Map<String, dynamic>,
+          );
         } else {
           return ShopListResponse(
             success: false,
@@ -172,7 +180,7 @@ class ShopServices {
     }
   }
 
-  Future<List<CategoryModel>> getCategoryNames() {
-    return CategoriesService.getCategories();
+  Future<List<CategoryModel>> getCategoryNames() async {
+    return (await CategoriesService.getCategories()).categories;
   }
 }

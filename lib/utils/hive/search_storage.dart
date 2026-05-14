@@ -16,18 +16,20 @@ class SearchStorage {
 
     try {
       List<String> searches = getRecentSearches();
-      
+
       // Remove if already exists (to move it to the front)
-      searches.removeWhere((element) => element.toLowerCase() == keyword.toLowerCase().trim());
-      
+      searches.removeWhere(
+        (element) => element.toLowerCase() == keyword.toLowerCase().trim(),
+      );
+
       // Add to front
       searches.insert(0, keyword.trim());
-      
+
       // Limit to 15
       if (searches.length > _maxRecentSearches) {
         searches = searches.sublist(0, _maxRecentSearches);
       }
-      
+
       await _preferencesBox.put(HiveKeys.recentSearchesKey, searches);
     } catch (e) {
       debugPrint('Error adding recent search: $e');
@@ -36,10 +38,9 @@ class SearchStorage {
 
   static List<String> getRecentSearches() {
     try {
-      final List? searches = _preferencesBox.get(
-        HiveKeys.recentSearchesKey,
-        defaultValue: [],
-      ) as List?;
+      final List? searches =
+          _preferencesBox.get(HiveKeys.recentSearchesKey, defaultValue: [])
+              as List?;
       if (searches != null) {
         return List<String>.from(searches);
       }

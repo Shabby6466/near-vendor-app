@@ -18,8 +18,8 @@ class ShimmerEffect extends StatelessWidget {
       direction: const ShimmerDirection.fromLBRT(),
       child: Container(
         decoration: BoxDecoration(
-          color: isDark 
-              ? Colors.white.withValues(alpha: 0.05) 
+          color: isDark
+              ? Colors.white.withValues(alpha: 0.05)
               : Colors.grey.shade200,
           borderRadius: BorderRadius.circular(borderRadius),
         ),

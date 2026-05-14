@@ -25,7 +25,10 @@ class ComingSoonScreen extends StatelessWidget {
             SvgPicture.asset(
               iconPath,
               width: 80,
-              colorFilter: const ColorFilter.mode(ColorName.primary, BlendMode.srcIn),
+              colorFilter: const ColorFilter.mode(
+                ColorName.primary,
+                BlendMode.srcIn,
+              ),
             ),
             SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
             Text(
@@ -39,10 +42,7 @@ class ComingSoonScreen extends StatelessWidget {
             const SizedBox(height: 8),
             const Text(
               'This feature is coming soon!',
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 14, color: Colors.grey),
             ),
           ],
         ),

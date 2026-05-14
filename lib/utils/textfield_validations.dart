@@ -27,10 +27,7 @@ class TextFieldValidators {
     return null;
   }
 
-  static String? confirmPasswordValidator(
-    String? value,
-    String password,
-  ) {
+  static String? confirmPasswordValidator(String? value, String password) {
     if (value != null && value.trim().isEmpty) {
       return 'Please confirm your password';
     } else if (value != password) {

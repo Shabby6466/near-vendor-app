@@ -27,23 +27,21 @@ class _PasswordBottomSheetContentState
     extends State<PasswordBottomSheetContent> {
   final TextEditingController _pinController = TextEditingController();
 
-
   @override
   void initState() {
     super.initState();
   }
 
-
   String? _validatePin(String? pin) {
     if (widget.correctPin == null) return null;
-    
+
     bool isValid;
     if (widget.isHashedPin) {
       isValid = verifyPassword(pin!, widget.correctPin!);
     } else {
       isValid = pin == widget.correctPin;
     }
-    
+
     if (!isValid) {
       _pinController.clear();
       return 'Incorrect passcode. Please try again.';
@@ -67,19 +65,14 @@ class _PasswordBottomSheetContentState
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        border: Border.all(color: Theme.of(context).colorScheme.primary),
       ),
     );
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          widget.title,
-          style: Theme.of(context).textTheme.headlineSmall,
-        ),
+        Text(widget.title, style: Theme.of(context).textTheme.headlineSmall),
         Expanded(
           child: Center(
             child: Column(

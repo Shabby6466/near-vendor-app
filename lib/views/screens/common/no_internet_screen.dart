@@ -25,10 +25,7 @@ class NoInternetScreen extends StatelessWidget {
                     theme.scaffoldBackgroundColor,
                     theme.scaffoldBackgroundColor.withValues(alpha: 0.8),
                   ]
-                : [
-                    Colors.white,
-                    const Color(0xFFF0F2F5),
-                  ],
+                : [Colors.white, const Color(0xFFF0F2F5)],
           ),
         ),
         child: Column(
@@ -36,23 +33,26 @@ class NoInternetScreen extends StatelessWidget {
           children: [
             // Icon with animation
             Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: theme.primaryColor.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.wifi_off_rounded,
-                size: 80,
-                color: theme.primaryColor,
-              ),
-            )
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    color: theme.primaryColor.withValues(alpha: 0.1),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.wifi_off_rounded,
+                    size: 80,
+                    color: theme.primaryColor,
+                  ),
+                )
                 .animate(onPlay: (controller) => controller.repeat())
-                .shimmer(duration: 2.seconds, color: theme.primaryColor.withValues(alpha: 0.2))
+                .shimmer(
+                  duration: 2.seconds,
+                  color: theme.primaryColor.withValues(alpha: 0.2),
+                )
                 .shake(hz: 2, curve: Curves.easeInOut),
-            
+
             SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
-            
+
             Text(
               'No Connection',
               style: theme.textTheme.headlineMedium?.copyWith(
@@ -60,9 +60,9 @@ class NoInternetScreen extends StatelessWidget {
                 letterSpacing: -1,
               ),
             ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2),
-            
+
             const SizedBox(height: 12),
-            
+
             Text(
               'Please check your internet settings and try again to continue shopping.',
               textAlign: TextAlign.center,
@@ -71,16 +71,16 @@ class NoInternetScreen extends StatelessWidget {
                 height: 1.5,
               ),
             ).animate().fadeIn(delay: 400.ms).slideY(begin: 0.2),
-            
+
             SizedBox(height: AppSpacing.largeVerticalSpacing(context) * 1.5),
-            
+
             AppElevatedButton(
               text: 'Try Again',
               onPressed: onRetry,
             ).animate().fadeIn(delay: 600.ms).scale(delay: 600.ms),
-            
+
             const SizedBox(height: 16),
-            
+
             TextButton(
               onPressed: () {
                 // Open settings or just a passive message

@@ -8,8 +8,8 @@ class ComingSoonScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const AppScaffold(
-        bgColor: ColorName.white,
-        body: Center(child: Text('Coming Soon')),
+      bgColor: ColorName.white,
+      body: Center(child: Text('Coming Soon')),
     );
   }
 }

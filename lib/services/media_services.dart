@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:nearvendorapp/models/api_responses/media_upload_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 
 class MediaServices {
   MediaServices._();
 
-  static Future<String?> uploadImage(File file) async {
+  static Future<MediaUploadResponse> uploadImage(File file) async {
     try {
       final String fileName = file.path.split('/').last;
       final FormData formData = FormData.fromMap({
@@ -19,12 +20,14 @@ class MediaServices {
         data: formData,
       );
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        return (response.data as Map<String, dynamic>)['url'] as String?;
+      if (response.data is Map<String, dynamic>) {
+        return MediaUploadResponse.fromJson(
+          response.data as Map<String, dynamic>,
+        );
       }
     } catch (e) {
       debugPrint('Error uploading image: $e');
     }
-    return null;
+    return MediaUploadResponse(message: 'Failed to upload image');
   }
 }

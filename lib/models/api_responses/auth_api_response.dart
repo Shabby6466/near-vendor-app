@@ -17,10 +17,11 @@ class VerifyOtpResponse extends BaseApiResponse {
   });
 
   VerifyOtpResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    token = json["token"] as String?;
-    refreshToken = json["refreshToken"] as String?;
-    mustChangePassword = json["mustChangePassword"] as bool?;
-    user = json["user"] != null ? User.fromJson(json["user"]) : null;
+    final data = apiResponseDataMap(json);
+    token = data?["token"] as String?;
+    refreshToken = data?["refreshToken"] as String?;
+    mustChangePassword = data?["mustChangePassword"] as bool?;
+    user = data?["user"] != null ? User.fromJson(data!["user"]) : null;
   }
 
   @override
@@ -48,9 +49,10 @@ class LoginResponse extends BaseApiResponse {
   });
 
   LoginResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    token = json["token"] as String?;
-    refreshToken = json["refreshToken"] as String?;
-    user = json["user"] != null ? User.fromJson(json["user"]) : null;
+    final data = apiResponseDataMap(json);
+    token = data?["token"] as String?;
+    refreshToken = data?["refreshToken"] as String?;
+    user = data?["user"] != null ? User.fromJson(data!["user"]) : null;
   }
 
   @override
@@ -68,11 +70,9 @@ class MeResponse extends BaseApiResponse {
 
   MeResponse({super.message, super.status, this.user});
 
-  // NOTE: The backend returns user fields at the root level of GET /users/me
-  // (not nested under a 'user' or 'data' key), so we parse from the root json.
-  // If the backend is updated to return { user: {...} }, update this constructor.
   MeResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    user = User.fromJson(json);
+    final data = apiResponseDataMap(json);
+    user = data != null ? User.fromJson(data) : null;
   }
 
   @override

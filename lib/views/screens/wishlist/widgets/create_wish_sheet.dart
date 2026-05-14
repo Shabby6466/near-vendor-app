@@ -15,10 +15,8 @@ class CreateWishSheet extends StatefulWidget {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: const CreateWishSheet(),
-      ),
+      builder: (_) =>
+          BlocProvider.value(value: cubit, child: const CreateWishSheet()),
     );
   }
 
@@ -30,12 +28,12 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
-  
+
   bool _isLoading = false;
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     final location = context.read<LocationCubit>().state;
     if (location.latitude == null || location.longitude == null) {
       ToastService.showErrorToast(
@@ -54,10 +52,12 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
       lon: location.longitude!,
     );
 
-    final success = await context.read<UserWishlistCubit>().createWishlist(input);
-    
+    final success = await context.read<UserWishlistCubit>().createWishlist(
+      input,
+    );
+
     setState(() => _isLoading = false);
-    
+
     if (success && mounted) {
       Navigator.pop(context);
       ToastService.showSuccessToast(
@@ -76,7 +76,7 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    
+
     return Container(
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF171D25) : Colors.white,
@@ -113,7 +113,10 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
                     color: ColorName.primary.withValues(alpha: 0.1),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.auto_awesome, color: ColorName.primary),
+                  child: const Icon(
+                    Icons.auto_awesome,
+                    color: ColorName.primary,
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Text(
@@ -172,7 +175,10 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
                     )
                   : const Text(
                       'Submit Wish',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
             ),
           ],

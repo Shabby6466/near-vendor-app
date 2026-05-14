@@ -20,15 +20,15 @@ class CreateItemInput {
   });
 
   Map<String, dynamic> toJson() => {
-        'shopId': shopId,
-        'name': name,
-        'description': description,
-        'price': price,
-        'unit': unit,
-        'stockCount': stockCount,
-        'imageUrls': imageUrls,
-        'discount': discount,
-      };
+    'shopId': shopId,
+    'name': name,
+    'description': description,
+    'price': price,
+    'unit': unit,
+    'stockCount': stockCount,
+    'imageUrls': imageUrls,
+    'discount': discount,
+  };
 }
 
 class UpdateItemInput {

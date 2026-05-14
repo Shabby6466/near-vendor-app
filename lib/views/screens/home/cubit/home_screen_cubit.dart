@@ -51,12 +51,12 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       // Use AppData for location
       final lat = AppData().latitude;
       final lon = AppData().longitude;
-      
+
       if (lat == null || lon == null) {
         _handleNoLocationFound();
         return;
       }
-      
+
       await _fetchShops(lat: lat, lon: lon);
     } catch (e) {
       _handleNoLocationFound();

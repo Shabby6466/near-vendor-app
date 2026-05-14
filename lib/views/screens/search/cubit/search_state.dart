@@ -41,13 +41,13 @@ final class SearchSuccess extends SearchState {
 
   @override
   List<Object?> get props => [
-        items,
-        meta,
-        message,
-        query,
-        isGlobalFallback,
-        rangeMessage,
-      ];
+    items,
+    meta,
+    message,
+    query,
+    isGlobalFallback,
+    rangeMessage,
+  ];
 }
 
 final class SearchFailure extends SearchState {

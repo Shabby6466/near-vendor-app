@@ -8,7 +8,7 @@ class MapCubit extends Cubit<MapState> {
   final ShopServices _shopServices = ShopServices();
 
   MapCubit({required double lat, required double lon})
-      : super(MapInitial(latitude: lat, longitude: lon)) {
+    : super(MapInitial(latitude: lat, longitude: lon)) {
     _initialize();
   }
 
@@ -18,47 +18,59 @@ class MapCubit extends Cubit<MapState> {
   Future<void> _initialize() async {
     try {
       final cats = await _shopServices.getCategoryNames();
-      emit(MapInitial(
-        latitude: state.latitude,
-        longitude: state.longitude,
-        radius: state.radius,
-        categories: [CategoryModel.all(), ...cats],
-      ));
+      emit(
+        MapInitial(
+          latitude: state.latitude,
+          longitude: state.longitude,
+          radius: state.radius,
+          categories: [CategoryModel.all(), ...cats],
+        ),
+      );
       fetchShops();
     } catch (e) {
       fetchShops();
     }
   }
 
-  Future<void> fetchShops({double? lat, double? lon, double? radius, CategoryModel? category}) async {
+  Future<void> fetchShops({
+    double? lat,
+    double? lon,
+    double? radius,
+    CategoryModel? category,
+  }) async {
     final currentLat = lat ?? state.latitude;
     final currentLon = lon ?? state.longitude;
     final currentRadius = radius ?? state.radius;
     final currentCategory = category ?? state.selectedCategory;
 
     // Generate cache key (round lat/lon to 4 decimals, radius to nearest 100m)
-    final cacheKey = "${currentLat.toStringAsFixed(4)}_${currentLon.toStringAsFixed(4)}_${(currentRadius / 100).round() * 100}_${currentCategory.id}";
+    final cacheKey =
+        "${currentLat.toStringAsFixed(4)}_${currentLon.toStringAsFixed(4)}_${(currentRadius / 100).round() * 100}_${currentCategory.id}";
 
     if (_cache.containsKey(cacheKey)) {
-      emit(MapSuccess(
-        latitude: currentLat,
-        longitude: currentLon,
-        radius: currentRadius,
-        shops: _cache[cacheKey]!,
-        categories: state.categories,
-        selectedCategory: currentCategory,
-      ));
+      emit(
+        MapSuccess(
+          latitude: currentLat,
+          longitude: currentLon,
+          radius: currentRadius,
+          shops: _cache[cacheKey]!,
+          categories: state.categories,
+          selectedCategory: currentCategory,
+        ),
+      );
       return;
     }
 
-    emit(MapLoading(
-      latitude: currentLat,
-      longitude: currentLon,
-      radius: currentRadius,
-      shops: state.shops,
-      categories: state.categories,
-      selectedCategory: currentCategory,
-    ));
+    emit(
+      MapLoading(
+        latitude: currentLat,
+        longitude: currentLon,
+        radius: currentRadius,
+        shops: state.shops,
+        categories: state.categories,
+        selectedCategory: currentCategory,
+      ),
+    );
 
     try {
       final response = await _shopServices.getShopsByMap(
@@ -72,47 +84,55 @@ class MapCubit extends Cubit<MapState> {
         // Store in cache
         _cache[cacheKey] = response.shops;
 
-        emit(MapSuccess(
-          latitude: currentLat,
-          longitude: currentLon,
-          radius: currentRadius,
-          shops: response.shops,
-          categories: state.categories,
-          selectedCategory: currentCategory,
-        ));
+        emit(
+          MapSuccess(
+            latitude: currentLat,
+            longitude: currentLon,
+            radius: currentRadius,
+            shops: response.shops,
+            categories: state.categories,
+            selectedCategory: currentCategory,
+          ),
+        );
       } else {
-        emit(MapFailure(
+        emit(
+          MapFailure(
+            latitude: currentLat,
+            longitude: currentLon,
+            radius: currentRadius,
+            shops: state.shops,
+            categories: state.categories,
+            selectedCategory: currentCategory,
+            message: response.message,
+          ),
+        );
+      }
+    } catch (e) {
+      emit(
+        MapFailure(
           latitude: currentLat,
           longitude: currentLon,
           radius: currentRadius,
           shops: state.shops,
           categories: state.categories,
           selectedCategory: currentCategory,
-          message: response.message,
-        ));
-      }
-    } catch (e) {
-      emit(MapFailure(
-        latitude: currentLat,
-        longitude: currentLon,
-        radius: currentRadius,
-        shops: state.shops,
-        categories: state.categories,
-        selectedCategory: currentCategory,
-        message: e.toString(),
-      ));
+          message: e.toString(),
+        ),
+      );
     }
   }
 
   void updateRadius(double newRadius) {
-    emit(MapInitial(
-      latitude: state.latitude,
-      longitude: state.longitude,
-      radius: newRadius,
-      categories: state.categories,
-      selectedCategory: state.selectedCategory,
-      shops: state.shops,
-    ));
+    emit(
+      MapInitial(
+        latitude: state.latitude,
+        longitude: state.longitude,
+        radius: newRadius,
+        categories: state.categories,
+        selectedCategory: state.selectedCategory,
+        shops: state.shops,
+      ),
+    );
   }
 
   void selectCategory(CategoryModel category) {

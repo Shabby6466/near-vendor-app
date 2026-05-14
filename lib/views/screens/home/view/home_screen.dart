@@ -27,10 +27,7 @@ class HomeScreen extends StatelessWidget {
             listenWhen: (previous, current) => current is HomeScreenNoLocation,
             listener: (context, state) {
               if (state is HomeScreenNoLocation) {
-                AppAlerts.showErrorSnackBar(
-                  context,
-                  state.message,
-                );
+                AppAlerts.showErrorSnackBar(context, state.message);
                 AppBottomSheet.openLocationSet();
               }
             },
@@ -39,7 +36,8 @@ class HomeScreen extends StatelessWidget {
               body: SafeArea(
                 bottom: false,
                 child: RefreshIndicator(
-                  onRefresh: () => context.read<HomeScreenCubit>().refreshShops(),
+                  onRefresh: () =>
+                      context.read<HomeScreenCubit>().refreshShops(),
                   child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(
                       parent: BouncingScrollPhysics(),
@@ -92,7 +90,9 @@ class HomeScreen extends StatelessWidget {
                                                         .textTheme
                                                         .bodySmall
                                                         ?.color
-                                                        ?.withValues(alpha: 0.6),
+                                                        ?.withValues(
+                                                          alpha: 0.6,
+                                                        ),
                                                   ),
                                             ),
                                           ],
@@ -112,12 +112,12 @@ class HomeScreen extends StatelessWidget {
                             ),
                             SizedBox(
                               height:
-                                  AppSpacing.mediumVerticalSpacing(context) * 1.6,
+                                  AppSpacing.mediumVerticalSpacing(context) *
+                                  1.6,
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(
-                                horizontal:
-                                    AppSpacing.mediumHorizontalSpacing(
+                                horizontal: AppSpacing.mediumHorizontalSpacing(
                                   context,
                                 ),
                               ),
@@ -130,12 +130,16 @@ class HomeScreen extends StatelessWidget {
                                       value,
                                     );
                                   } else {
-                                    context.read<HomeScreenCubit>().clearSearch();
+                                    context
+                                        .read<HomeScreenCubit>()
+                                        .clearSearch();
                                   }
                                 },
                                 onChanged: (value) {
                                   if (value.isEmpty) {
-                                    context.read<HomeScreenCubit>().clearSearch();
+                                    context
+                                        .read<HomeScreenCubit>()
+                                        .clearSearch();
                                   }
                                 },
                                 onClear: () {
@@ -146,14 +150,14 @@ class HomeScreen extends StatelessWidget {
                             SizedBox(
                               height:
                                   AppSpacing.mediumVerticalSpacing(context) *
-                                      1.5,
+                                  1.5,
                             ),
                             Padding(
                               padding: EdgeInsets.symmetric(
                                 horizontal:
                                     AppSpacing.mediumHorizontalSpacing(
-                                  context,
-                                ) *
+                                      context,
+                                    ) *
                                     1.5,
                               ),
                               child: Container(
@@ -164,7 +168,9 @@ class HomeScreen extends StatelessWidget {
                                   gradient: LinearGradient(
                                     colors: [
                                       theme.primaryColor.withValues(alpha: 0.1),
-                                      theme.primaryColor.withValues(alpha: 0.05),
+                                      theme.primaryColor.withValues(
+                                        alpha: 0.05,
+                                      ),
                                     ],
                                   ),
                                 ),
@@ -176,7 +182,9 @@ class HomeScreen extends StatelessWidget {
                                       height: 80,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: theme.primaryColor.withValues(alpha: 0.2),
+                                        color: theme.primaryColor.withValues(
+                                          alpha: 0.2,
+                                        ),
                                       ),
                                       child: Icon(
                                         Icons.location_on_outlined,
@@ -187,7 +195,8 @@ class HomeScreen extends StatelessWidget {
                                     const SizedBox(width: 16),
                                     Expanded(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
@@ -195,8 +204,8 @@ class HomeScreen extends StatelessWidget {
                                             'Set Your Location',
                                             style: theme.textTheme.titleMedium
                                                 ?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                                  fontWeight: FontWeight.bold,
+                                                ),
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
@@ -225,7 +234,7 @@ class HomeScreen extends StatelessWidget {
                             SizedBox(
                               height:
                                   AppSpacing.mediumVerticalSpacing(context) *
-                                      1.5,
+                                  1.5,
                             ),
                             const CategorySelector(),
                           ],

@@ -56,26 +56,43 @@ class Shop extends Equatable {
       id: json['id'] as String? ?? '',
       vendorId: json['vendorId'] as String? ?? '',
       shopName: json['shopName'] as String? ?? 'Unnamed Shop',
-      categoryId: json['categoryId'] as String? ?? json['category_id'] as String?,
+      categoryId:
+          json['categoryId'] as String? ?? json['category_id'] as String?,
       businessCategory: json['businessCategory'] as String? ?? 'General',
       registrationNumber: json['registrationNumber'] as String? ?? '',
       shopAddress: json['shopAddress'] as String? ?? '',
       operatingHours: (json['operatingHours'] as Map<String, dynamic>?) ?? {},
-      shopLongitude: double.tryParse((json['shopLongitude'] ?? json['longitude'])?.toString() ?? '0.0') ?? 0.0,
-      shopLatitude: double.tryParse((json['shopLatitude'] ?? json['latitude'])?.toString() ?? '0.0') ?? 0.0,
+      shopLongitude:
+          double.tryParse(
+            (json['shopLongitude'] ?? json['longitude'])?.toString() ?? '0.0',
+          ) ??
+          0.0,
+      shopLatitude:
+          double.tryParse(
+            (json['shopLatitude'] ?? json['latitude'])?.toString() ?? '0.0',
+          ) ??
+          0.0,
       shopContactPhone: json['shopContactPhone'] as String? ?? '',
       whatsappNumber: json['whatsappNumber'] as String? ?? '',
       storeEmail: json['storeEmail'] as String? ?? '',
-      coverImageUrl: json['coverImageUrl'] as String? ?? json['shopImageUrl'] as String? ?? json['shopLogoUrl'] as String?,
-      storeLogoUrl: json['storeLogoUrl'] as String? ?? json['shopLogoUrl'] as String?,
+      coverImageUrl:
+          json['coverImageUrl'] as String? ??
+          json['shopImageUrl'] as String? ??
+          json['shopLogoUrl'] as String?,
+      storeLogoUrl:
+          json['storeLogoUrl'] as String? ?? json['shopLogoUrl'] as String?,
       isActive: json['isActive'] as bool? ?? true,
       completionPercentage: json['completionPercentage'] as int?,
       isVerifiedBadge: json['isVerifiedBadge'] as bool?,
       isRecentlyActive: json['isRecentlyActive'] as bool?,
       itemCount: json['itemCount'] as int?,
       distance: double.tryParse(json['distance']?.toString() ?? ''),
-      createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt'] as String) : null,
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : null,
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'] as String)
+          : null,
     );
   }
 
@@ -107,25 +124,25 @@ class Shop extends Equatable {
 
   @override
   List<Object?> get props => [
-        id,
-        vendorId,
-        shopName,
-        categoryId,
-        businessCategory,
-        registrationNumber,
-        shopAddress,
-        operatingHours,
-        shopLongitude,
-        shopLatitude,
-        shopContactPhone,
-        whatsappNumber,
-        storeEmail,
-        coverImageUrl,
-        storeLogoUrl,
-        isActive,
-        completionPercentage,
-        isVerifiedBadge,
-        isRecentlyActive,
-        itemCount,
-      ];
+    id,
+    vendorId,
+    shopName,
+    categoryId,
+    businessCategory,
+    registrationNumber,
+    shopAddress,
+    operatingHours,
+    shopLongitude,
+    shopLatitude,
+    shopContactPhone,
+    whatsappNumber,
+    storeEmail,
+    coverImageUrl,
+    storeLogoUrl,
+    isActive,
+    completionPercentage,
+    isVerifiedBadge,
+    isRecentlyActive,
+    itemCount,
+  ];
 }

@@ -11,7 +11,8 @@ import 'package:nearvendorapp/services/shop_services.dart';
 
 part 'shop_details_state.dart';
 
-class ShopDetailsCubit extends Cubit<ShopDetailsState> with AnalyticsMixin<ShopDetailsState> {
+class ShopDetailsCubit extends Cubit<ShopDetailsState>
+    with AnalyticsMixin<ShopDetailsState> {
   final ShopServices _shopServices = ShopServices();
   final ItemServices _itemServices = ItemServices();
 
@@ -32,21 +33,19 @@ class ShopDetailsCubit extends Cubit<ShopDetailsState> with AnalyticsMixin<ShopD
           'shopId': shopId,
         });
       } catch (_) {
-        updateAnalyticsMetadata({
-          'shopId': shopId,
-        });
+        updateAnalyticsMetadata({'shopId': shopId});
       }
 
-       // Fetch shop details and inventory in parallel
-       final results = await Future.wait([
-         _shopServices.getShopById(shopId),
-         _itemServices.getItemsByShopId(shopId),
-       ]);
+      // Fetch shop details and inventory in parallel
+      final results = await Future.wait([
+        _shopServices.getShopById(shopId),
+        _itemServices.getItemsByShopId(shopId),
+      ]);
 
-       final shopResponse = results[0] as ShopResponse;
-       final itemsResponse = results[1] as ItemListResponse;
+      final shopResponse = results[0] as ShopResponse;
+      final itemsResponse = results[1] as ItemListResponse;
 
-       if (shopResponse.success == true && itemsResponse.success == true) {
+      if (shopResponse.success == true && itemsResponse.success == true) {
         if (shopResponse.shop != null) {
           emit(
             ShopDetailsSuccess(
@@ -59,8 +58,12 @@ class ShopDetailsCubit extends Cubit<ShopDetailsState> with AnalyticsMixin<ShopD
         }
       } else {
         final errorMessage = (shopResponse.success != true)
-            ? (shopResponse.message.isEmpty ? 'Failed to load shop data' : shopResponse.message)
-            : (itemsResponse.message.isEmpty ? 'Failed to load items' : itemsResponse.message);
+            ? (shopResponse.message.isEmpty
+                  ? 'Failed to load shop data'
+                  : shopResponse.message)
+            : (itemsResponse.message.isEmpty
+                  ? 'Failed to load items'
+                  : itemsResponse.message);
         emit(ShopDetailsFailure(errorMessage));
       }
     } catch (e) {

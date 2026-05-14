@@ -1,4 +1,5 @@
 import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 
 class ItemResponse {
   final bool success;
@@ -14,15 +15,13 @@ class ItemResponse {
   });
 
   factory ItemResponse.fromJson(Map<String, dynamic> json) {
+    final data = apiResponseData(json);
+    final itemJson = data is Map && data['item'] != null ? data['item'] : data;
     return ItemResponse(
       success: json['success'] as bool? ?? false,
       statusCode: json['statusCode'] as int? ?? 0,
       message: json['message'] as String? ?? '',
-      item: (json['data'] != null)
-          ? Item.fromJson(json['data'] as Map<String, dynamic>)
-          : (json['item'] != null)
-              ? Item.fromJson(json['item'] as Map<String, dynamic>)
-              : null,
+      item: itemJson is Map<String, dynamic> ? Item.fromJson(itemJson) : null,
     );
   }
 }
@@ -91,6 +90,8 @@ class ItemListResponse {
         itemsList = dataObj['items'] as List<dynamic>?;
         metaData = dataObj['meta'] as Map<String, dynamic>?;
       }
+
+      itemsList ??= apiResponseDataList(json);
 
       metaData ??= json['meta'] as Map<String, dynamic>?;
 

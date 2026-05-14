@@ -21,6 +21,8 @@ class Server {
   static Dio _buildDio() {
     final dio = Dio();
     dio.options.baseUrl = ApiConstants.baseUrl;
+    dio.options.validateStatus = (status) =>
+        status != null && status < 500 && status != 401;
     dio.httpClientAdapter = IOHttpClientAdapter(
       createHttpClient: () {
         final client = HttpClient();
@@ -235,8 +237,11 @@ class Server {
 
       final refreshJson = refreshResponse.data;
       if (refreshJson is Map) {
-        final newAccessToken = refreshJson['token'] as String?;
-        final newRefreshToken = refreshJson['refreshToken'] as String?;
+        final data = refreshJson['data'] is Map
+            ? (refreshJson['data'] as Map).cast<String, dynamic>()
+            : refreshJson.cast<String, dynamic>();
+        final newAccessToken = data['token'] as String?;
+        final newRefreshToken = data['refreshToken'] as String?;
         if (newAccessToken != null) {
           await CurrentUserStorage.storeUserAuthToken(
             newAccessToken,

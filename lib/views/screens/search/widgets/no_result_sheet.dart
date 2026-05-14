@@ -73,17 +73,17 @@ class _NoResultSheetState extends State<NoResultSheet> {
       if (!mounted) return;
       setState(() => _isCreatingWish = false);
 
-       if (response.success == true) {
+      if (response.success == true) {
         ToastService.showSuccessToast(
           context,
           message: '✨ Wish added! Local vendors will be notified.',
         );
         widget.onDismiss();
       } else {
-         ToastService.showErrorToast(
-           context,
-           message: (response.message) ?? 'Failed to create wish.',
-         );
+        ToastService.showErrorToast(
+          context,
+          message: (response.message) ?? 'Failed to create wish.',
+        );
       }
     } catch (e) {
       if (!mounted) return;

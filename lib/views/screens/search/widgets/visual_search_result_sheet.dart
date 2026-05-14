@@ -130,7 +130,9 @@ class VisualSearchResultSheet extends StatelessWidget {
                           const SizedBox(width: 8),
                           Container(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 8, vertical: 4),
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
                               color: matchColor.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(8),
@@ -180,10 +182,11 @@ class VisualSearchResultSheet extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
-                            isNearby
-                                ? Icons.check_circle_outline
-                                : Icons.shopping_basket_outlined,
-                            size: 20),
+                          isNearby
+                              ? Icons.check_circle_outline
+                              : Icons.shopping_basket_outlined,
+                          size: 20,
+                        ),
                         const SizedBox(width: 8),
                         Text(
                           isNearby ? "Yes, that's it" : "View suggestions",
@@ -209,10 +212,13 @@ class VisualSearchResultSheet extends StatelessWidget {
                       children: [
                         Icon(Icons.refresh, size: 20, color: Color(0xFF004AAD)),
                         SizedBox(width: 8),
-                        Text("Try again",
-                            style: TextStyle(
-                                color: Color(0xFF004AAD),
-                                fontWeight: FontWeight.bold)),
+                        Text(
+                          "Try again",
+                          style: TextStyle(
+                            color: Color(0xFF004AAD),
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -228,38 +234,51 @@ class VisualSearchResultSheet extends StatelessWidget {
                   Expanded(
                     child: Column(
                       children: [
-                        const Text('LOWEST PRICE',
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey)),
+                        const Text(
+                          'LOWEST PRICE',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text('RS ${item.price.toStringAsFixed(0)}',
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF1EC091))),
+                        Text(
+                          'RS ${item.price.toStringAsFixed(0)}',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF1EC091),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                   Container(
-                      width: 1,
-                      height: 40,
-                      color: isDark ? Colors.grey[800] : Colors.grey[200]),
+                    width: 1,
+                    height: 40,
+                    color: isDark ? Colors.grey[800] : Colors.grey[200],
+                  ),
                   Expanded(
                     child: Column(
                       children: [
-                        const Text('STORES NEAR',
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey)),
+                        const Text(
+                          'STORES NEAR',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
+                          ),
+                        ),
                         const SizedBox(height: 4),
-                        Text('${items.length} Shops',
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF004AAD))),
+                        Text(
+                          '${items.length} Shops',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w900,
+                            color: Color(0xFF004AAD),
+                          ),
+                        ),
                       ],
                     ),
                   ),
