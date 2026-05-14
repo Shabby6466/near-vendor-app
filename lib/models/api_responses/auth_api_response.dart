@@ -1,61 +1,6 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 
-class AuthApiResponse extends BaseApiResponse {
-  Data? _data;
-
-  Data? get data => _data;
-
-  AuthApiResponse({super.message, Data? data}) {
-    _data = data;
-  }
-
-  AuthApiResponse.fromJson(dynamic json) : super.fromJson(json) {
-    if (json is Map) {
-      _data = json["data"] != null ? Data.fromJson(json["data"]) : null;
-    }
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = super.toJson();
-    map["data"] = _data?.toJson();
-    return map;
-  }
-}
-
-class Data {
-  User? _user;
-  String? _refreshToken;
-  String? _accessToken;
-
-  User? get user => _user;
-  String? get refreshToken => _refreshToken;
-  String? get accessToken => _accessToken;
-
-  Data({User? user, String? accessToken, String? refreshToken}) {
-    _user = user;
-    _accessToken = accessToken;
-    _refreshToken = refreshToken;
-  }
-
-  Data.fromJson(dynamic json) {
-    if (json is Map) {
-      _user = json["user"] != null ? User.fromJson(json["user"]) : null;
-      _accessToken = json["token"] as String?;
-      _refreshToken = json["refreshToken"] as String?;
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = {};
-    map["user"] = _user?.toJson();
-    map["token"] = _accessToken;
-    map["refreshToken"] = _refreshToken;
-    return map;
-  }
-}
-
 class VerifyOtpResponse extends BaseApiResponse {
   String? token;
   String? refreshToken;
@@ -71,13 +16,11 @@ class VerifyOtpResponse extends BaseApiResponse {
     this.mustChangePassword,
   });
 
-  VerifyOtpResponse.fromJson(dynamic json) : super.fromJson(json) {
-    if (json is Map) {
-      token = json["token"] as String?;
-      refreshToken = json["refreshToken"] as String?;
-      mustChangePassword = json["mustChangePassword"] as bool?;
-      user = json["user"] != null ? User.fromJson(json["user"]) : null;
-    }
+  VerifyOtpResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    token = json["token"] as String?;
+    refreshToken = json["refreshToken"] as String?;
+    mustChangePassword = json["mustChangePassword"] as bool?;
+    user = json["user"] != null ? User.fromJson(json["user"]) : null;
   }
 
   @override
@@ -96,13 +39,18 @@ class LoginResponse extends BaseApiResponse {
   String? refreshToken;
   User? user;
 
-  LoginResponse({super.message, this.token, this.refreshToken, this.user});
-  LoginResponse.fromJson(dynamic json) : super.fromJson(json) {
-    if (json is Map) {
-      token = json["token"] as String?;
-      refreshToken = json["refreshToken"] as String?;
-      user = json["user"] != null ? User.fromJson(json["user"]) : null;
-    }
+  LoginResponse({
+    super.message,
+    super.status,
+    this.token,
+    this.refreshToken,
+    this.user,
+  });
+
+  LoginResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    token = json["token"] as String?;
+    refreshToken = json["refreshToken"] as String?;
+    user = json["user"] != null ? User.fromJson(json["user"]) : null;
   }
 
   @override
@@ -123,10 +71,8 @@ class MeResponse extends BaseApiResponse {
   // NOTE: The backend returns user fields at the root level of GET /users/me
   // (not nested under a 'user' or 'data' key), so we parse from the root json.
   // If the backend is updated to return { user: {...} }, update this constructor.
-  MeResponse.fromJson(dynamic json) : super.fromJson(json) {
-    if (json is Map) {
-      user = User.fromJson(json);
-    }
+  MeResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    user = User.fromJson(json);
   }
 
   @override

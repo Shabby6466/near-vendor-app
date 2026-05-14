@@ -1,55 +1,21 @@
-import 'package:dio/dio.dart';
+class BaseApiResponse {
+  final bool? success;
+  final int? status;
+  final String? message;
 
-abstract class BaseApiResponse {
-  int? _status;
-  String? _message;
+  BaseApiResponse({this.success, this.status, this.message});
 
-  int? get status => _status;
-  String? get message => _message;
-  bool get success => _status == 200 || _status == 201;
-
-
-  BaseApiResponse({
-    int? status,
-    String? message,
-  }) {
-    _status = status;
-    _message = message;
-  }
-
-  BaseApiResponse.fromJson(dynamic json) {
-    if (json is Map) {
-      _paseData(json);
-    } else if (json is Response) {
-      if (json.data is Map) {
-        _paseData(json.data as Map);
-      } else {
-        _message = json.data.toString();
-      }
-      _status = json.statusCode;
-    }
-  }
-
-  void _paseData(Map json) {
-    _status = json["statusCode"] != null
-        ? int.tryParse(json["statusCode"].toString())
-        : null;
-    _message = json["message"] as String?;
-    if (_message == null && json.keys.contains('errors')) {
-      if (json['errors'] is List && (json['errors'] as List).isNotEmpty) {
-        _message = (json['errors'] as List).first is Map
-            ? ((json['errors'] as List).first as Map).values.first?.toString()
-            : (json['errors'] as List).first.toString();
-      } else {
-        _message = json['errors'].toString();
-      }
-    }
-  }
+  BaseApiResponse.fromJson(Map<String, dynamic> json)
+    : success = json['success'] is bool
+          ? json['success'] as bool
+          : json['statusCode'] != null
+          ? (json['statusCode'] as num).toInt() >= 200 &&
+                (json['statusCode'] as num).toInt() < 300
+          : null,
+      status = (json['statusCode'] as num?)?.toInt(),
+      message = json['message'] as String?;
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> map = {};
-    map["status"] = _status;
-    map["message"] = _message;
-    return map;
+    return {'success': success, 'statusCode': status, 'message': message};
   }
 }

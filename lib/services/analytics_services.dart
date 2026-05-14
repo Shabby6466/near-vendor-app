@@ -7,20 +7,24 @@ import 'package:nearvendorapp/utils/generic_api_response.dart';
 class AnalyticsServices {
   AnalyticsServices();
 
-  Future<AnalyticsStatsResponse> getShopStats({
-    required String shopId,
-    int days = 7,
-  }) async {
-    try {
-      final response = await Server.get(
-        '${ApiConstants.getAnalyticsStats}$shopId',
-        queryParameters: {'days': days},
-      );
-      return AnalyticsStatsResponse.fromJson(response.data as Map<String, dynamic>);
-    } catch (e) {
-      return AnalyticsStatsResponse(success: false, statusCode: 500, data: []);
-    }
-  }
+   Future<AnalyticsStatsResponse> getShopStats({
+     required String shopId,
+     int days = 7,
+   }) async {
+     try {
+       final response = await Server.get(
+         '${ApiConstants.getAnalyticsStats}$shopId',
+         queryParameters: {'days': days},
+       );
+       if (response.data is Map<String, dynamic>) {
+         return AnalyticsStatsResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return AnalyticsStatsResponse(success: false, statusCode: 500, data: []);
+       }
+     } catch (e) {
+       return AnalyticsStatsResponse(success: false, statusCode: 500, data: []);
+     }
+   }
 
   Future<GenericApiResponse> sendBatchAnalytics({
     required List<String> targetIds,
@@ -34,23 +38,27 @@ class AnalyticsServices {
         "metadata": metadata ?? {},
       };
 
-      final response = await Server.post(
-        ApiConstants.batchAnalytics,
-        data: data,
-      );
+       final response = await Server.post(
+         ApiConstants.batchAnalytics,
+         data: data,
+       );
 
-      return GenericApiResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return GenericApiResponse.fromJson(e.response?.data);
-        } else {
-          return GenericApiResponse(
-            message: e.message ?? 'Failed to send analytics',
-          );
-        }
-      }
-      return GenericApiResponse(message: e.toString());
-    }
+       if (response.data is Map<String, dynamic>) {
+         return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return GenericApiResponse(message: 'Invalid response format');
+       }
+     } catch (e) {
+       if (e is DioException) {
+         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+           return GenericApiResponse.fromJson(e.response?.data as Map<String, dynamic>);
+         } else {
+           return GenericApiResponse(
+             message: e.message ?? 'Failed to send analytics',
+           );
+         }
+       }
+       return GenericApiResponse(message: e.toString());
+     }
   }
 }

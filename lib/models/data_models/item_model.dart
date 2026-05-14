@@ -90,6 +90,51 @@ class Item extends Equatable {
     };
   }
 
+  Item copyWith({
+    String? id,
+    String? shopId,
+    String? vendorId,
+    String? name,
+    String? description,
+    double? price,
+    String? unit,
+    int? stockCount,
+    List<String>? imageUrls,
+    bool? isAvailable,
+    double? discount,
+    Map<String, dynamic>? shop,
+    int? count,
+    double? distanceM,
+    double? visualScore,
+    double? lat,
+    double? long,
+  }) {
+    return Item(
+      id: id ?? this.id,
+      shopId: shopId ?? this.shopId,
+      vendorId: vendorId ?? this.vendorId,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      price: price ?? this.price,
+      unit: unit ?? this.unit,
+      stockCount: stockCount ?? this.stockCount,
+      imageUrls: imageUrls ?? this.imageUrls,
+      isAvailable: isAvailable ?? this.isAvailable,
+      discount: discount ?? this.discount,
+      shop: shop ?? this.shop,
+      count: count ?? this.count,
+      distanceM: distanceM ?? this.distanceM,
+      visualScore: visualScore ?? this.visualScore,
+      lat: lat ?? this.lat,
+      long: long ?? this.long,
+    );
+  }
+
+  /// Toggles the availability status, useful for quick stock updates.
+  Item toggleAvailability() {
+    return copyWith(isAvailable: !isAvailable);
+  }
+
   @override
   List<Object?> get props => [
         id,

@@ -73,7 +73,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
       if (!mounted) return;
       setState(() => _isCreatingWish = false);
 
-      if (response.success) {
+       if (response.success == true) {
         ToastService.showSuccessToast(
           context,
           message: '✨ Wish added! Local vendors will be notified.',

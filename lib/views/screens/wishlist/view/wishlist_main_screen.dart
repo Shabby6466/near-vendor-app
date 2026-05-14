@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
@@ -15,15 +16,16 @@ class WishlistMainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) {
-        final isAuthenticated = context.read<SessionCubit>().isAuthenticated;
+        final isAuthenticated = AppData().isLoggedIn;
         if (isAuthenticated) {
           return UserWishlistCubit()..getMyWishlists();
         }
         return UserWishlistCubit(); // Return empty cubit for guests, won't fetch
       },
-      child: BlocBuilder<SessionCubit, SessionState>(
-        builder: (context, session) {
-          final isAuthenticated = context.read<SessionCubit>().isAuthenticated;
+      child: ValueListenableBuilder<AuthStatus>(
+        valueListenable: AppData().authStatusNotifier,
+        builder: (context, authStatus, child) {
+          final isAuthenticated = authStatus == AuthStatus.authenticated;
 
           if (!isAuthenticated) {
             return Scaffold(
@@ -55,7 +57,10 @@ class WishlistMainScreen extends StatelessWidget {
             ),
             body: const MyWishesView(),
             floatingActionButton: FloatingActionButton(
-              onPressed: () => CreateWishSheet.show(context, context.read<UserWishlistCubit>()),
+              onPressed: () => CreateWishSheet.show(
+                context,
+                context.read<UserWishlistCubit>(),
+              ),
               child: const Icon(Icons.add),
             ),
           );
@@ -111,7 +116,10 @@ class _GuestStateView extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorName.primary,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                  horizontal: 32,
+                ),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

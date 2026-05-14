@@ -262,30 +262,30 @@ class _EmptyStateState extends State<_EmptyState> {
       lon: location.longitude!,
     );
 
-    try {
-      final response = await WishlistServices().createWishlist(input);
-      if (!mounted) return;
-      setState(() => _isCreatingWish = false);
+     try {
+       final response = await WishlistServices().createWishlist(input);
+       if (!mounted) return;
+       setState(() => _isCreatingWish = false);
 
-      if (response.success) {
-        ToastService.showSuccessToast(
-          context,
-          message: '✨ Wish added! Local vendors will be notified.',
-        );
-      } else {
-        ToastService.showErrorToast(
-          context,
-          message: (response.message) ?? 'Failed to create wish.',
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _isCreatingWish = false);
-      ToastService.showErrorToast(
-        context,
-        message: 'Failed to create wish. Please try again.',
-      );
-    }
+       if (response.success == true) {
+         ToastService.showSuccessToast(
+           context,
+           message: '✨ Wish added! Local vendors will be notified.',
+         );
+       } else {
+         ToastService.showErrorToast(
+           context,
+           message: (response.message) ?? 'Failed to create wish.',
+         );
+       }
+     } catch (e) {
+       if (!mounted) return;
+       setState(() => _isCreatingWish = false);
+       ToastService.showErrorToast(
+         context,
+         message: 'Failed to create wish. Please try again.',
+       );
+     }
   }
 
   Future<CategoryModel?> _showCategoryPicker(
@@ -706,27 +706,27 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
       lon: location.longitude!,
     );
 
-    try {
-      final response = await WishlistServices().createWishlist(input);
-      if (!mounted) return;
-      setState(() => _isCreatingWish = false);
+     try {
+       final response = await WishlistServices().createWishlist(input);
+       if (!mounted) return;
+       setState(() => _isCreatingWish = false);
 
-      if (response.success) {
-        ToastService.showSuccessToast(
-          context,
-          message: '✨ Wish added! Vendors will be notified.',
-        );
-      } else {
-        ToastService.showErrorToast(
-          context,
-          message: (response.message) ?? 'Failed to create wish.',
-        );
-      }
-    } catch (e) {
-      if (!mounted) return;
-      setState(() => _isCreatingWish = false);
-      ToastService.showErrorToast(context, message: 'Failed to create wish.');
-    }
+       if (response.success == true) {
+         ToastService.showSuccessToast(
+           context,
+           message: '✨ Wish added! Vendors will be notified.',
+         );
+       } else {
+         ToastService.showErrorToast(
+           context,
+           message: (response.message) ?? 'Failed to create wish.',
+         );
+       }
+     } catch (e) {
+       if (!mounted) return;
+       setState(() => _isCreatingWish = false);
+       ToastService.showErrorToast(context, message: 'Failed to create wish.');
+     }
   }
 
   Future<CategoryModel?> _showCategoryPickerQuick(

@@ -8,6 +8,7 @@ class CurrentUserStorage {
   CurrentUserStorage._();
 
   static Box get _userBox => HiveManager.currentUserBox;
+  static Box get _preferencesBox => HiveManager.preferencesBox;
 
   static Future<void> storeUserData(User? user) async {
     if (user == null) return;
@@ -82,14 +83,14 @@ class CurrentUserStorage {
 
   static Future<void> setDiscoveryRadius(double radius) async {
     try {
-      await _userBox.put(HiveKeys.discoveryRadiusKey, radius);
+      await _preferencesBox.put(HiveKeys.discoveryRadiusKey, radius);
     } catch (e) {
       debugPrint('Error storing discovery radius: $e');
     }
   }
 
   static double getDiscoveryRadius() {
-    return _userBox.get(HiveKeys.discoveryRadiusKey, defaultValue: 10.0)
+    return _preferencesBox.get(HiveKeys.discoveryRadiusKey, defaultValue: 10.0)
         as double;
   }
 

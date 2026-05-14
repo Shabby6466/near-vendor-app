@@ -8,6 +8,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
 import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
@@ -21,6 +22,7 @@ void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await HiveManager.init();
+    await AppData().loadHasOnboarded();
     await dotenv.load();
     await SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
@@ -66,19 +68,16 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       ],
       child: BlocBuilder<ConnectivityCubit, ConnectivityStatus>(
         builder: (context, connectivity) {
-          return BlocBuilder<SessionCubit, SessionState>(
-            builder: (context, state) {
+          return ValueListenableBuilder<bool>(
+            valueListenable: AppData().showMainScreenNotifier,
+            builder: (context, showMain, child) {
               Widget home;
               if (connectivity == ConnectivityStatus.disconnected) {
                 home = NoInternetScreen(
                   onRetry: () => context.read<ConnectivityCubit>().retry(),
                 );
               } else {
-                home =
-                    (state.status == AuthStatus.authenticated ||
-                        state.hasOnboarded)
-                    ? const MainScreen()
-                    : const WelcomeScreen();
+                home = showMain ? const MainScreen() : const WelcomeScreen();
               }
 
               return MaterialApp(

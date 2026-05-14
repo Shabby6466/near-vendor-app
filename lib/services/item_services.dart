@@ -36,53 +36,65 @@ class ItemServices {
     }
   }
 
-  Future<ItemResponse> updateItem(UpdateItemInput input) async {
-    try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.put(
-        '${ApiConstants.updateItem}${input.id}',
-        data: data,
-      );
-      return ItemResponse.fromJson(response.data as Map<String, dynamic>);
-    } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return ItemResponse.fromJson(e.response?.data as Map<String, dynamic>);
-        } else {
-          return ItemResponse(
-            success: false,
-            statusCode: e.response?.statusCode ?? 500,
-            message: e.message ?? 'Failed to update item',
-          );
-        }
-      }
-      return ItemResponse(
-        success: false,
-        statusCode: 500,
-        message: e.toString(),
-      );
-    }
-  }
+   Future<ItemResponse> updateItem(UpdateItemInput input) async {
+     try {
+       final Map<String, dynamic> data = input.toJson();
+       final response = await Server.put(
+         '${ApiConstants.updateItem}${input.id}',
+         data: data,
+       );
+       if (response.data is Map<String, dynamic>) {
+         return ItemResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return ItemResponse(
+           success: false,
+           statusCode: 500,
+           message: 'Invalid response format',
+         );
+       }
+     } catch (e) {
+       if (e is DioException) {
+         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+           return ItemResponse.fromJson(e.response?.data as Map<String, dynamic>);
+         } else {
+           return ItemResponse(
+             success: false,
+             statusCode: e.response?.statusCode ?? 500,
+             message: e.message ?? 'Failed to update item',
+           );
+         }
+       }
+       return ItemResponse(
+         success: false,
+         statusCode: 500,
+         message: e.toString(),
+       );
+     }
+   }
 
-  Future<GenericApiResponse> deleteItem(String id) async {
-    try {
-      final response = await Server.delete(
-        '${ApiConstants.deleteItem}$id',
-      );
-      return GenericApiResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return GenericApiResponse.fromJson(e.response?.data);
-        } else {
-          return GenericApiResponse(
-            message: e.message ?? 'Failed to delete item',
-          );
-        }
-      }
-      return GenericApiResponse(message: e.toString());
-    }
-  }
+   Future<GenericApiResponse> deleteItem(String id) async {
+     try {
+       final response = await Server.delete(
+         '${ApiConstants.deleteItem}$id',
+       );
+       if (response.data is Map<String, dynamic>) {
+         return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return GenericApiResponse(message: 'Invalid response format');
+       }
+     } catch (e) {
+       if (e is DioException) {
+         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+           return GenericApiResponse.fromJson(e.response?.data as Map<String, dynamic>);
+         } else {
+           return GenericApiResponse(
+             message: e.message ?? 'Failed to delete item',
+           );
+         }
+       }
+       return GenericApiResponse(message: e.toString());
+     }
+   }
 
   Future<ItemListResponse> getItemsByShopId(String shopId) async {
     try {

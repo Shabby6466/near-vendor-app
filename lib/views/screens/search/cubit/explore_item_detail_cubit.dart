@@ -56,4 +56,10 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState> with Analytic
       emit(ExploreItemDetailFailure(e.toString()));
     }
   }
+
+  @override
+  Future<void> close() async {
+    await closeAnalytics();
+    await super.close();
+  }
 }

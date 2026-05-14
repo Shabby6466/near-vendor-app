@@ -10,10 +10,13 @@ class HiveManager {
     if (_initialized) return;
     await Hive.initFlutter();
     await Hive.openBox(HiveKeys.currentUserBox);
+    await Hive.openBox(HiveKeys.preferencesBox);
     _initialized = true;
   }
 
   static Box get currentUserBox => Hive.box(HiveKeys.currentUserBox);
+
+  static Box get preferencesBox => Hive.box(HiveKeys.preferencesBox);
 
 
   static void onLogout() {

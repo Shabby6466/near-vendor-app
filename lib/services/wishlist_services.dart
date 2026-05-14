@@ -40,75 +40,105 @@ class WishlistServices {
         ApiConstants.createWishlist,
         data: input.toJson(),
       );
-      return CreateWishlistResponse.fromJson(response.data);
+      if (response.data is Map<String, dynamic>) {
+        return CreateWishlistResponse.fromJson(response.data as Map<String, dynamic>);
+      } else {
+        return CreateWishlistResponse(message: 'Invalid response format');
+      }
     } catch (e) {
-      if (e is DioException && e.response?.data != null) {
-        return CreateWishlistResponse.fromJson(e.response!.data);
+      if (e is DioException) {
+        if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+          return CreateWishlistResponse.fromJson(e.response!.data as Map<String, dynamic>);
+        }
       }
       return CreateWishlistResponse(message: e.toString());
     }
   }
 
-  Future<GetWishlistsResponse> getMyWishlists({
-    int page = 1,
-    int limit = 10,
-  }) async {
-    try {
-      final response = await Server.get(
-        ApiConstants.getMyWishlists,
-        queryParameters: {'page': page, 'limit': limit},
-      );
-      return GetWishlistsResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException && e.response?.data != null) {
-        return GetWishlistsResponse.fromJson(e.response!.data);
-      }
-      return GetWishlistsResponse(message: e.toString());
-    }
-  }
+   Future<GetWishlistsResponse> getMyWishlists({
+     int page = 1,
+     int limit = 10,
+   }) async {
+     try {
+       final response = await Server.get(
+         ApiConstants.getMyWishlists,
+         queryParameters: {'page': page, 'limit': limit},
+       );
+       if (response.data is Map<String, dynamic>) {
+         return GetWishlistsResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return GetWishlistsResponse(message: 'Invalid response format');
+       }
+     } catch (e) {
+       if (e is DioException) {
+         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+           return GetWishlistsResponse.fromJson(e.response!.data as Map<String, dynamic>);
+         }
+       }
+       return GetWishlistsResponse(message: e.toString());
+     }
+   }
 
-  Future<WishlistActionResponse> deleteWishlist(String id) async {
-    try {
-      final response = await Server.delete('${ApiConstants.deleteWishlist}$id');
-      return WishlistActionResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException && e.response?.data != null) {
-        return WishlistActionResponse.fromJson(e.response!.data);
-      }
-      return WishlistActionResponse(message: e.toString());
-    }
-  }
+   Future<WishlistActionResponse> deleteWishlist(String id) async {
+     try {
+       final response = await Server.delete('${ApiConstants.deleteWishlist}$id');
+       if (response.data is Map<String, dynamic>) {
+         return WishlistActionResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return WishlistActionResponse(message: 'Invalid response format');
+       }
+     } catch (e) {
+       if (e is DioException) {
+         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+           return WishlistActionResponse.fromJson(e.response!.data as Map<String, dynamic>);
+         }
+       }
+       return WishlistActionResponse(message: e.toString());
+     }
+   }
 
-  Future<WishlistActionResponse> completeWishlist(String id) async {
-    try {
-      final response = await Server.patch(
-        '${ApiConstants.completeWishlist}$id/complete',
-      );
-      return WishlistActionResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException && e.response?.data != null) {
-        return WishlistActionResponse.fromJson(e.response!.data);
-      }
-      return WishlistActionResponse(message: e.toString());
-    }
-  }
+   Future<WishlistActionResponse> completeWishlist(String id) async {
+     try {
+       final response = await Server.patch(
+         '${ApiConstants.completeWishlist}$id/complete',
+       );
+       if (response.data is Map<String, dynamic>) {
+         return WishlistActionResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return WishlistActionResponse(message: 'Invalid response format');
+       }
+     } catch (e) {
+       if (e is DioException) {
+         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+           return WishlistActionResponse.fromJson(e.response!.data as Map<String, dynamic>);
+         }
+       }
+       return WishlistActionResponse(message: e.toString());
+     }
+   }
 
-  Future<ExploreDemandResponse> exploreLocalDemand({
-    required double lat,
-    required double lon,
-    double radius = 5000,
-  }) async {
-    try {
-      final response = await Server.get(
-        ApiConstants.exploreWishlists,
-        queryParameters: {'lat': lat, 'lon': lon, 'radius': radius},
-      );
-      return ExploreDemandResponse.fromJson(response.data);
-    } catch (e) {
-      if (e is DioException && e.response?.data != null) {
-        return ExploreDemandResponse.fromJson(e.response!.data);
-      }
-      return ExploreDemandResponse(message: e.toString());
-    }
-  }
+   Future<ExploreDemandResponse> exploreLocalDemand({
+     required double lat,
+     required double lon,
+     double radius = 5000,
+   }) async {
+     try {
+       final response = await Server.get(
+         ApiConstants.exploreWishlists,
+         queryParameters: {'lat': lat, 'lon': lon, 'radius': radius},
+       );
+       if (response.data is Map<String, dynamic>) {
+         return ExploreDemandResponse.fromJson(response.data as Map<String, dynamic>);
+       } else {
+         return ExploreDemandResponse(message: 'Invalid response format');
+       }
+     } catch (e) {
+       if (e is DioException) {
+         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+           return ExploreDemandResponse.fromJson(e.response!.data as Map<String, dynamic>);
+         }
+       }
+       return ExploreDemandResponse(message: e.toString());
+     }
+   }
 }

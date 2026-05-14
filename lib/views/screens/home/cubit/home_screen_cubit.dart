@@ -202,6 +202,6 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
   @override
   Future<void> close() async {
     await closeAnalytics();
-    super.close();
+    await super.close();
   }
 }

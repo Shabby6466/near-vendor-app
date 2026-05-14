@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
@@ -18,7 +19,7 @@ class SessionCubit extends Cubit<SessionState> {
   Future<void> initialize() async {
     final token = CurrentUserStorage.getUserAuthToken();
     final refreshToken = CurrentUserStorage.getUserRefreshAuthToken();
-    var user = CurrentUserStorage.getCurrentUser();
+    final user = CurrentUserStorage.getCurrentUser();
     final hasOnboarded = CurrentUserStorage.getHasOnboarded();
 
     if (token != null) {

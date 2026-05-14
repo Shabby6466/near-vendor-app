@@ -5,14 +5,13 @@ import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 class CreateWishlistResponse extends BaseApiResponse {
   WishlistItem? wishlist;
 
-  CreateWishlistResponse({super.message, super.status});
+  CreateWishlistResponse({super.message, super.status, this.wishlist});
 
-  CreateWishlistResponse.fromJson(dynamic json) : super.fromJson(json) {
-    if (json is Map) {
-      final data = json['data'];
-      if (data is Map) {
-        wishlist = WishlistItem.fromJson(data as Map<String, dynamic>);
-      }
+  CreateWishlistResponse.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json) {
+    final data = json['data'];
+    if (data is Map) {
+      wishlist = WishlistItem.fromJson(data as Map<String, dynamic>);
     }
   }
 }
@@ -23,27 +22,36 @@ class GetWishlistsResponse extends BaseApiResponse {
   int? totalPages;
   int? currentPage;
 
-  GetWishlistsResponse({super.message, super.status});
-
-  GetWishlistsResponse.fromJson(dynamic json) : super.fromJson(json) {
-    if (json is Map) {
-      final data = json['data'];
-      List<dynamic> raw = [];
-      Map<String, dynamic>? meta;
-
-      if (data is List) {
-        raw = data;
-      } else if (data is Map) {
-        raw = data['items'] as List<dynamic>? ?? [];
-        meta = data['meta'] as Map<String, dynamic>?;
-      }
-
-      wishlists = raw
-          .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
-          .toList();
-      totalPages = meta?['totalPages'] as int?;
-      currentPage = meta?['currentPage'] as int?;
+  GetWishlistsResponse({
+    super.message,
+    super.status,
+    List<WishlistItem>? wishlists,
+    this.totalPages,
+    this.currentPage,
+  }) {
+    if (wishlists != null) {
+      this.wishlists = wishlists;
     }
+  }
+
+  GetWishlistsResponse.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json) {
+    final data = json['data'];
+    List<dynamic> raw = [];
+    Map<String, dynamic>? meta;
+
+    if (data is List) {
+      raw = data;
+    } else if (data is Map) {
+      raw = data['items'] as List<dynamic>? ?? [];
+      meta = data['meta'] as Map<String, dynamic>?;
+    }
+
+    wishlists = raw
+        .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
+        .toList();
+    totalPages = meta?['totalPages'] as int?;
+    currentPage = meta?['currentPage'] as int?;
   }
 }
 
@@ -51,23 +59,31 @@ class GetWishlistsResponse extends BaseApiResponse {
 class WishlistActionResponse extends BaseApiResponse {
   WishlistActionResponse({super.message, super.status});
 
-  WishlistActionResponse.fromJson(super.json) : super.fromJson();
+  WishlistActionResponse.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json);
 }
 
 /// Response for GET /wishlists/explore — vendor demand feed.
 class ExploreDemandResponse extends BaseApiResponse {
   List<WishlistItem> demands = [];
 
-  ExploreDemandResponse({super.message, super.status});
+  ExploreDemandResponse({
+    super.message,
+    super.status,
+    List<WishlistItem>? demands,
+  }) {
+    if (demands != null) {
+      this.demands = demands;
+    }
+  }
 
-  ExploreDemandResponse.fromJson(dynamic json) : super.fromJson(json) {
-    if (json is Map) {
-      final data = json['data'];
-      if (data is List) {
-        demands = data
-            .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
-            .toList();
-      }
+  ExploreDemandResponse.fromJson(Map<String, dynamic> json)
+    : super.fromJson(json) {
+    final data = json['data'];
+    if (data is List) {
+      demands = data
+          .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
+          .toList();
     }
   }
 }

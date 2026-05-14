@@ -7,6 +7,7 @@ class SearchStorage {
   SearchStorage._();
 
   static Box get _userBox => HiveManager.currentUserBox;
+  static Box get _preferencesBox => HiveManager.preferencesBox;
 
   static const int _maxRecentSearches = 15;
 
@@ -27,7 +28,7 @@ class SearchStorage {
         searches = searches.sublist(0, _maxRecentSearches);
       }
       
-      await _userBox.put(HiveKeys.recentSearchesKey, searches);
+      await _preferencesBox.put(HiveKeys.recentSearchesKey, searches);
     } catch (e) {
       debugPrint('Error adding recent search: $e');
     }
@@ -35,7 +36,7 @@ class SearchStorage {
 
   static List<String> getRecentSearches() {
     try {
-      final List? searches = _userBox.get(
+      final List? searches = _preferencesBox.get(
         HiveKeys.recentSearchesKey,
         defaultValue: [],
       ) as List?;
