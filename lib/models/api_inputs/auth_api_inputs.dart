@@ -22,7 +22,7 @@ class CreateUserInput {
       'password': password,
       'latitude': latitude,
       'longitude': longitude,
-      'role': role.name,
+      'role': role.name.toUpperCase(),
     };
   }
 }
