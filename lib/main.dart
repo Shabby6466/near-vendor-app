@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -19,42 +18,21 @@ import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart
 import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit/profile_cubit.dart';
 import 'package:upgrader/upgrader.dart';
 
-void main() {
-  runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await HiveManager.init();
-    await AppData().loadHasOnboarded();
-    await dotenv.load();
-    await SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveManager.init();
+  await AppData().loadHasOnboarded();
+  await dotenv.load();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
-    runApp(const MainApp());
-  }, (error, stack) {});
+  runApp(const MainApp());
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends StatelessWidget {
   const MainApp({super.key});
-
-  @override
-  State<MainApp> createState() => _MainAppState();
-}
-
-class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
-  bool _showSplash = true;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-  }
-
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,52 +48,39 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       ],
       child: BlocBuilder<ConnectivityCubit, ConnectivityStatus>(
         builder: (context, connectivity) {
-          return ValueListenableBuilder<bool>(
-            valueListenable: AppData().showMainScreenNotifier,
-            builder: (context, showMain, child) {
-              Widget content;
-              if (connectivity == ConnectivityStatus.disconnected) {
-                content = NoInternetScreen(
-                  onRetry: () => context.read<ConnectivityCubit>().retry(),
-                );
-              } else {
-                content = showMain ? const MainScreen() : const WelcomeScreen();
-              }
+          return MaterialApp(
+            title: 'NearVendor',
+            navigatorKey: navigatorKey,
+            debugShowCheckedModeBanner: false,
+            theme: AppThemeData.normalLightTheme,
+            darkTheme: AppThemeData.normalDarkTheme,
+            home: connectivity == ConnectivityStatus.disconnected
+                ? NoInternetScreen(
+                    onRetry: () => context.read<ConnectivityCubit>().retry(),
+                  )
+                : SplashScreen(
+                    nextRoute: ValueListenableBuilder<bool>(
+                      valueListenable: AppData().showMainScreenNotifier,
+                      builder: (context, showMain, child) {
+                        final content = showMain
+                            ? const MainScreen()
+                            : const WelcomeScreen();
 
-              final rootWidget = UpgradeAlert(
-                upgrader: Upgrader(
-                  minAppVersion: '0.0.0',
-                  durationUntilAlertAgain: const Duration(hours: 1),
-                ),
-                showIgnore: false,
-                showLater: false,
-                dialogStyle: Platform.isIOS
-                    ? UpgradeDialogStyle.cupertino
-                    : UpgradeDialogStyle.material,
-                child: content,
-              );
-
-              return MaterialApp(
-                navigatorKey: navigatorKey,
-                debugShowCheckedModeBanner: false,
-                theme: AppThemeData.normalLightTheme,
-                darkTheme: AppThemeData.normalDarkTheme,
-                home:
-                    _showSplash &&
-                        connectivity != ConnectivityStatus.disconnected
-                    ? SplashScreen(
-                        nextRoute: rootWidget,
-                        onComplete: () {
-                          if (mounted) {
-                            setState(() {
-                              _showSplash = false;
-                            });
-                          }
-                        },
-                      )
-                    : rootWidget,
-              );
-            },
+                        return UpgradeAlert(
+                          upgrader: Upgrader(
+                            minAppVersion: '0.0.0',
+                            durationUntilAlertAgain: const Duration(hours: 1),
+                          ),
+                          showIgnore: false,
+                          showLater: false,
+                          dialogStyle: Platform.isIOS
+                              ? UpgradeDialogStyle.cupertino
+                              : UpgradeDialogStyle.material,
+                          child: content,
+                        );
+                      },
+                    ),
+                  ),
           );
         },
       ),
