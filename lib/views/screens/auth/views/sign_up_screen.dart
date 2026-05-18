@@ -47,7 +47,7 @@ class SignUpScreen extends StatelessWidget {
             );
           } else if (state is SignupFailure) {
             if (!context.mounted) return;
-            AppAlerts.showErrorSnackBar(context, state.message);
+            AppAlerts.showError(context, state.message);
           }
         },
         builder: (context, state) {

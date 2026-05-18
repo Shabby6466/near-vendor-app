@@ -205,7 +205,7 @@ class Server {
           final ctx = navigatorKey.currentContext;
           logoutUser();
           if (ctx != null && ctx.mounted) {
-            AppAlerts.showErrorSnackBar(ctx, AppStrings.pleaseLoginAgain);
+            AppAlerts.showError(ctx, AppStrings.pleaseLoginAgain);
           }
         }
       }

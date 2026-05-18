@@ -70,9 +70,9 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
       setState(() => _isLoading = false);
       if (result.success == true) {
         Navigator.pop(context);
-        AppAlerts.showSuccessSnackBar(context, 'Report submitted for review.');
+        AppAlerts.showSuccess(context, 'Report submitted for review.');
       } else {
-        AppAlerts.showErrorSnackBar(
+        AppAlerts.showError(
           context,
           result.message ?? 'Failed to submit report',
         );

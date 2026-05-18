@@ -103,6 +103,7 @@ class CurrentUserStorage {
     }
   }
 
+  //TODO use record or latlong object
   static Map<String, double>? getLastLocation() {
     final lat = _userBox.get(HiveKeys.lastLatitudeKey);
     final lon = _userBox.get(HiveKeys.lastLongitudeKey);

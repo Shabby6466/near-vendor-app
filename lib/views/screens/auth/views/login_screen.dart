@@ -34,7 +34,7 @@ class LoginScreen extends StatelessWidget {
                 .updateLocation(); // Auto update location
             AppNavigator.pushAndRemoveUntil(context, const MainScreen());
           } else if (state is LoginFailure) {
-            AppAlerts.showErrorSnackBar(context, state.message);
+            AppAlerts.showError(context, state.message);
           }
         },
         builder: (context, state) {

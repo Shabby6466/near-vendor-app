@@ -32,20 +32,18 @@ class VerificationCodeScreen extends StatelessWidget {
             context.read<LocationCubit>().updateLocation();
             AppNavigator.pushAndRemoveUntil(context, const MainScreen());
           } else if (state is VerificationInvalidCode) {
-            AppAlerts.showActionError(
-              context,
+            AppAlerts.showConfirmDialog(
+              context: context,
               title: 'Invalid Code',
               message: state.message,
-              actionText: 'Try Again',
-              onAction: () {
+              confirmLabel: 'Try Again',
+              onConfirm: () {
                 context.read<VerificationCubit>().codeController.clear();
                 context.read<VerificationCubit>().onCodeChanged('');
               },
-              secondaryActionText: 'Go Back & Re-enter Details',
-              onSecondaryAction: () => AppNavigator.pop(context),
             );
           } else if (state is VerificationFailure) {
-            AppAlerts.showErrorSnackBar(context, state.message);
+            AppAlerts.showError(context, state.message);
           }
         },
         builder: (context, state) {

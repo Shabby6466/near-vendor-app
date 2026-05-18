@@ -36,10 +36,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
       child: BlocConsumer<ChangePasswordCubit, ChangePasswordState>(
         listener: (context, state) {
           if (state is ChangePasswordSuccess) {
-            AppAlerts.showSuccessSnackBar(context, state.message);
+            AppAlerts.showSuccess(context, state.message);
             Navigator.pop(context);
           } else if (state is ChangePasswordFailure) {
-            AppAlerts.showErrorSnackBar(context, state.error);
+            AppAlerts.showError(context, state.error);
           }
         },
         builder: (context, state) {

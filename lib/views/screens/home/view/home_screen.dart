@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
             listenWhen: (previous, current) => current is HomeScreenNoLocation,
             listener: (context, state) {
               if (state is HomeScreenNoLocation) {
-                AppAlerts.showErrorSnackBar(context, state.message);
+                AppAlerts.showError(context, state.message);
                 AppBottomSheet.openLocationSet();
               }
             },

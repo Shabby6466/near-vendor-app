@@ -78,7 +78,7 @@ class GeneralPinScreen extends StatelessWidget {
               AppNavigator.pushAndRemoveUntil(context, widget as Widget);
             }
           } else if (state is GeneralPinFailure) {
-            AppAlerts.showErrorSnackBar(context, state.message);
+            AppAlerts.showError(context, state.message);
           }
         },
         builder: (context, state) {

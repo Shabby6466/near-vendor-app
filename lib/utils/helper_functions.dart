@@ -35,7 +35,7 @@ Future<void> copyTextToClipboard(BuildContext context, String text) async {
   await Clipboard.setData(ClipboardData(text: text));
 
   if (context.mounted) {
-    AppAlerts.showSuccessSnackBar(context, 'Copied to clipboard');
+    AppAlerts.showSuccess(context, 'Copied to clipboard');
   }
 }
 

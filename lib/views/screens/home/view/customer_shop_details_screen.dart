@@ -575,7 +575,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
                 );
                 if (context.mounted) {
                   if (result.success == true) {
-                    AppAlerts.showSuccessSnackBar(
+                    AppAlerts.showSuccess(
                       context,
                       '${shop.shopName} has been blocked.',
                     );
@@ -583,7 +583,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
                       context,
                     ); // Go back as user shouldn't see this shop anymore
                   } else {
-                    AppAlerts.showErrorSnackBar(
+                    AppAlerts.showError(
                       context,
                       result.message ?? 'Failed to block user',
                     );

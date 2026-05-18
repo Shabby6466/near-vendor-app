@@ -1,138 +1,318 @@
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
-import 'package:toasty_box/toast_service.dart';
 
 class AppAlerts {
   AppAlerts._();
 
-  static void showErrorSnackBar(BuildContext context, [String? message]) {
-    ToastService.showErrorToast(
-      context,
-      message: message ?? "Something went wrong",
+  static OverlayEntry? _currentOverlay;
+
+  // ── Public methods ──────────────────────────────────────────────────────────
+
+  static void showSuccess(BuildContext context, String message) {
+    _showLiquidGlassNotification(
+      context: context,
+      message: message,
+      title: "Success",
+      accentColor: const Color(0xFF4CAF50),
     );
   }
 
-  static void showSuccessSnackBar(BuildContext context, String message) {
-    ToastService.showSuccessToast(context, message: message);
+  static void showError(BuildContext context, String message) {
+    _showLiquidGlassNotification(
+      context: context,
+      message: message,
+      title: "Error",
+      accentColor: const Color(0xFFEF5350),
+    );
   }
 
-  static void showActionError(
-    BuildContext context, {
+  // ── Liquid glass notification ────────────────────────────────────────────
+
+  static void _showLiquidGlassNotification({
+    required BuildContext context,
     required String title,
     required String message,
-    required String actionText,
-    required VoidCallback onAction,
-    String? secondaryActionText,
-    VoidCallback? onSecondaryAction,
+    required Color accentColor,
   }) {
-    showDialog(
+    _currentOverlay?.remove();
+    _currentOverlay = null;
+
+    final overlay = Overlay.of(context, rootOverlay: true);
+    final topPadding = MediaQuery.of(context).padding.top + 8;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    late OverlayEntry overlayEntry;
+
+    overlayEntry = OverlayEntry(
+      builder: (ctx) {
+        return _LiquidGlassOverlay(
+          topPadding: topPadding,
+          screenWidth: screenWidth,
+          title: title,
+          message: message,
+          accentColor: accentColor,
+          onDismissed: () {
+            overlayEntry.remove();
+            if (_currentOverlay == overlayEntry) {
+              _currentOverlay = null;
+            }
+          },
+        );
+      },
+    );
+
+    _currentOverlay = overlayEntry;
+    overlay.insert(overlayEntry);
+  }
+
+  // ── Confirm dialog ────────────────────────────────────────────────────────
+
+  static Future<void> showConfirmDialog({
+    required BuildContext context,
+    required String title,
+    required String message,
+    required VoidCallback onConfirm,
+    String? confirmLabel,
+    bool isDestructive = true,
+  }) async {
+    await showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        backgroundColor: Colors.transparent,
-        contentPadding: EdgeInsets.zero,
-        content: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor.withValues(alpha: 0.9),
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: Theme.of(context).primaryColor.withValues(alpha: 0.2),
-            ),
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1E1E),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: Text(title, style: const TextStyle(color: Colors.white)),
+        content: Text(
+          message,
+          style: const TextStyle(color: Colors.grey, fontSize: 14),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(24),
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.error_outline_rounded,
-                      color: Colors.redAccent,
-                      size: 40,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w900,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    message,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.7),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Column(
-                    children: [
-                      SizedBox(
-                        width: double.infinity,
-                        height: 54,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                            onAction();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Theme.of(context).primaryColor,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            elevation: 0,
-                          ),
-                          child: Text(
-                            actionText.toUpperCase(),
-                            style: const TextStyle(fontWeight: FontWeight.w900),
-                          ),
-                        ),
-                      ),
-                      if (secondaryActionText != null) ...[
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 54,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              onSecondaryAction?.call();
-                            },
-                            style: TextButton.styleFrom(
-                              foregroundColor: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.6),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                            ),
-                            child: Text(
-                              secondaryActionText.toUpperCase(),
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w900,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              onConfirm();
+            },
+            child: Text(
+              confirmLabel ?? "Confirm",
+              style: TextStyle(
+                color: isDestructive ? Colors.redAccent : Colors.greenAccent,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        ),
+        ],
+      ),
+    );
+  }
+}
+
+// ── Liquid Glass Overlay Widget (self-contained) ─────────────────────────
+
+class _LiquidGlassOverlay extends StatefulWidget {
+  final double topPadding;
+  final double screenWidth;
+  final String title;
+  final String message;
+  final Color accentColor;
+  final VoidCallback onDismissed;
+
+  const _LiquidGlassOverlay({
+    required this.topPadding,
+    required this.screenWidth,
+    required this.title,
+    required this.message,
+    required this.accentColor,
+    required this.onDismissed,
+  });
+
+  @override
+  State<_LiquidGlassOverlay> createState() => _LiquidGlassOverlayState();
+}
+
+class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _opacity;
+  late final Animation<Offset> _slide;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 400),
+    );
+
+    _opacity = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
+        reverseCurve: const Interval(0.5, 1.0, curve: Curves.easeIn),
+      ),
+    );
+
+    _slide = Tween<Offset>(begin: const Offset(0.0, -1.5), end: Offset.zero)
+        .animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Curves.easeOutCubic,
+            reverseCurve: Curves.easeInCubic,
+          ),
+        );
+
+    // Play enter animation
+    _controller.forward();
+
+    // Auto-dismiss after 3 seconds
+    Future.delayed(const Duration(seconds: 3), _dismiss);
+  }
+
+  void _dismiss() {
+    if (!_controller.isAnimating &&
+        _controller.status != AnimationStatus.dismissed) {
+      _controller.reverse().then((_) {
+        widget.onDismissed();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Opacity(
+          opacity: _opacity.value,
+          child: SlideTransition(
+            position: AlwaysStoppedAnimation(_slide.value),
+            child: child,
+          ),
+        );
+      },
+      child: Stack(
+        children: [
+          SizedBox(
+            width: widget.screenWidth,
+            height: MediaQuery.of(context).size.height,
+          ),
+          Positioned(
+            top: widget.topPadding,
+            left: 16,
+            right: 16,
+            child: Material(
+              color: Colors.transparent,
+              child: GestureDetector(
+                onTap: _dismiss,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: BackdropFilter(
+                    filter: ui.ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.white.withValues(alpha: 0.12),
+                            Colors.white.withValues(alpha: 0.06),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                        border: Border.all(
+                          color: Colors.white.withValues(alpha: 0.18),
+                        ),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      constraints: const BoxConstraints(maxWidth: 400),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Accent indicator
+                          Container(
+                            width: 4,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: widget.accentColor,
+                              borderRadius: BorderRadius.circular(2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: widget.accentColor.withValues(
+                                    alpha: 0.4,
+                                  ),
+                                  blurRadius: 8,
+                                  spreadRadius: 1,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Icon
+                          Container(
+                            width: 32,
+                            height: 32,
+                            decoration: BoxDecoration(
+                              color: widget.accentColor.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Icon(
+                              widget.accentColor == const Color(0xFF4CAF50)
+                                  ? Icons.check_circle_rounded
+                                  : Icons.error_rounded,
+                              color: widget.accentColor,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          // Text
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  widget.title,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 14,
+                                    height: 1.2,
+                                  ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  widget.message,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    height: 1.3,
+                                  ),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
