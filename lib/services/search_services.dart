@@ -24,14 +24,14 @@ class SearchServices {
         }
         return SearchItemResponse(
           success: false,
-          statusCode: e.response?.statusCode ?? 500,
+          status: e.response?.statusCode ?? 500,
           items: [],
           message: e.message,
         );
       }
       return SearchItemResponse(
         success: false,
-        statusCode: 500,
+        status: 500,
         items: [],
         message: e.toString(),
       );
@@ -53,14 +53,14 @@ class SearchServices {
         }
         return SearchItemResponse(
           success: false,
-          statusCode: e.response?.statusCode ?? 500,
+          status: e.response?.statusCode ?? 500,
           items: [],
           message: e.message,
         );
       }
       return SearchItemResponse(
         success: false,
-        statusCode: 500,
+        status: 500,
         items: [],
         message: e.toString(),
       );
@@ -107,7 +107,7 @@ class SearchServices {
       }
       return SearchItemResponse(
         success: false,
-        statusCode: 500,
+        status: 500,
         items: [],
         message: e.toString(),
       );

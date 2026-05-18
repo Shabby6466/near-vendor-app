@@ -58,12 +58,12 @@ class ShopDetailsCubit extends Cubit<ShopDetailsState>
         }
       } else {
         final errorMessage = (shopResponse.success != true)
-            ? (shopResponse.message.isEmpty
+            ? ((shopResponse.message ?? '').isEmpty
                   ? 'Failed to load shop data'
-                  : shopResponse.message)
-            : (itemsResponse.message.isEmpty
+                  : shopResponse.message!)
+            : ((itemsResponse.message ?? '').isEmpty
                   ? 'Failed to load items'
-                  : itemsResponse.message);
+                  : itemsResponse.message!);
         emit(ShopDetailsFailure(errorMessage));
       }
     } catch (e) {

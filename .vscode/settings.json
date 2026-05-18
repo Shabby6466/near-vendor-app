@@ -1,3 +1,10 @@
 {
-    "kiroAgent.configureMCP": "Disabled"
+  "kiroAgent.configureMCP": "Disabled",
+  "cSpell.words": [
+    "dotenv",
+    "latlong",
+    "nearvendor",
+    "pinput",
+    "upgrader"
+  ]
 }

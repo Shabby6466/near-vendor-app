@@ -21,14 +21,10 @@ class AnalyticsServices {
           response.data as Map<String, dynamic>,
         );
       } else {
-        return AnalyticsStatsResponse(
-          success: false,
-          statusCode: 500,
-          data: [],
-        );
+        return AnalyticsStatsResponse(success: false, status: 500, data: []);
       }
     } catch (e) {
-      return AnalyticsStatsResponse(success: false, statusCode: 500, data: []);
+      return AnalyticsStatsResponse(success: false, status: 500, data: []);
     }
   }
 

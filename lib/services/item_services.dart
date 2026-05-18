@@ -22,16 +22,12 @@ class ItemServices {
         } else {
           return ItemResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to create item',
           );
         }
       }
-      return ItemResponse(
-        success: false,
-        statusCode: 500,
-        message: e.toString(),
-      );
+      return ItemResponse(success: false, status: 500, message: e.toString());
     }
   }
 
@@ -47,7 +43,7 @@ class ItemServices {
       } else {
         return ItemResponse(
           success: false,
-          statusCode: 500,
+          status: 500,
           message: 'Invalid response format',
         );
       }
@@ -61,16 +57,12 @@ class ItemServices {
         } else {
           return ItemResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to update item',
           );
         }
       }
-      return ItemResponse(
-        success: false,
-        statusCode: 500,
-        message: e.toString(),
-      );
+      return ItemResponse(success: false, status: 500, message: e.toString());
     }
   }
 
@@ -115,7 +107,7 @@ class ItemServices {
         } else {
           return ItemListResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to fetch items',
             items: [],
           );
@@ -123,7 +115,7 @@ class ItemServices {
       }
       return ItemListResponse(
         success: false,
-        statusCode: 500,
+        status: 500,
         message: e.toString(),
         items: [],
       );
@@ -143,16 +135,12 @@ class ItemServices {
         } else {
           return ItemResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to fetch item',
           );
         }
       }
-      return ItemResponse(
-        success: false,
-        statusCode: 500,
-        message: e.toString(),
-      );
+      return ItemResponse(success: false, status: 500, message: e.toString());
     }
   }
 }

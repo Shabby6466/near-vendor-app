@@ -28,7 +28,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
     // Fetch recent items from API only if authenticated
     if (AppData().token != null) {
       final response = await _searchServices.getRecentItems();
-      if (response.success) {
+      if (response.success == true) {
         emit(
           SearchInitial(
             recentSearches: recentSearches,
@@ -78,7 +78,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
 
     final response = await _searchServices.searchItems(input);
 
-    if (response.success) {
+    if (response.success == true) {
       updateAnalyticsMetadata({'lat': lat, 'lon': lon, 'query': query});
       emit(
         SearchSuccess(

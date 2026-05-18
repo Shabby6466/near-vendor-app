@@ -1,28 +1,19 @@
-import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
+import 'package:nearvendorapp/models/data_models/item_model.dart';
 
-class ItemResponse {
-  final bool success;
-  final int statusCode;
-  final String message;
+class ItemResponse extends BaseApiResponse {
   final Item? item;
 
-  ItemResponse({
-    required this.success,
-    required this.statusCode,
-    required this.message,
-    this.item,
-  });
+  ItemResponse({super.success, super.status, super.message, this.item});
 
-  factory ItemResponse.fromJson(Map<String, dynamic> json) {
+  ItemResponse.fromJson(Map<String, dynamic> json)
+    : item = _parseItem(json),
+      super.fromJson(json);
+
+  static Item? _parseItem(Map<String, dynamic> json) {
     final data = apiResponseData(json);
     final itemJson = data is Map && data['item'] != null ? data['item'] : data;
-    return ItemResponse(
-      success: json['success'] as bool? ?? false,
-      statusCode: json['statusCode'] as int? ?? 0,
-      message: json['message'] as String? ?? '',
-      item: itemJson is Map<String, dynamic> ? Item.fromJson(itemJson) : null,
-    );
+    return itemJson is Map<String, dynamic> ? Item.fromJson(itemJson) : null;
   }
 }
 
@@ -52,17 +43,14 @@ class PaginationMeta {
   }
 }
 
-class ItemListResponse {
-  final bool success;
-  final int statusCode;
-  final String message;
+class ItemListResponse extends BaseApiResponse {
   final List<Item> items;
   final PaginationMeta? meta;
 
   ItemListResponse({
-    required this.success,
-    required this.statusCode,
-    required this.message,
+    super.success,
+    super.status,
+    super.message,
     required this.items,
     this.meta,
   });
@@ -71,7 +59,7 @@ class ItemListResponse {
     if (json is List) {
       return ItemListResponse(
         success: true,
-        statusCode: 200,
+        status: 200,
         message: 'Success',
         items: json
             .map((e) => Item.fromJson(e as Map<String, dynamic>))
@@ -95,24 +83,20 @@ class ItemListResponse {
 
       metaData ??= json['meta'] as Map<String, dynamic>?;
 
-      final hasData = itemsList != null;
-
       return ItemListResponse(
-        success: json['success'] as bool? ?? hasData,
-        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
-        message: json['message'] as String? ?? (hasData ? 'Success' : ''),
-        items:
-            itemsList
-                ?.map((e) => Item.fromJson(e as Map<String, dynamic>))
-                .toList() ??
-            [],
+        success: json['success'] as bool? ?? true,
+        status: (json['statusCode'] as num?)?.toInt() ?? 200,
+        message: json['message'] as String? ?? 'Success',
+        items: itemsList
+            .map((e) => Item.fromJson(e as Map<String, dynamic>))
+            .toList(),
         meta: metaData != null ? PaginationMeta.fromJson(metaData) : null,
       );
     }
 
     return ItemListResponse(
       success: false,
-      statusCode: 500,
+      status: 500,
       message: 'Unexpected response format',
       items: [],
     );

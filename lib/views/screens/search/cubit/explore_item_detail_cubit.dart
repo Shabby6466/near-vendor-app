@@ -23,8 +23,12 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState>
     try {
       // 1. Fetch Item Details
       final itemResponse = await _itemServices.getItemById(itemId);
-      if (!itemResponse.success) {
-        emit(ExploreItemDetailFailure(itemResponse.message));
+      if (itemResponse.success != true) {
+        emit(
+          ExploreItemDetailFailure(
+            itemResponse.message ?? 'Failed to load item',
+          ),
+        );
         return;
       }
 
@@ -39,7 +43,7 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState>
       if (item.shopId != null) {
         try {
           final shopResponse = await _shopServices.getShopById(item.shopId!);
-          if (shopResponse.success) {
+          if (shopResponse.success == true) {
             shop = shopResponse.shop;
           }
         } catch (e) {

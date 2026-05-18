@@ -113,10 +113,10 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
               categoryId: _selectedCategory.id,
             );
 
-      if (response.success ||
-          response.statusCode == 410 ||
-          response.statusCode == 404) {
-        _apiMessage = (response.statusCode == 410 || response.statusCode == 404)
+      if (response.success == true ||
+          response.status == 410 ||
+          response.status == 404) {
+        _apiMessage = (response.status == 410 || response.status == 404)
             ? response.message
             : null;
         _allShops = response.shops
@@ -139,7 +139,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       } else {
         emit(
           HomeScreenFailure(
-            response.message,
+            response.message ?? 'An error occurred',
             categories: _categories,
             selectedCategory: _selectedCategory,
           ),

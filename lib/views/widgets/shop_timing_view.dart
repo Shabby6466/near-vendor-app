@@ -6,8 +6,7 @@ import 'package:nearvendorapp/models/opening_hours.dart';
 class ShopTimingView extends StatelessWidget {
   final ShopOpeningHours openingHours;
 
-  const ShopTimingView({Key? key, required this.openingHours})
-    : super(key: key);
+  const ShopTimingView({super.key, required this.openingHours});
 
   @override
   Widget build(BuildContext context) {

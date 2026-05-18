@@ -1,47 +1,35 @@
-import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
+import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 
-class ShopResponse {
-  final bool success;
-  final int statusCode;
-  final String message;
+class ShopResponse extends BaseApiResponse {
   final Shop? shop;
 
-  ShopResponse({
-    required this.success,
-    required this.statusCode,
-    required this.message,
-    this.shop,
-  });
+  ShopResponse({super.success, super.status, super.message, this.shop});
 
   factory ShopResponse.fromJson(Map<String, dynamic> json) {
-    final statusCode = (json['statusCode'] as num?)?.toInt() ?? 200;
+    final status = (json['statusCode'] as num?)?.toInt() ?? 200;
     final data = apiResponseData(json);
     final shopJson = data is Map && data['shop'] != null ? data['shop'] : data;
     return ShopResponse(
-      success:
-          json['success'] as bool? ?? (statusCode == 200 || statusCode == 201),
-      statusCode: statusCode,
+      success: json['success'] as bool? ?? (status == 200 || status == 201),
+      status: status,
       message: json['message'] as String? ?? '',
       shop: shopJson is Map<String, dynamic> ? Shop.fromJson(shopJson) : null,
     );
   }
 }
 
-class ShopListResponse {
-  final bool success;
-  final int statusCode;
-  final String message;
+class ShopListResponse extends BaseApiResponse {
   final List<Shop> shops;
   final SearchMeta? meta;
   final bool isGlobalFallback;
   final String? rangeMessage;
 
   ShopListResponse({
-    required this.success,
-    required this.statusCode,
-    required this.message,
+    super.success,
+    super.status,
+    super.message,
     required this.shops,
     this.meta,
     this.isGlobalFallback = false,
@@ -52,7 +40,7 @@ class ShopListResponse {
     if (json is List) {
       return ShopListResponse(
         success: true,
-        statusCode: 200,
+        status: 200,
         message: 'Success',
         shops: json
             .map((e) => Shop.fromJson(e as Map<String, dynamic>))
@@ -87,7 +75,7 @@ class ShopListResponse {
 
       return ShopListResponse(
         success: json['success'] as bool? ?? (shopsData != null),
-        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
+        status: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? '',
         shops:
             shopsData
@@ -106,7 +94,7 @@ class ShopListResponse {
 
     return ShopListResponse(
       success: false,
-      statusCode: 500,
+      status: 500,
       message: 'Unexpected response format',
       shops: [],
     );

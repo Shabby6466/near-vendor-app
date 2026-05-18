@@ -142,10 +142,9 @@ class ShopOpeningHours extends Equatable {
       } else if (list.length == 1 &&
           list[0].openTime == '00:00' &&
           list[0].closeTime == '23:59') {
-        dayMap[name] = const DaySchedule(isOpen: true, is24Hours: true);
+        dayMap[name] = const DaySchedule(is24Hours: true);
       } else {
         dayMap[name] = DaySchedule(
-          isOpen: true,
           periods: list
               .map(
                 (p) => TimePeriod(openTime: p.openTime, closeTime: p.closeTime),

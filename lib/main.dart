@@ -13,6 +13,7 @@ import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
+import 'package:nearvendorapp/views/screens/common/splash_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit/profile_cubit.dart';
@@ -41,6 +42,8 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
+  bool _showSplash = true;
+
   @override
   void initState() {
     super.initState();
@@ -59,7 +62,6 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
       providers: [
         BlocProvider(create: (context) => SessionCubit()..initialize()),
         BlocProvider(create: (context) => ConnectivityCubit()),
-        // ProfileCubit is app-level so LocationCubit can inject it
         BlocProvider(create: (context) => ProfileCubit()),
         BlocProvider(
           create: (context) =>
@@ -71,32 +73,47 @@ class _MainAppState extends State<MainApp> with WidgetsBindingObserver {
           return ValueListenableBuilder<bool>(
             valueListenable: AppData().showMainScreenNotifier,
             builder: (context, showMain, child) {
-              Widget home;
+              Widget content;
               if (connectivity == ConnectivityStatus.disconnected) {
-                home = NoInternetScreen(
+                content = NoInternetScreen(
                   onRetry: () => context.read<ConnectivityCubit>().retry(),
                 );
               } else {
-                home = showMain ? const MainScreen() : const WelcomeScreen();
+                content = showMain ? const MainScreen() : const WelcomeScreen();
               }
+
+              final rootWidget = UpgradeAlert(
+                upgrader: Upgrader(
+                  minAppVersion: '0.0.0',
+                  durationUntilAlertAgain: const Duration(hours: 1),
+                ),
+                showIgnore: false,
+                showLater: false,
+                dialogStyle: Platform.isIOS
+                    ? UpgradeDialogStyle.cupertino
+                    : UpgradeDialogStyle.material,
+                child: content,
+              );
 
               return MaterialApp(
                 navigatorKey: navigatorKey,
                 debugShowCheckedModeBanner: false,
                 theme: AppThemeData.normalLightTheme,
                 darkTheme: AppThemeData.normalDarkTheme,
-                home: UpgradeAlert(
-                  upgrader: Upgrader(
-                    minAppVersion: '0.0.0',
-                    durationUntilAlertAgain: const Duration(hours: 1),
-                  ),
-                  showIgnore: false,
-                  showLater: false,
-                  dialogStyle: Platform.isIOS
-                      ? UpgradeDialogStyle.cupertino
-                      : UpgradeDialogStyle.material,
-                  child: home,
-                ),
+                home:
+                    _showSplash &&
+                        connectivity != ConnectivityStatus.disconnected
+                    ? SplashScreen(
+                        nextRoute: rootWidget,
+                        onComplete: () {
+                          if (mounted) {
+                            setState(() {
+                              _showSplash = false;
+                            });
+                          }
+                        },
+                      )
+                    : rootWidget,
               );
             },
           );

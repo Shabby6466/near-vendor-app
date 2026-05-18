@@ -21,16 +21,12 @@ class ShopServices {
         } else {
           return ShopResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to fetch shop details',
           );
         }
       }
-      return ShopResponse(
-        success: false,
-        statusCode: 500,
-        message: e.toString(),
-      );
+      return ShopResponse(success: false, status: 500, message: e.toString());
     }
   }
 
@@ -69,7 +65,7 @@ class ShopServices {
         } else {
           return ShopListResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to fetch shops for map',
             shops: [],
           );
@@ -77,7 +73,7 @@ class ShopServices {
       }
       return ShopListResponse(
         success: false,
-        statusCode: 500,
+        status: 500,
         message: e.toString(),
         shops: [],
       );
@@ -118,7 +114,7 @@ class ShopServices {
         } else {
           return ShopListResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to fetch nearby shops',
             shops: [],
           );
@@ -126,7 +122,7 @@ class ShopServices {
       }
       return ShopListResponse(
         success: false,
-        statusCode: 500,
+        status: 500,
         message: e.toString(),
         shops: [],
       );
@@ -165,7 +161,7 @@ class ShopServices {
         } else {
           return ShopListResponse(
             success: false,
-            statusCode: e.response?.statusCode ?? 500,
+            status: e.response?.statusCode ?? 500,
             message: e.message ?? 'Failed to search shops',
             shops: [],
           );
@@ -173,7 +169,7 @@ class ShopServices {
       }
       return ShopListResponse(
         success: false,
-        statusCode: 500,
+        status: 500,
         message: e.toString(),
         shops: [],
       );

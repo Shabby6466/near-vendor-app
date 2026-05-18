@@ -1,18 +1,14 @@
-class AnalyticsStatsResponse {
-  final bool success;
-  final int statusCode;
+import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
+
+class AnalyticsStatsResponse extends BaseApiResponse {
   final List<AnalyticsStatEntry> data;
 
-  AnalyticsStatsResponse({
-    required this.success,
-    required this.statusCode,
-    required this.data,
-  });
+  AnalyticsStatsResponse({super.success, super.status, required this.data});
 
   factory AnalyticsStatsResponse.fromJson(Map<String, dynamic> json) {
     return AnalyticsStatsResponse(
       success: json['success'] as bool? ?? false,
-      statusCode: json['statusCode'] as int? ?? 0,
+      status: json['statusCode'] as int? ?? 0,
       data: (json['data'] as List? ?? [])
           .map((e) => AnalyticsStatEntry.fromJson(e as Map<String, dynamic>))
           .toList(),

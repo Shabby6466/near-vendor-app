@@ -80,7 +80,7 @@ class MapCubit extends Cubit<MapState> {
         categoryId: currentCategory.id,
       );
 
-      if (response.success) {
+      if (response.success == true) {
         // Store in cache
         _cache[cacheKey] = response.shops;
 
@@ -103,7 +103,7 @@ class MapCubit extends Cubit<MapState> {
             shops: state.shops,
             categories: state.categories,
             selectedCategory: currentCategory,
-            message: response.message,
+            message: response.message ?? '',
           ),
         );
       }

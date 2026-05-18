@@ -1,22 +1,15 @@
+import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 import 'package:nearvendorapp/models/data_models/order.dart';
 
-class CreateOrderResponse {
-  final bool success;
-  final int statusCode;
-  final String message;
+class CreateOrderResponse extends BaseApiResponse {
   final Order? order;
 
-  CreateOrderResponse({
-    required this.success,
-    required this.statusCode,
-    required this.message,
-    this.order,
-  });
+  CreateOrderResponse({super.success, super.status, super.message, this.order});
 
   factory CreateOrderResponse.fromJson(Map<String, dynamic> json) {
     return CreateOrderResponse(
       success: json['success'] as bool? ?? false,
-      statusCode: json['statusCode'] as int? ?? 0,
+      status: json['statusCode'] as int? ?? 0,
       message: json['message'] as String? ?? '',
       order: json['data'] != null
           ? Order.fromJson(json['data'] as Map<String, dynamic>)
@@ -27,16 +20,13 @@ class CreateOrderResponse {
   }
 }
 
-class OrderListResponse {
-  final bool success;
-  final int statusCode;
-  final String message;
+class OrderListResponse extends BaseApiResponse {
   final List<Order> orders;
 
   OrderListResponse({
-    required this.success,
-    required this.statusCode,
-    required this.message,
+    super.success,
+    super.status,
+    super.message,
     required this.orders,
   });
 
@@ -62,7 +52,7 @@ class OrderListResponse {
 
     return OrderListResponse(
       success: json['success'] as bool? ?? orders.isNotEmpty,
-      statusCode: json['statusCode'] as int? ?? 200,
+      status: json['statusCode'] as int? ?? 200,
       message: json['message'] as String? ?? 'Success',
       orders: orders,
     );
