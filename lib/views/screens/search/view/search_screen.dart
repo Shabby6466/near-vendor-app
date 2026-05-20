@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
@@ -25,7 +26,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   final FocusNode _searchFocusNode = FocusNode();
   final GlobalKey<SearchBarFieldState> _searchBarKey =
-      GlobalKey<SearchBarFieldState>();
+  GlobalKey<SearchBarFieldState>();
 
   @override
   void dispose() {
@@ -34,7 +35,9 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _handleMakeAWish() {
-    final session = context.read<SessionCubit>().state;
+    final session = context
+        .read<SessionCubit>()
+        .state;
     if (session.status != AuthStatus.authenticated) {
       AppBottomSheet.showConfirmationBottomSheet(
         context: context,
@@ -60,7 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
       create: (context) => SearchCubit(),
       child: BlocListener<LocationCubit, LocationState>(
         listenWhen: (previous, current) =>
-            previous.latitude != current.latitude ||
+        previous.latitude != current.latitude ||
             previous.longitude != current.longitude,
         listener: (context, locationState) {
           final searchCubit = context.read<SearchCubit>();
@@ -92,9 +95,9 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: [
                       const SizedBox(height: 16),
                       SearchBarField(
-                            key: _searchBarKey,
-                            focusNode: _searchFocusNode,
-                          )
+                        key: _searchBarKey,
+                        focusNode: _searchFocusNode,
+                      )
                           .animate()
                           .fadeIn(delay: 80.ms)
                           .slideY(begin: 0.1, end: 0),
@@ -178,69 +181,80 @@ class _HowToSearchSection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.symmetric(horizontal: 35),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'How to find what you need',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'Poppins',
-              letterSpacing: -0.5,
-            ),
-          ),
-          const SizedBox(height: 16),
+        Text(
+        'How to find what you need',
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontSize: 20,
+          color: ColorName.primary,
+          fontWeight: FontWeight.w900,
+          fontFamily: 'Poppins',
+          letterSpacing: -0.5,
+        ),
+      ),
+      const SizedBox(height: 55),
           Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.03)
-                  : theme.primaryColor.withValues(alpha: 0.03),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(
-                color: theme.primaryColor.withValues(alpha: 0.08),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: isDark ? theme.cardColor : Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            border: Border.all(
+              color: theme.primaryColor.withValues(alpha: 0.08),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
+                blurRadius: 30,
+                spreadRadius: 2,
+                offset: const Offset(0, 16),
               ),
-            ),
-            child: Column(
-              children: [
-                _SearchTipItem(
-                  icon: Icons.search_rounded,
-                  title: 'Exact Search',
-                  subtitle:
-                      'Type precisely what you need (e.g., "Organic Milk")',
-                  theme: theme,
-                  onTap: onExactSearch,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Divider(height: 1, thickness: 0.5),
-                ),
-                _SearchTipItem(
-                  icon: Icons.camera_alt_rounded,
-                  title: 'Visual Search',
-                  subtitle: 'Snap a photo to find high-value matches nearby',
-                  theme: theme,
-                  onTap: onVisualSearch,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 12),
-                  child: Divider(height: 1, thickness: 0.5),
-                ),
-                _SearchTipItem(
-                  icon: Icons.auto_awesome_rounded,
-                  title: 'Make a Wish',
-                  subtitle: "Can't find it? Make a wish to alert local vendors",
-                  theme: theme,
-                  iconColor: Colors.purple,
-                  onTap: onMakeAWish,
-                ),
-              ],
-            ),
+            ],
+          ),
+
+      child: Column(
+        children: [
+          _SearchTipItem(
+            icon: Icons.search_rounded,
+            title: 'Exact Search',
+            subtitle:
+            'Type the name of the product you are looking for',
+            theme: theme,
+            iconColor: ColorName.primary,
+            onTap: onExactSearch,
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1, thickness: 0.5),
+          ),
+          _SearchTipItem(
+            icon: Icons.camera_alt_rounded,
+            title: 'Visual Search',
+            subtitle: 'Search your product via photo',
+            theme: theme,
+            iconColor: ColorName.primary,
+            onTap: onVisualSearch,
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 12),
+            child: Divider(height: 1, thickness: 0.5),
+          ),
+          _SearchTipItem(
+            icon: Icons.auto_awesome_rounded,
+            title: 'Make a Wish',
+            subtitle: "Add unavailable items to your wish list",
+            theme: theme,
+            iconColor: ColorName.primary,
+            onTap: onMakeAWish,
           ),
         ],
       ),
+    ),]
+    ,
+    )
+    ,
     );
   }
 }
@@ -267,6 +281,7 @@ class _SearchTipItem extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return InkWell(
+      
       onTap: onTap,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
@@ -275,14 +290,10 @@ class _SearchTipItem extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: (iconColor ?? theme.primaryColor).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
               child: Icon(
                 icon,
                 color: iconColor ?? theme.primaryColor,
-                size: 20,
+                size: 30,
               ),
             ),
             const SizedBox(width: 16),

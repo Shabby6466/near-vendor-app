@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/radius_bottom_sheet.dart';
@@ -77,8 +78,8 @@ class DiscoverySettings extends StatelessWidget {
                 trailing: Switch(
                   value: newOfferAlerts,
                   onChanged: onAlertsToggled,
-                  activeThumbColor: theme.iconTheme.color,
-                  activeTrackColor: theme.primaryColor.withValues(alpha: 0.3),
+                  activeThumbColor: ColorName.white,
+                  activeTrackColor: ColorName.primary,
                 ),
               ),
             ],

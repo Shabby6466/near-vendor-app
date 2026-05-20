@@ -136,7 +136,7 @@ class _ProfileHeader extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: theme.primaryColor.withValues(alpha: 0.2),
+                    color: theme.primaryColor,
                     width: 1.5,
                   ),
                 ),

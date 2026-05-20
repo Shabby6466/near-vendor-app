@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 
 class RecentSearchSection extends StatelessWidget {
@@ -29,9 +30,10 @@ class RecentSearchSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Recent Research',
+                    'Recent Searches',
                     style: theme.textTheme.titleMedium?.copyWith(
                       fontSize: 16,
+                      color: ColorName.primary,
                       fontWeight: FontWeight.w800,
                     ),
                   ),
@@ -41,7 +43,7 @@ class RecentSearchSection extends StatelessWidget {
                       'Clear History',
                       style: theme.textTheme.labelLarge?.copyWith(
                         fontSize: 12,
-                        color: theme.primaryColor,
+                        color: Colors.black,
                       ),
                     ),
                   ),

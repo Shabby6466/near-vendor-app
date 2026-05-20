@@ -29,6 +29,24 @@ class AnimatedErrorState extends StatelessWidget {
           'We could not reach the server. Please check your internet connection or try again later.';
     }
 
+    final isThrottlerError = message.toLowerCase().contains('throttler') ||
+        message.toLowerCase().contains('too many requests') ||
+        message.toLowerCase().contains('throttle');
+
+    final displayIcon = isThrottlerError ? Icons.error_outline : icon;
+
+    final Color iconColor = isThrottlerError
+        ? theme.primaryColor
+        : Colors.redAccent.shade200;
+
+    final Color glowColor = isThrottlerError
+        ? theme.primaryColor.withValues(alpha: 0.15)
+        : Colors.redAccent.withValues(alpha: 0.15);
+
+    final Color containerBgColor = isThrottlerError
+        ? (isDark ? const Color(0xFF0F1E36) : const Color(0xFFEAF2FF))
+        : (isDark ? const Color(0xFF2A1C1E) : const Color(0xFFFFF0F1));
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 24.0),
@@ -46,7 +64,7 @@ class AnimatedErrorState extends StatelessWidget {
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.redAccent.withValues(alpha: 0.15),
+                                color: glowColor,
                                 blurRadius: 40,
                                 spreadRadius: 20,
                               ),
@@ -67,15 +85,13 @@ class AnimatedErrorState extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: isDark
-                            ? const Color(0xFF2A1C1E)
-                            : const Color(0xFFFFF0F1),
+                        color: containerBgColor,
                         shape: BoxShape.circle,
                       ),
                       child: Icon(
-                        icon,
+                        displayIcon,
                         size: 60,
-                        color: Colors.redAccent.shade200,
+                        color: iconColor,
                       ),
                     ),
                   ],

@@ -82,7 +82,7 @@ class HomeScreen extends StatelessWidget {
                                             ),
                                             Text(
                                               isGuest
-                                                  ? 'Find specialized vendors near you'
+                                                  ? 'Find vendors near you'
                                                   : 'Find local vendors near you',
                                               style: theme.textTheme.bodySmall
                                                   ?.copyWith(
@@ -174,63 +174,16 @@ class HomeScreen extends StatelessWidget {
                                     ],
                                   ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 80,
-                                      height: 80,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: theme.primaryColor.withValues(
-                                          alpha: 0.2,
-                                        ),
-                                      ),
-                                      child: Icon(
-                                        Icons.location_on_outlined,
-                                        size: 40,
-                                        color: theme.primaryColor,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 16),
-                                    Expanded(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Set Your Location',
-                                            style: theme.textTheme.titleMedium
-                                                ?.copyWith(
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          Text(
-                                            'Find vendors near you',
-                                            style: theme.textTheme.bodySmall,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        AppBottomSheet.openLocationSet();
-                                      },
-                                      child: Text(
-                                        'SET',
-                                        style: TextStyle(
-                                          color: theme.primaryColor,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: Image.asset(
+                                    'assets/images/header_img.png',
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
-                              ),
-                            ),
+                              ),),
                             SizedBox(
                               height:
                                   AppSpacing.mediumVerticalSpacing(context) *
