@@ -1,6 +1,6 @@
 part of 'session_cubit.dart';
 
-/// Auth-only state. Location fields have been moved to LocationState.
+/// Auth-only state. Location is stored in AppData.
 /// The latitude/longitude/cityName fields are kept as read-only convenience
 /// getters derived from AppData so existing BlocBuilder widgets
 /// that display the city name don't need to be migrated all at once.

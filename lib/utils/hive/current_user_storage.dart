@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_ce_flutter/hive_flutter.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/constants/hive_keys.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
@@ -94,21 +95,35 @@ class CurrentUserStorage {
         as double;
   }
 
-  static Future<void> setLastLocation(double lat, double lon) async {
+  static Future<void> setLastLocation(
+    AppLocation location,
+  ) async {
     try {
-      await _userBox.put(HiveKeys.lastLatitudeKey, lat);
-      await _userBox.put(HiveKeys.lastLongitudeKey, lon);
+      await _userBox.put(HiveKeys.lastLatitudeKey, location.latitude);
+      await _userBox.put(HiveKeys.lastLongitudeKey, location.longitude);
+      if (location.hasPlaceName) {
+        await _userBox.put(
+          HiveKeys.lastLocationNameKey,
+          location.placeName!.trim(),
+        );
+      } else {
+        await _userBox.delete(HiveKeys.lastLocationNameKey);
+      }
     } catch (e) {
       debugPrint('Error storing last location: $e');
     }
   }
 
-  //TODO use record or latlong object
-  static Map<String, double>? getLastLocation() {
+  static AppLocation? getLastLocation() {
     final lat = _userBox.get(HiveKeys.lastLatitudeKey);
     final lon = _userBox.get(HiveKeys.lastLongitudeKey);
     if (lat != null && lon != null) {
-      return {'lat': lat as double, 'lon': lon as double};
+      final name = _userBox.get(HiveKeys.lastLocationNameKey) as String?;
+      return AppLocation(
+        latitude: lat as double,
+        longitude: lon as double,
+        placeName: name,
+      );
     }
     return null;
   }

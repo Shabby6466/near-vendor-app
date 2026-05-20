@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/widgets/location_display_row.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
 
@@ -36,11 +38,12 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   }
 
   void _performInitialSearch(String query) {
-    final locationState = context.read<LocationCubit>().state;
+    final location = AppData().location;
     _searchBarKey.currentState?.setQuery(query);
+    if (location == null) return;
     context.read<SearchCubit>().searchItems(
-      lat: locationState.latitude ?? 0,
-      lon: locationState.longitude ?? 0,
+      lat: location.latitude,
+      lon: location.longitude,
       query: query,
     );
   }
@@ -55,22 +58,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocListener<LocationCubit, LocationState>(
-      listenWhen: (previous, current) =>
-          previous.latitude != current.latitude ||
-          previous.longitude != current.longitude,
-      listener: (context, locationState) {
-        final searchCubit = context.read<SearchCubit>();
-        final searchState = searchCubit.state;
-
-        if (searchState is SearchSuccess && searchState.query != null) {
-          searchCubit.searchItems(
-            lat: locationState.latitude ?? 0,
-            lon: locationState.longitude ?? 0,
-            query: searchState.query!,
-          );
-        }
-      },
+    return _SearchResultsLocationListener(
       child: Scaffold(
         backgroundColor: theme.scaffoldBackgroundColor,
         body: SafeArea(
@@ -78,25 +66,37 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-                child: Row(
+                padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        HapticFeedback.lightImpact();
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.arrow_back_rounded),
-                      tooltip: 'Back',
-                    ),
-                    Expanded(
-                      child: Text(
-                        'Search Results',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w800,
-                          fontFamily: 'Poppins',
-                          letterSpacing: -0.5,
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(Icons.arrow_back_rounded),
+                          tooltip: 'Back',
                         ),
+                        Expanded(
+                          child: Text(
+                            'Search Results',
+                            style: theme.textTheme.titleMedium?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              fontFamily: 'Poppins',
+                              letterSpacing: -0.5,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: const LocationDisplayRow(
+                        label: 'Searching near',
+                        compact: true,
                       ),
                     ),
                   ],
@@ -191,6 +191,50 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _SearchResultsLocationListener extends StatefulWidget {
+  final Widget child;
+
+  const _SearchResultsLocationListener({required this.child});
+
+  @override
+  State<_SearchResultsLocationListener> createState() =>
+      _SearchResultsLocationListenerState();
+}
+
+class _SearchResultsLocationListenerState
+    extends State<_SearchResultsLocationListener> {
+  double? _lastLat;
+  double? _lastLon;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<AppLocation?>(
+      valueListenable: AppData().locationNotifier,
+      builder: (context, location, child) {
+        if (location != null &&
+            (location.latitude != _lastLat || location.longitude != _lastLon)) {
+          _lastLat = location.latitude;
+          _lastLon = location.longitude;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            final searchCubit = context.read<SearchCubit>();
+            final searchState = searchCubit.state;
+            if (searchState is SearchSuccess && searchState.query != null) {
+              searchCubit.searchItems(
+                lat: location.latitude,
+                lon: location.longitude,
+                query: searchState.query!,
+              );
+            }
+          });
+        }
+        return child!;
+      },
+      child: widget.child,
     );
   }
 }

@@ -1,90 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/view/profile_screen.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
+import 'package:nearvendorapp/views/widgets/location_display_row.dart';
 
 class SearchHeader extends StatelessWidget {
   const SearchHeader({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.mediumHorizontalSpacing(context),
         vertical: 12.0,
       ),
-      child: BlocBuilder<LocationCubit, LocationState>(
-        builder: (context, location) {
-          final locationText =
-              location.cityName ??
-              (location.latitude != null && location.longitude != null
-                  ? '${location.latitude!.toStringAsFixed(4)}, ${location.longitude!.toStringAsFixed(4)}'
-                  : 'Select Location');
-
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: GestureDetector(
-                  onTap: () {
-                    HapticFeedback.lightImpact();
-                    context.read<LocationCubit>().startManualLocationPick();
-                    AppNavigator.push(context, const LocationPickerScreen());
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: Text(
-                          'Current Location',
-                          style: theme.textTheme.labelSmall?.copyWith(
-                            fontSize: 12,
-                            color: theme.textTheme.bodySmall?.color?.withValues(
-                              alpha: 0.5,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_on_rounded,
-                            size: 16,
-                            color: theme.primaryColor,
-                          ),
-                          const SizedBox(width: 4),
-                          Expanded(
-                            child: Text(
-                              locationText,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.titleMedium?.copyWith(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(width: 16),
-              const _ProfileHeader(),
-            ],
-          );
-        },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Expanded(child: LocationDisplayRow()),
+          const SizedBox(width: 16),
+          const _ProfileHeader(),
+        ],
       ),
     );
   }
@@ -104,7 +45,6 @@ class _ProfileHeader extends StatelessWidget {
 
         return GestureDetector(
           onTap: () {
-            HapticFeedback.lightImpact();
             AppNavigator.push(context, const ProfileScreen());
           },
           child: Row(

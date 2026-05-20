@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/constants/default_location.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/vendor_list_overlay.dart';
 
@@ -21,6 +22,8 @@ class _VisualSearchMapResultsScreenState
     extends State<VisualSearchMapResultsScreen> {
   final MapController _mapController = MapController();
   late List<Marker> _markers;
+  double? _lastLat;
+  double? _lastLon;
 
   @override
   void initState() {
@@ -40,28 +43,30 @@ class _VisualSearchMapResultsScreenState
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LocationCubit, LocationState>(
-      listenWhen: (previous, current) =>
-          previous.latitude != current.latitude ||
-          previous.longitude != current.longitude,
-      listener: (context, locationState) {
-        if (locationState.latitude != null && locationState.longitude != null) {
-          _mapController.move(
-            LatLng(locationState.latitude!, locationState.longitude!),
-            13.0,
-          );
-        }
-      },
-      child: BlocBuilder<LocationCubit, LocationState>(
-        builder: (context, locationState) {
-          final initialCenter = _markers.isNotEmpty
-              ? _markers.first.point
-              : LatLng(
-                  locationState.latitude ?? 33.5898,
-                  locationState.longitude ?? 73.0221,
+    return ValueListenableBuilder<AppLocation?>(
+      valueListenable: AppData().locationNotifier,
+      builder: (context, appLocation, _) {
+        final savedCenter = appLocation?.toLatLng();
+        final initialCenter = _markers.isNotEmpty
+            ? _markers.first.point
+            : savedCenter ??
+                LatLng(
+                  DefaultLocation.latitude,
+                  DefaultLocation.longitude,
                 );
 
-          return Scaffold(
+        if (savedCenter != null &&
+            appLocation != null &&
+            (appLocation.latitude != _lastLat ||
+                appLocation.longitude != _lastLon)) {
+          _lastLat = appLocation.latitude;
+          _lastLon = appLocation.longitude;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) _mapController.move(savedCenter, 13.0);
+          });
+        }
+
+        return Scaffold(
             backgroundColor: Colors.black,
             body: Stack(
               children: [
@@ -124,8 +129,7 @@ class _VisualSearchMapResultsScreenState
               ],
             ),
           );
-        },
-      ),
+      },
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/utils/location_picker_launcher.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/visual_search_launcher.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
@@ -51,13 +51,16 @@ class SearchBarFieldState extends State<SearchBarField> {
     super.dispose();
   }
 
-  void _onSearch(String query) {
+  Future<void> _onSearch(String query) async {
     HapticFeedback.mediumImpact();
-    final locationState = context.read<LocationCubit>().state;
-    final lat = locationState.latitude ?? 0.0;
-    final lon = locationState.longitude ?? 0.0;
+    final location = await LocationPickerLauncher.ensureLocation(context);
+    if (!mounted || location == null) return;
 
-    context.read<SearchCubit>().searchItems(lat: lat, lon: lon, query: query);
+    context.read<SearchCubit>().searchItems(
+      lat: location.latitude,
+      lon: location.longitude,
+      query: query,
+    );
   }
 
   @override

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
@@ -52,13 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
     return BlocProvider(
       create: (context) => SearchCubit(),
-      child: BlocListener<LocationCubit, LocationState>(
-        listenWhen: (previous, current) =>
-            previous.latitude != current.latitude ||
-            previous.longitude != current.longitude,
-        listener: (context, locationState) {
-          context.read<SearchCubit>().loadInitialData();
-        },
+      child: _SearchLocationListener(
         child: Scaffold(
           backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
@@ -102,6 +97,40 @@ class _SearchScreenState extends State<SearchScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SearchLocationListener extends StatefulWidget {
+  final Widget child;
+
+  const _SearchLocationListener({required this.child});
+
+  @override
+  State<_SearchLocationListener> createState() =>
+      _SearchLocationListenerState();
+}
+
+class _SearchLocationListenerState extends State<_SearchLocationListener> {
+  double? _lastLat;
+  double? _lastLon;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<AppLocation?>(
+      valueListenable: AppData().locationNotifier,
+      builder: (context, location, child) {
+        if (location != null &&
+            (location.latitude != _lastLat || location.longitude != _lastLon)) {
+          _lastLat = location.latitude;
+          _lastLon = location.longitude;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) context.read<SearchCubit>().loadInitialData();
+          });
+        }
+        return child!;
+      },
+      child: widget.child,
     );
   }
 }

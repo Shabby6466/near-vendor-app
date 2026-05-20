@@ -53,28 +53,28 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       final lon = AppData().longitude;
 
       if (lat == null || lon == null) {
-        _handleNoLocationFound();
+        emit(
+          HomeScreenNoLocation(
+            categories: _categories,
+            selectedCategory: _selectedCategory,
+          ),
+        );
         return;
       }
 
       await _fetchShops(lat: lat, lon: lon);
     } catch (e) {
-      _handleNoLocationFound();
+      emit(
+        HomeScreenNoLocation(
+          categories: _categories,
+          selectedCategory: _selectedCategory,
+        ),
+      );
     }
   }
 
-  void _handleNoLocationFound() {
-    // Emit state instead of calling UI directly
-    emit(
-      HomeScreenNoLocation(
-        categories: _categories,
-        selectedCategory: _selectedCategory,
-      ),
-    );
-
-    // Fallback to default coordinates if everything fails
-    _fetchShops(lat: 24.860734, lon: 67.001122);
-  }
+  /// Call after the user sets location from the picker.
+  Future<void> reloadAfterLocationSet() => loadShops();
 
   Future<void> _fetchShops({required double lat, required double lon}) async {
     final cacheKey = _selectedCategory.id;

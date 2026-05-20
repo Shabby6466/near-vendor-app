@@ -15,4 +15,5 @@ class HiveKeys {
   static const String recentSearchesKey = 'recent_searches';
   static const String lastLatitudeKey = 'last_latitude';
   static const String lastLongitudeKey = 'last_longitude';
+  static const String lastLocationNameKey = 'last_location_name';
 }

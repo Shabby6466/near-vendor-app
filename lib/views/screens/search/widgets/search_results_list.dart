@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/utils/location_picker_launcher.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
@@ -233,14 +233,8 @@ class _EmptyStateState extends State<_EmptyState> {
   Future<void> _showCategoryPickerAndCreateWish() async {
     if (widget.query == null || widget.query!.isEmpty) return;
 
-    final location = context.read<LocationCubit>().state;
-    if (location.latitude == null || location.longitude == null) {
-      ToastService.showErrorToast(
-        context,
-        message: 'Location required to make a wish.',
-      );
-      return;
-    }
+    final location = await LocationPickerLauncher.ensureLocation(context);
+    if (!mounted || location == null) return;
 
     // Fetch categories
     final categories = await ShopServices().getCategoryNames();
@@ -258,8 +252,8 @@ class _EmptyStateState extends State<_EmptyState> {
       itemName: widget.query!,
       description: '',
       categoryId: selectedCategory.id.isNotEmpty ? selectedCategory.id : null,
-      lat: location.latitude!,
-      lon: location.longitude!,
+      lat: location.latitude,
+      lon: location.longitude,
     );
 
     try {
@@ -673,14 +667,8 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
   Future<void> _createWish() async {
     if (widget.query == null || widget.query!.isEmpty) return;
 
-    final location = context.read<LocationCubit>().state;
-    if (location.latitude == null || location.longitude == null) {
-      ToastService.showErrorToast(
-        context,
-        message: 'Location required to make a wish.',
-      );
-      return;
-    }
+    final location = await LocationPickerLauncher.ensureLocation(context);
+    if (!mounted || location == null) return;
 
     // Fetch categories
     final categories = await ShopServices().getCategoryNames();
@@ -702,8 +690,8 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
       itemName: widget.query!,
       description: '',
       categoryId: selectedCategory.id.isNotEmpty ? selectedCategory.id : null,
-      lat: location.latitude!,
-      lon: location.longitude!,
+      lat: location.latitude,
+      lon: location.longitude,
     );
 
     try {

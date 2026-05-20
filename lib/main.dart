@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/app_theme_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
@@ -21,7 +21,8 @@ import 'package:upgrader/upgrader.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveManager.init();
-  await AppData().loadHasOnboarded();
+  await AppData().loadPersistedData();
+  await AppLocationService.instance.resolvePlaceNameIfMissing();
   await dotenv.load();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -41,10 +42,6 @@ class MainApp extends StatelessWidget {
         BlocProvider(create: (context) => SessionCubit()..initialize()),
         BlocProvider(create: (context) => ConnectivityCubit()),
         BlocProvider(create: (context) => ProfileCubit()),
-        BlocProvider(
-          create: (context) =>
-              LocationCubit(profileCubit: context.read<ProfileCubit>()),
-        ),
       ],
       child: BlocBuilder<ConnectivityCubit, ConnectivityStatus>(
         builder: (context, connectivity) {

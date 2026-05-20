@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/location_picker_launcher.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_alerts.dart';
@@ -8,7 +11,6 @@ import 'package:nearvendorapp/utils/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
-import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
@@ -23,15 +25,25 @@ class HomeScreen extends StatelessWidget {
         builder: (context) {
           final theme = Theme.of(context);
 
-          return BlocListener<HomeScreenCubit, HomeScreenState>(
-            listenWhen: (previous, current) => current is HomeScreenNoLocation,
-            listener: (context, state) {
-              if (state is HomeScreenNoLocation) {
-                AppAlerts.showError(context, state.message);
-                AppBottomSheet.openLocationSet();
-              }
-            },
-            child: AppScaffold(
+          return MultiBlocListener(
+            listeners: [
+              BlocListener<HomeScreenCubit, HomeScreenState>(
+                listenWhen: (previous, current) =>
+                    current is HomeScreenNoLocation,
+                listener: (context, state) async {
+                  if (state is HomeScreenNoLocation) {
+                    AppAlerts.showError(context, state.message);
+                    final location = await LocationPickerLauncher.open(context);
+                    if (!context.mounted) return;
+                    if (location != null) {
+                      context.read<HomeScreenCubit>().reloadAfterLocationSet();
+                    }
+                  }
+                },
+              ),
+            ],
+            child: _HomeLocationReloadListener(
+              child: AppScaffold(
               bgColor: theme.scaffoldBackgroundColor,
               body: SafeArea(
                 bottom: false,
@@ -216,8 +228,17 @@ class HomeScreen extends StatelessWidget {
                                       ),
                                     ),
                                     TextButton(
-                                      onPressed: () {
-                                        AppBottomSheet.openLocationSet();
+                                      onPressed: () async {
+                                        final location =
+                                            await LocationPickerLauncher.open(
+                                              context,
+                                            );
+                                        if (!context.mounted) return;
+                                        if (location != null) {
+                                          context
+                                              .read<HomeScreenCubit>()
+                                              .reloadAfterLocationSet();
+                                        }
                                       },
                                       child: Text(
                                         'SET',
@@ -246,9 +267,46 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+            ),
           );
         },
       ),
+    );
+  }
+}
+
+class _HomeLocationReloadListener extends StatefulWidget {
+  final Widget child;
+
+  const _HomeLocationReloadListener({required this.child});
+
+  @override
+  State<_HomeLocationReloadListener> createState() =>
+      _HomeLocationReloadListenerState();
+}
+
+class _HomeLocationReloadListenerState extends State<_HomeLocationReloadListener> {
+  double? _lastLat;
+  double? _lastLon;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<AppLocation?>(
+      valueListenable: AppData().locationNotifier,
+      builder: (context, location, child) {
+        if (location != null &&
+            (location.latitude != _lastLat || location.longitude != _lastLon)) {
+          _lastLat = location.latitude;
+          _lastLon = location.longitude;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) {
+              context.read<HomeScreenCubit>().reloadAfterLocationSet();
+            }
+          });
+        }
+        return child!;
+      },
+      child: widget.child,
     );
   }
 }

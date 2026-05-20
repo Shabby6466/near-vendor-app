@@ -43,8 +43,8 @@ class LoginCubit extends Cubit<LoginState> {
           final lastLocation = CurrentUserStorage.getLastLocation();
           if (lastLocation != null) {
             _authServices.updateUserLocation(
-              lastLocation['lat']!,
-              lastLocation['lon']!,
+              lastLocation.latitude,
+              lastLocation.longitude,
             );
           }
         }

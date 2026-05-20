@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/utils/location_picker_launcher.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
@@ -34,22 +34,16 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final location = context.read<LocationCubit>().state;
-    if (location.latitude == null || location.longitude == null) {
-      ToastService.showErrorToast(
-        context,
-        message: 'Location required to make a wish.',
-      );
-      return;
-    }
+    final location = await LocationPickerLauncher.ensureLocation(context);
+    if (!mounted || location == null) return;
 
     setState(() => _isLoading = true);
 
     final input = CreateWishlistInput(
       itemName: _nameController.text.trim(),
       description: _descriptionController.text.trim(),
-      lat: location.latitude!,
-      lon: location.longitude!,
+      lat: location.latitude,
+      lon: location.longitude,
     );
 
     final success = await context.read<UserWishlistCubit>().createWishlist(

@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
@@ -29,6 +30,8 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late MapController _mapController;
+  double? _lastLat;
+  double? _lastLon;
 
   @override
   void initState() {
@@ -40,22 +43,23 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocListener<LocationCubit, LocationState>(
-      listenWhen: (previous, current) =>
-          previous.latitude != current.latitude ||
-          previous.longitude != current.longitude,
-      listener: (context, locationState) {
-        if (locationState.latitude != null && locationState.longitude != null) {
-          final center = LatLng(
-            locationState.latitude!,
-            locationState.longitude!,
-          );
-          _mapController.move(center, 13);
-          context.read<MapCubit>().fetchShops(
-            lat: locationState.latitude,
-            lon: locationState.longitude,
-          );
+    return ValueListenableBuilder<AppLocation?>(
+      valueListenable: AppData().locationNotifier,
+      builder: (context, location, child) {
+        if (location != null &&
+            (location.latitude != _lastLat || location.longitude != _lastLon)) {
+          _lastLat = location.latitude;
+          _lastLon = location.longitude;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!mounted) return;
+            _mapController.move(location.toLatLng(), 13);
+            context.read<MapCubit>().fetchShops(
+              lat: location.latitude,
+              lon: location.longitude,
+            );
+          });
         }
+        return child!;
       },
       child: Scaffold(
         body: Stack(

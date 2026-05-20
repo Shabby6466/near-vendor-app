@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/vendor_demand_cubit.dart';
@@ -104,12 +104,11 @@ class VendorDemandView extends StatelessWidget {
             return AnimatedErrorState(
               message: state.message,
               onRetry: () {
-                final locationState = context.read<LocationCubit>().state;
-                if (locationState.latitude != null &&
-                    locationState.longitude != null) {
+                final location = AppData().location;
+                if (location != null) {
                   context.read<VendorDemandCubit>().exploreLocalDemand(
-                    lat: locationState.latitude!,
-                    lon: locationState.longitude!,
+                    lat: location.latitude,
+                    lon: location.longitude,
                   );
                 }
               },
@@ -124,12 +123,11 @@ class VendorDemandView extends StatelessWidget {
             return RefreshIndicator(
               color: ColorName.primary,
               onRefresh: () async {
-                final locationState = context.read<LocationCubit>().state;
-                if (locationState.latitude != null &&
-                    locationState.longitude != null) {
+                final location = AppData().location;
+                if (location != null) {
                   context.read<VendorDemandCubit>().exploreLocalDemand(
-                    lat: locationState.latitude!,
-                    lon: locationState.longitude!,
+                    lat: location.latitude,
+                    lon: location.longitude,
                   );
                 }
               },

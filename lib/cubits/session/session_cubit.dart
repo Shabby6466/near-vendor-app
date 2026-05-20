@@ -11,7 +11,7 @@ part 'session_state.dart';
 
 /// Thin auth-status cubit — owns only: initialize, setAuthenticated,
 /// setGuest, logout, setOnboarded.
-/// Location is now owned by LocationCubit.
+/// Location is owned by AppData (see AppLocationService for GPS / picker saves).
 /// Profile updates are now owned by ProfileCubit.
 class SessionCubit extends Cubit<SessionState> {
   SessionCubit() : super(const SessionState());
@@ -90,7 +90,7 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   void setOnboarded() {
-    CurrentUserStorage.setHasOnboarded(true);
+    AppData().setHasOnboarded(true);
     emit(state.copyWith(hasOnboarded: true));
   }
 

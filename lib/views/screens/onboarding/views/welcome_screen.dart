@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
+import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
@@ -59,10 +60,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Future<void> _finishOnboarding() async {
     await Permission.location.request();
-    if (mounted) {
-      context.read<SessionCubit>().setOnboarded();
-      AppNavigator.pushReplacement(context, const MainScreen());
-    }
+    if (!mounted) return;
+    await AppLocationService.instance.updateFromGps();
+    if (!mounted) return;
+    context.read<SessionCubit>().setOnboarded();
+    AppNavigator.pushReplacement(context, const MainScreen());
   }
 
   Widget _slideFadeTransition(Widget child, Animation<double> animation) {

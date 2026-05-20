@@ -1,25 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 
+/// Singleton app cache. [locationNotifier] is the single source of truth for
+/// the user's last known coordinates and display name.
 class AppData {
-  // Factory constructor immediately after
   factory AppData() => _instance;
-  // Unnamed constructor FIRST (required by lint)
   AppData._();
 
-  // Static members after all constructors
   static final AppData _instance = AppData._();
 
-  // Reactive user — widgets use ValueListenableBuilder to auto-update
   final ValueNotifier<User?> userNotifier = ValueNotifier(null);
   final ValueNotifier<AuthStatus> authStatusNotifier = ValueNotifier(
     AuthStatus.guest,
   );
   final ValueNotifier<bool> hasOnboardedNotifier = ValueNotifier(false);
   final ValueNotifier<bool> showMainScreenNotifier = ValueNotifier(false);
+
+  /// Reactive last-known location — read this everywhere instead of Hive/Map.
+  final ValueNotifier<AppLocation?> locationNotifier = ValueNotifier(null);
 
   User? get currentUser => userNotifier.value;
   String? get token => CurrentUserStorage.getUserAuthToken();
@@ -28,18 +30,16 @@ class AppData {
   AuthStatus get authStatus => authStatusNotifier.value;
   bool get hasOnboarded => hasOnboardedNotifier.value;
 
-  // Location data
-  double? _latitude;
-  double? _longitude;
-  String? _cityName;
+  AppLocation? get location => locationNotifier.value;
+  double? get latitude => location?.latitude;
+  double? get longitude => location?.longitude;
+  String? get cityName => location?.placeName;
+  bool get hasLocation => location != null;
+
   double? _discoveryRadiusKm;
 
-  double? get latitude => _latitude;
-  double? get longitude => _longitude;
-  String? get cityName => _cityName;
   double? get discoveryRadius => _discoveryRadiusKm;
 
-  // Called on login / session restore
   Future<void> setUser(
     User? user, {
     String? token,
@@ -58,17 +58,25 @@ class AppData {
     _updateShowMainScreen();
   }
 
-  // Called on profile update — notifies all ValueListenableBuilder listeners
   void updateUser(User updatedUser) {
     userNotifier.value = updatedUser;
     CurrentUserStorage.storeUserData(updatedUser);
   }
 
-  Future<void> setLocation(double lat, double lon, {String? cityName}) async {
-    _latitude = lat;
-    _longitude = lon;
-    if (cityName != null) _cityName = cityName;
-    await CurrentUserStorage.setLastLocation(lat, lon);
+  /// Persists and broadcasts the user's location. All flows must use this.
+  Future<void> setLocation(
+    double lat,
+    double lon, {
+    String? placeName,
+  }) async {
+    final resolvedName = placeName ?? location?.placeName;
+    final appLocation = AppLocation(
+      latitude: lat,
+      longitude: lon,
+      placeName: resolvedName,
+    );
+    locationNotifier.value = appLocation;
+    await CurrentUserStorage.setLastLocation(appLocation);
   }
 
   Future<void> setDiscoveryRadius(double radiusKm) async {
@@ -76,9 +84,19 @@ class AppData {
     await CurrentUserStorage.setDiscoveryRadius(radiusKm);
   }
 
-  Future<void> loadHasOnboarded() async {
+  /// Restores location and preferences from Hive. Call once at app startup.
+  Future<void> loadPersistedData() async {
+    final stored = CurrentUserStorage.getLastLocation();
+    if (stored != null) {
+      locationNotifier.value = stored;
+    }
+    _discoveryRadiusKm = CurrentUserStorage.getDiscoveryRadius();
     hasOnboardedNotifier.value = CurrentUserStorage.getHasOnboarded();
     _updateShowMainScreen();
+  }
+
+  Future<void> loadHasOnboarded() async {
+    await loadPersistedData();
   }
 
   void setHasOnboarded(bool value) {
@@ -95,9 +113,7 @@ class AppData {
   Future<void> clear() async {
     userNotifier.value = null;
     authStatusNotifier.value = AuthStatus.guest;
-    _latitude = null;
-    _longitude = null;
-    _cityName = null;
+    locationNotifier.value = null;
     _discoveryRadiusKm = null;
     await CurrentUserStorage.clearUserData();
     HiveManager.onLogout();
