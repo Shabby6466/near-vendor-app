@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/location/location_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/utils/search_navigation.dart';
 
 class RecentSearchSection extends StatelessWidget {
   const RecentSearchSection({super.key});
@@ -12,7 +13,10 @@ class RecentSearchSection extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return BlocBuilder<SearchCubit, SearchState>(
-      buildWhen: (previous, current) => current is SearchInitial,
+      buildWhen: (previous, current) =>
+          current is SearchInitial &&
+          (previous is! SearchInitial ||
+              previous.recentSearches != current.recentSearches),
       builder: (context, state) {
         if (state is! SearchInitial || state.recentSearches.isEmpty) {
           return const SizedBox.shrink();
@@ -63,13 +67,10 @@ class RecentSearchSection extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       onTap: () {
-                        final locationState = context
-                            .read<LocationCubit>()
-                            .state;
-                        context.read<SearchCubit>().searchItems(
-                          lat: locationState.latitude ?? 0.0,
-                          lon: locationState.longitude ?? 0.0,
-                          query: keyword,
+                        HapticFeedback.lightImpact();
+                        SearchNavigation.openResults(
+                          context,
+                          initialQuery: keyword,
                         );
                       },
                       borderRadius: BorderRadius.circular(14),

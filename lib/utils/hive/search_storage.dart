@@ -6,7 +6,6 @@ import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 class SearchStorage {
   SearchStorage._();
 
-  static Box get _userBox => HiveManager.currentUserBox;
   static Box get _preferencesBox => HiveManager.preferencesBox;
 
   static const int _maxRecentSearches = 15;
@@ -52,7 +51,7 @@ class SearchStorage {
 
   static Future<void> clearRecentSearches() async {
     try {
-      await _userBox.delete(HiveKeys.recentSearchesKey);
+      await _preferencesBox.delete(HiveKeys.recentSearchesKey);
     } catch (e) {
       debugPrint('Error clearing recent searches: $e');
     }

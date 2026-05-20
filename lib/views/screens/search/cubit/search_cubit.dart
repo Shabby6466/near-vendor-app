@@ -99,6 +99,23 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
     loadInitialData();
   }
 
+  /// Reloads recent searches from local storage without refetching API data.
+  void reloadRecentSearches() {
+    final recentSearches = SearchStorage.getRecentSearches();
+    final current = state;
+
+    if (current is SearchInitial) {
+      emit(
+        SearchInitial(
+          recentSearches: recentSearches,
+          recentItems: current.recentItems,
+        ),
+      );
+    } else {
+      loadInitialData();
+    }
+  }
+
   Future<void> clearHistory() async {
     await SearchStorage.clearRecentSearches();
     loadInitialData();

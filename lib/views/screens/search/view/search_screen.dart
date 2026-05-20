@@ -8,11 +8,12 @@ import 'package:nearvendorapp/utils/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/utils/search_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_items_section.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/search_bar_trigger.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_header.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/visual_search_launcher.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -23,14 +24,8 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final FocusNode _searchFocusNode = FocusNode();
-  final GlobalKey<SearchBarFieldState> _searchBarKey =
-      GlobalKey<SearchBarFieldState>();
-
-  @override
-  void dispose() {
-    _searchFocusNode.dispose();
-    super.dispose();
+  void _openSearchResults() {
+    SearchNavigation.openResults(context);
   }
 
   void _handleMakeAWish() {
@@ -48,7 +43,6 @@ class _SearchScreenState extends State<SearchScreen> {
       );
       return;
     }
-    // Switch to wishlist tab (index 3)
     context.read<MainScreenCubit>().switchTab(3);
   }
 
@@ -63,18 +57,7 @@ class _SearchScreenState extends State<SearchScreen> {
             previous.latitude != current.latitude ||
             previous.longitude != current.longitude,
         listener: (context, locationState) {
-          final searchCubit = context.read<SearchCubit>();
-          final searchState = searchCubit.state;
-
-          if (searchState is SearchSuccess && searchState.query != null) {
-            searchCubit.searchItems(
-              lat: locationState.latitude ?? 0,
-              lon: locationState.longitude ?? 0,
-              query: searchState.query!,
-            );
-          } else if (searchState is SearchInitial) {
-            searchCubit.loadInitialData();
-          }
+          context.read<SearchCubit>().loadInitialData();
         },
         child: Scaffold(
           backgroundColor: theme.scaffoldBackgroundColor,
@@ -91,36 +74,24 @@ class _SearchScreenState extends State<SearchScreen> {
                     padding: EdgeInsets.zero,
                     children: [
                       const SizedBox(height: 16),
-                      SearchBarField(
-                            key: _searchBarKey,
-                            focusNode: _searchFocusNode,
-                          )
+                      const SearchBarTrigger()
                           .animate()
                           .fadeIn(delay: 80.ms)
                           .slideY(begin: 0.1, end: 0),
                       const SizedBox(height: 24),
-
-                      BlocBuilder<SearchCubit, SearchState>(
-                        builder: (context, state) {
-                          return AnimatedSwitcher(
-                            duration: 300.ms,
-                            switchInCurve: Curves.easeOutCubic,
-                            switchOutCurve: Curves.easeInCubic,
-                            transitionBuilder: (child, animation) {
-                              return FadeTransition(
-                                opacity: animation,
-                                child: SlideTransition(
-                                  position: Tween<Offset>(
-                                    begin: const Offset(0, 0.05),
-                                    end: Offset.zero,
-                                  ).animate(animation),
-                                  child: child,
-                                ),
-                              );
-                            },
-                            child: _buildStateContent(context, state),
-                          );
-                        },
+                      _HowToSearchSection(
+                        onExactSearch: _openSearchResults,
+                        onVisualSearch: () =>
+                            VisualSearchLauncher.showPicker(context),
+                        onMakeAWish: _handleMakeAWish,
+                      ).animate().fadeIn(delay: 200.ms),
+                      const SizedBox(height: 32),
+                      const RecentSearchSection().animate().fadeIn(
+                        delay: 500.ms,
+                      ),
+                      const SizedBox(height: 32),
+                      const RecentItemsSection().animate().fadeIn(
+                        delay: 650.ms,
                       ),
                       const SizedBox(height: 120),
                     ],
@@ -132,32 +103,6 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
     );
-  }
-
-  Widget _buildStateContent(BuildContext context, SearchState state) {
-    // final theme = Theme.of(context);
-    // final isDark = theme.brightness == Brightness.dark;
-
-    if (state is SearchInitial) {
-      return Column(
-        key: const ValueKey('search_initial'),
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _HowToSearchSection(
-            onExactSearch: () => _searchFocusNode.requestFocus(),
-            onVisualSearch: () =>
-                _searchBarKey.currentState?.showVisualSearchDialog(),
-            onMakeAWish: _handleMakeAWish,
-          ).animate().fadeIn(delay: 200.ms),
-          const SizedBox(height: 32),
-          const RecentSearchSection().animate().fadeIn(delay: 500.ms),
-          const SizedBox(height: 32),
-          const RecentItemsSection().animate().fadeIn(delay: 650.ms),
-        ],
-      );
-    }
-
-    return const SearchResultsList(key: ValueKey('search_results'));
   }
 }
 
