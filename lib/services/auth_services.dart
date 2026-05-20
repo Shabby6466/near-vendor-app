@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
+import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/auth_api_response.dart';
 import 'package:nearvendorapp/models/api_responses/media_upload_response.dart';
 import 'package:nearvendorapp/services/server.dart';

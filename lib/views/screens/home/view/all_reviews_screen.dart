@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 
 class AllReviewsScreen extends StatelessWidget {
   const AllReviewsScreen({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 

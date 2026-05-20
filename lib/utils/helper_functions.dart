@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:nearvendorapp/utils/app_alerts.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/utils/ui/app_alerts.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
+import 'package:nearvendorapp/views/screens/onboarding/view/welcome_screen.dart';
 
 void hideKeyBoard() {
   FocusManager.instance.primaryFocus?.unfocus();

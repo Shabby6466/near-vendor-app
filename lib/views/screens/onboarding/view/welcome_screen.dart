@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
-import 'package:nearvendorapp/views/screens/onboarding/widget/onboaring_btns.dart';
+import 'package:nearvendorapp/views/screens/onboarding/widgets/onboarding_btns.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:permission_handler/permission_handler.dart';
 

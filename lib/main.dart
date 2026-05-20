@@ -8,14 +8,14 @@ import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
-import 'package:nearvendorapp/utils/app_theme_data.dart';
+import 'package:nearvendorapp/utils/theme/app_theme_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/common/splash_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
-import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart';
-import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit/profile_cubit.dart';
+import 'package:nearvendorapp/views/screens/onboarding/view/welcome_screen.dart';
+import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
 import 'package:upgrader/upgrader.dart';
 
 Future<void> main() async {

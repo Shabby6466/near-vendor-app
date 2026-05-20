@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_map_results_screen.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/no_result_sheet.dart';

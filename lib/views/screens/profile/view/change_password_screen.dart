@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/utils/app_alerts.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/profile/cubit/change_password_cubit/change_password_cubit.dart';
+import 'package:nearvendorapp/utils/ui/app_alerts.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
+import 'package:nearvendorapp/views/screens/profile/cubit/change_password_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';

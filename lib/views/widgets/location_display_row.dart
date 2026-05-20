@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
-import 'package:nearvendorapp/utils/location_picker_launcher.dart';
+import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 
 /// Shows the current saved location label and opens the picker on tap.
 class LocationDisplayRow extends StatelessWidget {

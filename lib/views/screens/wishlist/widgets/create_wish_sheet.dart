@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/utils/location_picker_launcher.dart';
+import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/auth/views/login_screen.dart';
-import 'package:nearvendorapp/views/screens/auth/views/sign_up_screen.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
+import 'package:nearvendorapp/views/screens/auth/view/sign_up_screen.dart';
 
 class GuestAuthBanner extends StatelessWidget {
   const GuestAuthBanner({super.key});

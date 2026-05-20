@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
+import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 

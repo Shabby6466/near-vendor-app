@@ -2,9 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/globals.dart';
-import 'package:nearvendorapp/utils/location_picker_launcher.dart';
+import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 
 class AppBottomSheet {
   AppBottomSheet._();

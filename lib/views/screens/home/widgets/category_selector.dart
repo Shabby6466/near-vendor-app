@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 
 class CategorySelector extends StatelessWidget {

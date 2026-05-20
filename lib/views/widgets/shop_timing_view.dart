@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 // Import the opening‑hours model from the same package
-import 'package:nearvendorapp/models/opening_hours.dart';
+import 'package:nearvendorapp/models/data_models/opening_hours.dart';
 
 /// Simple widget to display opening hours for a shop.
 class ShopTimingView extends StatelessWidget {

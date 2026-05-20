@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/auth/views/location_picker_screen.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/auth/view/location_picker_screen.dart';
 
 /// Opens the location picker and returns the confirmed [AppLocation], or null if cancelled.
 class LocationPickerLauncher {

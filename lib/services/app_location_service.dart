@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:nearvendorapp/models/api_inputs/auth_api_inputs.dart';
+import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 

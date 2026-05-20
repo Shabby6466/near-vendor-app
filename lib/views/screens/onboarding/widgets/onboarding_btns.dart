@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 
 class OnboardingBtns extends StatelessWidget {
   final String btnText;

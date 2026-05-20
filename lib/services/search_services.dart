@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:nearvendorapp/models/api_inputs/search_api_inputs.dart';
+import 'package:nearvendorapp/models/api_request_models/search_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';

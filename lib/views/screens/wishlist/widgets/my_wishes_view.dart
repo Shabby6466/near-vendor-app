@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
-import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/utils/app_bottom_sheet.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/radius_bottom_sheet.dart';
 
 class DiscoverySettings extends StatelessWidget {

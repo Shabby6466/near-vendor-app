@@ -9,7 +9,7 @@ import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
-import 'package:nearvendorapp/utils/app_navigation.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_state.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';

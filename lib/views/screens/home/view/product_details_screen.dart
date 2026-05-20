@@ -2,8 +2,8 @@
 // import 'package:flutter/material.dart';
 // import 'package:nearvendorapp/gen/colors.gen.dart';
 // import 'package:nearvendorapp/models/ui_models/shop_model.dart';
-// import 'package:nearvendorapp/utils/app_navigation.dart';
-// import 'package:nearvendorapp/utils/app_spacing.dart';
+// import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+// import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 // import 'package:nearvendorapp/views/screens/home/view/shop_details_screen.dart';
 // import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
 // import 'package:url_launcher/url_launcher.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/utils/location_picker_launcher.dart';
+import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/visual_search_launcher.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
