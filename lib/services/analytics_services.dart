@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/analytics_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
@@ -16,15 +15,14 @@ class AnalyticsServices {
         '${ApiConstants.getAnalyticsStats}$shopId',
         queryParameters: {'days': days},
       );
-      if (response.data is Map<String, dynamic>) {
-        return AnalyticsStatsResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return AnalyticsStatsResponse(success: false, status: 500, data: []);
-      }
+      return AnalyticsStatsResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      return AnalyticsStatsResponse(success: false, status: 500, data: []);
+      return AnalyticsStatsResponse(
+        success: false,
+        status: 500,
+        message: e.toString(),
+        data: [],
+      );
     }
   }
 
@@ -44,27 +42,8 @@ class AnalyticsServices {
         ApiConstants.batchAnalytics,
         data: data,
       );
-
-      if (response.data is Map<String, dynamic>) {
-        return GenericApiResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return GenericApiResponse(message: 'Invalid response format');
-      }
+      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return GenericApiResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return GenericApiResponse(
-            message: e.message ?? 'Failed to send analytics',
-          );
-        }
-      }
       return GenericApiResponse(message: e.toString());
     }
   }

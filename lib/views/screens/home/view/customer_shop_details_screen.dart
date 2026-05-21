@@ -9,8 +9,8 @@ import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
-import 'package:nearvendorapp/models/data_models/shop_model.dart';
-import 'package:nearvendorapp/models/ui_models/shop_model.dart';
+import 'package:nearvendorapp/models/data_models/opening_hours.dart';
+import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/safety_services.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
@@ -25,13 +25,23 @@ import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:nearvendorapp/views/widgets/shop_timing_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class CustomerShopDetailsScreen extends StatelessWidget {
-  final ShopModel shop;
+  final Shop shop;
 
   const CustomerShopDetailsScreen({super.key, required this.shop});
+
+  bool _isValidLatLng(double lat, double lng) {
+    return lat != 0.0 &&
+        lng != 0.0 &&
+        lat >= -90.0 &&
+        lat <= 90.0 &&
+        lng >= -180.0 &&
+        lng <= 180.0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -95,6 +105,11 @@ class CustomerShopDetailsScreen extends StatelessWidget {
 
   Widget _buildMapSection(BuildContext context, Shop fullShop) {
     final theme = Theme.of(context);
+    final isLocationValid = _isValidLatLng(
+      fullShop.shopLatitude,
+      fullShop.shopLongitude,
+    );
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.mediumHorizontalSpacing(context),
@@ -106,39 +121,103 @@ class CustomerShopDetailsScreen extends StatelessWidget {
             'Shop Location',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w900,
-
               letterSpacing: -0.5,
             ),
           ),
-          SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
-          FutureBuilder<Position?>(
-            future: Geolocator.getLastKnownPosition(),
-            builder: (context, snapshot) {
-              final userPos = snapshot.data;
-              return Container(
-                height: 200,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(22),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
+          if (fullShop.shopAddress.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                Icon(
+                  Icons.map_rounded,
+                  size: 16,
+                  color: theme.textTheme.bodyMedium?.color?.withValues(
+                    alpha: 0.6,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    fullShop.shopAddress,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withValues(
+                        alpha: 0.8,
+                      ),
                     ),
-                  ],
+                  ),
                 ),
-                child: ShopLocationWidget(
-                  shopName: fullShop.shopName,
-                  shopAddress: fullShop.shopAddress,
-                  latitude: fullShop.shopLatitude,
-                  longitude: fullShop.shopLongitude,
-                  userLatitude: userPos?.latitude,
-                  userLongitude: userPos?.longitude,
+              ],
+            ),
+          ],
+          SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
+          if (isLocationValid)
+            FutureBuilder<Position?>(
+              future: Geolocator.getLastKnownPosition(),
+              builder: (context, snapshot) {
+                final userPos = snapshot.data;
+                return Container(
+                  height: 200,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ShopLocationWidget(
+                    shopName: fullShop.shopName,
+                    shopAddress: fullShop.shopAddress,
+                    latitude: fullShop.shopLatitude,
+                    longitude: fullShop.shopLongitude,
+                    userLatitude: userPos?.latitude,
+                    userLongitude: userPos?.longitude,
+                  ),
+                );
+              },
+            )
+          else
+            Container(
+              height: 120,
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                borderRadius: BorderRadius.circular(22),
+                border: Border.all(
+                  color: theme.dividerColor.withValues(alpha: 0.1),
                 ),
-              );
-            },
-          ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.location_off_rounded,
+                    color: theme.disabledColor,
+                    size: 36,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Interactive map location not available.',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.disabledColor,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
         ],
       ),
     );
@@ -152,7 +231,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
           height: AppSpacing.screenHeight(context) * 0.35,
           width: double.infinity,
           child: CachedNetworkImage(
-            imageUrl: fullShop.coverImageUrl ?? shop.image,
+            imageUrl: fullShop.coverImageUrl ?? shop.coverImageUrl ?? '',
             fit: BoxFit.cover,
             placeholder: (context, url) => ColoredBox(
               color: theme.dividerColor.withValues(alpha: 0.1),
@@ -282,6 +361,29 @@ class CustomerShopDetailsScreen extends StatelessWidget {
                         letterSpacing: 0.5,
                       ),
                     ),
+                    _buildTimingSection(context, fullShop),
+                    if (fullShop.shopAddress.isNotEmpty) ...[
+                      const SizedBox(height: 6),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_on_rounded,
+                            size: 14,
+                            color: theme.primaryColor,
+                          ),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              fullShop.shopAddress,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.textTheme.bodySmall?.color
+                                    ?.withValues(alpha: 0.7),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -320,6 +422,100 @@ class CustomerShopDetailsScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTimingSection(BuildContext context, Shop fullShop) {
+    final theme = Theme.of(context);
+    final openingHoursMap = fullShop.openingHours;
+    if (openingHoursMap == null || openingHoursMap.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final shopOpeningHours = ShopOpeningHours.fromJson(openingHoursMap);
+    final statusInfo = shopOpeningHours.getStatusInfo();
+    bool isExpanded = false;
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 6.0),
+      child: StatefulBuilder(
+        builder: (context, setStateExpanded) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              GestureDetector(
+                onTap: () {
+                  HapticFeedback.lightImpact();
+                  setStateExpanded(() {
+                    isExpanded = !isExpanded;
+                  });
+                },
+                behavior: HitTestBehavior.opaque,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.access_time_filled_rounded,
+                      size: 14,
+                      color: statusInfo.statusColor,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      statusInfo.statusText,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        color: statusInfo.statusColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Flexible(
+                      child: Text(
+                        ' • ${statusInfo.timeDetails}',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: 0.7,
+                          ),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Icon(
+                      isExpanded
+                          ? Icons.keyboard_arrow_up_rounded
+                          : Icons.keyboard_arrow_down_rounded,
+                      size: 16,
+                      color: theme.textTheme.bodySmall?.color?.withValues(
+                        alpha: 0.5,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              if (isExpanded) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.cardColor,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: theme.dividerColor.withValues(alpha: 0.1),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.03),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: ShopTimingView(openingHours: shopOpeningHours),
+                ),
+              ],
+            ],
+          );
+        },
       ),
     );
   }
@@ -402,6 +598,10 @@ class CustomerShopDetailsScreen extends StatelessWidget {
   Widget _buildFloatingActionPill(BuildContext context, Shop shop) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
+    final isLocationValid = _isValidLatLng(
+      shop.shopLatitude,
+      shop.shopLongitude,
+    );
 
     return Positioned(
       bottom: 30,
@@ -438,15 +638,24 @@ class CustomerShopDetailsScreen extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: GestureDetector(
-                onTap: () => _launchMap(
-                  shop.shopLatitude,
-                  shop.shopLongitude,
-                  shop.shopName,
-                ),
+                onTap: isLocationValid
+                    ? () => _launchMap(
+                        shop.shopLatitude,
+                        shop.shopLongitude,
+                        shop.shopName,
+                      )
+                    : () {
+                        AppAlerts.showError(
+                          context,
+                          'Directions map is not available for this shop.',
+                        );
+                      },
                 child: Container(
                   height: 54,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.primary,
+                    color: isLocationValid
+                        ? theme.colorScheme.primary
+                        : theme.disabledColor,
                     borderRadius: BorderRadius.circular(27),
                   ),
                   child: Row(

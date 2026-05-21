@@ -1,6 +1,6 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
-import 'package:nearvendorapp/models/data_models/shop_model.dart';
+import 'package:nearvendorapp/models/data_models/shop.dart';
 
 class ShopResponse extends BaseApiResponse {
   final Shop? shop;

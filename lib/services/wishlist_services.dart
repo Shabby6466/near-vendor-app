@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/wishlist_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
@@ -40,22 +39,10 @@ class WishlistServices {
         ApiConstants.createWishlist,
         data: input.toJson(),
       );
-      if (response.data is Map<String, dynamic>) {
-        return CreateWishlistResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return CreateWishlistResponse(message: 'Invalid response format');
-      }
+      return CreateWishlistResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return CreateWishlistResponse.fromJson(
-            e.response!.data as Map<String, dynamic>,
-          );
-        }
-      }
       return CreateWishlistResponse(message: e.toString());
     }
   }
@@ -69,22 +56,10 @@ class WishlistServices {
         ApiConstants.getMyWishlists,
         queryParameters: {'page': page, 'limit': limit},
       );
-      if (response.data is Map<String, dynamic>) {
-        return GetWishlistsResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return GetWishlistsResponse(message: 'Invalid response format');
-      }
+      return GetWishlistsResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return GetWishlistsResponse.fromJson(
-            e.response!.data as Map<String, dynamic>,
-          );
-        }
-      }
       return GetWishlistsResponse(message: e.toString());
     }
   }
@@ -92,22 +67,10 @@ class WishlistServices {
   Future<WishlistActionResponse> deleteWishlist(String id) async {
     try {
       final response = await Server.delete('${ApiConstants.deleteWishlist}$id');
-      if (response.data is Map<String, dynamic>) {
-        return WishlistActionResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return WishlistActionResponse(message: 'Invalid response format');
-      }
+      return WishlistActionResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return WishlistActionResponse.fromJson(
-            e.response!.data as Map<String, dynamic>,
-          );
-        }
-      }
       return WishlistActionResponse(message: e.toString());
     }
   }
@@ -117,22 +80,10 @@ class WishlistServices {
       final response = await Server.patch(
         '${ApiConstants.completeWishlist}$id/complete',
       );
-      if (response.data is Map<String, dynamic>) {
-        return WishlistActionResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return WishlistActionResponse(message: 'Invalid response format');
-      }
+      return WishlistActionResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return WishlistActionResponse.fromJson(
-            e.response!.data as Map<String, dynamic>,
-          );
-        }
-      }
       return WishlistActionResponse(message: e.toString());
     }
   }
@@ -147,22 +98,10 @@ class WishlistServices {
         ApiConstants.exploreWishlists,
         queryParameters: {'lat': lat, 'lon': lon, 'radius': radius},
       );
-      if (response.data is Map<String, dynamic>) {
-        return ExploreDemandResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return ExploreDemandResponse(message: 'Invalid response format');
-      }
+      return ExploreDemandResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return ExploreDemandResponse.fromJson(
-            e.response!.data as Map<String, dynamic>,
-          );
-        }
-      }
       return ExploreDemandResponse(message: e.toString());
     }
   }

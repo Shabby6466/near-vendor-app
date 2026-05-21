@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 
 /// Represents a single time period within a day.
 class TimePeriod extends Equatable {
@@ -195,4 +196,150 @@ class ShopOpeningHours extends Equatable {
     });
     return ShopOpeningHours(periods: periods);
   }
+
+  /// Returns the current open/closed status info for the shop.
+  ShopStatusInfo getStatusInfo([DateTime? referenceTime]) {
+    final now = referenceTime ?? DateTime.now();
+    
+    if (periods.isEmpty) {
+      return const ShopStatusInfo(
+        isOpen: false,
+        statusText: 'Closed',
+        timeDetails: 'No opening hours set',
+        statusColor: Color(0xFFE57373), // Soft Red
+      );
+    }
+
+    // 0=Sunday, 1=Monday, ..., 6=Saturday
+    final currentDay = now.weekday % 7;
+    final currentMinutes = now.hour * 60 + now.minute;
+    final currentWeekMinutes = currentDay * 1440 + currentMinutes;
+
+    OpeningHoursPeriod? activePeriod;
+    for (final p in periods) {
+      final start = p.openDay * 1440 + _parseTimeToMinutes(p.openTime);
+      final end = p.closeDay * 1440 + _parseTimeToMinutes(p.closeTime);
+      bool inPeriod = false;
+      if (end >= start) {
+        inPeriod = currentWeekMinutes >= start && currentWeekMinutes <= end;
+      } else {
+        inPeriod = currentWeekMinutes >= start || currentWeekMinutes <= end;
+      }
+      if (inPeriod) {
+        activePeriod = p;
+        break;
+      }
+    }
+
+    if (activePeriod != null) {
+      if (activePeriod.openTime == '00:00' && activePeriod.closeTime == '23:59') {
+        return const ShopStatusInfo(
+          isOpen: true,
+          statusText: 'Open',
+          timeDetails: 'Open 24 hours',
+          statusColor: Color(0xFF81C784), // Soft Green
+        );
+      }
+      final closeTimeFormatted = _format12Hour(activePeriod.closeTime);
+      String dayDetails = '';
+      if (activePeriod.closeDay != currentDay) {
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        if (activePeriod.closeDay == (currentDay + 1) % 7) {
+          dayDetails = 'tomorrow ';
+        } else {
+          dayDetails = '${dayNames[activePeriod.closeDay]} ';
+        }
+      }
+      return ShopStatusInfo(
+        isOpen: true,
+        statusText: 'Open now',
+        timeDetails: 'Closes $dayDetails$closeTimeFormatted',
+        statusColor: const Color(0xFF81C784), // Soft Green
+      );
+    }
+
+    // Closed - find the next opening period
+    OpeningHoursPeriod? nextPeriod;
+    int minDiff = 10080; // cyclic week difference
+
+    for (final p in periods) {
+      final start = p.openDay * 1440 + _parseTimeToMinutes(p.openTime);
+      int diff = start - currentWeekMinutes;
+      if (diff < 0) {
+        diff += 10080;
+      }
+      if (diff < minDiff) {
+        minDiff = diff;
+        nextPeriod = p;
+      }
+    }
+
+    if (nextPeriod != null) {
+      final openTimeFormatted = _format12Hour(nextPeriod.openTime);
+      String dayDetails = 'at ';
+      if (nextPeriod.openDay != currentDay) {
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        if (nextPeriod.openDay == (currentDay + 1) % 7) {
+          dayDetails = 'tomorrow at ';
+        } else {
+          dayDetails = '${dayNames[nextPeriod.openDay]} at ';
+        }
+      }
+      return ShopStatusInfo(
+        isOpen: false,
+        statusText: 'Closed',
+        timeDetails: 'Opens $dayDetails$openTimeFormatted',
+        statusColor: const Color(0xFFE57373), // Soft Red
+      );
+    }
+
+    return const ShopStatusInfo(
+      isOpen: false,
+      statusText: 'Closed',
+      timeDetails: 'Closed',
+      statusColor: Color(0xFFE57373),
+    );
+  }
+
+  static int _parseTimeToMinutes(String time) {
+    try {
+      final parts = time.split(':');
+      if (parts.length != 2) return 0;
+      final hour = int.parse(parts[0]);
+      final minute = int.parse(parts[1]);
+      return hour * 60 + minute;
+    } catch (_) {
+      return 0;
+    }
+  }
+
+  static String _format12Hour(String time24) {
+    try {
+      final parts = time24.split(':');
+      if (parts.length != 2) return time24;
+      final hour = int.parse(parts[0]);
+      final minute = int.parse(parts[1]);
+      final period = hour >= 12 ? 'PM' : 'AM';
+      final hour12 = hour % 12 == 0 ? 12 : hour % 12;
+      final minuteStr = minute.toString().padLeft(2, '0');
+      return '$hour12:$minuteStr $period';
+    } catch (_) {
+      return time24;
+    }
+  }
+}
+
+/// Representation of the shop open/closed status for UI.
+class ShopStatusInfo {
+  final bool isOpen;
+  final String statusText;
+  final String timeDetails;
+  final Color statusColor;
+
+  const ShopStatusInfo({
+    required this.isOpen,
+    required this.statusText,
+    required this.timeDetails,
+    required this.statusColor,
+  });
 }

@@ -208,7 +208,17 @@ class Server {
           if (ctx != null && ctx.mounted) {
             AppAlerts.showError(ctx, AppStrings.pleaseLoginAgain);
           }
+          throw AppStrings.pleaseLoginAgain;
         }
+
+        if (e.response?.statusCode == 429) {
+          throw 'Too many requests. Please wait a moment and try again.';
+        }
+
+        final msg = e.response?.data is Map
+            ? ((e.response!.data as Map)['message'] ?? e.message)
+            : e.message;
+        throw msg?.toString() ?? 'An error occurred';
       }
       rethrow;
     }

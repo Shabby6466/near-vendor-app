@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/shop_response.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/categories_service.dart';
@@ -13,19 +12,6 @@ class ShopServices {
       final response = await Server.get('${ApiConstants.getShopById}$id');
       return ShopResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return ShopResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return ShopResponse(
-            success: false,
-            status: e.response?.statusCode ?? 500,
-            message: e.message ?? 'Failed to fetch shop details',
-          );
-        }
-      }
       return ShopResponse(success: false, status: 500, message: e.toString());
     }
   }
@@ -57,20 +43,6 @@ class ShopServices {
       );
       return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return ShopListResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return ShopListResponse(
-            success: false,
-            status: e.response?.statusCode ?? 500,
-            message: e.message ?? 'Failed to fetch shops for map',
-            shops: [],
-          );
-        }
-      }
       return ShopListResponse(
         success: false,
         status: 500,
@@ -106,20 +78,6 @@ class ShopServices {
       );
       return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return ShopListResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return ShopListResponse(
-            success: false,
-            status: e.response?.statusCode ?? 500,
-            message: e.message ?? 'Failed to fetch nearby shops',
-            shops: [],
-          );
-        }
-      }
       return ShopListResponse(
         success: false,
         status: 500,
@@ -153,20 +111,6 @@ class ShopServices {
       );
       return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return ShopListResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return ShopListResponse(
-            success: false,
-            status: e.response?.statusCode ?? 500,
-            message: e.message ?? 'Failed to search shops',
-            shops: [],
-          );
-        }
-      }
       return ShopListResponse(
         success: false,
         status: 500,

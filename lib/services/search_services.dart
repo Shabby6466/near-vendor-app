@@ -16,19 +16,6 @@ class SearchServices {
       );
       return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return SearchItemResponse.fromJson(
-            e.response!.data as Map<String, dynamic>,
-          );
-        }
-        return SearchItemResponse(
-          success: false,
-          status: e.response?.statusCode ?? 500,
-          items: [],
-          message: e.message,
-        );
-      }
       return SearchItemResponse(
         success: false,
         status: 500,
@@ -41,23 +28,8 @@ class SearchServices {
   Future<SearchItemResponse> getRecentItems() async {
     try {
       final response = await Server.get(ApiConstants.getRecentItems);
-      // Even though it's recent items, we can use SearchItemResponse.fromJson
-      // if the structure matches {success, data: [items...]}
       return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null) {
-          return SearchItemResponse.fromJson(
-            e.response!.data as Map<String, dynamic>,
-          );
-        }
-        return SearchItemResponse(
-          success: false,
-          status: e.response?.statusCode ?? 500,
-          items: [],
-          message: e.message,
-        );
-      }
       return SearchItemResponse(
         success: false,
         status: 500,
@@ -100,11 +72,6 @@ class SearchServices {
 
       return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException && e.response?.data is Map<String, dynamic>) {
-        return SearchItemResponse.fromJson(
-          e.response!.data as Map<String, dynamic>,
-        );
-      }
       return SearchItemResponse(
         success: false,
         status: 500,

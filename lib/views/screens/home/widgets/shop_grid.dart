@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/models/ui_models/shop_model.dart';
+import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
@@ -147,7 +147,7 @@ class ShopGrid extends StatelessWidget {
 }
 
 class ShopCard extends StatelessWidget {
-  final ShopModel shop;
+  final Shop shop;
 
   const ShopCard({super.key, required this.shop});
 
@@ -182,7 +182,7 @@ class ShopCard extends StatelessWidget {
                     top: Radius.circular(16),
                   ),
                   child: CachedNetworkImage(
-                    imageUrl: shop.image,
+                    imageUrl: shop.coverImageUrl ?? '',
                     fit: BoxFit.cover,
                     width: double.infinity,
                     placeholder: (context, url) => Container(
@@ -325,7 +325,7 @@ class ShopCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
-                      shop.category.toUpperCase(),
+                      shop.businessCategory.toUpperCase(),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 8,
@@ -344,7 +344,7 @@ class ShopCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  shop.name,
+                  shop.shopName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.titleSmall?.copyWith(
@@ -364,7 +364,7 @@ class ShopCard extends StatelessWidget {
                     const SizedBox(width: 2),
                     Expanded(
                       child: Text(
-                        shop.location ?? 'N/A',
+                        shop.shopAddress.isNotEmpty ? shop.shopAddress : 'N/A',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: theme.textTheme.bodySmall?.copyWith(

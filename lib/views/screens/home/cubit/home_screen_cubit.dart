@@ -2,8 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
-import 'package:nearvendorapp/models/data_models/shop_model.dart';
-import 'package:nearvendorapp/models/ui_models/shop_model.dart';
+import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 
@@ -19,18 +18,18 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
   }
 
   // Variables stored in the Cubit, as requested
-  List<ShopModel> _allShops = [];
+  List<Shop> _allShops = [];
   List<CategoryModel> _categories = [CategoryModel.all()];
   CategoryModel _selectedCategory = CategoryModel.all();
   String? _apiMessage;
   String? _searchQuery;
 
   // Cache for shops by category ID
-  final Map<String, List<ShopModel>> _shopCache = {};
+  final Map<String, List<Shop>> _shopCache = {};
 
   // Public getters if needed by widgets outside BlocBuilder
   CategoryModel get selectedCategory => _selectedCategory;
-  List<ShopModel> get filteredShops => _allShops;
+  List<Shop> get filteredShops => _allShops;
 
   Future<void> _initialize() async {
     // Fetch categories first
@@ -119,9 +118,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
         _apiMessage = (response.status == 410 || response.status == 404)
             ? response.message
             : null;
-        _allShops = response.shops
-            .map((shop) => _mapToShopModel(shop))
-            .toList();
+        _allShops = response.shops;
 
         // Update cache
         _shopCache[cacheKey] = _allShops;
@@ -156,22 +153,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
     }
   }
 
-  ShopModel _mapToShopModel(Shop shop) {
-    return ShopModel(
-      id: shop.id,
-      vendorId: shop.vendorId,
-      name: shop.shopName,
-      image: shop.coverImageUrl ?? '',
-      category: shop.businessCategory,
-      latitude: shop.shopLatitude,
-      longitude: shop.shopLongitude,
-      location: shop.shopAddress,
-      itemCount: shop.itemCount,
-      isVerifiedBadge: shop.isVerifiedBadge,
-      isRecentlyActive: shop.isRecentlyActive,
-      distance: shop.distance,
-    );
-  }
+
 
   void selectCategory(CategoryModel category) {
     if (_selectedCategory == category) return;

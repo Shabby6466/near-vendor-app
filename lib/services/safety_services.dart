@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
@@ -24,26 +23,8 @@ class SafetyServices {
         ApiConstants.reportContent,
         data: data,
       );
-      if (response.data is Map<String, dynamic>) {
-        return GenericApiResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return GenericApiResponse(message: 'Invalid response format');
-      }
+      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return GenericApiResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return GenericApiResponse(
-            message: e.message ?? 'Failed to submit report',
-          );
-        }
-      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -59,26 +40,8 @@ class SafetyServices {
       };
 
       final response = await Server.post(ApiConstants.blockUser, data: data);
-      if (response.data is Map<String, dynamic>) {
-        return GenericApiResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return GenericApiResponse(message: 'Invalid response format');
-      }
+      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return GenericApiResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return GenericApiResponse(
-            message: e.message ?? 'Failed to block user',
-          );
-        }
-      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -88,26 +51,8 @@ class SafetyServices {
       final response = await Server.delete(
         '${ApiConstants.blockUser}/$blockedId',
       );
-      if (response.data is Map<String, dynamic>) {
-        return GenericApiResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      } else {
-        return GenericApiResponse(message: 'Invalid response format');
-      }
+      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
-      if (e is DioException) {
-        if (e.response?.data != null &&
-            e.response?.data is Map<String, dynamic>) {
-          return GenericApiResponse.fromJson(
-            e.response?.data as Map<String, dynamic>,
-          );
-        } else {
-          return GenericApiResponse(
-            message: e.message ?? 'Failed to unblock user',
-          );
-        }
-      }
       return GenericApiResponse(message: e.toString());
     }
   }

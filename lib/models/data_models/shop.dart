@@ -9,6 +9,9 @@ class Shop extends Equatable {
   final String registrationNumber;
   final String shopAddress;
   final Map<String, dynamic> operatingHours;
+  final String? timezone;
+  final Map<String, dynamic>? openingHours;
+  final String? currency;
   final double shopLongitude;
   final double shopLatitude;
   final String shopContactPhone;
@@ -34,6 +37,9 @@ class Shop extends Equatable {
     required this.registrationNumber,
     required this.shopAddress,
     required this.operatingHours,
+    this.timezone,
+    this.openingHours,
+    this.currency,
     required this.shopLongitude,
     required this.shopLatitude,
     required this.shopContactPhone,
@@ -61,7 +67,14 @@ class Shop extends Equatable {
       businessCategory: json['businessCategory'] as String? ?? 'General',
       registrationNumber: json['registrationNumber'] as String? ?? '',
       shopAddress: json['shopAddress'] as String? ?? '',
-      operatingHours: (json['operatingHours'] as Map<String, dynamic>?) ?? {},
+      operatingHours: (json['operatingHours'] ?? json['openingHours'] ?? {}) is Map
+          ? Map<String, dynamic>.from((json['operatingHours'] ?? json['openingHours'] ?? {}) as Map)
+          : {},
+      timezone: json['timezone'] as String? ?? 'Asia/Karachi',
+      openingHours: (json['openingHours'] ?? json['operatingHours']) is Map
+          ? Map<String, dynamic>.from((json['openingHours'] ?? json['operatingHours']) as Map)
+          : null,
+      currency: json['currency'] as String? ?? 'PKR',
       shopLongitude:
           double.tryParse(
             (json['shopLongitude'] ?? json['longitude'])?.toString() ?? '0.0',
@@ -106,6 +119,9 @@ class Shop extends Equatable {
       'registrationNumber': registrationNumber,
       'shopAddress': shopAddress,
       'operatingHours': operatingHours,
+      'timezone': timezone,
+      'openingHours': openingHours,
+      'currency': currency,
       'shopLongitude': shopLongitude,
       'shopLatitude': shopLatitude,
       'shopContactPhone': shopContactPhone,
@@ -132,6 +148,9 @@ class Shop extends Equatable {
     registrationNumber,
     shopAddress,
     operatingHours,
+    timezone,
+    openingHours,
+    currency,
     shopLongitude,
     shopLatitude,
     shopContactPhone,

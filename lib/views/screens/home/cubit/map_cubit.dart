@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
-import 'package:nearvendorapp/models/data_models/shop_model.dart' as data;
+import 'package:nearvendorapp/models/data_models/shop.dart' as data;
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_state.dart';
 

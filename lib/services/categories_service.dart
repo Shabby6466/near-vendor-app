@@ -13,15 +13,15 @@ final class CategoriesService {
       return _cachedCategories!;
     }
 
-    final response = await Server.get(ApiConstants.getCategoriesNames);
-    if (response.statusCode == 200) {
+    try {
+      final response = await Server.get(ApiConstants.getCategoriesNames);
       final categories = CategoryListResponse.fromJson(
         response.data as Map<String, dynamic>,
       );
       _cachedCategories = categories;
       return categories;
-    } else {
-      throw 'Failed to fetch categories';
+    } catch (e) {
+      return CategoryListResponse(success: false, message: e.toString());
     }
   }
 

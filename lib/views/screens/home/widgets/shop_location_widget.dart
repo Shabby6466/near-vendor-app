@@ -2,32 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
+/// A completely stateless, non-interactive generic map view.
+/// Disables all map interaction flags to act as a premium static map display.
 class ShopLocationWidget extends StatelessWidget {
-  final String shopName;
-  final String shopAddress;
   final double latitude;
   final double longitude;
   final double? userLatitude;
   final double? userLongitude;
+  final double zoom;
+  final double borderRadius;
+  final String? shopName;
+  final String? shopAddress;
 
   const ShopLocationWidget({
     super.key,
-    required this.shopName,
-    required this.shopAddress,
     required this.latitude,
     required this.longitude,
     this.userLatitude,
     this.userLongitude,
+    this.zoom = 14.0,
+    this.borderRadius = 22.0,
+    this.shopName,
+    this.shopAddress,
   });
 
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(22),
+      borderRadius: BorderRadius.circular(borderRadius),
       child: FlutterMap(
         options: MapOptions(
           initialCenter: LatLng(latitude, longitude),
-          initialZoom: 14.0,
+          initialZoom: zoom,
+          interactionOptions: const InteractionOptions(
+            flags: InteractiveFlag.none,
+          ),
         ),
         children: [
           TileLayer(
@@ -37,7 +46,7 @@ class ShopLocationWidget extends StatelessWidget {
           ),
           MarkerLayer(
             markers: [
-              // Shop Marker
+              // Target Location Marker
               Marker(
                 point: LatLng(latitude, longitude),
                 alignment: Alignment.topCenter,
@@ -47,7 +56,7 @@ class ShopLocationWidget extends StatelessWidget {
                   size: 40,
                 ),
               ),
-              // User Marker
+              // User Location Marker
               if (userLatitude != null && userLongitude != null)
                 Marker(
                   point: LatLng(userLatitude!, userLongitude!),

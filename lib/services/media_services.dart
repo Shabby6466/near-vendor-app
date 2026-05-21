@@ -19,15 +19,10 @@ class MediaServices {
         ApiConstants.uploadMedia,
         data: formData,
       );
-
-      if (response.data is Map<String, dynamic>) {
-        return MediaUploadResponse.fromJson(
-          response.data as Map<String, dynamic>,
-        );
-      }
+      return MediaUploadResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       debugPrint('Error uploading image: $e');
+      return MediaUploadResponse(message: e.toString());
     }
-    return MediaUploadResponse(message: 'Failed to upload image');
   }
 }

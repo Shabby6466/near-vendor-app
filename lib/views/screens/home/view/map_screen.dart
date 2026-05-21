@@ -6,8 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
-import 'package:nearvendorapp/models/data_models/shop_model.dart';
-import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
+import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
@@ -268,14 +267,7 @@ class _MapScreenState extends State<MapScreen> {
         AppNavigator.push(
           context,
           CustomerShopDetailsScreen(
-            shop: ui.ShopModel(
-              id: shop.id,
-              name: shop.shopName,
-              image: shop.coverImageUrl ?? '',
-              category: shop.businessCategory,
-              latitude: shop.shopLatitude,
-              longitude: shop.shopLongitude,
-            ),
+            shop: shop,
           ),
         );
       },

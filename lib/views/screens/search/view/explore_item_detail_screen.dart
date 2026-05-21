@@ -9,8 +9,7 @@ import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
-import 'package:nearvendorapp/models/data_models/shop_model.dart';
-import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
+import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
@@ -511,21 +510,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
-        final uiModel = ui.ShopModel(
-          id: shop.id,
-          vendorId: shop.vendorId,
-          name: shop.shopName,
-          image: shop.coverImageUrl ?? shop.storeLogoUrl ?? '',
-          category: shop.businessCategory,
-          latitude: shop.shopLatitude,
-          longitude: shop.shopLongitude,
-          location: shop.shopAddress,
-          isVerifiedBadge: shop.isVerifiedBadge,
-          isRecentlyActive: shop.isRecentlyActive,
-          itemCount: shop.itemCount,
-        );
-
-        AppNavigator.push(context, CustomerShopDetailsScreen(shop: uiModel));
+        AppNavigator.push(context, CustomerShopDetailsScreen(shop: shop));
       },
       child: Container(
         padding: const EdgeInsets.all(16),
@@ -648,18 +633,22 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
   }
 
   Widget _buildError(BuildContext context, String message) {
-    final isThrottlerError = message.toLowerCase().contains('throttler') ||
+    final isThrottlerError =
+        message.toLowerCase().contains('throttler') ||
         message.toLowerCase().contains('too many requests') ||
         message.toLowerCase().contains('throttle');
 
-    final isInternetError = message.toLowerCase().contains('internet') ||
+    final isInternetError =
+        message.toLowerCase().contains('internet') ||
         message.toLowerCase().contains('socketexception') ||
         message.toLowerCase().contains('connection refused') ||
         message.toLowerCase().contains('connection error');
 
     final IconData errorIcon = isThrottlerError
         ? Icons.error_outline_rounded
-        : (isInternetError ? Icons.wifi_off_rounded : Icons.error_outline_rounded);
+        : (isInternetError
+              ? Icons.wifi_off_rounded
+              : Icons.error_outline_rounded);
 
     final Color errorColor = isThrottlerError
         ? Theme.of(context).primaryColor

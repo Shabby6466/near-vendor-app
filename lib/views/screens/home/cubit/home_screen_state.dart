@@ -22,7 +22,7 @@ final class HomeScreenLoading extends HomeScreenState {
 }
 
 final class HomeScreenSuccess extends HomeScreenState {
-  final List<ShopModel> shops;
+  final List<Shop> shops;
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
   final String? message;
