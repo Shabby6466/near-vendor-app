@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
-import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:toasty_box/toast_service.dart';

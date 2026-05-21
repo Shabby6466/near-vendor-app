@@ -50,10 +50,10 @@ class _VisualSearchMapResultsScreenState
         final initialCenter = _markers.isNotEmpty
             ? _markers.first.point
             : savedCenter ??
-                LatLng(
-                  DefaultLocation.latitude,
-                  DefaultLocation.longitude,
-                );
+                  const LatLng(
+                    DefaultLocation.latitude,
+                    DefaultLocation.longitude,
+                  );
 
         if (savedCenter != null &&
             appLocation != null &&
@@ -67,68 +67,68 @@ class _VisualSearchMapResultsScreenState
         }
 
         return Scaffold(
-            backgroundColor: Colors.black,
-            body: Stack(
-              children: [
-                Positioned.fill(
-                  child: FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(initialCenter: initialCenter),
-                    children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        userAgentPackageName: 'com.nearvendor.app',
-                      ),
-                      CircleLayer(
-                        circles: [
-                          CircleMarker(
-                            point: initialCenter,
-                            radius:
-                                CurrentUserStorage.getDiscoveryRadius() * 1000,
-                            useRadiusInMeter: true,
-                            color: Colors.blue.withValues(alpha: 0.1),
-                            borderColor: Colors.blue.withValues(alpha: 0.3),
-                            borderStrokeWidth: 2,
-                          ),
-                        ],
-                      ),
-                      MarkerLayer(markers: _markers),
-                    ],
-                  ),
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(initialCenter: initialCenter),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      userAgentPackageName: 'com.nearvendor.app',
+                    ),
+                    CircleLayer(
+                      circles: [
+                        CircleMarker(
+                          point: initialCenter,
+                          radius:
+                              CurrentUserStorage.getDiscoveryRadius() * 1000,
+                          useRadiusInMeter: true,
+                          color: Colors.blue.withValues(alpha: 0.1),
+                          borderColor: Colors.blue.withValues(alpha: 0.3),
+                          borderStrokeWidth: 2,
+                        ),
+                      ],
+                    ),
+                    MarkerLayer(markers: _markers),
+                  ],
                 ),
-                SafeArea(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              onPressed: () => Navigator.pop(context),
-                              icon: Container(
-                                padding: const EdgeInsets.all(8),
-                                decoration: const BoxDecoration(
-                                  color: Colors.black38,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                ),
+              ),
+              SafeArea(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: const BoxDecoration(
+                                color: Colors.black38,
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.arrow_back,
+                                color: Colors.white,
                               ),
                             ),
-                            const SizedBox(width: 8),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-                VendorListOverlay(searchResults: widget.results),
-              ],
-            ),
-          );
+              ),
+              VendorListOverlay(searchResults: widget.results),
+            ],
+          ),
+        );
       },
     );
   }

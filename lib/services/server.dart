@@ -1,13 +1,14 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
-import 'package:nearvendorapp/utils/ui/app_alerts.dart';
-import 'package:nearvendorapp/utils/ui/app_strings.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:nearvendorapp/utils/ui/app_alerts.dart';
+import 'package:nearvendorapp/utils/ui/app_strings.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 enum ApiType { get, post, put, patch, delete }

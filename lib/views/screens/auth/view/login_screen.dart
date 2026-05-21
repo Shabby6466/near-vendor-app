@@ -1,15 +1,16 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/utils/ui/app_alerts.dart';
+import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/utils/textfield_validations.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/theme/app_theme_data.dart';
-import 'package:nearvendorapp/utils/textfield_validations.dart';
+import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/login_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/view/sign_up_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';

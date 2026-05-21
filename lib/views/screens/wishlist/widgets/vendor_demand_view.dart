@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/vendor_demand_cubit.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 

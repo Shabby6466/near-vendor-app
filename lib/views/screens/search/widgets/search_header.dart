@@ -19,12 +19,12 @@ class SearchHeader extends StatelessWidget {
         horizontal: AppSpacing.mediumHorizontalSpacing(context),
         vertical: 12.0,
       ),
-      child: Row(
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Expanded(child: LocationDisplayRow()),
-          const SizedBox(width: 16),
-          const _ProfileHeader(),
+          Expanded(child: LocationDisplayRow()),
+          SizedBox(width: 16),
+          _ProfileHeader(),
         ],
       ),
     );
