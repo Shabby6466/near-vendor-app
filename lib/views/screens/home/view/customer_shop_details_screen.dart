@@ -10,7 +10,7 @@ import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
-import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
+import 'package:nearvendorapp/models/ui_models/shop_model.dart';
 import 'package:nearvendorapp/services/safety_services.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
@@ -29,7 +29,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class CustomerShopDetailsScreen extends StatelessWidget {
-  final ui.ShopModel shop;
+  final ShopModel shop;
 
   const CustomerShopDetailsScreen({super.key, required this.shop});
 

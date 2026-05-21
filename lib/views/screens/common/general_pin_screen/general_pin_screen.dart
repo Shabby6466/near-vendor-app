@@ -4,7 +4,7 @@ import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
-import 'package:nearvendorapp/views/screens/common/cubit/general_pin_cubit.dart';
+import 'package:nearvendorapp/views/screens/common/general_pin_screen/cubit/general_pin_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
