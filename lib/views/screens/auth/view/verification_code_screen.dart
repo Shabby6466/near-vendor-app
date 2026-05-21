@@ -64,7 +64,7 @@ class VerificationCodeScreen extends StatelessWidget {
                 body: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.asset(Assets.images.itemsArt.path, fit: BoxFit.cover),
+                    Assets.images.itemsArt.image(fit: BoxFit.cover),
                     BackdropFilter(
                       filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                       child: Container(

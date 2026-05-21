@@ -11,6 +11,7 @@ import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/theme/app_theme_data.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/signup_cubit.dart';
+import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/view/verification_code_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
@@ -44,7 +45,7 @@ class SignUpScreen extends StatelessWidget {
             );
           } else if (state is SignupFailure) {
             if (!context.mounted) return;
-            AppAlerts.showError(context, state.message);
+            AppAlerts.showError(context, state.message, isDarkBackground: true);
           }
         },
         builder: (context, state) {
@@ -59,7 +60,7 @@ class SignUpScreen extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     // --- Layer 1: Background Image ---
-                    Image.asset(Assets.images.itemsArt.path, fit: BoxFit.cover),
+                    Assets.images.itemsArt.image(fit: BoxFit.cover),
 
                     // --- Layer 2: Sophisticated Blur & Gradient ---
                     BackdropFilter(
@@ -286,7 +287,10 @@ class SignUpScreen extends StatelessWidget {
                                           ),
                                           TextButton(
                                             onPressed: () {
-                                              AppNavigator.pop(context);
+                                              AppNavigator.pushReplacement(
+                                                context,
+                                                const LoginScreen(),
+                                              );
                                             },
                                             style: TextButton.styleFrom(
                                               padding:

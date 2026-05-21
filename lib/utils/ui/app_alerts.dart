@@ -9,21 +9,32 @@ class AppAlerts {
 
   // ── Public methods ──────────────────────────────────────────────────────────
 
-  static void showSuccess(BuildContext context, String message) {
+  // Added optional `isDarkBackground` parameter defaulting to false
+  static void showSuccess(
+    BuildContext context,
+    String message, {
+    bool isDarkBackground = false,
+  }) {
     _showLiquidGlassNotification(
       context: context,
       message: message,
       title: "Success",
       accentColor: const Color(0xFF4CAF50),
+      isDarkBackground: isDarkBackground,
     );
   }
 
-  static void showError(BuildContext context, String message) {
+  static void showError(
+    BuildContext context,
+    String message, {
+    bool isDarkBackground = false,
+  }) {
     _showLiquidGlassNotification(
       context: context,
       message: message,
       title: "Error",
       accentColor: const Color(0xFFEF5350),
+      isDarkBackground: isDarkBackground,
     );
   }
 
@@ -34,6 +45,7 @@ class AppAlerts {
     required String title,
     required String message,
     required Color accentColor,
+    required bool isDarkBackground,
   }) {
     _currentOverlay?.remove();
     _currentOverlay = null;
@@ -52,6 +64,7 @@ class AppAlerts {
           title: title,
           message: message,
           accentColor: accentColor,
+          isBackgroundDark: isDarkBackground, // Pass the explicit flag down
           onDismissed: () {
             overlayEntry.remove();
             if (_currentOverlay == overlayEntry) {
@@ -118,6 +131,7 @@ class _LiquidGlassOverlay extends StatefulWidget {
   final String title;
   final String message;
   final Color accentColor;
+  final bool isBackgroundDark; // Use the boolean directly
   final VoidCallback onDismissed;
 
   const _LiquidGlassOverlay({
@@ -126,6 +140,7 @@ class _LiquidGlassOverlay extends StatefulWidget {
     required this.title,
     required this.message,
     required this.accentColor,
+    required this.isBackgroundDark,
     required this.onDismissed,
   });
 
@@ -165,10 +180,7 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
           ),
         );
 
-    // Play enter animation
     _controller.forward();
-
-    // Auto-dismiss after 3 seconds
     Future.delayed(const Duration(seconds: 3), _dismiss);
   }
 
@@ -189,6 +201,19 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
 
   @override
   Widget build(BuildContext context) {
+    final isBackgroundDark = widget.isBackgroundDark;
+
+    // Map UI styling values based on the background color state
+    final textColor = isBackgroundDark ? Colors.white : Colors.black;
+    final messageColor = isBackgroundDark
+        ? Colors.white.withValues(alpha: 0.7)
+        : Colors.black.withValues(alpha: 0.65);
+
+    final glassColor = isBackgroundDark ? Colors.white : Colors.black;
+    final borderGlassColor = isBackgroundDark
+        ? Colors.white.withValues(alpha: 0.18)
+        : Colors.black.withValues(alpha: 0.1);
+
     return AnimatedBuilder(
       animation: _controller,
       builder: (context, child) {
@@ -222,16 +247,18 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            Colors.white.withValues(alpha: 0.12),
-                            Colors.white.withValues(alpha: 0.06),
+                            glassColor.withValues(
+                              alpha: isBackgroundDark ? 0.12 : 0.06,
+                            ),
+                            glassColor.withValues(
+                              alpha: isBackgroundDark ? 0.06 : 0.02,
+                            ),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: Colors.white.withValues(alpha: 0.18),
-                        ),
+                        border: Border.all(color: borderGlassColor),
                       ),
                       padding: const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -241,7 +268,6 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Accent indicator
                           Container(
                             width: 4,
                             height: 44,
@@ -260,7 +286,6 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
                             ),
                           ),
                           const SizedBox(width: 12),
-                          // Icon
                           Container(
                             width: 32,
                             height: 32,
@@ -277,7 +302,6 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
                             ),
                           ),
                           const SizedBox(width: 12),
-                          // Text
                           Flexible(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -285,18 +309,20 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
                               children: [
                                 Text(
                                   widget.title,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 14,
                                     height: 1.2,
+                                    color: textColor,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   widget.message,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 12,
                                     height: 1.3,
+                                    color: messageColor,
                                   ),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,

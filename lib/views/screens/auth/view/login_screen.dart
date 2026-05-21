@@ -33,7 +33,7 @@ class LoginScreen extends StatelessWidget {
             AppLocationService.instance.updateFromGps();
             AppNavigator.pushAndRemoveUntil(context, const MainScreen());
           } else if (state is LoginFailure) {
-            AppAlerts.showError(context, state.message);
+            AppAlerts.showError(context, state.message, isDarkBackground: true);
           }
         },
         builder: (context, state) {
@@ -48,7 +48,7 @@ class LoginScreen extends StatelessWidget {
                   fit: StackFit.expand,
                   children: [
                     // --- Layer 1: Background Image ---
-                    Image.asset(Assets.images.itemsArt.path, fit: BoxFit.cover),
+                    Assets.images.itemsArt.image(fit: BoxFit.cover),
 
                     // --- Layer 2: Sophisticated Blur & Gradient ---
                     BackdropFilter(
@@ -235,7 +235,7 @@ class LoginScreen extends StatelessWidget {
                                           ),
                                           TextButton(
                                             onPressed: () {
-                                              AppNavigator.push(
+                                              AppNavigator.pushReplacement(
                                                 context,
                                                 const SignUpScreen(),
                                               );
