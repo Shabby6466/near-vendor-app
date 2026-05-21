@@ -31,7 +31,7 @@ class RecentItemsSection extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'Memory',
+                    'Recent searches',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
