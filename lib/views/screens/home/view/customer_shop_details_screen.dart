@@ -106,6 +106,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
             'Shop Location',
             style: theme.textTheme.titleLarge?.copyWith(
               fontWeight: FontWeight.w900,
+
               letterSpacing: -0.5,
             ),
           ),
@@ -445,7 +446,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
                 child: Container(
                   height: 54,
                   decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary,
+                    color: theme.colorScheme.primary,
                     borderRadius: BorderRadius.circular(27),
                   ),
                   child: Row(
@@ -453,14 +454,14 @@ class CustomerShopDetailsScreen extends StatelessWidget {
                     children: [
                       const Icon(
                         Icons.directions_rounded,
-                        color: Colors.black,
+                        color: Colors.white,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'Directions',
                         style: theme.textTheme.labelLarge?.copyWith(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontWeight: FontWeight.w900,
                           fontSize: 16,
                         ),

@@ -21,7 +21,7 @@ class CircularCachedNetworkImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (imageUrl == null || imageUrl!.isEmpty) {
-      return _buildPlaceholder();
+      return _buildPlaceholder(context);
     }
 
     return ClipOval(
@@ -33,17 +33,17 @@ class CircularCachedNetworkImage extends StatelessWidget {
         placeholder: (context, url) =>
             placeholder ?? ShimmerEffect(borderRadius: size / 2),
         errorWidget: (context, url, error) =>
-            errorWidget ?? _buildPlaceholder(),
+            errorWidget ?? _buildPlaceholder(context),
       ),
     );
   }
 
-  Widget _buildPlaceholder() {
+  Widget _buildPlaceholder(BuildContext context) {
     return Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(
-        color: Colors.grey,
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
         shape: BoxShape.circle,
       ),
       child: Icon(Icons.person, size: size * 0.6, color: Colors.white),

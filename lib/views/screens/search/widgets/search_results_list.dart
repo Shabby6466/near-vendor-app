@@ -857,19 +857,36 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isThrottlerError = message.toLowerCase().contains('throttler') ||
+        message.toLowerCase().contains('too many requests') ||
+        message.toLowerCase().contains('throttle');
+
+    final isInternetError = message.toLowerCase().contains('internet') ||
+        message.toLowerCase().contains('socketexception') ||
+        message.toLowerCase().contains('connection refused') ||
+        message.toLowerCase().contains('connection error');
+
+    final IconData errorIcon = isThrottlerError
+        ? Icons.error_outline
+        : (isInternetError ? Icons.wifi_off_rounded : Icons.error_outline);
+
+    final Color errorColor = isThrottlerError
+        ? Theme.of(context).primaryColor
+        : Colors.red;
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(40.0),
         child: Column(
           children: [
-            const Icon(Icons.error_outline, size: 64, color: Colors.red),
+            Icon(errorIcon, size: 64, color: errorColor),
             const SizedBox(height: 16),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 14,
-                color: Colors.red,
+                color: errorColor,
                 fontFamily: 'Poppins',
               ),
             ),

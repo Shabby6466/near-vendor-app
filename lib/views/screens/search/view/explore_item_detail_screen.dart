@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop_model.dart';
 import 'package:nearvendorapp/models/ui_models/shop_model.dart' as ui;
@@ -353,7 +354,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                     child: IconButton(
                       icon: const Icon(
                         Icons.flag_outlined,
-                        color: Colors.red,
+                        color: ColorName.secondary,
                         size: 20,
                       ),
                       onPressed: () {
@@ -448,7 +449,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
               child: Container(
                 height: 54,
                 decoration: BoxDecoration(
-                  color: theme.colorScheme.secondary,
+                  color: theme.colorScheme.primary,
                   borderRadius: BorderRadius.circular(27),
                 ),
                 child: Row(
@@ -456,14 +457,14 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
                   children: [
                     const Icon(
                       Icons.directions_rounded,
-                      color: Colors.black,
+                      color: Colors.white,
                       size: 20,
                     ),
                     const SizedBox(width: 8),
                     Text(
                       'Directions',
                       style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontWeight: FontWeight.w900,
                         fontSize: 16,
                       ),
@@ -647,13 +648,34 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
   }
 
   Widget _buildError(BuildContext context, String message) {
+    final isThrottlerError = message.toLowerCase().contains('throttler') ||
+        message.toLowerCase().contains('too many requests') ||
+        message.toLowerCase().contains('throttle');
+
+    final isInternetError = message.toLowerCase().contains('internet') ||
+        message.toLowerCase().contains('socketexception') ||
+        message.toLowerCase().contains('connection refused') ||
+        message.toLowerCase().contains('connection error');
+
+    final IconData errorIcon = isThrottlerError
+        ? Icons.error_outline_rounded
+        : (isInternetError ? Icons.wifi_off_rounded : Icons.error_outline_rounded);
+
+    final Color errorColor = isThrottlerError
+        ? Theme.of(context).primaryColor
+        : Colors.red;
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline_rounded, size: 64, color: Colors.red),
+          Icon(errorIcon, size: 64, color: errorColor),
           const SizedBox(height: 16),
-          Text(message, textAlign: TextAlign.center),
+          Text(
+            message,
+            textAlign: TextAlign.center,
+            style: TextStyle(color: errorColor),
+          ),
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () => context

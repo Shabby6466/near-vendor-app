@@ -32,7 +32,7 @@ class AppBottomSheet {
             child: Container(
               padding: padding,
               decoration: BoxDecoration(
-                color: ColorName.primary.withValues(alpha: 0.7),
+                color: ColorName.primary,
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(22),
                 ),
@@ -96,7 +96,7 @@ class AppBottomSheet {
                             )
                           : EdgeInsets.zero,
                       decoration: BoxDecoration(
-                        color: ColorName.primary.withValues(alpha: 0.7),
+                        color: ColorName.primary,
                         borderRadius: const BorderRadius.vertical(
                           top: Radius.circular(22),
                         ),
