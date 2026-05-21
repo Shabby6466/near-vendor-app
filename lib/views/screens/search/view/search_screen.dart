@@ -182,8 +182,7 @@ class _HowToSearchSection extends StatelessWidget {
                 _SearchTipItem(
                   icon: Icons.search_rounded,
                   title: 'Exact Search',
-                  subtitle:
-                      'Type precisely what you need (e.g., "Organic Milk")',
+                  subtitle: 'Type the name of the product you are looking for',
                   theme: theme,
                   onTap: onExactSearch,
                 ),
@@ -194,7 +193,7 @@ class _HowToSearchSection extends StatelessWidget {
                 _SearchTipItem(
                   icon: Icons.camera_alt_rounded,
                   title: 'Visual Search',
-                  subtitle: 'Snap a photo to find high-value matches nearby',
+                  subtitle: 'Search your product via photo',
                   theme: theme,
                   onTap: onVisualSearch,
                 ),
@@ -205,9 +204,8 @@ class _HowToSearchSection extends StatelessWidget {
                 _SearchTipItem(
                   icon: Icons.auto_awesome_rounded,
                   title: 'Make a Wish',
-                  subtitle: "Can't find it? Make a wish to alert local vendors",
+                  subtitle: "Add unavailable items to your wish list",
                   theme: theme,
-                  iconColor: Colors.purple,
                   onTap: onMakeAWish,
                 ),
               ],

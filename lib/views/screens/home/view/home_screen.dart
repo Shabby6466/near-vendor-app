@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/utils/app_alerts.dart';
-import 'package:nearvendorapp/utils/app_spacing.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
+import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
@@ -183,7 +183,8 @@ class HomeScreen extends StatelessWidget {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
-                              ),),
+                              ),
+                            ),
                             SizedBox(
                               height:
                                   AppSpacing.mediumVerticalSpacing(context) *

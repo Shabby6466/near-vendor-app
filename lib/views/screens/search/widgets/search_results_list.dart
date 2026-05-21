@@ -857,11 +857,13 @@ class _ErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isThrottlerError = message.toLowerCase().contains('throttler') ||
+    final isThrottlerError =
+        message.toLowerCase().contains('throttler') ||
         message.toLowerCase().contains('too many requests') ||
         message.toLowerCase().contains('throttle');
 
-    final isInternetError = message.toLowerCase().contains('internet') ||
+    final isInternetError =
+        message.toLowerCase().contains('internet') ||
         message.toLowerCase().contains('socketexception') ||
         message.toLowerCase().contains('connection refused') ||
         message.toLowerCase().contains('connection error');
