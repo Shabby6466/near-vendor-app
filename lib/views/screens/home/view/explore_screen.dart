@@ -5,28 +5,29 @@ import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
-import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
+import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class ExploreScreen extends StatelessWidget {
+  const ExploreScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeScreenCubit(),
+      create: (context) => ExploreScreenCubit(),
       child: Builder(
         builder: (context) {
           final theme = Theme.of(context);
 
-          return BlocListener<HomeScreenCubit, HomeScreenState>(
-            listenWhen: (previous, current) => current is HomeScreenNoLocation,
+          return BlocListener<ExploreScreenCubit, ExploreScreenState>(
+            listenWhen: (previous, current) =>
+                current is ExploreScreenNoLocation,
             listener: (context, state) {
-              if (state is HomeScreenNoLocation) {
+              if (state is ExploreScreenNoLocation) {
                 AppAlerts.showError(context, state.message);
                 AppBottomSheet.openLocationSet();
               }
@@ -37,7 +38,7 @@ class HomeScreen extends StatelessWidget {
                 bottom: false,
                 child: RefreshIndicator(
                   onRefresh: () =>
-                      context.read<HomeScreenCubit>().refreshShops(),
+                      context.read<ExploreScreenCubit>().refreshShops(),
                   child: CustomScrollView(
                     physics: const AlwaysScrollableScrollPhysics(
                       parent: BouncingScrollPhysics(),
@@ -126,24 +127,26 @@ class HomeScreen extends StatelessWidget {
                                 padding: EdgeInsets.zero,
                                 onSearch: (value) {
                                   if (value.isNotEmpty) {
-                                    context.read<HomeScreenCubit>().searchShops(
-                                      value,
-                                    );
+                                    context
+                                        .read<ExploreScreenCubit>()
+                                        .searchShops(value);
                                   } else {
                                     context
-                                        .read<HomeScreenCubit>()
+                                        .read<ExploreScreenCubit>()
                                         .clearSearch();
                                   }
                                 },
                                 onChanged: (value) {
                                   if (value.isEmpty) {
                                     context
-                                        .read<HomeScreenCubit>()
+                                        .read<ExploreScreenCubit>()
                                         .clearSearch();
                                   }
                                 },
                                 onClear: () {
-                                  context.read<HomeScreenCubit>().clearSearch();
+                                  context
+                                      .read<ExploreScreenCubit>()
+                                      .clearSearch();
                                 },
                               ),
                             ),

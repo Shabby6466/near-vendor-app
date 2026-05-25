@@ -5,7 +5,7 @@ import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
-import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
+import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
@@ -17,26 +17,26 @@ class ShopGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<HomeScreenCubit, HomeScreenState>(
+    return BlocBuilder<ExploreScreenCubit, ExploreScreenState>(
       builder: (context, state) {
-        if (state is HomeScreenLoading) {
+        if (state is ExploreScreenLoading) {
           return const SliverFillRemaining(
             child: Center(child: LoadingAnimation()),
           );
         }
 
-        if (state is HomeScreenFailure) {
+        if (state is ExploreScreenFailure) {
           return SliverFillRemaining(
             child: AnimatedErrorState(
               message: state.message,
               onRetry: () {
-                context.read<HomeScreenCubit>().loadShops();
+                context.read<ExploreScreenCubit>().loadShops();
               },
             ),
           );
         }
 
-        if (state is HomeScreenSuccess) {
+        if (state is ExploreScreenSuccess) {
           final shops = state.shops;
 
           if (shops.isEmpty) {
@@ -125,7 +125,7 @@ class ShopGrid extends StatelessWidget {
                         key: Key('shop-${shop.id}'),
                         onVisibilityChanged: (info) {
                           if (info.visibleFraction > 0.5) {
-                            context.read<HomeScreenCubit>().trackImpression(
+                            context.read<ExploreScreenCubit>().trackImpression(
                               shop.id,
                             );
                           }

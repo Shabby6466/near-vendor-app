@@ -1,18 +1,18 @@
-part of 'home_screen_cubit.dart';
+part of 'explore_screen_cubit.dart';
 
-sealed class HomeScreenState extends Equatable {
-  const HomeScreenState();
+sealed class ExploreScreenState extends Equatable {
+  const ExploreScreenState();
 
   @override
   List<Object?> get props => [];
 }
 
-final class HomeScreenInitial extends HomeScreenState {}
+final class ExploreScreenInitial extends ExploreScreenState {}
 
-final class HomeScreenLoading extends HomeScreenState {
+final class ExploreScreenLoading extends ExploreScreenState {
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
-  const HomeScreenLoading({
+  const ExploreScreenLoading({
     required this.categories,
     required this.selectedCategory,
   });
@@ -21,7 +21,7 @@ final class HomeScreenLoading extends HomeScreenState {
   List<Object?> get props => [categories, selectedCategory];
 }
 
-final class HomeScreenSuccess extends HomeScreenState {
+final class ExploreScreenSuccess extends ExploreScreenState {
   final List<Shop> shops;
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
@@ -29,7 +29,7 @@ final class HomeScreenSuccess extends HomeScreenState {
   final bool isGlobalFallback;
   final String? rangeMessage;
 
-  const HomeScreenSuccess({
+  const ExploreScreenSuccess({
     required this.shops,
     required this.categories,
     required this.selectedCategory,
@@ -49,12 +49,12 @@ final class HomeScreenSuccess extends HomeScreenState {
   ];
 }
 
-final class HomeScreenFailure extends HomeScreenState {
+final class ExploreScreenFailure extends ExploreScreenState {
   final String message;
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
 
-  const HomeScreenFailure(
+  const ExploreScreenFailure(
     this.message, {
     required this.categories,
     required this.selectedCategory,
@@ -64,12 +64,12 @@ final class HomeScreenFailure extends HomeScreenState {
   List<Object?> get props => [message, categories, selectedCategory];
 }
 
-final class HomeScreenNoLocation extends HomeScreenState {
+final class ExploreScreenNoLocation extends ExploreScreenState {
   final List<CategoryModel> categories;
   final CategoryModel selectedCategory;
   final String message;
 
-  const HomeScreenNoLocation({
+  const ExploreScreenNoLocation({
     required this.categories,
     required this.selectedCategory,
     this.message = 'Location not found. Please set it manually.',

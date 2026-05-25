@@ -6,15 +6,15 @@ import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 
-part 'home_screen_state.dart';
+part 'explore_screen_state.dart';
 
-class HomeScreenCubit extends Cubit<HomeScreenState>
-    with AnalyticsMixin<HomeScreenState> {
+class ExploreScreenCubit extends Cubit<ExploreScreenState>
+    with AnalyticsMixin<ExploreScreenState> {
   final ShopServices _shopServices = ShopServices();
 
-  HomeScreenCubit() : super(HomeScreenInitial()) {
+  ExploreScreenCubit() : super(ExploreScreenInitial()) {
     _initialize();
-    initAnalytics('home_screen');
+    initAnalytics('explore_screen');
   }
 
   // Variables stored in the Cubit, as requested
@@ -40,7 +40,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
 
   Future<void> loadShops() async {
     emit(
-      HomeScreenLoading(
+      ExploreScreenLoading(
         categories: _categories,
         selectedCategory: _selectedCategory,
       ),
@@ -53,7 +53,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
 
       if (lat == null || lon == null) {
         emit(
-          HomeScreenNoLocation(
+          ExploreScreenNoLocation(
             categories: _categories,
             selectedCategory: _selectedCategory,
           ),
@@ -64,7 +64,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       await _fetchShops(lat: lat, lon: lon);
     } catch (e) {
       emit(
-        HomeScreenNoLocation(
+        ExploreScreenNoLocation(
           categories: _categories,
           selectedCategory: _selectedCategory,
         ),
@@ -83,7 +83,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
         _shopCache.containsKey(cacheKey)) {
       _allShops = _shopCache[cacheKey]!;
       emit(
-        HomeScreenSuccess(
+        ExploreScreenSuccess(
           shops: _allShops,
           categories: _categories,
           selectedCategory: _selectedCategory,
@@ -124,7 +124,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
         _shopCache[cacheKey] = _allShops;
 
         emit(
-          HomeScreenSuccess(
+          ExploreScreenSuccess(
             shops: _allShops,
             categories: _categories,
             selectedCategory: _selectedCategory,
@@ -135,7 +135,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
         );
       } else {
         emit(
-          HomeScreenFailure(
+          ExploreScreenFailure(
             response.message ?? 'An error occurred',
             categories: _categories,
             selectedCategory: _selectedCategory,
@@ -144,7 +144,7 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       }
     } catch (e) {
       emit(
-        HomeScreenFailure(
+        ExploreScreenFailure(
           e.toString(),
           categories: _categories,
           selectedCategory: _selectedCategory,
@@ -152,8 +152,6 @@ class HomeScreenCubit extends Cubit<HomeScreenState>
       );
     }
   }
-
-
 
   void selectCategory(CategoryModel category) {
     if (_selectedCategory == category) return;

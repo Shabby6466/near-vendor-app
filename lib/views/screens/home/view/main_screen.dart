@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/explore_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/map_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
 import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
@@ -34,7 +34,7 @@ class MainScreen extends StatelessWidget {
                 ),
                 LazyLoadWrapper(
                   isVisible: currentIndex == 1,
-                  child: const HomeScreen(),
+                  child: const ExploreScreen(),
                 ),
                 LazyLoadWrapper(
                   isVisible: currentIndex == 2,

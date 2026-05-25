@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
+import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 
 class CategorySelector extends StatelessWidget {
   const CategorySelector({super.key});
@@ -12,7 +12,7 @@ class CategorySelector extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return BlocBuilder<HomeScreenCubit, HomeScreenState>(
+    return BlocBuilder<ExploreScreenCubit, ExploreScreenState>(
       builder: (context, state) {
         return SizedBox(
           height: 38,
@@ -21,11 +21,11 @@ class CategorySelector extends StatelessWidget {
               horizontal: AppSpacing.mediumHorizontalSpacing(context),
             ),
             scrollDirection: Axis.horizontal,
-            itemCount: state is HomeScreenSuccess
+            itemCount: state is ExploreScreenSuccess
                 ? state.categories.length
-                : (state is HomeScreenLoading
+                : (state is ExploreScreenLoading
                       ? state.categories.length
-                      : (state is HomeScreenFailure
+                      : (state is ExploreScreenFailure
                             ? state.categories.length
                             : 0)),
             separatorBuilder: (context, index) => const SizedBox(width: 10),
@@ -33,13 +33,13 @@ class CategorySelector extends StatelessWidget {
               late CategoryModel category;
               bool isSelected = false;
 
-              if (state is HomeScreenSuccess) {
+              if (state is ExploreScreenSuccess) {
                 category = state.categories[index];
                 isSelected = state.selectedCategory == category;
-              } else if (state is HomeScreenLoading) {
+              } else if (state is ExploreScreenLoading) {
                 category = state.categories[index];
                 isSelected = state.selectedCategory == category;
-              } else if (state is HomeScreenFailure) {
+              } else if (state is ExploreScreenFailure) {
                 category = state.categories[index];
                 isSelected = state.selectedCategory == category;
               } else {
@@ -48,7 +48,7 @@ class CategorySelector extends StatelessWidget {
 
               return GestureDetector(
                 onTap: () {
-                  context.read<HomeScreenCubit>().selectCategory(category);
+                  context.read<ExploreScreenCubit>().selectCategory(category);
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/home/cubit/home_screen_cubit.dart';
+import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/shop_details_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
@@ -29,7 +29,7 @@ class ItemCard extends StatelessWidget {
             context.read<SearchCubit>().trackImpression(item.id);
           } catch (_) {
             try {
-              context.read<HomeScreenCubit>().trackImpression(item.id);
+              context.read<ExploreScreenCubit>().trackImpression(item.id);
             } catch (_) {
               try {
                 context.read<ShopDetailsCubit>().trackImpression(item.id);
