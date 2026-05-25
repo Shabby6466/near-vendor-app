@@ -3,9 +3,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
+import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 
 class CategorySelector extends StatelessWidget {
   const CategorySelector({super.key});
+
+  int _getItemCount(ExploreScreenState state) {
+    if (state is ExploreScreenLoading && state.categories.length <= 1) {
+      return 5;
+    }
+    if (state is ExploreScreenSuccess) {
+      return state.categories.length;
+    }
+    if (state is ExploreScreenLoading) {
+      return state.categories.length;
+    }
+    if (state is ExploreScreenFailure) {
+      return state.categories.length;
+    }
+    if (state is ExploreScreenNoLocation) {
+      return state.categories.length;
+    }
+    return 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,15 +41,20 @@ class CategorySelector extends StatelessWidget {
               horizontal: AppSpacing.mediumHorizontalSpacing(context),
             ),
             scrollDirection: Axis.horizontal,
-            itemCount: state is ExploreScreenSuccess
-                ? state.categories.length
-                : (state is ExploreScreenLoading
-                      ? state.categories.length
-                      : (state is ExploreScreenFailure
-                            ? state.categories.length
-                            : 0)),
+            itemCount: _getItemCount(state),
             separatorBuilder: (context, index) => const SizedBox(width: 10),
             itemBuilder: (context, index) {
+              if (state is ExploreScreenLoading && state.categories.length <= 1) {
+                return Container(
+                  width: 80,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const ShimmerEffect(borderRadius: 12),
+                );
+              }
+
               late CategoryModel category;
               bool isSelected = false;
 
@@ -40,6 +65,9 @@ class CategorySelector extends StatelessWidget {
                 category = state.categories[index];
                 isSelected = state.selectedCategory == category;
               } else if (state is ExploreScreenFailure) {
+                category = state.categories[index];
+                isSelected = state.selectedCategory == category;
+              } else if (state is ExploreScreenNoLocation) {
                 category = state.categories[index];
                 isSelected = state.selectedCategory == category;
               } else {

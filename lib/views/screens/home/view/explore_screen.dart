@@ -25,11 +25,15 @@ class ExploreScreen extends StatelessWidget {
 
           return BlocListener<ExploreScreenCubit, ExploreScreenState>(
             listenWhen: (previous, current) =>
-                current is ExploreScreenNoLocation,
-            listener: (context, state) {
+                current is ExploreScreenNoLocation &&
+                previous is! ExploreScreenNoLocation,
+            listener: (context, state) async {
               if (state is ExploreScreenNoLocation) {
                 AppAlerts.showError(context, state.message);
-                AppBottomSheet.openLocationSet();
+                await AppBottomSheet.openLocationSet();
+                if (context.mounted) {
+                  context.read<ExploreScreenCubit>().reloadAfterLocationSet();
+                }
               }
             },
             child: AppScaffold(

@@ -32,10 +32,25 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
   List<Shop> get filteredShops => _allShops;
 
   Future<void> _initialize() async {
-    // Fetch categories first
-    final cats = await _shopServices.getCategoryNames();
-    _categories = [CategoryModel.all(), ...cats];
-    await loadShops();
+    emit(
+      ExploreScreenLoading(
+        categories: _categories,
+        selectedCategory: _selectedCategory,
+      ),
+    );
+    try {
+      final cats = await _shopServices.getCategoryNames();
+      _categories = [CategoryModel.all(), ...cats];
+      await loadShops();
+    } catch (e) {
+      emit(
+        ExploreScreenFailure(
+          e.toString(),
+          categories: _categories,
+          selectedCategory: _selectedCategory,
+        ),
+      );
+    }
   }
 
   Future<void> loadShops() async {
@@ -64,7 +79,8 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
       await _fetchShops(lat: lat, lon: lon);
     } catch (e) {
       emit(
-        ExploreScreenNoLocation(
+        ExploreScreenFailure(
+          e.toString(),
           categories: _categories,
           selectedCategory: _selectedCategory,
         ),
@@ -165,6 +181,8 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
   void searchShops(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
+    _selectedCategory =
+        CategoryModel.all(); // Reset category selection visually during global search
     loadShops();
   }
 

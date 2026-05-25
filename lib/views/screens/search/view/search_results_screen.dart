@@ -82,7 +82,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            'Search Results',
+                            'Search',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w800,
                               fontFamily: 'Poppins',

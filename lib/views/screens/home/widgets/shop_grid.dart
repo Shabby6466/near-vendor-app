@@ -7,8 +7,9 @@ import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/home/widgets/explore_shimmer_loading.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopGrid extends StatelessWidget {
@@ -17,11 +18,89 @@ class ShopGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return BlocBuilder<ExploreScreenCubit, ExploreScreenState>(
       builder: (context, state) {
         if (state is ExploreScreenLoading) {
-          return const SliverFillRemaining(
-            child: Center(child: LoadingAnimation()),
+          return const ExploreShimmerLoading();
+        }
+
+        if (state is ExploreScreenNoLocation) {
+          return SliverFillRemaining(
+            hasScrollBody: false,
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.location_off_rounded,
+                        size: 64,
+                        color: theme.primaryColor.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    Text(
+                      'Location Not Set',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Please set your location to discover local vendors and shops near you.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Poppins',
+                        fontSize: 14,
+                        color: isDark ? Colors.white54 : Colors.grey.shade600,
+                        height: 1.5,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        await AppBottomSheet.openLocationSet();
+                        if (context.mounted) {
+                          context.read<ExploreScreenCubit>().reloadAfterLocationSet();
+                        }
+                      },
+                      icon: const Icon(Icons.my_location_rounded, color: Colors.white),
+                      label: const Text(
+                        'Set Location',
+                        style: TextStyle(
+                          fontFamily: 'Poppins',
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.primaryColor,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           );
         }
 
@@ -61,14 +140,14 @@ class ShopGrid extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      const Text(
+                      Text(
                         'No vendors found here',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          color: Colors.black87,
+                          color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -78,7 +157,7 @@ class ShopGrid extends StatelessWidget {
                         style: TextStyle(
                           fontFamily: 'Poppins',
                           fontSize: 14,
-                          color: Colors.grey.shade600,
+                          color: isDark ? Colors.white54 : Colors.grey.shade600,
                           height: 1.5,
                         ),
                       ),
