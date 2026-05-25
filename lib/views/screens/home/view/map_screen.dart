@@ -9,19 +9,14 @@ import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_state.dart';
 import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
+import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 
 class MapScreen extends StatefulWidget {
-  final double initialLat;
-  final double initialLon;
-
-  const MapScreen({
-    super.key,
-    required this.initialLat,
-    required this.initialLon,
-  });
+  const MapScreen({super.key});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -40,94 +35,163 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return ValueListenableBuilder<AppLocation?>(
       valueListenable: AppData().locationNotifier,
-      builder: (context, location, child) {
-        if (location != null &&
-            (location.latitude != _lastLat || location.longitude != _lastLon)) {
+      builder: (context, location, _) {
+        if (location == null) {
+          return const _LocationRequiredView();
+        }
+
+        if (location.latitude != _lastLat || location.longitude != _lastLon) {
           _lastLat = location.latitude;
           _lastLon = location.longitude;
           WidgetsBinding.instance.addPostFrameCallback((_) {
             if (!mounted) return;
             _mapController.move(location.toLatLng(), 13);
-            context.read<MapCubit>().fetchShops(
-              lat: location.latitude,
-              lon: location.longitude,
-            );
           });
         }
-        return child!;
-      },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            BlocBuilder<MapCubit, MapState>(
-              builder: (context, state) {
-                return FlutterMap(
-                  mapController: _mapController,
-                  options: MapOptions(
-                    initialCenter: LatLng(widget.initialLat, widget.initialLon),
-                    onPositionChanged: (position, hasGesture) {
-                      if (hasGesture) {
-                        // Optional: Fetch as user drags?
-                      }
-                    },
-                  ),
-                  children: [
-                    TileLayer(
-                      urlTemplate:
-                          'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                      userAgentPackageName: 'com.nearvendor.app',
-                    ),
-                    CircleLayer(
-                      circles: [
-                        CircleMarker(
-                          point: LatLng(state.latitude, state.longitude),
-                          radius: state.radius,
-                          useRadiusInMeter: true,
-                          color: theme.primaryColor.withValues(alpha: 0.1),
-                          borderColor: theme.primaryColor.withValues(
-                            alpha: 0.3,
-                          ),
-                          borderStrokeWidth: 2,
-                        ),
-                      ],
-                    ),
-                    MarkerLayer(
-                      markers: state.shops.map((shop) {
-                        return Marker(
-                          point: LatLng(shop.shopLatitude, shop.shopLongitude),
-                          width: 100,
-                          height: 100,
-                          child: _buildShopMarker(context, shop),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                );
-              },
-            ),
 
-            // Control Panel
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 16,
-              left: 16,
-              right: 16,
-              child: _buildControlPanel(context),
-            ),
-            // Recenter Button
-            Positioned(
-              bottom: 100,
-              right: 24,
+        return BlocProvider(
+          key: ValueKey(
+            'map_${location.latitude.toStringAsFixed(4)}_${location.longitude.toStringAsFixed(4)}',
+          ),
+          create: (_) =>
+              MapCubit(lat: location.latitude, lon: location.longitude),
+          child: _MapView(mapController: _mapController),
+        );
+      },
+    );
+  }
+}
+
+class _LocationRequiredView extends StatelessWidget {
+  const _LocationRequiredView();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.location_off_rounded,
+                size: 72,
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.25),
+              ),
+              const SizedBox(height: 24),
+              Text(
+                'Location Not Set',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  color: theme.colorScheme.onSurface,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Set your location to discover nearby shops on the map.',
+                style: TextStyle(
+                  fontSize: 14,
+                  height: 1.4,
+                  color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: AppElevatedButton(
+                  text: 'Pick Location',
+                  onPressed: () async {
+                    await LocationPickerLauncher.open(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MapView extends StatelessWidget {
+  final MapController mapController;
+
+  const _MapView({required this.mapController});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      body: Stack(
+        children: [
+          BlocBuilder<MapCubit, MapState>(
+            builder: (context, state) {
+              return FlutterMap(
+                mapController: mapController,
+                options: MapOptions(
+                  initialCenter: LatLng(state.latitude, state.longitude),
+                  onPositionChanged: (position, hasGesture) {
+                    if (hasGesture) {}
+                  },
+                ),
+                children: [
+                  TileLayer(
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    userAgentPackageName: 'com.nearvendor.app',
+                  ),
+                  CircleLayer(
+                    circles: [
+                      CircleMarker(
+                        point: LatLng(state.latitude, state.longitude),
+                        radius: state.radius,
+                        useRadiusInMeter: true,
+                        color: theme.primaryColor.withValues(alpha: 0.1),
+                        borderColor: theme.primaryColor.withValues(alpha: 0.3),
+                        borderStrokeWidth: 2,
+                      ),
+                    ],
+                  ),
+                  MarkerLayer(
+                    markers: state.shops.map((shop) {
+                      return Marker(
+                        point: LatLng(shop.shopLatitude, shop.shopLongitude),
+                        width: 100,
+                        height: 100,
+                        child: _ShopMarker(shop: shop),
+                      );
+                    }).toList(),
+                  ),
+                ],
+              );
+            },
+          ),
+
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            right: 16,
+            child: const _ControlPanel(),
+          ),
+          Positioned(
+            bottom: 10,
+            right: 24,
+            child: SafeArea(
+              top: false,
               child: FloatingActionButton(
                 heroTag: 'recenter_map',
                 onPressed: () {
-                  _mapController.move(
-                    LatLng(widget.initialLat, widget.initialLon),
-                    13,
-                  );
+                  final loc = AppData().location;
+                  if (loc != null) {
+                    mapController.move(loc.toLatLng(), 13);
+                  }
                 },
                 backgroundColor: theme.primaryColor,
                 child: const Icon(
@@ -136,13 +200,18 @@ class _MapScreenState extends State<MapScreen> {
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildControlPanel(BuildContext context) {
+class _ControlPanel extends StatelessWidget {
+  const _ControlPanel();
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return BlocBuilder<MapCubit, MapState>(
       builder: (context, state) {
@@ -166,7 +235,6 @@ class _MapScreenState extends State<MapScreen> {
                       const Text(
                         'Discovery Radius',
                         style: TextStyle(
-                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.w800,
                           fontSize: 16,
                         ),
@@ -174,7 +242,6 @@ class _MapScreenState extends State<MapScreen> {
                       Text(
                         '${(state.radius / 1000).toStringAsFixed(1)} KM',
                         style: TextStyle(
-                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.w900,
                           color: theme.colorScheme.onSurface,
                           fontSize: 16,
@@ -238,7 +305,6 @@ class _MapScreenState extends State<MapScreen> {
                                   color: isSelected
                                       ? Colors.white
                                       : theme.primaryColor,
-                                  fontFamily: 'Poppins',
                                   fontSize: 12,
                                   fontWeight: isSelected
                                       ? FontWeight.w700
@@ -259,17 +325,19 @@ class _MapScreenState extends State<MapScreen> {
       },
     );
   }
+}
 
-  Widget _buildShopMarker(BuildContext context, Shop shop) {
+class _ShopMarker extends StatelessWidget {
+  final Shop shop;
+
+  const _ShopMarker({required this.shop});
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
-        AppNavigator.push(
-          context,
-          CustomerShopDetailsScreen(
-            shop: shop,
-          ),
-        );
+        AppNavigator.push(context, CustomerShopDetailsScreen(shop: shop));
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -323,7 +391,6 @@ class _MapScreenState extends State<MapScreen> {
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
                 color: Colors.white,
-                fontFamily: 'Poppins',
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
               ),

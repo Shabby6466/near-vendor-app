@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/utils/app_data.dart';
-import 'package:nearvendorapp/utils/constants/default_location.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/home_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/map_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
@@ -41,19 +38,7 @@ class MainScreen extends StatelessWidget {
                 ),
                 LazyLoadWrapper(
                   isVisible: currentIndex == 2,
-                  child: ValueListenableBuilder(
-                    valueListenable: AppData().locationNotifier,
-                    builder: (context, appLocation, _) {
-                      final lat =
-                          appLocation?.latitude ?? DefaultLocation.latitude;
-                      final lon =
-                          appLocation?.longitude ?? DefaultLocation.longitude;
-                      return BlocProvider(
-                        create: (context) => MapCubit(lat: lat, lon: lon),
-                        child: MapScreen(initialLat: lat, initialLon: lon),
-                      );
-                    },
-                  ),
+                  child: const MapScreen(),
                 ),
                 LazyLoadWrapper(
                   isVisible: currentIndex == 3,
@@ -61,10 +46,15 @@ class MainScreen extends StatelessWidget {
                 ),
               ],
             ),
-            bottomNavigationBar: CustomBottomBar(
-              currentIndex: currentIndex,
-              onTap: (index) =>
-                  context.read<MainScreenCubit>().switchTab(index),
+            bottomNavigationBar: SafeArea(
+              top: false,
+              left: false,
+              right: false,
+              child: CustomBottomBar(
+                currentIndex: currentIndex,
+                onTap: (index) =>
+                    context.read<MainScreenCubit>().switchTab(index),
+              ),
             ),
           );
         },

@@ -44,7 +44,7 @@ class VerificationCodeScreen extends StatelessWidget {
               },
             );
           } else if (state is VerificationFailure) {
-            AppAlerts.showError(context, state.message);
+            AppAlerts.showError(context, state.message, isDarkBackground: true);
           }
         },
         builder: (context, state) {
