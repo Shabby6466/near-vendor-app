@@ -85,7 +85,6 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                             'Search',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w800,
-                              fontFamily: 'Poppins',
                               letterSpacing: -0.5,
                             ),
                           ),
@@ -175,15 +174,13 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Poppins',
-              ),
+                ),
             ),
             const SizedBox(height: 8),
             Text(
               'Type what you need and press search to see matches from local vendors.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
-                fontFamily: 'Poppins',
                 color: isDark ? Colors.white54 : Colors.black54,
                 height: 1.4,
               ),

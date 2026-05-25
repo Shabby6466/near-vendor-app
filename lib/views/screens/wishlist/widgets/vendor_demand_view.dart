@@ -28,7 +28,6 @@ class VendorDemandView extends StatelessWidget {
             const Text(
               'Opportunity Feed',
               style: TextStyle(
-                fontFamily: 'Poppins',
                 fontSize: 24,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -1.0,
@@ -37,7 +36,6 @@ class VendorDemandView extends StatelessWidget {
             Text(
               'Real-time local demand matching your profile',
               style: TextStyle(
-                fontFamily: 'Poppins',
                 fontSize: 12,
                 fontWeight: FontWeight.w500,
                 color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
@@ -90,7 +88,6 @@ class VendorDemandView extends StatelessWidget {
                   const Text(
                     'Scanning local area for unmet demand...',
                     style: TextStyle(
-                      fontFamily: 'Poppins',
                       fontWeight: FontWeight.w600,
                       color: Colors.grey,
                     ),
@@ -257,7 +254,6 @@ class VendorDemandView extends StatelessWidget {
                           Text(
                             wish.itemName.toUpperCase(),
                             style: TextStyle(
-                              fontFamily: 'Poppins',
                               fontSize: 18,
                               fontWeight: FontWeight.w900,
                               letterSpacing: -0.5,
@@ -277,7 +273,6 @@ class VendorDemandView extends StatelessWidget {
                               Text(
                                 'Posted ${wish.createdAt != null ? dateFormat.format(wish.createdAt!) : "Recently"}',
                                 style: TextStyle(
-                                  fontFamily: 'Poppins',
                                   fontSize: 10,
                                   fontWeight: FontWeight.w700,
                                   color:
@@ -310,7 +305,6 @@ class VendorDemandView extends StatelessWidget {
                           Text(
                             'PRIORITY',
                             style: TextStyle(
-                              fontFamily: 'Poppins',
                               fontSize: 8,
                               fontWeight: FontWeight.w900,
                               color: Colors.grey.shade600,
@@ -320,7 +314,6 @@ class VendorDemandView extends StatelessWidget {
                           Text(
                             (index % 3 == 0) ? 'HIGH' : 'MEDIUM',
                             style: TextStyle(
-                              fontFamily: 'Poppins',
                               fontSize: 11,
                               fontWeight: FontWeight.w900,
                               color: (index % 3 == 0)
@@ -359,7 +352,6 @@ class VendorDemandView extends StatelessWidget {
                         child: Text(
                           'Market Gap identified: High search volume for this category in your area.',
                           style: TextStyle(
-                            fontFamily: 'Poppins',
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
                             color: theme.colorScheme.onSurface.withValues(
@@ -380,7 +372,6 @@ class VendorDemandView extends StatelessWidget {
                   child: Text(
                     '"${wish.description!}"',
                     style: TextStyle(
-                      fontFamily: 'Poppins',
                       fontStyle: FontStyle.italic,
                       fontSize: 14,
                       height: 1.5,
@@ -406,7 +397,6 @@ class VendorDemandView extends StatelessWidget {
                         Text(
                           'Nearby User',
                           style: TextStyle(
-                            fontFamily: 'Poppins',
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                             color: Colors.grey.shade600,
@@ -459,7 +449,6 @@ class VendorDemandView extends StatelessWidget {
           Text(
             'All Needs Met!',
             style: TextStyle(
-              fontFamily: 'Poppins',
               fontSize: 26,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.5,

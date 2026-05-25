@@ -182,8 +182,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
               fontWeight: FontWeight.w900,
               fontSize: 16,
               letterSpacing: 2,
-              fontFamily: 'Poppins',
-            ),
+              ),
           ),
           const SizedBox(width: 48), // Balanced spacer
         ],
@@ -200,8 +199,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            fontFamily: 'Poppins',
-          ),
+            ),
         ),
         const SizedBox(height: 8),
         Text(
@@ -209,8 +207,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
           style: TextStyle(
             color: Colors.white.withValues(alpha: 0.7),
             fontSize: 16,
-            fontFamily: 'Poppins',
-          ),
+            ),
         ),
       ],
     );
@@ -227,8 +224,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
   //           style: TextStyle(
   //             color: Colors.white,
   //             fontWeight: FontWeight.bold,
-  //             fontFamily: 'Poppins',
-  //           ),
+  //             //           ),
   //         ),
   //       ],
   //     ),

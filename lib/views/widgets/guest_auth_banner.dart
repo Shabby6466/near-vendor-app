@@ -76,8 +76,7 @@ class GuestAuthBanner extends StatelessWidget {
                     'Login',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                    ),
+                      ),
                   ),
                 ),
               ),
@@ -98,8 +97,7 @@ class GuestAuthBanner extends StatelessWidget {
                     'Register',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontFamily: 'Poppins',
-                    ),
+                      ),
                   ),
                 ),
               ),

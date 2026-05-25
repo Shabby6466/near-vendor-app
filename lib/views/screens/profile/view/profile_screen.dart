@@ -417,7 +417,6 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
               Text(
                 'Delete Account',
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   letterSpacing: -0.5,
@@ -429,7 +428,6 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                 'This will permanently delete your account and all associated data. This action cannot be undone.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontSize: 13,
                   height: 1.5,
                   color: isDark ? Colors.white60 : Colors.black54,
@@ -443,14 +441,12 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                 obscureText: _obscure,
                 enabled: !isLoading,
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontSize: 14,
                   color: isDark ? Colors.white : Colors.black87,
                 ),
                 decoration: InputDecoration(
                   hintText: 'Enter your password to confirm',
                   hintStyle: TextStyle(
-                    fontFamily: 'Poppins',
                     fontSize: 13,
                     color: isDark ? Colors.white38 : Colors.black38,
                   ),
@@ -488,7 +484,6 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                   errorMessage,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontFamily: 'Poppins',
                     fontSize: 12,
                     color: Colors.red.shade400,
                   ),
@@ -514,7 +509,6 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                       child: Text(
                         'Cancel',
                         style: TextStyle(
-                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.w700,
                           color: isDark ? Colors.white38 : Colors.grey.shade500,
                         ),
@@ -553,7 +547,6 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                           : const Text(
                               'Delete',
                               style: TextStyle(
-                                fontFamily: 'Poppins',
                                 fontWeight: FontWeight.w800,
                               ),
                             ),

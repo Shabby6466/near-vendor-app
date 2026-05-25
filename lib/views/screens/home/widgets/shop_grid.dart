@@ -52,7 +52,6 @@ class ShopGrid extends StatelessWidget {
                       'Location Not Set',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontFamily: 'Poppins',
                         fontSize: 18,
                         fontWeight: FontWeight.w700,
                         color: isDark ? Colors.white : Colors.black87,
@@ -63,7 +62,6 @@ class ShopGrid extends StatelessWidget {
                       'Please set your location to discover local vendors and shops near you.',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontFamily: 'Poppins',
                         fontSize: 14,
                         color: isDark ? Colors.white54 : Colors.grey.shade600,
                         height: 1.5,
@@ -81,7 +79,6 @@ class ShopGrid extends StatelessWidget {
                       label: const Text(
                         'Set Location',
                         style: TextStyle(
-                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -144,7 +141,6 @@ class ShopGrid extends StatelessWidget {
                         'No vendors found here',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontFamily: 'Poppins',
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
                           color: isDark ? Colors.white : Colors.black87,
@@ -155,7 +151,6 @@ class ShopGrid extends StatelessWidget {
                         'Try exploring a different category or\ncheck back later for new arrivals.',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontFamily: 'Poppins',
                           fontSize: 14,
                           color: isDark ? Colors.white54 : Colors.grey.shade600,
                           height: 1.5,

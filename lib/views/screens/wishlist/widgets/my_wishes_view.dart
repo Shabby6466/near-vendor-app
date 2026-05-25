@@ -755,7 +755,6 @@ class _WishlistCard extends StatelessWidget {
                   Text(
                     title,
                     style: TextStyle(
-                      fontFamily: 'Poppins',
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
                       letterSpacing: -0.5,
@@ -767,7 +766,6 @@ class _WishlistCard extends StatelessWidget {
                     content,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontFamily: 'Poppins',
                       fontSize: 14,
                       height: 1.5,
                       color: isDark ? Colors.white60 : Colors.black54,
@@ -788,7 +786,6 @@ class _WishlistCard extends StatelessWidget {
                           child: Text(
                             'Cancel',
                             style: TextStyle(
-                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w700,
                               color: isDark
                                   ? Colors.white30
@@ -816,7 +813,6 @@ class _WishlistCard extends StatelessWidget {
                           child: Text(
                             confirmLabel,
                             style: const TextStyle(
-                              fontFamily: 'Poppins',
                               fontWeight: FontWeight.w800,
                             ),
                           ),

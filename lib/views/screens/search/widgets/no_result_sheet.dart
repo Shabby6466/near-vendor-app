@@ -131,8 +131,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
               style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Poppins',
-              ),
+                ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -142,7 +141,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
               style: TextStyle(
                 fontSize: 13,
                 color: Colors.grey.shade600,
-                fontFamily: 'Poppins',
                 height: 1.4,
               ),
             ),
@@ -231,7 +229,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
-                          fontFamily: 'Poppins',
                           color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
@@ -243,7 +240,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
                     style: TextStyle(
                       fontSize: 12,
                       height: 1.4,
-                      fontFamily: 'Poppins',
                       color: isDark ? Colors.white54 : Colors.black45,
                     ),
                   ),
@@ -275,7 +271,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
                               : 'Wish for "${widget.searchQuery}"',
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Poppins',
                             fontSize: 13,
                             color: Colors.white,
                           ),
@@ -303,7 +298,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
                           'Sign in to make a wish',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Poppins',
                             fontSize: 13,
                           ),
                         ),
@@ -396,7 +390,6 @@ class _CategoryPickerSheet extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w700,
-                          fontFamily: 'Poppins',
                           color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
@@ -405,7 +398,6 @@ class _CategoryPickerSheet extends StatelessWidget {
                         'Helps vendors match your wish faster',
                         style: TextStyle(
                           fontSize: 12,
-                          fontFamily: 'Poppins',
                           color: isDark ? Colors.white54 : Colors.black45,
                         ),
                       ),
@@ -449,7 +441,6 @@ class _CategoryPickerSheet extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      fontFamily: 'Poppins',
                       color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),

@@ -46,8 +46,7 @@ class FallbackBanner extends StatelessWidget {
                       color: isDark ? Colors.white : Colors.black87,
                       fontSize: 14,
                       fontWeight: FontWeight.w800,
-                      fontFamily: 'Poppins',
-                    ),
+                      ),
                   ),
                   const SizedBox(height: 2),
                   Text(
@@ -55,7 +54,6 @@ class FallbackBanner extends StatelessWidget {
                     style: TextStyle(
                       color: isDark ? Colors.white70 : Colors.black54,
                       fontSize: 12,
-                      fontFamily: 'Poppins',
                       height: 1.3,
                     ),
                   ),

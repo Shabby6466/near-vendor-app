@@ -209,7 +209,6 @@ class _NavButton extends StatelessWidget {
               style: TextStyle(
                 color: color,
                 fontSize: 8,
-                fontFamily: 'Poppins',
                 fontWeight: isActive ? FontWeight.w400 : FontWeight.w200,
               ),
             ),

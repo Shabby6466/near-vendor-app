@@ -152,7 +152,6 @@ class ItemCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontFamily: 'Poppins',
                         fontSize: 14,
                       ),
                     ),
@@ -163,8 +162,7 @@ class ItemCard extends StatelessWidget {
                         color: theme.primaryColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Poppins',
-                      ),
+                        ),
                     ),
                   ],
                 ),

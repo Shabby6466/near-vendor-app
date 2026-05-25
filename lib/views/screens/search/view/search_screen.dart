@@ -161,7 +161,6 @@ class _HowToSearchSection extends StatelessWidget {
             style: theme.textTheme.titleMedium?.copyWith(
               fontSize: 16,
               fontWeight: FontWeight.w800,
-              fontFamily: 'Poppins',
               letterSpacing: -0.5,
             ),
           ),
@@ -267,7 +266,6 @@ class _SearchTipItem extends StatelessWidget {
                     style: theme.textTheme.labelLarge?.copyWith(
                       fontWeight: FontWeight.w800,
                       fontSize: 14,
-                      fontFamily: 'Poppins',
                       color: isDark ? Colors.white : Colors.black87,
                     ),
                   ),
@@ -276,7 +274,6 @@ class _SearchTipItem extends StatelessWidget {
                     subtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontSize: 12,
-                      fontFamily: 'Poppins',
                       color: isDark ? Colors.white54 : Colors.black54,
                       height: 1.3,
                     ),

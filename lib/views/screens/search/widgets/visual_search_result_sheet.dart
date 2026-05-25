@@ -122,8 +122,7 @@ class VisualSearchResultSheet extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Poppins',
-                              ),
+                                ),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -153,8 +152,7 @@ class VisualSearchResultSheet extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.grey[600],
-                          fontFamily: 'Poppins',
-                        ),
+                          ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),

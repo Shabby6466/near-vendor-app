@@ -53,8 +53,7 @@ class VendorListOverlay extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
-                        fontFamily: 'Poppins',
-                      ),
+                        ),
                     ),
                     TextButton(
                       onPressed: () {}, // Optional: Sort logic
@@ -140,16 +139,14 @@ class VendorListOverlay extends StatelessWidget {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
-                                      fontFamily: 'Poppins',
-                                    ),
+                                      ),
                                   ),
                                   Text(
                                     'RS ${item.price.toStringAsFixed(0)} • $distanceKm km away',
                                     style: TextStyle(
                                       color: Colors.grey[600],
                                       fontSize: 12,
-                                      fontFamily: 'Poppins',
-                                    ),
+                                      ),
                                   ),
                                   const SizedBox(height: 4),
                                   Row(

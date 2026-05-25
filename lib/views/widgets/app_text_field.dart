@@ -97,7 +97,7 @@ class _AppTextFieldState extends State<AppTextField> {
               onFieldSubmitted: widget.onFieldSubmitted,
               style:
                   widget.style ??
-                  theme.textTheme.bodyMedium?.copyWith(fontFamily: 'Poppins'),
+                  theme.textTheme.bodyMedium?.copyWith(),
               decoration:
                   (widget.decoration ??
                           InputDecoration(
@@ -109,8 +109,7 @@ class _AppTextFieldState extends State<AppTextField> {
                                       widget.hintColor ??
                                       theme.textTheme.bodySmall?.color
                                           ?.withValues(alpha: 0.5),
-                                  fontFamily: 'Poppins',
-                                ),
+                                  ),
                           ))
                       .applyDefaults(theme.inputDecorationTheme)
                       .copyWith(

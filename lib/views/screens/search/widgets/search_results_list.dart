@@ -94,7 +94,6 @@ class _ResultsGrid extends StatelessWidget {
               Text(
                 isGlobalFallback ? 'Regional Matches' : 'Matches',
                 style: TextStyle(
-                  fontFamily: 'Poppins',
                   fontSize: 18,
                   fontWeight: FontWeight.w900,
                   letterSpacing: -0.5,
@@ -113,7 +112,6 @@ class _ResultsGrid extends StatelessWidget {
                       ? 'FOUND FURTHER AWAY'
                       : '${items.length} TO DISCOVER',
                   style: TextStyle(
-                    fontFamily: 'Poppins',
                     fontSize: 9,
                     fontWeight: FontWeight.w800,
                     color: isDark
@@ -184,8 +182,7 @@ class _MessageBanner extends StatelessWidget {
                   color: Colors.amber.shade900,
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  fontFamily: 'Poppins',
-                ),
+                  ),
               ),
             ),
           ],
@@ -339,7 +336,6 @@ class _EmptyStateState extends State<_EmptyState> {
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.w700,
-                              fontFamily: 'Poppins',
                               color: isDark ? Colors.white : Colors.black87,
                             ),
                           ),
@@ -348,7 +344,6 @@ class _EmptyStateState extends State<_EmptyState> {
                             'Helps vendors match your wish faster',
                             style: TextStyle(
                               fontSize: 12,
-                              fontFamily: 'Poppins',
                               color: isDark ? Colors.white54 : Colors.black45,
                             ),
                           ),
@@ -393,7 +388,6 @@ class _EmptyStateState extends State<_EmptyState> {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          fontFamily: 'Poppins',
                           color: isDark ? Colors.white : Colors.black87,
                         ),
                       ),
@@ -452,7 +446,6 @@ class _EmptyStateState extends State<_EmptyState> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Poppins',
                 letterSpacing: -0.3,
                 color: isDark ? Colors.white : Colors.black87,
               ),
@@ -466,7 +459,6 @@ class _EmptyStateState extends State<_EmptyState> {
               style: TextStyle(
                 fontSize: 13,
                 height: 1.4,
-                fontFamily: 'Poppins',
                 color: isDark ? Colors.white54 : Colors.black45,
               ),
             ),
@@ -509,7 +501,6 @@ class _EmptyStateState extends State<_EmptyState> {
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Poppins',
                             color: isDark ? Colors.white : Colors.black87,
                           ),
                         ),
@@ -524,7 +515,6 @@ class _EmptyStateState extends State<_EmptyState> {
                     style: TextStyle(
                       fontSize: 12.5,
                       height: 1.5,
-                      fontFamily: 'Poppins',
                       color: isDark ? Colors.white60 : Colors.black54,
                     ),
                   ),
@@ -555,7 +545,6 @@ class _EmptyStateState extends State<_EmptyState> {
                               : 'Wish for "${widget.query}"',
                           style: const TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Poppins',
                             fontSize: 13,
                             color: Colors.white,
                           ),
@@ -582,7 +571,6 @@ class _EmptyStateState extends State<_EmptyState> {
                           'Sign in to make a wish',
                           style: TextStyle(
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Poppins',
                             fontSize: 13,
                           ),
                         ),
@@ -643,7 +631,6 @@ class _EmptyStateState extends State<_EmptyState> {
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
-            fontFamily: 'Poppins',
             color: isDark ? Colors.white54 : Colors.black45,
           ),
         ),
@@ -889,8 +876,7 @@ class _ErrorState extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14,
                 color: errorColor,
-                fontFamily: 'Poppins',
-              ),
+                ),
             ),
           ],
         ),

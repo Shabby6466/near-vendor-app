@@ -49,8 +49,7 @@ class GeneralPinScreen extends StatelessWidget {
         fontSize: 20,
         color: theme.textTheme.titleLarge?.color,
         fontWeight: FontWeight.w600,
-        fontFamily: 'Poppins',
-      ),
+        ),
       decoration: BoxDecoration(
         color: theme.inputDecorationTheme.fillColor,
         borderRadius: BorderRadius.circular(12),
@@ -118,7 +117,6 @@ class GeneralPinScreen extends StatelessWidget {
                       Text(
                         title,
                         style: theme.textTheme.headlineLarge?.copyWith(
-                          fontFamily: 'Poppins',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -131,16 +129,14 @@ class GeneralPinScreen extends StatelessWidget {
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.textTheme.bodyMedium?.color
                                 ?.withValues(alpha: 0.7),
-                            fontFamily: 'Poppins',
-                          ),
+                            ),
                           children: [
                             TextSpan(
                               text: ' $email',
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: theme.primaryColor,
                                 fontWeight: FontWeight.bold,
-                                fontFamily: 'Poppins',
-                              ),
+                                ),
                             ),
                           ],
                         ),
