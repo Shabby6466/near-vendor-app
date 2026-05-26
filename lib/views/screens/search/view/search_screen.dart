@@ -15,6 +15,7 @@ import 'package:nearvendorapp/views/screens/search/widgets/recent_search_section
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_trigger.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_header.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/visual_search_launcher.dart';
+import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -67,29 +68,22 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: ListView(
                     physics: const BouncingScrollPhysics(),
                     padding: EdgeInsets.zero,
-                    children: [
+                    children: AppAnimateList.stagger([
                       const SizedBox(height: 16),
-                      const SearchBarTrigger()
-                          .animate()
-                          .fadeIn(delay: 80.ms)
-                          .slideY(begin: 0.1, end: 0),
+                      const SearchBarTrigger(),
                       const SizedBox(height: 24),
                       _HowToSearchSection(
                         onExactSearch: _openSearchResults,
                         onVisualSearch: () =>
                             VisualSearchLauncher.showPicker(context),
                         onMakeAWish: _handleMakeAWish,
-                      ).animate().fadeIn(delay: 200.ms),
-                      const SizedBox(height: 32),
-                      const RecentSearchSection().animate().fadeIn(
-                        delay: 500.ms,
                       ),
                       const SizedBox(height: 32),
-                      const RecentItemsSection().animate().fadeIn(
-                        delay: 650.ms,
-                      ),
+                      const RecentSearchSection(),
+                      const SizedBox(height: 32),
+                      const RecentItemsSection(),
                       const SizedBox(height: 120),
-                    ],
+                    ], interval: 80.ms),
                   ),
                 ),
               ],
@@ -221,7 +215,6 @@ class _SearchTipItem extends StatelessWidget {
   final String title;
   final String subtitle;
   final ThemeData theme;
-  final Color? iconColor;
   final VoidCallback onTap;
 
   const _SearchTipItem({
@@ -230,7 +223,6 @@ class _SearchTipItem extends StatelessWidget {
     required this.subtitle,
     required this.theme,
     required this.onTap,
-    this.iconColor,
   });
 
   @override
@@ -247,12 +239,12 @@ class _SearchTipItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: (iconColor ?? theme.primaryColor).withValues(alpha: 0.1),
+                color: theme.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(
                 icon,
-                color: iconColor ?? theme.primaryColor,
+                color: theme.primaryColor,
                 size: 20,
               ),
             ),

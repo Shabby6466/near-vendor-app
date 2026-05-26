@@ -9,7 +9,6 @@ import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart
 import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class ExploreScreen extends StatelessWidget {
@@ -36,8 +35,7 @@ class ExploreScreen extends StatelessWidget {
                 }
               }
             },
-            child: AppScaffold(
-              bgColor: theme.scaffoldBackgroundColor,
+            child: Scaffold(
               body: SafeArea(
                 bottom: false,
                 child: RefreshIndicator(

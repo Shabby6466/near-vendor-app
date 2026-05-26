@@ -16,7 +16,6 @@ import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_scre
 import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -49,7 +48,7 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
+    return Scaffold(
       body: BlocBuilder<ExploreItemDetailCubit, ExploreItemDetailState>(
         builder: (context, state) {
           if (state is ExploreItemDetailLoading) {

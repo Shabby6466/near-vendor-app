@@ -12,7 +12,6 @@ import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/guest_auth_banner.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
@@ -25,8 +24,7 @@ class ProfileScreen extends StatelessWidget {
 
     return BlocProvider(
       create: (context) => ProfileCubit(),
-      child: AppScaffold(
-        bgColor: theme.scaffoldBackgroundColor,
+      child: Scaffold(
         body: BlocBuilder<ProfileCubit, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 
 class ComingSoonScreen extends StatelessWidget {
   final String title;
@@ -16,8 +15,8 @@ class ComingSoonScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      bgColor: ColorName.white,
+    return Scaffold(
+      backgroundColor: ColorName.white,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

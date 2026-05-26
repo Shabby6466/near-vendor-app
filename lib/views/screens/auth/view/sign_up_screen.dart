@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,8 +12,9 @@ import 'package:nearvendorapp/views/screens/auth/cubit/signup_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/view/verification_code_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
+import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
+import 'package:nearvendorapp/views/widgets/auth_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -54,281 +53,199 @@ class SignUpScreen extends StatelessWidget {
             data: AppThemeData.normalDarkTheme,
             child: LoadingScreenView(
               isLoading: state is SignupLoading,
-              child: AppScaffold(
+              child: AuthScaffold(
                 resizeToAvoidBottomInset: false,
-                body: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    // --- Layer 1: Background Image ---
-                    Assets.images.itemsArt.image(fit: BoxFit.cover),
+                body: SafeArea(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final theme = Theme.of(context);
+                      return SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        padding: AppSpacing.bottomNavigationPadding(
+                          context,
+                        ).copyWith(left: 24, right: 24),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight:
+                                constraints.maxHeight -
+                                AppSpacing.bottomNavigationPadding(
+                                  context,
+                                ).bottom,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Top Segment: Branding & Identity
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: AppAnimateList.stagger([
+                                  const SizedBox(height: 48),
 
-                    // --- Layer 2: Sophisticated Blur & Gradient ---
-                    BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black.withValues(alpha: 0.3),
-                              Colors.black.withValues(alpha: 0.7),
-                              Colors.black.withValues(alpha: 0.9),
+                                  // Logo
+                                  Assets.icons.nearVendorText.svg(
+                                    height: 32,
+                                    colorFilter: ColorFilter.mode(
+                                      theme.colorScheme.onSurface,
+                                      BlendMode.srcIn,
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 24),
+
+                                  // Heading
+                                  Text(
+                                    'Create Account to get started',
+                                    style: theme.textTheme.headlineMedium
+                                        ?.copyWith(
+                                          color: theme.colorScheme.onSurface,
+                                          fontWeight: FontWeight.w900,
+                                          fontSize: 28,
+                                          height: 1.1,
+                                          letterSpacing: -1,
+                                        ),
+                                  ),
+
+                                  const SizedBox(height: 8),
+
+                                  Text(
+                                    'Join our community of millions of local shoppers and specialized vendors.',
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onSurface
+                                          .withValues(alpha: 0.6),
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+
+                              // Bottom Segment: Interaction
+                              Column(
+                                children: AppAnimateList.stagger([
+                                  const SizedBox(height: 48),
+                                  // Form Section
+                                  Form(
+                                    key: cubit.formKey,
+                                    child: Column(
+                                      children: AppAnimateList.stagger([
+                                        AuthTextFieldWidget(
+                                          label: 'full name',
+                                          controller: cubit.fullNameController,
+                                          prefixIcon: Icons.person_outline,
+                                          validator: (v) =>
+                                              TextFieldValidators.emptyFieldValidator(
+                                                v,
+                                                'Please enter your full name',
+                                              ),
+                                        ),
+
+                                        const SizedBox(height: 16),
+
+                                        AuthTextFieldWidget(
+                                          label: 'email',
+                                          controller: cubit.emailController,
+                                          prefixIcon: Icons.email_outlined,
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          validator: TextFieldValidators
+                                              .emailFieldValidation,
+                                        ),
+
+                                        const SizedBox(height: 16),
+
+                                        AuthTextFieldWidget(
+                                          label: 'password',
+                                          isPassword: true,
+                                          controller: cubit.passwordController,
+                                          prefixIcon: Icons.lock_outline,
+                                          validator: TextFieldValidators
+                                              .passwordFieldValidator,
+                                        ),
+
+                                        const SizedBox(height: 16),
+
+                                        AuthTextFieldWidget(
+                                          label: 'confirm password',
+                                          isPassword: true,
+                                          controller:
+                                              cubit.confirmPasswordController,
+                                          prefixIcon: Icons.lock_reset_outlined,
+                                          validator: (v) =>
+                                              TextFieldValidators.confirmPasswordValidator(
+                                                v,
+                                                cubit.passwordController.text,
+                                              ),
+                                        ),
+                                      ], interval: 80.ms),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 40),
+
+                                  // CTA Button
+                                  AppElevatedButton(
+                                    onPressed: () {
+                                      cubit.handleSignup();
+                                    },
+                                    text: 'CONTINUE',
+                                  ),
+
+                                  const SizedBox(height: 24),
+
+                                  // Footer Links
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Already have an account? ',
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                              color: theme.colorScheme.onSurface
+                                                  .withValues(alpha: 0.5),
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          AppNavigator.pushReplacement(
+                                            context,
+                                            const LoginScreen(),
+                                          );
+                                        },
+                                        style: TextButton.styleFrom(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'SIGN IN',
+                                          style: theme.textTheme.bodySmall
+                                              ?.copyWith(
+                                                color: theme.primaryColor,
+                                                fontWeight: FontWeight.w900,
+                                                letterSpacing: 0.5,
+                                              ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  // Dynamic spacer for keyboard
+                                  SizedBox(
+                                    height:
+                                        MediaQuery.of(
+                                          context,
+                                        ).viewInsets.bottom +
+                                        24,
+                                  ),
+                                ], interval: 80.ms),
+                              ),
                             ],
                           ),
                         ),
-                      ),
-                    ),
-
-                    // --- Layer 3: Content ---
-                    SafeArea(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          final theme = Theme.of(context);
-                          return SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            padding: AppSpacing.bottomNavigationPadding(
-                              context,
-                            ).copyWith(left: 24, right: 24),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                minHeight:
-                                    constraints.maxHeight -
-                                    AppSpacing.bottomNavigationPadding(
-                                      context,
-                                    ).bottom,
-                              ),
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Top Segment: Branding & Identity
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: 48),
-
-                                      // Logo
-                                      Assets.icons.nearVendorText
-                                          .svg(
-                                            height: 32,
-                                            colorFilter: ColorFilter.mode(
-                                              theme.colorScheme.onSurface,
-                                              BlendMode.srcIn,
-                                            ),
-                                          )
-                                          .animate()
-                                          .fadeIn(duration: 200.ms)
-                                          .slideX(begin: -0.2, end: 0),
-
-                                      const SizedBox(height: 24),
-
-                                      // Heading
-                                      Text(
-                                            'Create Account to get started',
-                                            style: theme
-                                                .textTheme
-                                                .headlineMedium
-                                                ?.copyWith(
-                                                  color: theme
-                                                      .colorScheme
-                                                      .onSurface,
-                                                  fontWeight: FontWeight.w900,
-                                                  fontSize: 28,
-                                                  height: 1.1,
-                                                  letterSpacing: -1,
-                                                ),
-                                          )
-                                          .animate()
-                                          .fadeIn(
-                                            delay: 200.ms,
-                                            duration: 200.ms,
-                                          )
-                                          .slideY(begin: 0.1, end: 0),
-
-                                      const SizedBox(height: 8),
-
-                                      Text(
-                                        'Join our community of millions of local shoppers and specialized vendors.',
-                                        style: theme.textTheme.bodyMedium
-                                            ?.copyWith(
-                                              color: theme.colorScheme.onSurface
-                                                  .withValues(alpha: 0.6),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                      ).animate().fadeIn(
-                                        delay: 200.ms,
-                                        duration: 200.ms,
-                                      ),
-                                    ],
-                                  ),
-
-                                  // Bottom Segment: Interaction
-                                  Column(
-                                    children: [
-                                      const SizedBox(
-                                        height: 48,
-                                      ), // Gap between header and form
-                                      // Form Section
-                                      Form(
-                                        key: cubit.formKey,
-                                        child: Column(
-                                          children: [
-                                            AuthTextFieldWidget(
-                                                  label: 'full name',
-                                                  controller:
-                                                      cubit.fullNameController,
-                                                  prefixIcon:
-                                                      Icons.person_outline,
-                                                  validator: (v) =>
-                                                      TextFieldValidators.emptyFieldValidator(
-                                                        v,
-                                                        'Please enter your full name',
-                                                      ),
-                                                )
-                                                .animate()
-                                                .fadeIn(delay: 200.ms)
-                                                .slideY(begin: 0.1, end: 0),
-
-                                            const SizedBox(height: 16),
-
-                                            AuthTextFieldWidget(
-                                                  label: 'email',
-                                                  controller:
-                                                      cubit.emailController,
-                                                  prefixIcon:
-                                                      Icons.email_outlined,
-                                                  keyboardType: TextInputType
-                                                      .emailAddress,
-                                                  validator: TextFieldValidators
-                                                      .emailFieldValidation,
-                                                )
-                                                .animate()
-                                                .fadeIn(delay: 200.ms)
-                                                .slideY(begin: 0.1, end: 0),
-
-                                            const SizedBox(height: 16),
-
-                                            AuthTextFieldWidget(
-                                                  label: 'password',
-                                                  isPassword: true,
-                                                  controller:
-                                                      cubit.passwordController,
-                                                  prefixIcon:
-                                                      Icons.lock_outline,
-                                                  validator: TextFieldValidators
-                                                      .passwordFieldValidator,
-                                                )
-                                                .animate()
-                                                .fadeIn(delay: 200.ms)
-                                                .slideY(begin: 0.1, end: 0),
-
-                                            const SizedBox(height: 16),
-
-                                            AuthTextFieldWidget(
-                                                  label: 'confirm password',
-                                                  isPassword: true,
-                                                  controller: cubit
-                                                      .confirmPasswordController,
-                                                  prefixIcon:
-                                                      Icons.lock_reset_outlined,
-                                                  validator: (v) =>
-                                                      TextFieldValidators.confirmPasswordValidator(
-                                                        v,
-                                                        cubit
-                                                            .passwordController
-                                                            .text,
-                                                      ),
-                                                )
-                                                .animate()
-                                                .fadeIn(delay: 200.ms)
-                                                .slideY(begin: 0.1, end: 0),
-                                          ],
-                                        ),
-                                      ),
-
-                                      const SizedBox(height: 40),
-
-                                      // CTA Button
-                                      AppElevatedButton(
-                                            onPressed: () {
-                                              cubit.handleSignup();
-                                            },
-                                            isEnabled: true,
-                                            text: 'CONTINUE',
-                                          )
-                                          .animate()
-                                          .fadeIn(delay: 200.ms)
-                                          .scale(
-                                            begin: const Offset(0.95, 0.95),
-                                            end: const Offset(1, 1),
-                                            curve: Curves.easeOutBack,
-                                          ),
-
-                                      const SizedBox(height: 24),
-
-                                      // Footer Links
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'Already have an account? ',
-                                            style: theme.textTheme.bodySmall
-                                                ?.copyWith(
-                                                  color: theme
-                                                      .colorScheme
-                                                      .onSurface
-                                                      .withValues(alpha: 0.5),
-                                                  fontWeight: FontWeight.w600,
-                                                ),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              AppNavigator.pushReplacement(
-                                                context,
-                                                const LoginScreen(),
-                                              );
-                                            },
-                                            style: TextButton.styleFrom(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8,
-                                                  ),
-                                            ),
-                                            child: Text(
-                                              'SIGN IN',
-                                              style: theme.textTheme.bodySmall
-                                                  ?.copyWith(
-                                                    color: theme.primaryColor,
-                                                    fontWeight: FontWeight.w900,
-                                                    letterSpacing: 0.5,
-                                                  ),
-                                            ),
-                                          ),
-                                        ],
-                                      ).animate().fadeIn(delay: 200.ms),
-
-                                      // Dynamic spacer for keyboard
-                                      SizedBox(
-                                        height:
-                                            MediaQuery.of(
-                                              context,
-                                            ).viewInsets.bottom +
-                                            24,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
+                      );
+                    },
+                  ),
                 ),
               ),
             ),

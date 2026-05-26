@@ -7,7 +7,6 @@ import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/widgets/onboarding_btns.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class WelcomeScreen extends StatefulWidget {
@@ -84,7 +83,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     final theme = Theme.of(context);
     final size = MediaQuery.of(context).size;
 
-    return AppScaffold(
+    return Scaffold(
       body: GestureDetector(
         onHorizontalDragEnd: (details) {
           if ((details.primaryVelocity ?? 0) < 0) {

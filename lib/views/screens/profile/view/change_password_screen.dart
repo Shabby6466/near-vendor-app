@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/change_password_cubit.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
@@ -45,8 +44,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         builder: (context, state) {
           return LoadingScreenView(
             isLoading: state is ChangePasswordLoading,
-            child: AppScaffold(
-              bgColor: Theme.of(context).scaffoldBackgroundColor,
+            child: Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,

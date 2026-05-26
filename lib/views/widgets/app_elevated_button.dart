@@ -4,14 +4,14 @@ import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 class AppElevatedButton extends StatelessWidget {
   final void Function()? onPressed;
   final String text;
-  final bool? isEnabled;
+  final bool isEnabled;
   final bool isLoading;
 
   const AppElevatedButton({
     super.key,
     required this.onPressed,
     required this.text,
-    this.isEnabled,
+    this.isEnabled = true,
     this.isLoading = false,
   });
 
@@ -23,7 +23,7 @@ class AppElevatedButton extends StatelessWidget {
       width: double.infinity,
       height: 56,
       child: ElevatedButton(
-        onPressed: (isEnabled ?? true) && !isLoading ? onPressed : null,
+        onPressed: isEnabled && !isLoading ? onPressed : null,
         style: theme.elevatedButtonTheme.style,
         child: isLoading
             ? SizedBox(
@@ -40,11 +40,11 @@ class AppElevatedButton extends StatelessWidget {
                   fontSize: 16,
                   fontWeight: FontWeight.w900,
                   letterSpacing: 1.2,
-                  color:
-                      theme.elevatedButtonTheme.style?.foregroundColor?.resolve(
-                        {},
-                      ) ??
-                      theme.colorScheme.onSurface,
+                  // color:
+                  //     theme.elevatedButtonTheme.style?.foregroundColor?.resolve(
+                  //       {},
+                  //     ) ??
+                  //     theme.colorScheme.onSurface,
                 ),
               ),
       ),

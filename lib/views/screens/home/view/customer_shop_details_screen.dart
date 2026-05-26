@@ -23,7 +23,6 @@ import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_scre
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
 import 'package:nearvendorapp/views/widgets/shop_timing_view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -50,8 +49,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
         final shopId = shop.id;
         return ShopDetailsCubit()..loadShopData(shopId);
       },
-      child: AppScaffold(
-        bgColor: Theme.of(context).scaffoldBackgroundColor,
+      child: Scaffold(
         body: BlocBuilder<ShopDetailsCubit, ShopDetailsState>(
           builder: (context, state) {
             if (state is ShopDetailsLoading) {

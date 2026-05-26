@@ -6,7 +6,6 @@ import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/common/general_pin_screen/cubit/general_pin_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
-import 'package:nearvendorapp/views/widgets/app_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 import 'package:pinput/pinput.dart';
 
@@ -89,7 +88,7 @@ class GeneralPinScreen extends StatelessWidget {
               state is! GeneralPinLoading && currentCode.length == pinLength;
           return LoadingScreenView(
             isLoading: state is GeneralPinLoading,
-            child: AppScaffold(
+            child: Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
                 elevation: 0,

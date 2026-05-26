@@ -79,6 +79,13 @@ class AppThemeData {
     ),
   );
 
+  static final _elevatedButtonTheme = ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: ColorName.primary,
+      foregroundColor: Colors.white,
+    ),
+  );
+
   static ThemeData get normalLightTheme => ThemeData(
     useMaterial3: true,
     brightness: Brightness.light,
@@ -98,6 +105,7 @@ class AppThemeData {
     inputDecorationTheme: _inputDecorationTheme.copyWith(
       fillColor: Colors.white,
     ),
+    elevatedButtonTheme: _elevatedButtonTheme,
   );
 
   static ThemeData get normalDarkTheme => ThemeData(
@@ -119,5 +127,6 @@ class AppThemeData {
     inputDecorationTheme: _inputDecorationTheme.copyWith(
       fillColor: const Color(0xFF2C2C2E),
     ),
+    elevatedButtonTheme: _elevatedButtonTheme,
   );
 }
