@@ -172,8 +172,8 @@ class LoginScreen extends StatelessWidget {
                                                       Icons.email_outlined,
                                                   keyboardType: TextInputType
                                                       .emailAddress,
-                                                  validator: TextFieldValidators
-                                                      .emailFieldValidation,
+                                                  // validator: TextFieldValidators
+                                                  //     .emailFieldValidation,
                                                 )
                                                 .animate()
                                                 .fadeIn(delay: 400.ms)

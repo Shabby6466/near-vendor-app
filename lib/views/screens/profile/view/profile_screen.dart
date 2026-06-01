@@ -9,6 +9,7 @@ import 'package:nearvendorapp/views/screens/onboarding/views/welcome_screen.dart
 import 'package:nearvendorapp/views/screens/profile/cubit/delete_account_cubit/delete_account_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.dart';
+import 'package:nearvendorapp/views/screens/profile/view/help_support_screen.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
@@ -157,7 +158,12 @@ class ProfileScreen extends StatelessWidget {
                                     icon: Icons.help_outline_rounded,
                                     title: 'Help & Support',
                                     subtitle: 'FAQs and contact information',
-                                    onTap: () {},
+                                    onTap: () {
+                                      AppNavigator.push(
+                                        context,
+                                        const HelpSupportScreen(),
+                                      );
+                                    },
                                   ),
                                   const Divider(
                                     height: 1,

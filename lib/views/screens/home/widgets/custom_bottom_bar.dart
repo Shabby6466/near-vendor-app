@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
+import 'package:nearvendorapp/gen/colors.gen.dart';
 
 class CustomBottomBar extends StatefulWidget {
   final int currentIndex;
@@ -194,7 +195,7 @@ class _NavButton extends StatelessWidget {
     final isDark = theme.brightness == Brightness.dark;
     final color = isActive
         ? (isDark ? Colors.white : theme.primaryColor)
-        : (isDark ? Colors.white.withValues(alpha: 0.4) : Colors.grey.shade400);
+        : (isDark ? Colors.white.withValues(alpha: 0.4) : ColorName.primary.withValues(alpha: 0.4));
 
     return Expanded(
       child: ColoredBox(

@@ -126,10 +126,8 @@ class _MapScreenState extends State<MapScreen> {
                     13,
                   );
                 },
-                backgroundColor: theme.primaryColor,
                 child: const Icon(
                   Icons.my_location_rounded,
-                  color: Colors.white,
                 ),
               ),
             ),

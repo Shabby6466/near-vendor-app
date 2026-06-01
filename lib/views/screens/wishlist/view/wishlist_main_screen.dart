@@ -55,14 +55,18 @@ class WishlistMainScreen extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            body: const MyWishesView(),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => CreateWishSheet.show(
-                context,
-                context.read<UserWishlistCubit>(),
+            floatingActionButton: Padding(
+              padding: const EdgeInsets.only(bottom: 90.0),
+              child: FloatingActionButton(
+                onPressed: () => CreateWishSheet.show(
+                  context,
+                  context.read<UserWishlistCubit>(),
+                ),
+                child: const Icon(Icons.add),
               ),
-              child: const Icon(Icons.add),
             ),
+            body: const MyWishesView(),
+
           );
         },
       ),

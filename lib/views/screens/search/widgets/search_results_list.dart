@@ -438,13 +438,13 @@ class _EmptyStateState extends State<_EmptyState> {
               decoration: BoxDecoration(
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.05)
-                    : Colors.grey.shade100,
+                    : ColorName.primary.withValues(alpha: 0.05),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.search_off_rounded,
+                Icons.search_off_sharp,
                 size: 48,
-                color: isDark ? Colors.white30 : Colors.grey.shade400,
+                color: ColorName.primary,
               ),
             ),
             const SizedBox(height: 20),
@@ -498,10 +498,7 @@ class _EmptyStateState extends State<_EmptyState> {
                     children: [
                       Container(
                         padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: ColorName.primary.withValues(alpha: 0.12),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+
                         child: const Icon(
                           Icons.auto_awesome,
                           color: ColorName.primary,
@@ -576,7 +573,32 @@ class _EmptyStateState extends State<_EmptyState> {
                         ),
                       ),
                     )
+
                   else if (!isAuthenticated)
+                    const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildStep(Icons.edit_note_rounded, 'You wish', isDark),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 16,
+                        color: isDark ? Colors.white24 : Colors.grey.shade400,
+                      ),
+                      _buildStep(Icons.storefront_rounded, 'Vendors see', isDark),
+                      Icon(
+                        Icons.chevron_right_rounded,
+                        size: 16,
+                        color: isDark ? Colors.white24 : Colors.grey.shade400,
+                      ),
+                      _buildStep(
+                        Icons.check_circle_outline_rounded,
+                        'Matched!',
+                        isDark,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 18),
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
@@ -604,35 +626,15 @@ class _EmptyStateState extends State<_EmptyState> {
                         ),
                       ),
                     ),
+
                 ],
               ),
             ),
 
-            const SizedBox(height: 16),
+
 
             // How it works steps
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStep(Icons.edit_note_rounded, 'You wish', isDark),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 16,
-                  color: isDark ? Colors.white24 : Colors.grey.shade400,
-                ),
-                _buildStep(Icons.storefront_rounded, 'Vendors see', isDark),
-                Icon(
-                  Icons.chevron_right_rounded,
-                  size: 16,
-                  color: isDark ? Colors.white24 : Colors.grey.shade400,
-                ),
-                _buildStep(
-                  Icons.check_circle_outline_rounded,
-                  'Matched!',
-                  isDark,
-                ),
-              ],
-            ),
+
           ],
         ),
       ),

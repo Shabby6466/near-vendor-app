@@ -55,7 +55,7 @@ class ShopGrid extends StatelessWidget {
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
-                          Icons.storefront_rounded,
+                          Icons.storefront_outlined,
                           size: 64,
                           color: theme.primaryColor.withValues(alpha: 0.4),
                         ),

@@ -206,10 +206,10 @@ class _HowToSearchSection extends StatelessWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: isDark ? 0.4 : 0.15),
-                blurRadius: 30,
+                color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.1),
+                blurRadius: 19,
                 spreadRadius: 2,
-                offset: const Offset(0, 16),
+                offset: const Offset(0, 12),
               ),
             ],
           ),

@@ -14,8 +14,8 @@ class TextFieldValidators {
   static String? passwordFieldValidator(String? password) {
     if (password?.isEmpty ?? true) {
       return 'Please enter your password';
-    } else if (password!.length < 8) {
-      return 'Password must be at least 8 characters long';
+    } else if (password!.length < 6) {
+      return 'Password must be at least 6 characters long';
     }
     return null;
   }

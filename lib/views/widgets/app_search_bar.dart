@@ -104,9 +104,7 @@ class _AppSearchBarState extends State<AppSearchBar> {
               const SizedBox(width: 16),
               Icon(
                 Icons.search_rounded,
-                color: _isFocused || _controller.text.isNotEmpty
-                    ? theme.colorScheme.onSurface
-                    : theme.iconTheme.color?.withValues(alpha: 0.3),
+                color: ColorName.primary,
                 size: 20,
               ),
               const SizedBox(width: 12),
