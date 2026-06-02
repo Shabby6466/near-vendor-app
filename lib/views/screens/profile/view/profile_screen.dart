@@ -12,6 +12,7 @@ import 'package:nearvendorapp/views/screens/profile/view/change_password_screen.
 import 'package:nearvendorapp/views/screens/profile/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile/widgets/profile_menu_item.dart';
+import 'package:nearvendorapp/views/widgets/app_version_widget.dart';
 import 'package:nearvendorapp/views/widgets/guest_auth_banner.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
@@ -193,6 +194,7 @@ class ProfileScreen extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
+        bottomNavigationBar: const AppVersionWidget(),
       ),
     );
   }
@@ -481,10 +483,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                 Text(
                   errorMessage,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.red.shade400,
-                  ),
+                  style: TextStyle(fontSize: 12, color: Colors.red.shade400),
                 ),
               ],
 
@@ -544,9 +543,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                             )
                           : const Text(
                               'Delete',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                              ),
+                              style: TextStyle(fontWeight: FontWeight.w800),
                             ),
                     ),
                   ),
