@@ -47,7 +47,7 @@ class LoginInput {
   final String password;
 
   Map<String, dynamic> toJson() {
-    return {'email': email, 'password': password};
+    return {'email': email.toLowerCase(), 'password': password};
   }
 }
 

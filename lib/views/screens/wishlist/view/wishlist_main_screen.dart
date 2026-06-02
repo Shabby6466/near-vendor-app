@@ -9,6 +9,7 @@ import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.d
 import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/my_wishes_view.dart';
 
+//TODO: optimize this screen
 class WishlistMainScreen extends StatelessWidget {
   const WishlistMainScreen({super.key});
 
@@ -55,13 +56,24 @@ class WishlistMainScreen extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            body: const MyWishesView(),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () => CreateWishSheet.show(
-                context,
-                context.read<UserWishlistCubit>(),
-              ),
-              child: const Icon(Icons.add),
+            body: Stack(
+              children: [
+                const MyWishesView(),
+                Positioned(
+                  bottom: 10,
+                  right: 24,
+                  child: SafeArea(
+                    top: false,
+                    child: FloatingActionButton(
+                      onPressed: () => CreateWishSheet.show(
+                        context,
+                        context.read<UserWishlistCubit>(),
+                      ),
+                      child: const Icon(Icons.add),
+                    ),
+                  ),
+                ),
+              ],
             ),
           );
         },

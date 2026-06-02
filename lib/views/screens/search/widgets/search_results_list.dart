@@ -11,6 +11,7 @@ import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
+import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
@@ -77,7 +78,6 @@ class _ResultsGrid extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (message != null) _MessageBanner(message: message!),
         if (isGlobalFallback && rangeMessage != null)
           FallbackBanner(message: rangeMessage!),
 
@@ -144,50 +144,6 @@ class _ResultsGrid extends StatelessWidget {
         ),
         const SizedBox(height: 120),
       ],
-    );
-  }
-}
-
-class _MessageBanner extends StatelessWidget {
-  final String message;
-
-  const _MessageBanner({required this.message});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: AppSpacing.mediumHorizontalSpacing(context),
-        vertical: 8,
-      ),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-        decoration: BoxDecoration(
-          color: Colors.amber.shade50,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.amber.shade200),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.info_outline_rounded,
-              color: Colors.amber.shade900,
-              size: 20,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                message,
-                style: TextStyle(
-                  color: Colors.amber.shade900,
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
@@ -837,23 +793,54 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
   }
 }
 
-class _ErrorState extends StatelessWidget {
+class _ErrorState extends StatefulWidget {
   final String message;
 
   const _ErrorState({required this.message});
 
   @override
+  State<_ErrorState> createState() => _ErrorStateState();
+}
+
+class _ErrorStateState extends State<_ErrorState> {
+  bool _alertShown = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _showAlertIfNeeded();
+  }
+
+  @override
+  void didUpdateWidget(_ErrorState oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _alertShown = false;
+    _showAlertIfNeeded();
+  }
+
+  void _showAlertIfNeeded() {
+    if (!_alertShown && mounted) {
+      _alertShown = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          AppAlerts.showError(context, widget.message);
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final isThrottlerError =
-        message.toLowerCase().contains('throttler') ||
-        message.toLowerCase().contains('too many requests') ||
-        message.toLowerCase().contains('throttle');
+        widget.message.toLowerCase().contains('throttler') ||
+        widget.message.toLowerCase().contains('too many requests') ||
+        widget.message.toLowerCase().contains('throttle');
 
     final isInternetError =
-        message.toLowerCase().contains('internet') ||
-        message.toLowerCase().contains('socketexception') ||
-        message.toLowerCase().contains('connection refused') ||
-        message.toLowerCase().contains('connection error');
+        widget.message.toLowerCase().contains('internet') ||
+        widget.message.toLowerCase().contains('socketexception') ||
+        widget.message.toLowerCase().contains('connection refused') ||
+        widget.message.toLowerCase().contains('connection error');
 
     final IconData errorIcon = isThrottlerError
         ? Icons.error_outline
@@ -871,12 +858,9 @@ class _ErrorState extends StatelessWidget {
             Icon(errorIcon, size: 64, color: errorColor),
             const SizedBox(height: 16),
             Text(
-              message,
+              widget.message,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 14,
-                color: errorColor,
-                ),
+              style: TextStyle(fontSize: 14, color: errorColor),
             ),
           ],
         ),

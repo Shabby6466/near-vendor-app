@@ -193,11 +193,8 @@ class _MapView extends StatelessWidget {
                     mapController.move(loc.toLatLng(), 13);
                   }
                 },
-                backgroundColor: theme.primaryColor,
-                child: const Icon(
-                  Icons.my_location_rounded,
-                  color: Colors.white,
-                ),
+
+                child: const Icon(Icons.my_location_rounded),
               ),
             ),
           ),

@@ -78,7 +78,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
 
     final response = await _searchServices.searchItems(input);
 
-    if (response.success == true) {
+    if (response.success ?? false) {
       updateAnalyticsMetadata({'lat': lat, 'lon': lon, 'query': query});
       emit(
         SearchSuccess(
