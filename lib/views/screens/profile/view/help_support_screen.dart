@@ -117,25 +117,9 @@ class HelpSupportScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: isDark
-                        ? [
-                            ColorName.primary.withValues(alpha: 0.15),
-                            ColorName.primary.withValues(alpha: 0.05),
-                          ]
-                        : [
-                            ColorName.primary.withValues(alpha: 0.08),
-                            ColorName.primary.withValues(alpha: 0.02),
-                          ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
+
                   borderRadius: BorderRadius.circular(28),
-                  border: Border.all(
-                    color: ColorName.primary.withValues(
-                      alpha: isDark ? 0.2 : 0.1,
-                    ),
-                  ),
+
                 ),
                 child: Column(
                   children: [
