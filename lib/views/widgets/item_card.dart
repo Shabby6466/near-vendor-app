@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
-import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
+import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
-import 'package:nearvendorapp/views/screens/shop_detail/cubit/shop_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/cubit/shop_detail_cubit.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ItemCard extends StatelessWidget {

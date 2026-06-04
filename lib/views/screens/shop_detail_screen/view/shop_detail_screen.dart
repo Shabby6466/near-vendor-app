@@ -15,8 +15,8 @@ import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
-import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
-import 'package:nearvendorapp/views/screens/shop_detail/cubit/shop_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/cubit/shop_detail_cubit.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
@@ -98,7 +98,8 @@ class ShopDetailScreen extends StatelessWidget {
                           color: Colors.black,
                           size: 20,
                         ),
-                        onPressed: () => _handleSafetyAction(context, state.shop),
+                        onPressed: () =>
+                            _handleSafetyAction(context, state.shop),
                       ),
                     ),
                   );
@@ -180,7 +181,8 @@ class ShopDetailScreen extends StatelessWidget {
               letterSpacing: -0.5,
             ),
           ),
-          if (fullShop.shopAddress != null && fullShop.shopAddress!.isNotEmpty) ...[
+          if (fullShop.shopAddress != null &&
+              fullShop.shopAddress!.isNotEmpty) ...[
             const SizedBox(height: 6),
             Row(
               children: [
@@ -333,7 +335,8 @@ class ShopDetailScreen extends StatelessWidget {
                       ),
                     ),
                     _buildTimingSection(context, fullShop),
-                    if (fullShop.shopAddress != null && fullShop.shopAddress!.isNotEmpty) ...[
+                    if (fullShop.shopAddress != null &&
+                        fullShop.shopAddress!.isNotEmpty) ...[
                       const SizedBox(height: 6),
                       Row(
                         children: [
@@ -750,7 +753,9 @@ class ShopDetailScreen extends StatelessWidget {
             ListTile(
               leading: const Icon(Icons.block_flipped, color: Colors.red),
               title: const Text('Block Vendor'),
-              subtitle: Text('Stop seeing content from ${shop.shopName ?? 'Shop'}'),
+              subtitle: Text(
+                'Stop seeing content from ${shop.shopName ?? 'Shop'}',
+              ),
               onTap: () async {
                 Navigator.pop(ctx);
                 if (shop.vendorId == null) return;
@@ -803,10 +808,7 @@ class _ShopProductCard extends StatelessWidget {
       },
       child: GestureDetector(
         onTap: () {
-          AppNavigator.push(
-            context,
-            ProductDetailScreen(product: item),
-          );
+          AppNavigator.push(context, ProductDetailScreen(product: item));
         },
         child: Container(
           decoration: BoxDecoration(

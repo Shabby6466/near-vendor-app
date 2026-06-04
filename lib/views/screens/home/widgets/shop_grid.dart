@@ -7,7 +7,7 @@ import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/explore_shimmer_loading.dart';
-import 'package:nearvendorapp/views/screens/shop_detail/view/shop_detail_screen.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -72,10 +72,15 @@ class ShopGrid extends StatelessWidget {
                       onPressed: () async {
                         await AppBottomSheet.openLocationSet();
                         if (context.mounted) {
-                          context.read<ExploreScreenCubit>().reloadAfterLocationSet();
+                          context
+                              .read<ExploreScreenCubit>()
+                              .reloadAfterLocationSet();
                         }
                       },
-                      icon: const Icon(Icons.my_location_rounded, color: Colors.white),
+                      icon: const Icon(
+                        Icons.my_location_rounded,
+                        color: Colors.white,
+                      ),
                       label: const Text(
                         'Set Location',
                         style: TextStyle(
@@ -186,28 +191,28 @@ class ShopGrid extends StatelessWidget {
                     mainAxisSpacing: 12,
                     childAspectRatio: 0.85,
                   ),
-                   delegate: SliverChildBuilderDelegate((context, index) {
-                     final shop = shops[index];
-                     return GestureDetector(
-                       onTap: () {
-                         AppNavigator.push(
-                           context,
-                           ShopDetailScreen(shop: shop),
-                         );
-                       },
-                       child: VisibilityDetector(
-                         key: Key('shop-${shop.id ?? index}'),
-                          onVisibilityChanged: (info) {
-                             if (info.visibleFraction > 0.5) {
-                               context.read<ExploreScreenCubit>().trackImpression(
-                                 shop.id ?? '',
-                               );
-                             }
-                           },
-                          child: ShopCard(shop: shop),
-                       ),
-                     );
-                   }, childCount: shops.length),
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final shop = shops[index];
+                    return GestureDetector(
+                      onTap: () {
+                        AppNavigator.push(
+                          context,
+                          ShopDetailScreen(shop: shop),
+                        );
+                      },
+                      child: VisibilityDetector(
+                        key: Key('shop-${shop.id ?? index}'),
+                        onVisibilityChanged: (info) {
+                          if (info.visibleFraction > 0.5) {
+                            context.read<ExploreScreenCubit>().trackImpression(
+                              shop.id ?? '',
+                            );
+                          }
+                        },
+                        child: ShopCard(shop: shop),
+                      ),
+                    );
+                  }, childCount: shops.length),
                 ),
               ),
             ],
@@ -385,30 +390,30 @@ class ShopCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                 // Category Tag
-                 Positioned(
-                   bottom: 8,
-                   left: 8,
-                   child: Container(
-                     padding: const EdgeInsets.symmetric(
-                       horizontal: 6,
-                       vertical: 2,
-                     ),
-                     decoration: BoxDecoration(
-                       color: Colors.black.withValues(alpha: 0.6),
-                       borderRadius: BorderRadius.circular(4),
-                     ),
-                     child: Text(
-                       shop.businessCategory?.toUpperCase() ?? 'N/A',
-                       style: const TextStyle(
-                         color: Colors.white,
-                         fontSize: 8,
-                         fontWeight: FontWeight.w800,
-                         letterSpacing: 0.5,
-                       ),
-                     ),
-                   ),
-                 ),
+                // Category Tag
+                Positioned(
+                  bottom: 8,
+                  left: 8,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withValues(alpha: 0.6),
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                    child: Text(
+                      shop.businessCategory?.toUpperCase() ?? 'N/A',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 8,
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -417,16 +422,16 @@ class ShopCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 Text(
-                   shop.shopName ?? 'Unknown Shop',
-                   maxLines: 1,
-                   overflow: TextOverflow.ellipsis,
-                   style: theme.textTheme.titleSmall?.copyWith(
-                     fontWeight: FontWeight.w800,
-                     fontSize: 13,
-                     letterSpacing: -0.2,
-                   ),
-                 ),
+                Text(
+                  shop.shopName ?? 'Unknown Shop',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 13,
+                    letterSpacing: -0.2,
+                  ),
+                ),
                 const SizedBox(height: 2),
                 Row(
                   children: [
@@ -437,19 +442,19 @@ class ShopCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 2),
                     Expanded(
-                         child: Text(
-                           shop.shopAddress != null && shop.shopAddress!.isNotEmpty
-                               ? shop.shopAddress!
-                               : 'N/A',
-                           maxLines: 1,
-                           overflow: TextOverflow.ellipsis,
-                           style: theme.textTheme.bodySmall?.copyWith(
-                             fontSize: 11,
-                             color: theme.textTheme.bodySmall?.color?.withValues(
-                               alpha: 0.6,
-                             ),
-                           ),
-                         ),
+                      child: Text(
+                        shop.shopAddress != null && shop.shopAddress!.isNotEmpty
+                            ? shop.shopAddress!
+                            : 'N/A',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          fontSize: 11,
+                          color: theme.textTheme.bodySmall?.color?.withValues(
+                            alpha: 0.6,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
