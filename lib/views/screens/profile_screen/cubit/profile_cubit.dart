@@ -1,27 +1,23 @@
-import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
-import 'package:nearvendorapp/services/media_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
-  final ImagePicker _picker = ImagePicker();
-
   ProfileCubit() : super(ProfileInitial()) {
     _loadProfile();
-    // Listen to AppData user changes
-    AppData().userNotifier.addListener(_onUserChanged);
+    // Listen to AppData user and location changes
+    AppData().userNotifier.addListener(_onProfileChanged);
+    AppData().locationNotifier.addListener(_onProfileChanged);
   }
 
-  void _onUserChanged() {
+  void _onProfileChanged() {
     if (state is ProfileSuccess) {
       _loadProfile();
     }
@@ -31,47 +27,17 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ProfileLoading());
     final user = AppData().currentUser;
     final radius = CurrentUserStorage.getDiscoveryRadius();
+    final locationName = AppData().locationNotifier.value?.displayLabel ?? 'Location not set';
 
     emit(
       ProfileSuccess(
         userName: user?.fullName ?? 'Guest User',
-        userLocation: user?.cityName ?? 'Location not set',
+        userLocation: locationName,
         photoUrl: user?.photoUrl,
         discoveryRadius: radius,
         newOfferAlerts: true,
       ),
     );
-  }
-
-  Future<void> pickImageFromGallery() async {
-    final currentState = state;
-    if (currentState is! ProfileSuccess) return;
-
-    try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image != null) {
-        emit(currentState.copyWith(isUploadingImage: true));
-        final uploadResponse = await MediaServices.uploadImage(
-          File(image.path),
-        );
-        final String? uploadedUrl = uploadResponse.url;
-        if (uploadedUrl != null) {
-          // Emit state change - AppData will be updated when profile reloads
-          emit(
-            currentState.copyWith(
-              photoUrl: uploadedUrl,
-              isUploadingImage: false,
-            ),
-          );
-        } else {
-          emit(currentState.copyWith(isUploadingImage: false));
-        }
-      }
-    } catch (e) {
-      if (state is ProfileSuccess) {
-        emit((state as ProfileSuccess).copyWith(isUploadingImage: false));
-      }
-    }
   }
 
   Future<void> updateRadius(double radius) async {
@@ -112,7 +78,7 @@ class ProfileCubit extends Cubit<ProfileState> {
           }
           await CurrentUserStorage.storeUserData(meResponse.user);
           AppData().updateUser(meResponse.user!);
-          // _onUserChanged listener will reload the profile state automatically
+          // _onProfileChanged listener will reload the profile state automatically
         }
       }
     } catch (e) {
@@ -141,8 +107,9 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   @override
   Future<void> close() async {
-    // Remove listener
-    AppData().userNotifier.removeListener(_onUserChanged);
+    // Remove listeners
+    AppData().userNotifier.removeListener(_onProfileChanged);
+    AppData().locationNotifier.removeListener(_onProfileChanged);
     await super.close();
   }
 }

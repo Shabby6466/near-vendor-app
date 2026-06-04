@@ -9,6 +9,7 @@ import 'package:nearvendorapp/views/screens/onboarding/view/welcome_screen.dart'
 import 'package:nearvendorapp/views/screens/profile_screen/cubit/delete_account_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/change_password_screen/view/change_password_screen.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_menu_item.dart';
@@ -96,9 +97,12 @@ class ProfileScreen extends StatelessWidget {
                                 userLocation: state.userLocation,
                                 photoUrl: state.photoUrl,
                                 isUploadingImage: state.isUploadingImage,
-                                onEditProfile: () => context
-                                    .read<ProfileCubit>()
-                                    .pickImageFromGallery(),
+                                onEditProfile: () {
+                                  AppNavigator.push(
+                                    context,
+                                    const EditProfileScreen(),
+                                  );
+                                },
                               ),
                               SizedBox(
                                 height: AppSpacing.largeVerticalSpacing(
@@ -127,6 +131,22 @@ class ProfileScreen extends StatelessWidget {
                               _buildSettingsGroup(
                                 context,
                                 children: [
+                                  ProfileMenuItem(
+                                    icon: Icons.person_outline_rounded,
+                                    title: 'Edit Profile',
+                                    subtitle: 'Update your name and profile picture',
+                                    onTap: () {
+                                      AppNavigator.push(
+                                        context,
+                                        const EditProfileScreen(),
+                                      );
+                                    },
+                                  ),
+                                  const Divider(
+                                    height: 1,
+                                    indent: 64,
+                                    endIndent: 20,
+                                  ),
                                   ProfileMenuItem(
                                     icon: Icons.lock_outline_rounded,
                                     title: 'Change Password',
@@ -289,37 +309,41 @@ class ProfileScreen extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: InkWell(
+      child: Material(
+        color: Colors.transparent,
         borderRadius: BorderRadius.circular(20),
-        onTap: () => _showDeleteAccountDialog(context),
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: Colors.red.withValues(alpha: isDark ? 0.25 : 0.15),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () => _showDeleteAccountDialog(context),
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: Colors.red.withValues(alpha: isDark ? 0.25 : 0.15),
+              ),
             ),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.delete_forever_rounded,
-                color: Colors.red.withValues(alpha: 0.7),
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Delete Account',
-                style: theme.textTheme.labelLarge?.copyWith(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.delete_forever_rounded,
                   color: Colors.red.withValues(alpha: 0.7),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.3,
+                  size: 20,
                 ),
-              ),
-            ],
+                const SizedBox(width: 8),
+                Text(
+                  'Delete Account',
+                  style: theme.textTheme.labelLarge?.copyWith(
+                    color: Colors.red.withValues(alpha: 0.7),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

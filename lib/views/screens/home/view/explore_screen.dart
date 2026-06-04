@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
+import 'package:nearvendorapp/models/data_models/user.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
@@ -63,52 +65,58 @@ class ExploreScreen extends StatelessWidget {
                                 builder: (context, state) {
                                   final isGuest =
                                       state.status == AuthStatus.guest;
-                                  final firstName =
-                                      state.userName?.split(' ').first ?? '';
 
-                                  return Row(
-                                    children: [
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              isGuest
-                                                  ? 'Discover Shops'
-                                                  : 'Hello, $firstName',
-                                              style: theme.textTheme.titleLarge
-                                                  ?.copyWith(
-                                                    fontWeight: FontWeight.w900,
-                                                    letterSpacing: -0.5,
-                                                  ),
+                                  return ValueListenableBuilder<User?>(
+                                    valueListenable: AppData().userNotifier,
+                                    builder: (context, user, _) {
+                                      final firstName =
+                                          user?.fullName?.split(' ').first ?? '';
+
+                                      return Row(
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  isGuest
+                                                      ? 'Discover Shops'
+                                                      : 'Hello, $firstName',
+                                                  style: theme.textTheme.titleLarge
+                                                      ?.copyWith(
+                                                        fontWeight: FontWeight.w900,
+                                                        letterSpacing: -0.5,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  isGuest
+                                                      ? 'Find vendors near you'
+                                                      : 'Find local vendors near you',
+                                                  style: theme.textTheme.bodySmall
+                                                      ?.copyWith(
+                                                        color: theme
+                                                            .textTheme
+                                                            .bodySmall
+                                                            ?.color
+                                                            ?.withValues(
+                                                              alpha: 0.6,
+                                                            ),
+                                                      ),
+                                                ),
+                                              ],
                                             ),
-                                            Text(
-                                              isGuest
-                                                  ? 'Find vendors near you'
-                                                  : 'Find local vendors near you',
-                                              style: theme.textTheme.bodySmall
-                                                  ?.copyWith(
-                                                    color: theme
-                                                        .textTheme
-                                                        .bodySmall
-                                                        ?.color
-                                                        ?.withValues(
-                                                          alpha: 0.6,
-                                                        ),
-                                                  ),
+                                          ),
+                                          Assets.icons.nearVendorText.svg(
+                                            height: 24,
+                                            colorFilter: ColorFilter.mode(
+                                              theme.primaryColor,
+                                              BlendMode.srcIn,
                                             ),
-                                          ],
-                                        ),
-                                      ),
-                                      Assets.icons.nearVendorText.svg(
-                                        height: 24,
-                                        colorFilter: ColorFilter.mode(
-                                          theme.primaryColor,
-                                          BlendMode.srcIn,
-                                        ),
-                                      ),
-                                    ],
+                                          ),
+                                        ],
+                                      );
+                                    },
                                   );
                                 },
                               ),

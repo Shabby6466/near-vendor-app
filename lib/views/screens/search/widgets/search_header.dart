@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
+import 'package:nearvendorapp/models/data_models/user.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/profile_screen.dart';
@@ -41,57 +43,64 @@ class _ProfileHeader extends StatelessWidget {
     return BlocBuilder<SessionCubit, SessionState>(
       builder: (context, state) {
         final bool isGuest = state.status == AuthStatus.guest;
-        final String name = isGuest ? 'Sign In' : (state.userName ?? 'User');
 
-        return GestureDetector(
-          onTap: () {
-            AppNavigator.push(context, const ProfileScreen());
-          },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+        return ValueListenableBuilder<User?>(
+          valueListenable: AppData().userNotifier,
+          builder: (context, user, _) {
+            final String name = isGuest ? 'Sign In' : (user?.fullName ?? 'User');
+            final String? photoUrl = isGuest ? null : user?.photoUrl;
+
+            return GestureDetector(
+              onTap: () {
+                AppNavigator.push(context, const ProfileScreen());
+              },
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  if (!isGuest)
-                    Text(
-                      'Hello',
-                      style: theme.textTheme.labelSmall?.copyWith(
-                        color: theme.textTheme.bodySmall?.color?.withValues(
-                          alpha: 0.5,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (!isGuest)
+                        Text(
+                          'Hello',
+                          style: theme.textTheme.labelSmall?.copyWith(
+                            color: theme.textTheme.bodySmall?.color?.withValues(
+                              alpha: 0.5,
+                            ),
+                            fontSize: 11,
+                          ),
                         ),
-                        fontSize: 11,
+                      Text(
+                        name,
+                        style: theme.textTheme.labelLarge?.copyWith(fontSize: 13),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: theme.primaryColor, width: 1.5),
+                    ),
+                    child: CircularCachedNetworkImage(
+                      imageUrl: photoUrl,
+                      size: 36,
+                      placeholder: Assets.icons.profileIcon.svg(
+                        height: 18,
+                        width: 18,
+                        colorFilter: ColorFilter.mode(
+                          theme.primaryColor,
+                          BlendMode.srcIn,
+                        ),
                       ),
                     ),
-                  Text(
-                    name,
-                    style: theme.textTheme.labelLarge?.copyWith(fontSize: 13),
                   ),
                 ],
               ),
-              const SizedBox(width: 10),
-              Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: theme.primaryColor, width: 1.5),
-                ),
-                child: CircularCachedNetworkImage(
-                  imageUrl: state.photoUrl,
-                  size: 36,
-                  placeholder: Assets.icons.profileIcon.svg(
-                    height: 18,
-                    width: 18,
-                    colorFilter: ColorFilter.mode(
-                      theme.primaryColor,
-                      BlendMode.srcIn,
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

@@ -14,7 +14,23 @@ part 'session_state.dart';
 /// Location is owned by AppData (see AppLocationService for GPS / picker saves).
 /// Profile updates are now owned by ProfileCubit.
 class SessionCubit extends Cubit<SessionState> {
-  SessionCubit() : super(const SessionState());
+  late final VoidCallback _userListener;
+
+  SessionCubit() : super(const SessionState()) {
+    _userListener = () {
+      final user = AppData().currentUser;
+      if (user != null && state.status == AuthStatus.authenticated) {
+        emit(
+          state.copyWith(
+            user: user,
+            userName: user.fullName,
+            photoUrl: user.photoUrl,
+          ),
+        );
+      }
+    };
+    AppData().userNotifier.addListener(_userListener);
+  }
 
   Future<void> initialize() async {
     final token = CurrentUserStorage.getUserAuthToken();
@@ -95,4 +111,10 @@ class SessionCubit extends Cubit<SessionState> {
   }
 
   bool get isAuthenticated => state.status == AuthStatus.authenticated;
+
+  @override
+  Future<void> close() {
+    AppData().userNotifier.removeListener(_userListener);
+    return super.close();
+  }
 }
