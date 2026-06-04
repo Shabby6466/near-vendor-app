@@ -186,28 +186,28 @@ class ShopGrid extends StatelessWidget {
                     mainAxisSpacing: 12,
                     childAspectRatio: 0.85,
                   ),
-                  delegate: SliverChildBuilderDelegate((context, index) {
-                    final shop = shops[index];
-                    return GestureDetector(
-                      onTap: () {
-                        AppNavigator.push(
-                          context,
-                          CustomerShopDetailsScreen(shop: shop),
-                        );
-                      },
-                      child: VisibilityDetector(
-                        key: Key('shop-${shop.id}'),
-                        onVisibilityChanged: (info) {
-                          if (info.visibleFraction > 0.5) {
-                            context.read<ExploreScreenCubit>().trackImpression(
-                              shop.id,
-                            );
-                          }
-                        },
-                        child: ShopCard(shop: shop),
-                      ),
-                    );
-                  }, childCount: shops.length),
+                   delegate: SliverChildBuilderDelegate((context, index) {
+                     final shop = shops[index];
+                     return GestureDetector(
+                       onTap: () {
+                         AppNavigator.push(
+                           context,
+                           CustomerShopDetailsScreen(shop: shop),
+                         );
+                       },
+                       child: VisibilityDetector(
+                         key: Key('shop-${shop.id ?? index}'),
+                          onVisibilityChanged: (info) {
+                             if (info.visibleFraction > 0.5) {
+                               context.read<ExploreScreenCubit>().trackImpression(
+                                 shop.id ?? '',
+                               );
+                             }
+                           },
+                          child: ShopCard(shop: shop),
+                       ),
+                     );
+                   }, childCount: shops.length),
                 ),
               ),
             ],
@@ -385,30 +385,30 @@ class ShopCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                // Category Tag
-                Positioned(
-                  bottom: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      shop.businessCategory.toUpperCase(),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 8,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ),
-                ),
+                 // Category Tag
+                 Positioned(
+                   bottom: 8,
+                   left: 8,
+                   child: Container(
+                     padding: const EdgeInsets.symmetric(
+                       horizontal: 6,
+                       vertical: 2,
+                     ),
+                     decoration: BoxDecoration(
+                       color: Colors.black.withValues(alpha: 0.6),
+                       borderRadius: BorderRadius.circular(4),
+                     ),
+                     child: Text(
+                       shop.businessCategory?.toUpperCase() ?? 'N/A',
+                       style: const TextStyle(
+                         color: Colors.white,
+                         fontSize: 8,
+                         fontWeight: FontWeight.w800,
+                         letterSpacing: 0.5,
+                       ),
+                     ),
+                   ),
+                 ),
               ],
             ),
           ),
@@ -417,16 +417,16 @@ class ShopCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  shop.shopName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 13,
-                    letterSpacing: -0.2,
-                  ),
-                ),
+                 Text(
+                   shop.shopName ?? 'Unknown Shop',
+                   maxLines: 1,
+                   overflow: TextOverflow.ellipsis,
+                   style: theme.textTheme.titleSmall?.copyWith(
+                     fontWeight: FontWeight.w800,
+                     fontSize: 13,
+                     letterSpacing: -0.2,
+                   ),
+                 ),
                 const SizedBox(height: 2),
                 Row(
                   children: [
@@ -437,17 +437,19 @@ class ShopCard extends StatelessWidget {
                     ),
                     const SizedBox(width: 2),
                     Expanded(
-                      child: Text(
-                        shop.shopAddress.isNotEmpty ? shop.shopAddress : 'N/A',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          fontSize: 11,
-                          color: theme.textTheme.bodySmall?.color?.withValues(
-                            alpha: 0.6,
-                          ),
-                        ),
-                      ),
+                         child: Text(
+                           shop.shopAddress != null && shop.shopAddress!.isNotEmpty
+                               ? shop.shopAddress!
+                               : 'N/A',
+                           maxLines: 1,
+                           overflow: TextOverflow.ellipsis,
+                           style: theme.textTheme.bodySmall?.copyWith(
+                             fontSize: 11,
+                             color: theme.textTheme.bodySmall?.color?.withValues(
+                               alpha: 0.6,
+                             ),
+                           ),
+                         ),
                     ),
                   ],
                 ),

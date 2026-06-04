@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
 
 class RecentItemsSection extends StatelessWidget {
   const RecentItemsSection({super.key});
@@ -94,8 +94,8 @@ class _MemoryCard extends StatelessWidget {
         AppNavigator.push(
           context,
           BlocProvider(
-            create: (context) => ExploreItemDetailCubit(),
-            child: ExploreItemDetailScreen(itemId: item.id),
+            create: (context) => ProductDetailCubit(),
+            child: ProductDetailScreen(itemId: item.id),
           ),
         );
       },

@@ -36,15 +36,47 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
-    <!-- Required to query activities that can process text, see:
-         https://developer.android.com/training/package-visibility and
-         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+    <!--
+        Package visibility configuration for Android 11+ (API 30).
 
-         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+        On API 30+ the OS hides which apps are installed by default, so
+        url_launcher's canLaunchUrl() returns false for tel:, https://,
+        geo:, google.navigation: and whatsapp: intents unless the host
+        app explicitly declares the matching <intent> or <package>
+        entries below. Without these the call and message buttons on
+        the ProductDetail screen do nothing on devices that target
+        API 30 or higher.
+    -->
     <queries>
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
         </intent>
+        <intent>
+            <action android:name="android.intent.action.DIAL"/>
+            <data android:scheme="tel"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="https"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="http"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="geo"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="google.navigation"/>
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW"/>
+            <data android:scheme="whatsapp"/>
+        </intent>
+        <package android:name="com.whatsapp"/>
+        <package android:name="com.whatsapp.w4b"/>
     </queries>
 </manifest>

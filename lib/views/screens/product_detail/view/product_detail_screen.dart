@@ -10,34 +10,33 @@ import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
+import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
+import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
-import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-class ExploreItemDetailScreen extends StatefulWidget {
+class ProductDetailScreen extends StatefulWidget {
   final String itemId;
 
-  const ExploreItemDetailScreen({super.key, required this.itemId});
+  const ProductDetailScreen({super.key, required this.itemId});
 
   @override
-  State<ExploreItemDetailScreen> createState() =>
-      _ExploreItemDetailScreenState();
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   @override
   void initState() {
     super.initState();
-    context.read<ExploreItemDetailCubit>().fetchDetails(widget.itemId);
+    context.read<ProductDetailCubit>().fetchDetails(widget.itemId);
   }
 
   @override
@@ -49,15 +48,15 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocBuilder<ExploreItemDetailCubit, ExploreItemDetailState>(
+      body: BlocBuilder<ProductDetailCubit, ProductDetailState>(
         builder: (context, state) {
-          if (state is ExploreItemDetailLoading) {
+          if (state is ProductDetailLoading) {
             return const AppLoadingIndicator();
           }
-          if (state is ExploreItemDetailSuccess) {
+          if (state is ProductDetailSuccess) {
             return _buildMainContent(context, state.item, state.shop);
           }
-          if (state is ExploreItemDetailFailure) {
+          if (state is ProductDetailFailure) {
             return _buildError(context, state.message);
           }
           return const SizedBox.shrink();
@@ -404,76 +403,85 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    return Container(
-      height: 70,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2C2C34) : Colors.black87,
-        borderRadius: BorderRadius.circular(35),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.3),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          // Left Side: Call & WhatsApp
-          _buildPillIconButton(
-            context,
-            icon: Icons.call_rounded,
-            color: Colors.white,
-            onTap: () => _launchCaller(shop.shopContactPhone),
-          ),
-          _buildPillIconButton(
-            context,
-            icon: Icons.chat_rounded,
-            color: Colors.white,
-            onTap: () => _launchWhatsApp(shop.whatsappNumber),
-          ),
-
-          const SizedBox(width: 8),
-
-          // Right Side: Directions Button (Full width expansion)
-          Expanded(
-            child: GestureDetector(
-              onTap: () => _launchMap(
-                shop.shopLatitude,
-                shop.shopLongitude,
-                shop.shopName,
-              ),
-              child: Container(
-                height: 54,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  borderRadius: BorderRadius.circular(27),
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: 70,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF2C2C34) : Colors.black87,
+          borderRadius: BorderRadius.circular(35),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+              if (shop.shopContactPhone?.isNotEmpty ?? false)
+                // Left Side: Call & WhatsApp
+                _buildPillIconButton(
+                  context,
+                  icon: Icons.call_rounded,
+                  color: Colors.white,
+                  onTap: () => launchCaller(shop.shopContactPhone!, context),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.directions_rounded,
-                      color: Colors.white,
-                      size: 20,
+              if (shop.whatsappNumber?.isNotEmpty ?? false)
+                _buildPillIconButton(
+                  context,
+                  icon: Icons.chat_rounded,
+                  color: Colors.white,
+                  onTap: () => launchWhatsApp(shop.whatsappNumber!, context),
+                ),
+
+              if (shop.shopLatitude != null &&
+                  shop.shopLongitude != null &&
+                  shop.shopName != null) ...[
+                const SizedBox(width: 8),
+                // Right Side: Directions Button (Full width expansion)
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => launchMap(
+                      shop.shopLatitude!,
+                      shop.shopLongitude!,
+                      shop.shopName!,
+                      context,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Directions',
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w900,
-                        fontSize: 16,
+                    child: Container(
+                      height: 54,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primary,
+                        borderRadius: BorderRadius.circular(27),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Icon(
+                            Icons.directions_rounded,
+                            color: Colors.white,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Directions',
+                            style: theme.textTheme.labelLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 4),
-        ],
+                const SizedBox(width: 4),
+              ]
+          ],
+        ),
       ),
     );
   }
@@ -535,12 +543,12 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    shop.shopName,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                   Text(
+                     shop.shopName ?? 'Unknown Shop',
+                     style: theme.textTheme.titleSmall?.copyWith(
+                       fontWeight: FontWeight.bold,
+                     ),
+                   ),
                   Text('Vendor', style: theme.textTheme.bodySmall),
                 ],
               ),
@@ -558,20 +566,23 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
     return FutureBuilder<Position?>(
       future: Geolocator.getLastKnownPosition(),
       builder: (context, snapshot) {
-        String distanceText = '---';
-        if (snapshot.hasData && snapshot.data != null) {
-          final distance = Geolocator.distanceBetween(
-            snapshot.data!.latitude,
-            snapshot.data!.longitude,
-            shop.shopLatitude,
-            shop.shopLongitude,
-          );
-          if (distance < 1000) {
-            distanceText = '${distance.toStringAsFixed(0)}m';
-          } else {
-            distanceText = '${(distance / 1000).toStringAsFixed(1)}km';
-          }
-        }
+         String distanceText = '---';
+         if (snapshot.hasData &&
+             snapshot.data != null &&
+             shop.shopLatitude != null &&
+             shop.shopLongitude != null) {
+           final distance = Geolocator.distanceBetween(
+             snapshot.data!.latitude,
+             snapshot.data!.longitude,
+             shop.shopLatitude!,
+             shop.shopLongitude!,
+           );
+           if (distance < 1000) {
+             distanceText = '${distance.toStringAsFixed(0)}m';
+           } else {
+             distanceText = '${(distance / 1000).toStringAsFixed(1)}km';
+           }
+         }
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
@@ -602,33 +613,6 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
         );
       },
     );
-  }
-
-  Future<void> _launchCaller(String phone) async {
-    final Uri url = Uri(scheme: 'tel', path: phone);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    }
-  }
-
-  Future<void> _launchWhatsApp(String phone) async {
-    final whatsappUrl = Uri.parse("https://wa.me/$phone");
-    if (await canLaunchUrl(whatsappUrl)) {
-      await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
-    }
-  }
-
-  Future<void> _launchMap(double lat, double lon, String title) async {
-    final url = Uri.parse('google.navigation:q=$lat,$lon');
-    final fallbackUrl = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=$lat,$lon',
-    );
-
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else if (await canLaunchUrl(fallbackUrl)) {
-      await launchUrl(fallbackUrl, mode: LaunchMode.externalApplication);
-    }
   }
 
   Widget _buildError(BuildContext context, String message) {
@@ -666,9 +650,8 @@ class _ExploreItemDetailScreenState extends State<ExploreItemDetailScreen> {
           ),
           const SizedBox(height: 24),
           ElevatedButton(
-            onPressed: () => context
-                .read<ExploreItemDetailCubit>()
-                .fetchDetails(widget.itemId),
+            onPressed: () =>
+                context.read<ProductDetailCubit>().fetchDetails(widget.itemId),
             child: const Text('Try Again'),
           ),
         ],

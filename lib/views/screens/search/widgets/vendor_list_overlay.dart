@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
+import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
 
 class VendorListOverlay extends StatelessWidget {
   final List<Item> searchResults;
@@ -53,7 +53,7 @@ class VendorListOverlay extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w900,
-                        ),
+                      ),
                     ),
                     TextButton(
                       onPressed: () {}, // Optional: Sort logic
@@ -89,8 +89,8 @@ class VendorListOverlay extends StatelessWidget {
                         AppNavigator.push(
                           context,
                           BlocProvider(
-                            create: (context) => ExploreItemDetailCubit(),
-                            child: ExploreItemDetailScreen(itemId: item.id),
+                            create: (context) => ProductDetailCubit(),
+                            child: ProductDetailScreen(itemId: item.id),
                           ),
                         );
                       },
@@ -139,14 +139,14 @@ class VendorListOverlay extends StatelessWidget {
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 16,
-                                      ),
+                                    ),
                                   ),
                                   Text(
                                     'RS ${item.price.toStringAsFixed(0)} • $distanceKm km away',
                                     style: TextStyle(
                                       color: Colors.grey[600],
                                       fontSize: 12,
-                                      ),
+                                    ),
                                   ),
                                   const SizedBox(height: 4),
                                   Row(

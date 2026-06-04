@@ -9,6 +9,7 @@ import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/onboarding/view/welcome_screen.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void hideKeyBoard() {
   FocusManager.instance.primaryFocus?.unfocus();
@@ -114,3 +115,134 @@ Future<void> logoutUser() async {
 
 String shortAddress(String address) =>
     '${address.substring(0, 6)}...${address.substring(address.length - 4)}';
+
+/// Normalises a phone number for use inside a `tel:` or WhatsApp URL.
+///
+/// Numbers in the wild often contain spaces, dashes, parentheses or
+/// unicode separators (e.g. `+92 300 1234567`, `(0300) 123-4567`).
+/// Embedding those raw characters into a URI makes `url_launcher`
+/// silently fail on some Android devices because the resulting
+/// `tel:` / `https://wa.me/` intent is malformed and `canLaunchUrl`
+/// returns `false` even when the dialer / WhatsApp is installed.
+String _sanitizePhoneNumber(String phone) {
+  if (phone.isEmpty) return phone;
+  final hasPlus = phone.trim().startsWith('+');
+  final digitsOnly = phone.replaceAll(RegExp('[^0-9]'), '');
+  return hasPlus ? '+$digitsOnly' : digitsOnly;
+}
+
+/// Opens the platform dialer with the supplied phone number.
+///
+/// We deliberately attempt to launch the URI directly (and catch any
+/// `PlatformException`) instead of relying on `canLaunchUrl` first.
+/// On Android 11+ `canLaunchUrl` returns `false` for `tel:` and for
+/// `https://wa.me/` unless the host app has the matching `<queries>`
+/// entries declared in `AndroidManifest.xml`, even when the dialer /
+/// WhatsApp is installed and able to handle the intent. Trying the
+/// launch first and falling back on the exception gives correct
+/// behaviour across all devices.
+Future<void> launchCaller(String phone, BuildContext context) async {
+  final sanitized = _sanitizePhoneNumber(phone);
+  if (sanitized.isEmpty) {
+    _showContactError(
+      context,
+      'Phone number is not available for this vendor.',
+    );
+    return;
+  }
+  final Uri url = Uri(scheme: 'tel', path: sanitized);
+  try {
+    final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
+    if (!launched && !context.mounted) return;
+    if (!launched) {
+      _showContactError(context, 'No phone app is available to place a call.');
+    }
+  } on PlatformException catch (e) {
+    debugPrint('launchCaller PlatformException: $e');
+    if (!context.mounted) return;
+    _showContactError(context, 'Unable to open the dialer on this device.');
+  } catch (e) {
+    debugPrint('launchCaller error: $e');
+    if (!context.mounted) return;
+    _showContactError(context, 'Unable to open the dialer on this device.');
+  }
+}
+
+Future<void> launchWhatsApp(String phone, BuildContext context) async {
+  final sanitized = _sanitizePhoneNumber(phone);
+  if (sanitized.isEmpty) {
+    _showContactError(
+      context,
+      'WhatsApp number is not available for this vendor.',
+    );
+    return;
+  }
+  // wa.me / api.whatsapp.com URLs expect the number with no `+` prefix.
+  final digitsOnly = sanitized.startsWith('+')
+      ? sanitized.substring(1)
+      : sanitized;
+
+  final candidates = <Uri>[
+    Uri.parse('https://api.whatsapp.com/send?phone=$digitsOnly'),
+    Uri.parse('https://wa.me/$digitsOnly'),
+    Uri.parse('whatsapp://send?phone=$digitsOnly'),
+  ];
+
+  for (final url in candidates) {
+    try {
+      final launched = await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+      if (launched) return;
+    } on PlatformException catch (e) {
+      debugPrint('launchWhatsApp PlatformException for $url: $e');
+    } catch (e) {
+      debugPrint('launchWhatsApp error for $url: $e');
+    }
+  }
+
+  if (!context.mounted) return;
+  _showContactError(
+    context,
+    'WhatsApp is not installed on this device. Please install it or contact the vendor by phone.',
+  );
+}
+
+Future<void> launchMap(
+  double lat,
+  double lon,
+  String title,
+  BuildContext context,
+) async {
+  final encodedTitle = Uri.encodeComponent(title);
+  final geoUrl = Uri.parse('geo:$lat,$lon?q=$lat,$lon($encodedTitle)');
+  final navUrl = Uri.parse('google.navigation:q=$lat,$lon');
+  final fallbackUrl = Uri.parse(
+    'https://www.google.com/maps/search/?api=1&query=$lat,$lon',
+  );
+
+  for (final url in [geoUrl, navUrl, fallbackUrl]) {
+    try {
+      final launched = await launchUrl(
+        url,
+        mode: LaunchMode.externalApplication,
+      );
+      if (launched) return;
+    } on PlatformException catch (e) {
+      debugPrint('launchMap PlatformException for $url: $e');
+    } catch (e) {
+      debugPrint('launchMap error for $url: $e');
+    }
+  }
+
+  if (!context.mounted) return;
+  _showContactError(context, 'No map application is available on this device.');
+}
+
+void _showContactError(BuildContext context, String message) {
+  if (!context.mounted) return;
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
+  );
+}

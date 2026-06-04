@@ -5,9 +5,9 @@ import 'package:nearvendorapp/models/data_models/item_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/shop_details_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ItemCard extends StatelessWidget {
@@ -45,8 +45,8 @@ class ItemCard extends StatelessWidget {
           AppNavigator.push(
             context,
             BlocProvider(
-              create: (context) => ExploreItemDetailCubit(),
-              child: ExploreItemDetailScreen(itemId: item.id),
+              create: (context) => ProductDetailCubit(),
+              child: ProductDetailScreen(itemId: item.id),
             ),
           );
         },
@@ -162,7 +162,7 @@ class ItemCard extends StatelessWidget {
                         color: theme.primaryColor,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        ),
+                      ),
                     ),
                   ],
                 ),

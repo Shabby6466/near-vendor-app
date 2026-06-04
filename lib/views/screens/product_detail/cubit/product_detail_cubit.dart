@@ -7,26 +7,26 @@ import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/item_services.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 
-part 'explore_item_detail_state.dart';
+part 'product_detail_state.dart';
 
-class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState>
-    with AnalyticsMixin<ExploreItemDetailState> {
+class ProductDetailCubit extends Cubit<ProductDetailState>
+    with AnalyticsMixin<ProductDetailState> {
   final ItemServices _itemServices = ItemServices();
   final ShopServices _shopServices = ShopServices();
 
-  ExploreItemDetailCubit() : super(ExploreItemDetailInitial()) {
-    initAnalytics('explore_item_detail_screen');
+  ProductDetailCubit() : super(ProductDetailInitial()) {
+    initAnalytics('product_detail_screen');
   }
 
   Future<void> fetchDetails(String itemId) async {
-    emit(ExploreItemDetailLoading());
+    emit(ProductDetailLoading());
     try {
-      // 1. Fetch Item Details
+      // 1. Fetch Product Details
       final itemResponse = await _itemServices.getItemById(itemId);
       if (itemResponse.success != true) {
         emit(
-          ExploreItemDetailFailure(
-            itemResponse.message ?? 'Failed to load item',
+          ProductDetailFailure(
+            itemResponse.message ?? 'Failed to load product',
           ),
         );
         return;
@@ -34,7 +34,7 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState>
 
       final item = itemResponse.item;
       if (item == null) {
-        emit(const ExploreItemDetailFailure('Item details not found'));
+        emit(const ProductDetailFailure('Product details not found'));
         return;
       }
 
@@ -51,9 +51,9 @@ class ExploreItemDetailCubit extends Cubit<ExploreItemDetailState>
         }
       }
 
-      emit(ExploreItemDetailSuccess(item: item, shop: shop));
+      emit(ProductDetailSuccess(item: item, shop: shop));
     } catch (e) {
-      emit(ExploreItemDetailFailure(e.toString()));
+      emit(ProductDetailFailure(e.toString()));
     }
   }
 

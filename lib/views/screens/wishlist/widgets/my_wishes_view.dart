@@ -6,8 +6,8 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/explore_item_detail_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/view/explore_item_detail_screen.dart';
+import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
@@ -549,8 +549,8 @@ class _WishlistCard extends StatelessWidget {
                             AppNavigator.push(
                               context,
                               BlocProvider(
-                                create: (_) => ExploreItemDetailCubit(),
-                                child: ExploreItemDetailScreen(itemId: item.id),
+                                create: (_) => ProductDetailCubit(),
+                                child: ProductDetailScreen(itemId: item.id),
                               ),
                             );
                           },
@@ -812,9 +812,7 @@ class _WishlistCard extends StatelessWidget {
                           ),
                           child: Text(
                             confirmLabel,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w800,
-                            ),
+                            style: const TextStyle(fontWeight: FontWeight.w800),
                           ),
                         ),
                       ),

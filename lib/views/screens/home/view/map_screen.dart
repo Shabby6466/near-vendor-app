@@ -159,16 +159,18 @@ class _MapView extends StatelessWidget {
                       ),
                     ],
                   ),
-                  MarkerLayer(
-                    markers: state.shops.map((shop) {
-                      return Marker(
-                        point: LatLng(shop.shopLatitude, shop.shopLongitude),
-                        width: 100,
-                        height: 100,
-                        child: _ShopMarker(shop: shop),
-                      );
-                    }).toList(),
-                  ),
+                   MarkerLayer(
+                     markers: state.shops
+                         .where((shop) => shop.shopLatitude != null && shop.shopLongitude != null)
+                         .map((shop) {
+                           return Marker(
+                             point: LatLng(shop.shopLatitude!, shop.shopLongitude!),
+                             width: 100,
+                             height: 100,
+                             child: _ShopMarker(shop: shop),
+                           );
+                         }).toList(),
+                   ),
                 ],
               );
             },
@@ -382,16 +384,16 @@ class _ShopMarker extends StatelessWidget {
                 ),
               ],
             ),
-            child: Text(
-              shop.shopName,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 10,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
+             child: Text(
+               shop.shopName ?? 'Unknown Shop',
+               maxLines: 1,
+               overflow: TextOverflow.ellipsis,
+               style: const TextStyle(
+                 color: Colors.white,
+                 fontSize: 10,
+                 fontWeight: FontWeight.w700,
+               ),
+             ),
           ),
         ],
       ),
