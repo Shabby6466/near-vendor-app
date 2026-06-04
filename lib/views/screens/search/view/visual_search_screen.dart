@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
@@ -63,16 +64,45 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         imageQuality: 85,
       );
 
-      if (pickedFile != null) {
+      if (pickedFile == null) return;
+
+      final croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile.path,
+        uiSettings: [
+          AndroidUiSettings(
+            toolbarTitle: 'Frame the product',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false,
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.original,
+            ],
+          ),
+          IOSUiSettings(
+            title: 'Frame the product',
+            doneButtonTitle: 'Search',
+            aspectRatioPresets: [
+              CropAspectRatioPreset.square,
+              CropAspectRatioPreset.ratio4x3,
+              CropAspectRatioPreset.original,
+            ],
+          ),
+        ],
+      );
+
+      if (croppedFile != null) {
         setState(() {
-          _selectedImage = File(pickedFile.path);
+          _selectedImage = File(croppedFile.path);
         });
         if (mounted) {
           context.read<VisualSearchCubit>().searchByImage(_selectedImage!);
         }
       }
     } catch (e) {
-      debugPrint("Pick image error: $e");
+      debugPrint("Pick/crop image error: $e");
     }
   }
 
@@ -104,12 +134,21 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
             listener: (context, state) {
               if (state is VisualSearchSuccess) {
                 if (state.results.isEmpty) {
-                  _showNoResultBottomSheet(context);
+                  _showNoResultBottomSheet(
+                    context,
+                    radiusUsed: state.radiusUsed,
+                    hasMoreBeyondRadius: state.hasMoreBeyondRadius,
+                  );
                 } else {
                   _showScanResultBottomSheet(context, state.results);
                 }
               } else if (state is VisualSearchFailure) {
-                _showNoResultBottomSheet(context, message: state.message);
+                _showNoResultBottomSheet(
+                  context,
+                  message: state.message,
+                  radiusUsed: state.radiusUsed,
+                  hasMoreBeyondRadius: state.hasMoreBeyondRadius,
+                );
               }
             },
             child: const SizedBox.shrink(),
@@ -339,7 +378,12 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     );
   }
 
-  void _showNoResultBottomSheet(BuildContext context, {String? message}) {
+  void _showNoResultBottomSheet(
+    BuildContext context, {
+    String? message,
+    double? radiusUsed,
+    bool hasMoreBeyondRadius = false,
+  }) {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -348,8 +392,17 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         value: context.read<VisualSearchCubit>(),
         child: NoResultSheet(
           message: message,
+          radiusUsed: radiusUsed,
+          hasMoreBeyondRadius: hasMoreBeyondRadius,
           onIncreaseRadius: () {
             Navigator.pop(innerContext);
+            if (_selectedImage != null && radiusUsed != null) {
+              final double expandedRadiusMeters = (radiusUsed * 3.0).clamp(1000.0, 50000.0);
+              context.read<VisualSearchCubit>().searchByImage(
+                    _selectedImage!,
+                    customRadiusMeters: expandedRadiusMeters,
+                  );
+            }
           },
           onDismiss: () {
             Navigator.pop(innerContext);

@@ -45,7 +45,7 @@ class SearchServices {
     required double lon,
     double radius = 100000,
     int page = 1,
-    int limit = 10,
+    int limit = 20,
   }) async {
     try {
       final formData = FormData.fromMap({

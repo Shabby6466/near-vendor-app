@@ -26,14 +26,26 @@ class VisualSearchResultSheet extends StatelessWidget {
     String matchDescription;
     Color matchColor;
 
-    if (score > 0.8) {
+    final resolvedLabel = item.matchLabel ?? (
+      score >= 0.80 ? 'STRONG_MATCH' : (
+        score >= 0.60 ? 'GOOD_MATCH' : (
+          score >= 0.40 ? 'POSSIBLE_MATCH' : 'WEAK_MATCH'
+        )
+      )
+    );
+
+    if (resolvedLabel == 'STRONG_MATCH') {
       matchLabel = 'STRONG MATCH';
       matchDescription = 'same or very similar product';
       matchColor = const Color(0xFF004AAD);
-    } else if (score > 0.6) {
+    } else if (resolvedLabel == 'GOOD_MATCH') {
       matchLabel = 'GOOD MATCH';
       matchDescription = 'same category, similar appearance';
       matchColor = const Color(0xFF1EC091);
+    } else if (resolvedLabel == 'POSSIBLE_MATCH') {
+      matchLabel = 'POSSIBLE MATCH';
+      matchDescription = 'likely related product';
+      matchColor = Colors.amber.shade700;
     } else {
       matchLabel = 'WEAK MATCH';
       matchDescription = 'loosely related';

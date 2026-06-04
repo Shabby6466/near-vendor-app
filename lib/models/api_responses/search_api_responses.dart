@@ -6,6 +6,8 @@ class SearchItemResponse extends BaseApiResponse {
   final SearchMeta? meta;
   final bool isGlobalFallback;
   final String? rangeMessage;
+  final double? radiusUsed;
+  final bool hasMoreBeyondRadius;
 
   SearchItemResponse({
     super.success,
@@ -15,6 +17,8 @@ class SearchItemResponse extends BaseApiResponse {
     this.meta,
     this.isGlobalFallback = false,
     this.rangeMessage,
+    this.radiusUsed,
+    this.hasMoreBeyondRadius = false,
   });
 
   factory SearchItemResponse.fromJson(Map<String, dynamic> json) {
@@ -23,6 +27,13 @@ class SearchItemResponse extends BaseApiResponse {
     final metaJson = data is Map<String, dynamic>
         ? data['meta'] as Map<String, dynamic>?
         : json['meta'] as Map<String, dynamic>?;
+    
+    final radiusUsed = (json['radiusUsed'] as num?)?.toDouble() ??
+        (metaJson?['radiusUsed'] as num?)?.toDouble();
+    final hasMoreBeyondRadius = json['hasMoreBeyondRadius'] as bool? ??
+        metaJson?['hasMoreBeyondRadius'] as bool? ??
+        false;
+
     return SearchItemResponse(
       success: json['success'] as bool? ?? false,
       status: (json['statusCode'] as num?)?.toInt() ?? 200,
@@ -37,6 +48,8 @@ class SearchItemResponse extends BaseApiResponse {
       rangeMessage: data is Map<String, dynamic>
           ? data['rangeMessage'] as String?
           : json['rangeMessage'] as String?,
+      radiusUsed: radiusUsed,
+      hasMoreBeyondRadius: hasMoreBeyondRadius,
     );
   }
 }

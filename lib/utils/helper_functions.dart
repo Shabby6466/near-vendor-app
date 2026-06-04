@@ -239,5 +239,3 @@ Future<void> launchMap(
   if (!context.mounted) return;
   AppAlerts.showError(context, 'No map application is available on this device.');
 }
-
-

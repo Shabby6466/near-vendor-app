@@ -24,6 +24,7 @@ class Product extends Equatable {
   final int? count; // For performance results
   final double? distanceM;
   final double? visualScore;
+  final String? matchLabel;
   final double? lat;
   final double? long;
   final int? volatilityFactor;
@@ -56,6 +57,7 @@ class Product extends Equatable {
     this.count,
     this.distanceM,
     this.visualScore,
+    this.matchLabel,
     this.lat,
     this.long,
     this.volatilityFactor,
@@ -117,6 +119,7 @@ class Product extends Equatable {
       count: json['count'] as int?,
       distanceM: double.tryParse(json['distance_m']?.toString() ?? json['distanceM']?.toString() ?? json['distance']?.toString() ?? ''),
       visualScore: double.tryParse(json['visualScore']?.toString() ?? ''),
+      matchLabel: json['matchLabel'] as String?,
       lat: double.tryParse(json['lat']?.toString() ?? ''),
       long: double.tryParse(json['long']?.toString() ?? ''),
       volatilityFactor: json['volatilityFactor'] as int?,
@@ -157,6 +160,7 @@ class Product extends Equatable {
       'count': count,
       'distanceM': distanceM,
       'visualScore': visualScore,
+      'matchLabel': matchLabel,
       'lat': lat,
       'long': long,
       'volatilityFactor': volatilityFactor,
@@ -191,6 +195,7 @@ class Product extends Equatable {
     int? count,
     double? distanceM,
     double? visualScore,
+    String? matchLabel,
     double? lat,
     double? long,
     int? volatilityFactor,
@@ -223,6 +228,7 @@ class Product extends Equatable {
       count: count ?? this.count,
       distanceM: distanceM ?? this.distanceM,
       visualScore: visualScore ?? this.visualScore,
+      matchLabel: matchLabel ?? this.matchLabel,
       lat: lat ?? this.lat,
       long: long ?? this.long,
       volatilityFactor: volatilityFactor ?? this.volatilityFactor,
@@ -267,6 +273,7 @@ class Product extends Equatable {
         count,
         distanceM,
         visualScore,
+        matchLabel,
         lat,
         long,
         volatilityFactor,

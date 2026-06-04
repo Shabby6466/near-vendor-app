@@ -17,6 +17,8 @@ class NoResultSheet extends StatefulWidget {
   final String? searchQuery;
   final VoidCallback onIncreaseRadius;
   final VoidCallback onDismiss;
+  final double? radiusUsed;
+  final bool hasMoreBeyondRadius;
 
   const NoResultSheet({
     super.key,
@@ -24,6 +26,8 @@ class NoResultSheet extends StatefulWidget {
     this.searchQuery,
     required this.onIncreaseRadius,
     required this.onDismiss,
+    this.radiusUsed,
+    this.hasMoreBeyondRadius = false,
   });
 
   @override
@@ -96,6 +100,30 @@ class _NoResultSheetState extends State<NoResultSheet> {
     final hasQuery =
         widget.searchQuery != null && widget.searchQuery!.isNotEmpty;
 
+    final double? radiusKm = widget.radiusUsed != null ? widget.radiusUsed! / 1000.0 : null;
+    final double? expandedRadiusKm = radiusKm != null ? (radiusKm * 3.0).clamp(1.0, 50.0) : null;
+
+    final String titleText;
+    final String bodyText;
+    final String actionText;
+    final bool showIncreaseAction;
+
+    if (radiusKm != null) {
+      titleText = 'No matches within ${radiusKm.toStringAsFixed(0)}km';
+      bodyText = widget.hasMoreBeyondRadius
+          ? 'Would you like to expand your search to ${expandedRadiusKm!.toStringAsFixed(0)}km?'
+          : "No matching products found nearby.";
+      actionText = 'Expand search';
+      showIncreaseAction = widget.hasMoreBeyondRadius;
+    } else {
+      titleText = hasQuery
+          ? '"${widget.searchQuery}" not found nearby'
+          : 'No Items Found Nearby';
+      bodyText = widget.message ?? "We couldn't find this product within your discovery radius.";
+      actionText = 'Increase Discovery Radius';
+      showIncreaseAction = true;
+    }
+
     return SingleChildScrollView(
       child: Container(
         decoration: BoxDecoration(
@@ -124,9 +152,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
             ),
             const SizedBox(height: 16),
             Text(
-              hasQuery
-                  ? '"${widget.searchQuery}" not found nearby'
-                  : 'No Items Found Nearby',
+              titleText,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
@@ -135,8 +161,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
             ),
             const SizedBox(height: 8),
             Text(
-              widget.message ??
-                  "We couldn't find this product within your discovery radius.",
+              bodyText,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 13,
@@ -146,62 +171,61 @@ class _NoResultSheetState extends State<NoResultSheet> {
             ),
             const SizedBox(height: 24),
 
-            // Option 1: Increase radius
-            ElevatedButton.icon(
-              onPressed: widget.onIncreaseRadius,
-              icon: const Icon(
-                Icons.radar_rounded,
-                size: 18,
-                color: Colors.white,
-              ),
-              label: const Text(
-                'Increase Discovery Radius',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
+            if (showIncreaseAction) ...[
+              ElevatedButton.icon(
+                onPressed: widget.onIncreaseRadius,
+                icon: const Icon(
+                  Icons.radar_rounded,
+                  size: 18,
                   color: Colors.white,
                 ),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF004AAD),
-                minimumSize: const Size(double.infinity, 52),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                elevation: 0,
-              ),
-            ),
-
-            const SizedBox(height: 12),
-
-            // Divider with "or"
-            Row(
-              children: [
-                Expanded(
-                  child: Divider(
-                    color: isDark ? Colors.white12 : Colors.grey.shade300,
+                label: Text(
+                  actionText,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Text(
-                    'or',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white38 : Colors.grey.shade500,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF004AAD),
+                  minimumSize: const Size(double.infinity, 52),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: isDark ? Colors.white12 : Colors.grey.shade300,
                     ),
                   ),
-                ),
-                Expanded(
-                  child: Divider(
-                    color: isDark ? Colors.white12 : Colors.grey.shade300,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'or',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white38 : Colors.grey.shade500,
+                      ),
+                    ),
                   ),
-                ),
-              ],
-            ),
+                  Expanded(
+                    child: Divider(
+                      color: isDark ? Colors.white12 : Colors.grey.shade300,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+            ],
+            if (!showIncreaseAction) const SizedBox(height: 12),
 
-            const SizedBox(height: 12),
 
             // Option 2: Wishlist CTA
             Container(

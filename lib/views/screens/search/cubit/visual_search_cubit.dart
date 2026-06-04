@@ -14,7 +14,7 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
 
   VisualSearchCubit() : super(VisualSearchInitial());
 
-  Future<void> searchByImage(File image) async {
+  Future<void> searchByImage(File image, {double? customRadiusMeters}) async {
     emit(VisualSearchLoading());
 
     try {
@@ -39,9 +39,14 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
 
       final position = await Geolocator.getCurrentPosition();
 
-      // 2. Get Radius from Local Storage (defaults to 10km if not set)
-      final radiusKm = CurrentUserStorage.getDiscoveryRadius();
-      final radiusMeters = radiusKm * 1000;
+      // 2. Get Radius
+      final double radiusMeters;
+      if (customRadiusMeters != null) {
+        radiusMeters = customRadiusMeters;
+      } else {
+        final radiusKm = CurrentUserStorage.getDiscoveryRadius();
+        radiusMeters = radiusKm * 1000.0;
+      }
 
       // 3. API Call
       final response = await _searchServices.visualSearch(
@@ -51,14 +56,24 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
         radius: radiusMeters,
       );
       final results = response.items;
+      final radiusUsed = response.radiusUsed ?? radiusMeters;
+      final hasMoreBeyondRadius = response.hasMoreBeyondRadius;
 
       if (results.isNotEmpty) {
         results.sort(
           (a, b) => (b.visualScore ?? 0).compareTo(a.visualScore ?? 0),
         );
-        emit(VisualSearchSuccess(results));
+        emit(VisualSearchSuccess(
+          results,
+          radiusUsed: radiusUsed,
+          hasMoreBeyondRadius: hasMoreBeyondRadius,
+        ));
       } else {
-        emit(const VisualSearchFailure('No matching products found nearby.'));
+        emit(VisualSearchFailure(
+          'No matching products found nearby.',
+          radiusUsed: radiusUsed,
+          hasMoreBeyondRadius: hasMoreBeyondRadius,
+        ));
       }
     } catch (e) {
       emit(VisualSearchFailure('Search failed: $e'));
