@@ -5,7 +5,7 @@ import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/profile/view/profile_screen.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/view/profile_screen.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 import 'package:nearvendorapp/views/widgets/location_display_row.dart';
 
@@ -75,10 +75,7 @@ class _ProfileHeader extends StatelessWidget {
                 padding: const EdgeInsets.all(2),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(
-                    color: theme.primaryColor,
-                    width: 1.5,
-                  ),
+                  border: Border.all(color: theme.primaryColor, width: 1.5),
                 ),
                 child: CircularCachedNetworkImage(
                   imageUrl: state.photoUrl,

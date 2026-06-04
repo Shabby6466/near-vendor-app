@@ -63,8 +63,10 @@ class AuthServices {
 
   Future<GenericApiResponse> updateUser(UpdateUserInput input) async {
     try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.patch(ApiConstants.updateUser, data: data);
+      final response = await Server.patch(
+        ApiConstants.updateUser,
+        data: input.toJson(),
+      );
       return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
@@ -92,7 +94,9 @@ class AuthServices {
         ApiConstants.uploadMedia,
         data: formData,
       );
-      return MediaUploadResponse.fromJson(response.data as Map<String, dynamic>);
+      return MediaUploadResponse.fromJson(
+        response.data as Map<String, dynamic>,
+      );
     } catch (e) {
       return MediaUploadResponse(message: e.toString());
     }

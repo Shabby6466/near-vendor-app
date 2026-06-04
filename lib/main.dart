@@ -15,7 +15,7 @@ import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/common/splash_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/onboarding/view/welcome_screen.dart';
-import 'package:nearvendorapp/views/screens/profile/cubit/profile_cubit.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/cubit/profile_cubit.dart';
 import 'package:upgrader/upgrader.dart';
 
 Future<void> main() async {
