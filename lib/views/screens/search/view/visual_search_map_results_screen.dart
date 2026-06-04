@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/constants/default_location.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/vendor_list_overlay.dart';
 
 class VisualSearchMapResultsScreen extends StatefulWidget {
-  final List<Item> results;
+  final List<Product> results;
 
   const VisualSearchMapResultsScreen({super.key, required this.results});
 

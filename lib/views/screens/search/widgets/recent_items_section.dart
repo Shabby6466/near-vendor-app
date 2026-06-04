@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
@@ -69,7 +69,7 @@ class RecentItemsSection extends StatelessWidget {
                 itemCount: recentItems.length,
                 separatorBuilder: (context, index) => const SizedBox(width: 14),
                 itemBuilder: (context, index) {
-                  return _MemoryCard(item: recentItems[index]);
+                  return _MemoryCard(product: recentItems[index]);
                 },
               ),
             ),
@@ -81,8 +81,8 @@ class RecentItemsSection extends StatelessWidget {
 }
 
 class _MemoryCard extends StatelessWidget {
-  final Item item;
-  const _MemoryCard({required this.item});
+  final Product product;
+  const _MemoryCard({required this.product});
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +95,7 @@ class _MemoryCard extends StatelessWidget {
           context,
           BlocProvider(
             create: (context) => ProductDetailCubit(),
-            child: ProductDetailScreen(itemId: item.id),
+            child: ProductDetailScreen(product: product),
           ),
         );
       },
@@ -125,9 +125,9 @@ class _MemoryCard extends StatelessWidget {
               child: Stack(
                 children: [
                   Hero(
-                    tag: 'item_img_${item.id}_memory',
+                    tag: 'item_img_${product.id}_memory',
                     child: CachedNetworkImage(
-                      imageUrl: item.imageUrl ?? '',
+                      imageUrl: product.imageUrl ?? '',
                       width: double.infinity,
                       height: double.infinity,
                       fit: BoxFit.cover,
@@ -162,7 +162,7 @@ class _MemoryCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '${item.stockCount} left',
+                            '${product.stockCount} left',
                             style: theme.textTheme.bodySmall?.copyWith(
                               fontSize: 10,
                               color: Colors.white,
@@ -182,7 +182,7 @@ class _MemoryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    item.name,
+                    product.name,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.labelLarge?.copyWith(
@@ -192,7 +192,7 @@ class _MemoryCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Rs. ${item.price.toStringAsFixed(0)}',
+                    'Rs. ${product.price.toStringAsFixed(0)}',
                     style: theme.textTheme.labelLarge?.copyWith(
                       fontSize: 12,
                       color: theme.primaryColor,

@@ -98,16 +98,102 @@ class ShopOpeningHours extends Equatable {
   });
 
   factory ShopOpeningHours.fromJson(Map<String, dynamic>? json) {
-    if (json == null) return const ShopOpeningHours();
+    if (json == null || json.isEmpty) return const ShopOpeningHours();
+
+    final timezone = json['timezone'] as String? ?? 'Asia/Karachi';
+
+    // If it has 'periods', it's the complex format.
+    if (json.containsKey('periods') && json['periods'] is List) {
+      return ShopOpeningHours(
+        timezone: timezone,
+        periods: (json['periods'] as List<dynamic>)
+            .whereType<Map>()
+            .map((p) => OpeningHoursPeriod.fromJson(
+                  Map<String, dynamic>.from(p),
+                ))
+            .toList(),
+      );
+    }
+
+    final periods = <OpeningHoursPeriod>[];
+    const dayKeys = {
+      'mon': 1,
+      'tue': 2,
+      'wed': 3,
+      'thu': 4,
+      'fri': 5,
+      'sat': 6,
+      'sun': 0,
+    };
+    const fullDayKeys = {
+      'monday': 1,
+      'tuesday': 2,
+      'wednesday': 3,
+      'thursday': 4,
+      'friday': 5,
+      'saturday': 6,
+      'sunday': 0,
+    };
+
+    void addPeriod(int dayIdx, String openTime, String closeTime) {
+      if (openTime.isEmpty || closeTime.isEmpty) return;
+      periods.add(OpeningHoursPeriod(
+        openDay: dayIdx,
+        openTime: openTime,
+        closeDay: dayIdx,
+        closeTime: closeTime,
+      ));
+    }
+
+    void addRange(int dayIdx, String rawRange) {
+      final value = rawRange.trim();
+      if (value.isEmpty || value.toLowerCase() == 'closed') return;
+      final parts = value.split('-');
+      if (parts.length == 2) {
+        addPeriod(dayIdx, parts[0].trim(), parts[1].trim());
+      }
+    }
+
+    json.forEach((rawKey, value) {
+      final key = rawKey.toLowerCase();
+      final dayIdx = dayKeys[key] ?? fullDayKeys[key];
+      if (dayIdx == null) return;
+
+      if (value is String) {
+        addRange(dayIdx, value);
+        return;
+      }
+
+      if (value is Map) {
+        final schedule = Map<String, dynamic>.from(value);
+        final isOpen = schedule['isOpen'] as bool? ?? true;
+        if (!isOpen) return;
+
+        final is24Hours = schedule['is24Hours'] as bool? ?? false;
+        if (is24Hours) {
+          addPeriod(dayIdx, '00:00', '23:59');
+          return;
+        }
+
+        final slots = schedule['periods'];
+        if (slots is List && slots.isNotEmpty) {
+          for (final slot in slots.whereType<Map>()) {
+            final period = TimePeriod.fromJson(
+              Map<String, dynamic>.from(slot),
+            );
+            addPeriod(dayIdx, period.openTime, period.closeTime);
+          }
+        } else {
+          final openTime = schedule['openTime'] as String? ?? '09:00';
+          final closeTime = schedule['closeTime'] as String? ?? '21:00';
+          addPeriod(dayIdx, openTime, closeTime);
+        }
+      }
+    });
+
     return ShopOpeningHours(
-      timezone: json['timezone'] as String? ?? 'Asia/Karachi',
-      periods:
-          (json['periods'] as List<dynamic>?)
-              ?.map(
-                (e) => OpeningHoursPeriod.fromJson(e as Map<String, dynamic>),
-              )
-              .toList() ??
-          [],
+      timezone: timezone,
+      periods: periods,
     );
   }
 
@@ -240,6 +326,16 @@ class ShopOpeningHours extends Equatable {
           statusColor: Color(0xFF81C784), // Soft Green
         );
       }
+
+      final start = activePeriod.openDay * 1440 + _parseTimeToMinutes(activePeriod.openTime);
+      final end = activePeriod.closeDay * 1440 + _parseTimeToMinutes(activePeriod.closeTime);
+      int remainingMinutes = 0;
+      if (end >= start) {
+        remainingMinutes = end - currentWeekMinutes;
+      } else {
+        remainingMinutes = (end + 10080) - currentWeekMinutes;
+      }
+
       final closeTimeFormatted = _format12Hour(activePeriod.closeTime);
       String dayDetails = '';
       if (activePeriod.closeDay != currentDay) {
@@ -250,6 +346,16 @@ class ShopOpeningHours extends Equatable {
           dayDetails = '${dayNames[activePeriod.closeDay]} ';
         }
       }
+
+      if (remainingMinutes > 0 && remainingMinutes <= 60) {
+        return ShopStatusInfo(
+          isOpen: true,
+          statusText: 'Closing soon',
+          timeDetails: 'Closes $dayDetails$closeTimeFormatted',
+          statusColor: const Color(0xFFFFB74D), // Soft Orange
+        );
+      }
+
       return ShopStatusInfo(
         isOpen: true,
         statusText: 'Open now',
@@ -285,6 +391,16 @@ class ShopOpeningHours extends Equatable {
           dayDetails = '${dayNames[nextPeriod.openDay]} at ';
         }
       }
+
+      if (minDiff > 0 && minDiff <= 60) {
+        return ShopStatusInfo(
+          isOpen: false,
+          statusText: 'Opening soon',
+          timeDetails: 'Opens $dayDetails$openTimeFormatted',
+          statusColor: const Color(0xFFFFB74D), // Soft Orange
+        );
+      }
+
       return ShopStatusInfo(
         isOpen: false,
         statusText: 'Closed',

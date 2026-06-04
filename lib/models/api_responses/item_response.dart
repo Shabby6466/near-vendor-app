@@ -1,8 +1,8 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 
 class ItemResponse extends BaseApiResponse {
-  final Item? item;
+  final Product? item;
 
   ItemResponse({super.success, super.status, super.message, this.item});
 
@@ -10,10 +10,10 @@ class ItemResponse extends BaseApiResponse {
     : item = _parseItem(json),
       super.fromJson(json);
 
-  static Item? _parseItem(Map<String, dynamic> json) {
+  static Product? _parseItem(Map<String, dynamic> json) {
     final data = apiResponseData(json);
     final itemJson = data is Map && data['item'] != null ? data['item'] : data;
-    return itemJson is Map<String, dynamic> ? Item.fromJson(itemJson) : null;
+    return itemJson is Map<String, dynamic> ? Product.fromJson(itemJson) : null;
   }
 }
 
@@ -44,7 +44,7 @@ class PaginationMeta {
 }
 
 class ItemListResponse extends BaseApiResponse {
-  final List<Item> items;
+  final List<Product> items;
   final PaginationMeta? meta;
 
   ItemListResponse({
@@ -62,7 +62,7 @@ class ItemListResponse extends BaseApiResponse {
         status: 200,
         message: 'Success',
         items: json
-            .map((e) => Item.fromJson(e as Map<String, dynamic>))
+            .map((e) => Product.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
     }
@@ -88,7 +88,7 @@ class ItemListResponse extends BaseApiResponse {
         status: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? 'Success',
         items: itemsList
-            .map((e) => Item.fromJson(e as Map<String, dynamic>))
+            .map((e) => Product.fromJson(e as Map<String, dynamic>))
             .toList(),
         meta: metaData != null ? PaginationMeta.fromJson(metaData) : null,
       );

@@ -32,14 +32,17 @@ class ShopTimingView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 2.0),
           child: Row(
             children: [
-              SizedBox(
-                width: 80,
+              Expanded(
+                flex: 3,
                 child: Text(
                   day,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
-              Expanded(child: Text(text)),
+              Expanded(
+                flex: 4,
+                child: Text(text),
+              ),
             ],
           ),
         );

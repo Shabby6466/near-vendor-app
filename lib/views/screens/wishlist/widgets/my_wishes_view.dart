@@ -550,7 +550,7 @@ class _WishlistCard extends StatelessWidget {
                               context,
                               BlocProvider(
                                 create: (_) => ProductDetailCubit(),
-                                child: ProductDetailScreen(itemId: item.id),
+                                child: ProductDetailScreen(product: item),
                               ),
                             );
                           },

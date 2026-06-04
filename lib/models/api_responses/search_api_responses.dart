@@ -1,8 +1,8 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 
 class SearchItemResponse extends BaseApiResponse {
-  final List<Item> items;
+  final List<Product> items;
   final SearchMeta? meta;
   final bool isGlobalFallback;
   final String? rangeMessage;
@@ -27,7 +27,7 @@ class SearchItemResponse extends BaseApiResponse {
       success: json['success'] as bool? ?? false,
       status: (json['statusCode'] as num?)?.toInt() ?? 200,
       items: itemsData
-          .map((e) => Item.fromJson(e as Map<String, dynamic>))
+          .map((e) => Product.fromJson(e as Map<String, dynamic>))
           .toList(),
       meta: metaJson != null ? SearchMeta.fromJson(metaJson) : null,
       message: json['message'] as String?,

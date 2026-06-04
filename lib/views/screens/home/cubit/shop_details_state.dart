@@ -13,7 +13,7 @@ final class ShopDetailsLoading extends ShopDetailsState {}
 
 final class ShopDetailsSuccess extends ShopDetailsState {
   final Shop shop;
-  final List<Item> inventory;
+  final List<Product> inventory;
 
   const ShopDetailsSuccess({required this.shop, required this.inventory});
 

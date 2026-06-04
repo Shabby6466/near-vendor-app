@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 
 class VisualSearchResultSheet extends StatelessWidget {
-  final List<Item> items;
+  final List<Product> items;
   final VoidCallback onAccept;
   final VoidCallback onTryAgain;
 

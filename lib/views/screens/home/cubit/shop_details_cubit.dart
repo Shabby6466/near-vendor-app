@@ -4,7 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
 import 'package:nearvendorapp/models/api_responses/item_response.dart';
 import 'package:nearvendorapp/models/api_responses/shop_response.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/item_services.dart';
 import 'package:nearvendorapp/services/shop_services.dart';

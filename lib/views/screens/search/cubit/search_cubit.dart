@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
 import 'package:nearvendorapp/models/api_request_models/search_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/services/search_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';

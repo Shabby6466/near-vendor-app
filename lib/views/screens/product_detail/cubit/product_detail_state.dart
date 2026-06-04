@@ -12,7 +12,7 @@ final class ProductDetailInitial extends ProductDetailState {}
 final class ProductDetailLoading extends ProductDetailState {}
 
 final class ProductDetailSuccess extends ProductDetailState {
-  final Item item;
+  final Product item;
   final Shop? shop;
 
   const ProductDetailSuccess({required this.item, this.shop});

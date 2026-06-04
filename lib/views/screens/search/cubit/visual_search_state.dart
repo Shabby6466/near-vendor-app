@@ -12,7 +12,7 @@ final class VisualSearchInitial extends VisualSearchState {}
 final class VisualSearchLoading extends VisualSearchState {}
 
 final class VisualSearchSuccess extends VisualSearchState {
-  final List<Item> results;
+  final List<Product> results;
 
   const VisualSearchSuccess(this.results);
 

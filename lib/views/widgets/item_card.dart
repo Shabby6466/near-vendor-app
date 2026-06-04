@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/shop_details_cubit.dart';
@@ -11,7 +11,7 @@ import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ItemCard extends StatelessWidget {
-  final Item item;
+  final Product item;
   final double? width;
   final double? height;
 
@@ -46,7 +46,7 @@ class ItemCard extends StatelessWidget {
             context,
             BlocProvider(
               create: (context) => ProductDetailCubit(),
-              child: ProductDetailScreen(itemId: item.id),
+              child: ProductDetailScreen(product: item),
             ),
           );
         },

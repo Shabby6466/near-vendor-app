@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/item_services.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
@@ -14,12 +14,27 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
   final ItemServices _itemServices = ItemServices();
   final ShopServices _shopServices = ShopServices();
 
-  ProductDetailCubit() : super(ProductDetailInitial()) {
+  ProductDetailCubit({Product? initialProduct})
+      : super(
+          initialProduct != null &&
+                  initialProduct.id.isNotEmpty &&
+                  initialProduct.name.isNotEmpty &&
+                  initialProduct.shop != null &&
+                  (initialProduct.shop!['id']?.toString().isNotEmpty ?? false) &&
+                  (initialProduct.shop!['shopName']?.toString().isNotEmpty ?? false)
+              ? ProductDetailSuccess(
+                  item: initialProduct,
+                  shop: Shop.fromJson(initialProduct.shop!),
+                )
+              : ProductDetailInitial(),
+        ) {
     initAnalytics('product_detail_screen');
   }
 
   Future<void> fetchDetails(String itemId) async {
-    emit(ProductDetailLoading());
+    if (state is! ProductDetailSuccess) {
+      emit(ProductDetailLoading());
+    }
     try {
       // 1. Fetch Product Details
       final itemResponse = await _itemServices.getItemById(itemId);

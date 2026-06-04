@@ -9,7 +9,7 @@ sealed class SearchState extends Equatable {
 
 final class SearchInitial extends SearchState {
   final List<String> recentSearches;
-  final List<Item> recentItems;
+  final List<Product> recentItems;
 
   const SearchInitial({
     this.recentSearches = const [],
@@ -23,7 +23,7 @@ final class SearchInitial extends SearchState {
 final class SearchLoading extends SearchState {}
 
 final class SearchSuccess extends SearchState {
-  final List<Item> items;
+  final List<Product> items;
   final SearchMeta? meta;
   final String? message;
   final String? query;

@@ -1,13 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail/view/product_detail_screen.dart';
 
 class VendorListOverlay extends StatelessWidget {
-  final List<Item> searchResults;
+  final List<Product> searchResults;
 
   const VendorListOverlay({super.key, required this.searchResults});
 
@@ -90,7 +90,7 @@ class VendorListOverlay extends StatelessWidget {
                           context,
                           BlocProvider(
                             create: (context) => ProductDetailCubit(),
-                            child: ProductDetailScreen(itemId: item.id),
+                            child: ProductDetailScreen(product: item),
                           ),
                         );
                       },

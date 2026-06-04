@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/utils/category_utils.dart';
@@ -56,7 +56,7 @@ class SearchResultsList extends StatelessWidget {
 }
 
 class _ResultsGrid extends StatelessWidget {
-  final List<Item> items;
+  final List<Product> items;
   final String? message;
   final bool isGlobalFallback;
   final String? rangeMessage;

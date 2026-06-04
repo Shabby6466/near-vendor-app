@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:nearvendorapp/models/data_models/item_model.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 
 class WishlistItem extends Equatable {
   final String id;
@@ -8,7 +8,7 @@ class WishlistItem extends Equatable {
   final String? categoryId;
   final String status;
   final DateTime? createdAt;
-  final List<Item> matchedItems;
+  final List<Product> matchedItems;
 
   const WishlistItem({
     required this.id,
@@ -33,7 +33,7 @@ class WishlistItem extends Equatable {
           : null,
       matchedItems: matches != null
           ? matches
-                .map((i) => Item.fromJson(i as Map<String, dynamic>))
+                .map((i) => Product.fromJson(i as Map<String, dynamic>))
                 .toList()
           : [],
     );

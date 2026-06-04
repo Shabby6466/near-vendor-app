@@ -12,9 +12,7 @@ class CustomerShopDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(
-        title: Text(shop.shopName ?? 'Shop Details'),
-      ),
+      appBar: AppBar(title: Text(shop.shopName ?? 'Shop Details')),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
