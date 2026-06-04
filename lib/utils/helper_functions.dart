@@ -144,7 +144,7 @@ String _sanitizePhoneNumber(String phone) {
 Future<void> launchCaller(String phone, BuildContext context) async {
   final sanitized = _sanitizePhoneNumber(phone);
   if (sanitized.isEmpty) {
-    _showContactError(
+    AppAlerts.showError(
       context,
       'Phone number is not available for this vendor.',
     );
@@ -155,23 +155,23 @@ Future<void> launchCaller(String phone, BuildContext context) async {
     final launched = await launchUrl(url, mode: LaunchMode.externalApplication);
     if (!launched && !context.mounted) return;
     if (!launched) {
-      _showContactError(context, 'No phone app is available to place a call.');
+      AppAlerts.showError(context, 'No phone app is available to place a call.');
     }
   } on PlatformException catch (e) {
     debugPrint('launchCaller PlatformException: $e');
     if (!context.mounted) return;
-    _showContactError(context, 'Unable to open the dialer on this device.');
+    AppAlerts.showError(context, 'Unable to open the dialer on this device.');
   } catch (e) {
     debugPrint('launchCaller error: $e');
     if (!context.mounted) return;
-    _showContactError(context, 'Unable to open the dialer on this device.');
+    AppAlerts.showError(context, 'Unable to open the dialer on this device.');
   }
 }
 
 Future<void> launchWhatsApp(String phone, BuildContext context) async {
   final sanitized = _sanitizePhoneNumber(phone);
   if (sanitized.isEmpty) {
-    _showContactError(
+    AppAlerts.showError(
       context,
       'WhatsApp number is not available for this vendor.',
     );
@@ -203,7 +203,7 @@ Future<void> launchWhatsApp(String phone, BuildContext context) async {
   }
 
   if (!context.mounted) return;
-  _showContactError(
+  AppAlerts.showError(
     context,
     'WhatsApp is not installed on this device. Please install it or contact the vendor by phone.',
   );
@@ -237,12 +237,7 @@ Future<void> launchMap(
   }
 
   if (!context.mounted) return;
-  _showContactError(context, 'No map application is available on this device.');
+  AppAlerts.showError(context, 'No map application is available on this device.');
 }
 
-void _showContactError(BuildContext context, String message) {
-  if (!context.mounted) return;
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
-  );
-}
+
