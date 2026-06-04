@@ -6,8 +6,8 @@ import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
-import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/explore_shimmer_loading.dart';
+import 'package:nearvendorapp/views/screens/shop_detail/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -192,7 +192,7 @@ class ShopGrid extends StatelessWidget {
                        onTap: () {
                          AppNavigator.push(
                            context,
-                           CustomerShopDetailsScreen(shop: shop),
+                           ShopDetailScreen(shop: shop),
                          );
                        },
                        child: VisibilityDetector(

@@ -12,7 +12,7 @@ import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/map_state.dart';
-import 'package:nearvendorapp/views/screens/home/view/customer_shop_details_screen.dart';
+import 'package:nearvendorapp/views/screens/shop_detail/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 
 class MapScreen extends StatefulWidget {
@@ -336,7 +336,7 @@ class _ShopMarker extends StatelessWidget {
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
-        AppNavigator.push(context, CustomerShopDetailsScreen(shop: shop));
+        AppNavigator.push(context, ShopDetailScreen(shop: shop));
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,

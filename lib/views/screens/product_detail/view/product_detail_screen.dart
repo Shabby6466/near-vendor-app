@@ -14,6 +14,7 @@ import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/product_detail/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/shop_detail/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
@@ -379,70 +380,87 @@ class ProductDetailScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: theme.dividerColor.withValues(alpha: 0.1)),
         ),
-        child: ExpansionTile(
-          iconColor: isDark ? Colors.white70 : Colors.black54,
-          collapsedIconColor: isDark ? Colors.white70 : Colors.black54,
-          tilePadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          leading: CircleAvatar(
-            radius: 24,
-            backgroundImage:
-                shop.storeLogoUrl != null && shop.storeLogoUrl!.isNotEmpty
-                ? CachedNetworkImageProvider(shop.storeLogoUrl!)
-                : null,
-            child: shop.storeLogoUrl == null || shop.storeLogoUrl!.isEmpty
-                ? const Icon(Icons.storefront_rounded)
-                : null,
-          ),
-          title: Text(
-            shop.shopName ?? 'Unknown Shop',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          child: ExpansionTile(
+            iconColor: isDark ? Colors.white70 : Colors.black54,
+            collapsedIconColor: isDark ? Colors.white70 : Colors.black54,
+            tilePadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 8,
             ),
-          ),
-          subtitle: Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  statusInfo.statusText,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: statusInfo.statusColor,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Container(
-                  width: 4,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor.withValues(alpha: 0.4),
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Expanded(
-                  child: Text(
-                    statusInfo.timeDetails,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(
-                left: 20.0,
-                right: 20.0,
-                bottom: 20.0,
+            leading: GestureDetector(
+              onTap: () {
+                AppNavigator.push(context, ShopDetailScreen(shop: shop));
+              },
+              child: CircleAvatar(
+                radius: 24,
+                backgroundImage:
+                    shop.storeLogoUrl != null && shop.storeLogoUrl!.isNotEmpty
+                    ? CachedNetworkImageProvider(shop.storeLogoUrl!)
+                    : null,
+                child: shop.storeLogoUrl == null || shop.storeLogoUrl!.isEmpty
+                    ? const Icon(Icons.storefront_rounded)
+                    : null,
               ),
-              child: ShopTimingView(openingHours: openingHours),
             ),
-          ],
+            title: GestureDetector(
+              onTap: () {
+                AppNavigator.push(context, ShopDetailScreen(shop: shop));
+              },
+              child: Text(
+                shop.shopName ?? 'Unknown Shop',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.only(top: 4.0),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    statusInfo.statusText,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: statusInfo.statusColor,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Container(
+                    width: 4,
+                    height: 4,
+                    decoration: BoxDecoration(
+                      color: theme.dividerColor.withValues(alpha: 0.4),
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      statusInfo.timeDetails,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  left: 20.0,
+                  right: 20.0,
+                  bottom: 20.0,
+                ),
+                child: ShopTimingView(openingHours: openingHours),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -451,17 +469,18 @@ class ProductDetailScreen extends StatelessWidget {
   Widget _buildDistanceBadge(BuildContext context, Shop? shop) {
     if (shop == null) return const SizedBox.shrink();
     final theme = Theme.of(context);
-    return FutureBuilder<Position?>(
+    return FutureBuilder<Object?>(
       future: Geolocator.getLastKnownPosition(),
       builder: (context, snapshot) {
+        final positionData = snapshot.data as Position?;
         String distanceText = '---';
         if (snapshot.hasData &&
-            snapshot.data != null &&
+            positionData != null &&
             shop.shopLatitude != null &&
             shop.shopLongitude != null) {
           final distance = Geolocator.distanceBetween(
-            snapshot.data!.latitude,
-            snapshot.data!.longitude,
+            positionData.latitude,
+            positionData.longitude,
             shop.shopLatitude!,
             shop.shopLongitude!,
           );
