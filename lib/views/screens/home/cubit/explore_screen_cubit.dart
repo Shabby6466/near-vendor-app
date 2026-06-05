@@ -8,6 +8,24 @@ import 'package:nearvendorapp/utils/app_data.dart';
 
 part 'explore_screen_state.dart';
 
+class CategoryCacheEntry {
+  final List<Shop> shops;
+  final int currentPage;
+  final bool hasReachedMax;
+  final String? apiMessage;
+  final bool isGlobalFallback;
+  final String? rangeMessage;
+
+  CategoryCacheEntry({
+    required this.shops,
+    required this.currentPage,
+    required this.hasReachedMax,
+    this.apiMessage,
+    this.isGlobalFallback = false,
+    this.rangeMessage,
+  });
+}
+
 class ExploreScreenCubit extends Cubit<ExploreScreenState>
     with AnalyticsMixin<ExploreScreenState> {
   final ShopServices _shopServices = ShopServices();
@@ -17,100 +35,99 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
     initAnalytics('explore_screen');
   }
 
-  // Variables stored in the Cubit, as requested
+  // Variables stored in the Cubit
   List<Shop> _allShops = [];
   List<CategoryModel> _categories = [CategoryModel.all()];
   CategoryModel _selectedCategory = CategoryModel.all();
   String? _apiMessage;
   String? _searchQuery;
+  bool _isGlobalFallback = false;
+  String? _rangeMessage;
 
-  // Cache for shops by category ID
-  final Map<String, List<Shop>> _shopCache = {};
+  // Pagination state variables
+  int _currentPage = 1;
+  bool _hasReachedMax = false;
+  bool _isLoadingNextPage = false;
+  int _loadSessionId = 0;
 
-  // Public getters if needed by widgets outside BlocBuilder
+  // Cache for shops and their pagination metadata by category ID
+  final Map<String, CategoryCacheEntry> _shopCache = {};
+
+  // Public getters accessed by the UI
+  List<Shop> get shops => _allShops;
+  List<CategoryModel> get categories => _categories;
   CategoryModel get selectedCategory => _selectedCategory;
-  List<Shop> get filteredShops => _allShops;
+  String? get apiMessage => _apiMessage;
+  bool get isGlobalFallback => _isGlobalFallback;
+  String? get rangeMessage => _rangeMessage;
+  bool get isLoadingNextPage => _isLoadingNextPage;
 
   Future<void> _initialize() async {
-    emit(
-      ExploreScreenLoading(
-        categories: _categories,
-        selectedCategory: _selectedCategory,
-      ),
-    );
+    emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
     try {
       final cats = await _shopServices.getCategoryNames();
       _categories = [CategoryModel.all(), ...cats];
       await loadShops();
     } catch (e) {
-      emit(
-        ExploreScreenFailure(
-          e.toString(),
-          categories: _categories,
-          selectedCategory: _selectedCategory,
-        ),
-      );
+      emit(ExploreScreenFailure(e.toString()));
     }
   }
 
   Future<void> loadShops() async {
-    emit(
-      ExploreScreenLoading(
-        categories: _categories,
-        selectedCategory: _selectedCategory,
-      ),
-    );
+    emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
+    _currentPage = 1;
+    _allShops.clear(); // Clear old shops immediately to prevent stale data display and duplicate appends
+    _hasReachedMax = false;
+    _isLoadingNextPage = false;
+    _loadSessionId++;
+    final currentSession = _loadSessionId;
 
     try {
-      // Use AppData for location
       final lat = AppData().latitude;
       final lon = AppData().longitude;
 
       if (lat == null || lon == null) {
-        emit(
-          ExploreScreenNoLocation(
-            categories: _categories,
-            selectedCategory: _selectedCategory,
-          ),
-        );
+        emit(const ExploreScreenNoLocation());
         return;
       }
 
-      await _fetchShops(lat: lat, lon: lon);
+      await _fetchShops(lat: lat, lon: lon, sessionId: currentSession);
     } catch (e) {
-      emit(
-        ExploreScreenFailure(
-          e.toString(),
-          categories: _categories,
-          selectedCategory: _selectedCategory,
-        ),
-      );
+      if (currentSession == _loadSessionId) {
+        emit(ExploreScreenFailure(e.toString()));
+      }
     }
   }
 
   /// Call after the user sets location from the picker.
   Future<void> reloadAfterLocationSet() => loadShops();
 
-  Future<void> _fetchShops({required double lat, required double lon}) async {
+  Future<void> _fetchShops({
+    required double lat,
+    required double lon,
+    required int sessionId,
+  }) async {
     final cacheKey = _selectedCategory.id;
 
-    // Check cache first - only if not searching
+    // Check cache first - only if not searching and loading page 1
     if ((_searchQuery == null || _searchQuery!.isEmpty) &&
+        _currentPage == 1 &&
         _shopCache.containsKey(cacheKey)) {
-      _allShops = _shopCache[cacheKey]!;
-      emit(
-        ExploreScreenSuccess(
-          shops: _allShops,
-          categories: _categories,
-          selectedCategory: _selectedCategory,
-          message: _apiMessage,
-        ),
-      );
+      final entry = _shopCache[cacheKey]!;
+      _allShops = List.from(entry.shops);
+      _currentPage = entry.currentPage;
+      _hasReachedMax = entry.hasReachedMax;
+      _apiMessage = entry.apiMessage;
+      _isGlobalFallback = entry.isGlobalFallback;
+      _rangeMessage = entry.rangeMessage;
+
+      if (sessionId == _loadSessionId) {
+        emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+      }
       return;
     }
 
     try {
-      // Use AppData for radius
       final radiusKm = AppData().discoveryRadius ?? 10.0;
       final radius = (radiusKm * 1000).toInt();
 
@@ -120,13 +137,21 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
               lon: lon,
               query: _searchQuery!,
               radius: radius,
+              page: _currentPage,
+              limit: 20,
             )
           : await _shopServices.getNearbyShops(
               lat: lat,
               lon: lon,
               radius: radius,
               categoryId: _selectedCategory.id,
+              page: _currentPage,
+              limit: 20,
             );
+
+      if (sessionId != _loadSessionId) {
+        return; // Ignore obsolete request
+      }
 
       if (response.isSuccess ||
           response.status == 410 ||
@@ -134,55 +159,139 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
         _apiMessage = (response.status == 410 || response.status == 404)
             ? response.message
             : null;
-        _allShops = response.shops;
+        _isGlobalFallback = response.isGlobalFallback;
+        _rangeMessage = response.rangeMessage;
 
-        // Update cache
-        _shopCache[cacheKey] = _allShops;
+        final newShops = response.shops;
+        if (_currentPage == 1) {
+          _allShops = newShops;
+        } else {
+          _allShops.addAll(newShops);
+        }
 
-        emit(
-          ExploreScreenSuccess(
-            shops: _allShops,
-            categories: _categories,
-            selectedCategory: _selectedCategory,
-            message: _apiMessage,
-            isGlobalFallback: response.isGlobalFallback,
-            rangeMessage: response.rangeMessage,
-          ),
-        );
+        if (newShops.length < 20) {
+          _hasReachedMax = true;
+        }
+
+        // Update cache only if not searching
+        if (_searchQuery == null || _searchQuery!.isEmpty) {
+          _shopCache[cacheKey] = CategoryCacheEntry(
+            shops: List.from(_allShops),
+            currentPage: _currentPage,
+            hasReachedMax: _hasReachedMax,
+            apiMessage: _apiMessage,
+            isGlobalFallback: _isGlobalFallback,
+            rangeMessage: _rangeMessage,
+          );
+        }
+
+        emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
       } else {
-        emit(
-          ExploreScreenFailure(
-            response.message ?? 'An error occurred',
-            categories: _categories,
-            selectedCategory: _selectedCategory,
-          ),
-        );
+        emit(ExploreScreenFailure(response.message ?? 'An error occurred'));
       }
     } catch (e) {
-      emit(
-        ExploreScreenFailure(
-          e.toString(),
-          categories: _categories,
-          selectedCategory: _selectedCategory,
-        ),
-      );
+      if (sessionId == _loadSessionId) {
+        emit(ExploreScreenFailure(e.toString()));
+      }
+    }
+  }
+
+  Future<void> loadNextPage() async {
+    if (_isLoadingNextPage || _hasReachedMax) return;
+
+    final lat = AppData().latitude;
+    final lon = AppData().longitude;
+
+    if (lat == null || lon == null) {
+      return;
+    }
+
+    _isLoadingNextPage = true;
+    emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+
+    _currentPage++;
+    final requestedPage = _currentPage;
+    final currentSession = _loadSessionId;
+
+    try {
+      final radiusKm = AppData().discoveryRadius ?? 10.0;
+      final radius = (radiusKm * 1000).toInt();
+
+      final response = _searchQuery != null && _searchQuery!.isNotEmpty
+          ? await _shopServices.searchShops(
+              lat: lat,
+              lon: lon,
+              query: _searchQuery!,
+              radius: radius,
+              page: requestedPage,
+              limit: 20,
+            )
+          : await _shopServices.getNearbyShops(
+              lat: lat,
+              lon: lon,
+              radius: radius,
+              categoryId: _selectedCategory.id,
+              page: requestedPage,
+              limit: 20,
+            );
+
+      // Verify that both the operation session and requested page remain valid
+      if (currentSession != _loadSessionId || requestedPage != _currentPage) {
+        return; // Ignore obsolete request
+      }
+
+      if (response.isSuccess ||
+          response.status == 410 ||
+          response.status == 404) {
+        _apiMessage = (response.status == 410 || response.status == 404)
+            ? response.message
+            : null;
+        _isGlobalFallback = response.isGlobalFallback;
+        _rangeMessage = response.rangeMessage;
+
+        final newShops = response.shops;
+        _allShops.addAll(newShops);
+
+        if (newShops.length < 20) {
+          _hasReachedMax = true;
+        }
+
+        if (_searchQuery == null || _searchQuery!.isEmpty) {
+          _shopCache[_selectedCategory.id] = CategoryCacheEntry(
+            shops: List.from(_allShops),
+            currentPage: _currentPage,
+            hasReachedMax: _hasReachedMax,
+            apiMessage: _apiMessage,
+            isGlobalFallback: _isGlobalFallback,
+            rangeMessage: _rangeMessage,
+          );
+        }
+      } else {
+        _currentPage--;
+      }
+    } catch (e) {
+      if (currentSession == _loadSessionId && requestedPage == _currentPage) {
+        _currentPage--;
+      }
+    } finally {
+      if (currentSession == _loadSessionId && requestedPage == _currentPage) {
+        _isLoadingNextPage = false;
+        emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+      }
     }
   }
 
   void selectCategory(CategoryModel category) {
     if (_selectedCategory == category) return;
     _selectedCategory = category;
-    _searchQuery = null; // Clear search when category changes
-
-    // Re-fetch shops with new category
+    _searchQuery = null;
     loadShops();
   }
 
   void searchShops(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
-    _selectedCategory =
-        CategoryModel.all(); // Reset category selection visually during global search
+    _selectedCategory = CategoryModel.all();
     loadShops();
   }
 

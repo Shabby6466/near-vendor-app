@@ -40,7 +40,15 @@ class ExploreScreen extends StatelessWidget {
             child: Scaffold(
               body: SafeArea(
                 bottom: false,
-                child: RefreshIndicator(
+                child: NotificationListener<ScrollNotification>(
+                  onNotification: (scrollInfo) {
+                    if (scrollInfo.metrics.pixels >=
+                        scrollInfo.metrics.maxScrollExtent - 200) {
+                      context.read<ExploreScreenCubit>().loadNextPage();
+                    }
+                    return false;
+                  },
+                  child: RefreshIndicator(
                   onRefresh: () =>
                       context.read<ExploreScreenCubit>().refreshShops(),
                   child: CustomScrollView(
@@ -213,7 +221,8 @@ class ExploreScreen extends StatelessWidget {
                 ),
               ),
             ),
-          );
+          ),
+        );
         },
       ),
     );

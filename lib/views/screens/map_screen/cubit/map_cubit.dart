@@ -16,9 +16,9 @@ class MapCubit extends Cubit<MapState> {
   String errorMessage = '';
 
   MapCubit({required double lat, required double lon})
-      : latitude = lat,
-        longitude = lon,
-        super(MapInitial()) {
+    : latitude = lat,
+      longitude = lon,
+      super(MapInitial()) {
     _initialize();
   }
 
@@ -54,9 +54,11 @@ class MapCubit extends Cubit<MapState> {
     // Generate cache key
     String cacheKey;
     if (minLat != null && maxLat != null && minLon != null && maxLon != null) {
-      cacheKey = "bounds_${minLat.toStringAsFixed(3)}_${maxLat.toStringAsFixed(3)}_${minLon.toStringAsFixed(3)}_${maxLon.toStringAsFixed(3)}_${selectedCategory.id}";
+      cacheKey =
+          "bounds_${minLat.toStringAsFixed(3)}_${maxLat.toStringAsFixed(3)}_${minLon.toStringAsFixed(3)}_${maxLon.toStringAsFixed(3)}_${selectedCategory.id}";
     } else {
-      cacheKey = "radius_${latitude.toStringAsFixed(4)}_${longitude.toStringAsFixed(4)}_${(this.radius / 100).round() * 100}_${selectedCategory.id}";
+      cacheKey =
+          "radius_${latitude.toStringAsFixed(4)}_${longitude.toStringAsFixed(4)}_${(this.radius / 100).round() * 100}_${selectedCategory.id}";
     }
 
     if (_cache.containsKey(cacheKey)) {

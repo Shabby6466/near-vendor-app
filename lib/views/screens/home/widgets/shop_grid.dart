@@ -118,7 +118,8 @@ class ShopGrid extends StatelessWidget {
         }
 
         if (state is ExploreScreenSuccess) {
-          final shops = state.shops;
+          final cubit = context.read<ExploreScreenCubit>();
+          final shops = cubit.shops;
 
           if (shops.isEmpty) {
             return SliverFillRemaining(
@@ -170,19 +171,21 @@ class ShopGrid extends StatelessWidget {
 
           return SliverMainAxisGroup(
             slivers: [
-              if (state.isGlobalFallback && state.rangeMessage != null)
+              if (cubit.isGlobalFallback && cubit.rangeMessage != null)
                 SliverPadding(
                   padding: const EdgeInsets.only(top: 12),
                   sliver: SliverToBoxAdapter(
-                    child: FallbackBanner(message: state.rangeMessage!),
+                    child: FallbackBanner(message: cubit.rangeMessage!),
                   ),
                 ),
               SliverPadding(
                 padding: EdgeInsets.only(
                   left: AppSpacing.mediumHorizontalSpacing(context),
                   right: AppSpacing.mediumHorizontalSpacing(context),
-                  top: state.isGlobalFallback ? 8 : 12,
-                  bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
+                  top: cubit.isGlobalFallback ? 8 : 12,
+                  bottom: cubit.isLoadingNextPage
+                      ? 12
+                      : AppSpacing.screenHeight(context) * 0.1 + 24,
                 ),
                 sliver: SliverGrid(
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -204,7 +207,7 @@ class ShopGrid extends StatelessWidget {
                         key: Key('shop-${shop.id ?? index}'),
                         onVisibilityChanged: (info) {
                           if (info.visibleFraction > 0.5) {
-                            context.read<ExploreScreenCubit>().trackImpression(
+                            cubit.trackImpression(
                               shop.id ?? '',
                             );
                           }
@@ -215,6 +218,20 @@ class ShopGrid extends StatelessWidget {
                   }, childCount: shops.length),
                 ),
               ),
+              if (cubit.isLoadingNextPage)
+                SliverPadding(
+                  padding: EdgeInsets.only(
+                    bottom: AppSpacing.screenHeight(context) * 0.1 + 24,
+                  ),
+                  sliver: const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16.0),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ),
+                ),
             ],
           );
         }

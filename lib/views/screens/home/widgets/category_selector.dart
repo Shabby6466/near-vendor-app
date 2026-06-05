@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
@@ -8,23 +7,11 @@ import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 class CategorySelector extends StatelessWidget {
   const CategorySelector({super.key});
 
-  int _getItemCount(ExploreScreenState state) {
-    if (state is ExploreScreenLoading && state.categories.length <= 1) {
+  int _getItemCount(ExploreScreenState state, ExploreScreenCubit cubit) {
+    if (state is ExploreScreenLoading && cubit.categories.length <= 1) {
       return 5;
     }
-    if (state is ExploreScreenSuccess) {
-      return state.categories.length;
-    }
-    if (state is ExploreScreenLoading) {
-      return state.categories.length;
-    }
-    if (state is ExploreScreenFailure) {
-      return state.categories.length;
-    }
-    if (state is ExploreScreenNoLocation) {
-      return state.categories.length;
-    }
-    return 0;
+    return cubit.categories.length;
   }
 
   @override
@@ -34,6 +21,8 @@ class CategorySelector extends StatelessWidget {
 
     return BlocBuilder<ExploreScreenCubit, ExploreScreenState>(
       builder: (context, state) {
+        final cubit = context.read<ExploreScreenCubit>();
+
         return SizedBox(
           height: 38,
           child: ListView.separated(
@@ -41,10 +30,10 @@ class CategorySelector extends StatelessWidget {
               horizontal: AppSpacing.mediumHorizontalSpacing(context),
             ),
             scrollDirection: Axis.horizontal,
-            itemCount: _getItemCount(state),
+            itemCount: _getItemCount(state, cubit),
             separatorBuilder: (context, index) => const SizedBox(width: 10),
             itemBuilder: (context, index) {
-              if (state is ExploreScreenLoading && state.categories.length <= 1) {
+              if (state is ExploreScreenLoading && cubit.categories.length <= 1) {
                 return Container(
                   width: 80,
                   height: 38,
@@ -55,28 +44,16 @@ class CategorySelector extends StatelessWidget {
                 );
               }
 
-              late CategoryModel category;
-              bool isSelected = false;
-
-              if (state is ExploreScreenSuccess) {
-                category = state.categories[index];
-                isSelected = state.selectedCategory == category;
-              } else if (state is ExploreScreenLoading) {
-                category = state.categories[index];
-                isSelected = state.selectedCategory == category;
-              } else if (state is ExploreScreenFailure) {
-                category = state.categories[index];
-                isSelected = state.selectedCategory == category;
-              } else if (state is ExploreScreenNoLocation) {
-                category = state.categories[index];
-                isSelected = state.selectedCategory == category;
-              } else {
+              if (index >= cubit.categories.length) {
                 return const SizedBox.shrink();
               }
 
+              final category = cubit.categories[index];
+              final isSelected = cubit.selectedCategory == category;
+
               return GestureDetector(
                 onTap: () {
-                  context.read<ExploreScreenCubit>().selectCategory(category);
+                  cubit.selectCategory(category);
                 },
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
