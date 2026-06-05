@@ -69,6 +69,10 @@ class AppData {
     double lon, {
     String? placeName,
   }) async {
+    if (!lat.isFinite || !lon.isFinite) {
+      debugPrint('Warning: Attempted to set non-finite location: LatLng($lat, $lon)');
+      return;
+    }
     final resolvedName = placeName ?? location?.placeName;
     final appLocation = AppLocation(
       latitude: lat,

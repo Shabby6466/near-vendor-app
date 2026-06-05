@@ -37,10 +37,15 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     super.initState();
     final saved = AppData().location;
     final initial = widget.initialLocation;
-    _centerLat =
-        initial?.latitude ?? saved?.latitude ?? DefaultLocation.latitude;
-    _centerLon =
-        initial?.longitude ?? saved?.longitude ?? DefaultLocation.longitude;
+
+    final initialLat = (initial != null && initial.latitude.isFinite) ? initial.latitude : null;
+    final initialLon = (initial != null && initial.longitude.isFinite) ? initial.longitude : null;
+
+    final savedLat = (saved != null && saved.latitude.isFinite) ? saved.latitude : null;
+    final savedLon = (saved != null && saved.longitude.isFinite) ? saved.longitude : null;
+
+    _centerLat = initialLat ?? savedLat ?? DefaultLocation.latitude;
+    _centerLon = initialLon ?? savedLon ?? DefaultLocation.longitude;
     _selectedPlaceName = saved?.placeName;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -162,7 +167,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
               initialCenter: currentLatLng,
               initialZoom: 15.0,
               onPositionChanged: (position, hasGesture) {
-                if (hasGesture) {
+                if (hasGesture &&
+                    position.center.latitude.isFinite &&
+                    position.center.longitude.isFinite) {
                   _updateCenter(
                     position.center.latitude,
                     position.center.longitude,

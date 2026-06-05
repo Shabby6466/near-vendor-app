@@ -29,7 +29,11 @@ class _VisualSearchMapResultsScreenState
   void initState() {
     super.initState();
     _markers = widget.results
-        .where((item) => item.lat != null && item.long != null)
+        .where((item) =>
+            item.lat != null &&
+            item.long != null &&
+            item.lat!.isFinite &&
+            item.long!.isFinite)
         .map(
           (item) => Marker(
             point: LatLng(item.lat!, item.long!),
@@ -46,7 +50,10 @@ class _VisualSearchMapResultsScreenState
     return ValueListenableBuilder<AppLocation?>(
       valueListenable: AppData().locationNotifier,
       builder: (context, appLocation, _) {
-        final savedCenter = appLocation?.toLatLng();
+        final bool isSavedCenterValid = appLocation != null &&
+            appLocation.latitude.isFinite &&
+            appLocation.longitude.isFinite;
+        final savedCenter = isSavedCenterValid ? appLocation.toLatLng() : null;
         final initialCenter = _markers.isNotEmpty
             ? _markers.first.point
             : savedCenter ??

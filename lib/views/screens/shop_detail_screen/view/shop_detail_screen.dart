@@ -32,7 +32,9 @@ class ShopDetailScreen extends StatelessWidget {
 
   bool _isValidLatLng(double? lat, double? lng) {
     if (lat == null || lng == null) return false;
-    return lat != 0.0 &&
+    return lat.isFinite &&
+        lng.isFinite &&
+        lat != 0.0 &&
         lng != 0.0 &&
         lat >= -90.0 &&
         lat <= 90.0 &&

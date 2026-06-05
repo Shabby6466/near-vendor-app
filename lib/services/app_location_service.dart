@@ -53,6 +53,10 @@ class AppLocationService {
     String? placeName,
     bool syncProfile = true,
   }) async {
+    if (!latitude.isFinite || !longitude.isFinite) {
+      debugPrint('Warning: Attempted to save non-finite location: LatLng($latitude, $longitude)');
+      return null;
+    }
     try {
       final resolvedName =
           placeName ?? await _getPlaceName(latitude, longitude);

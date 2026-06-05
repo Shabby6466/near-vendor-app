@@ -19,6 +19,10 @@ class ShopServices {
     required double lon,
     required int radius,
     String? categoryId,
+    double? minLat,
+    double? maxLat,
+    double? minLon,
+    double? maxLon,
     int page = 1,
     int limit = 1000,
   }) async {
@@ -30,6 +34,10 @@ class ShopServices {
         'page': page,
         'limit': limit,
         if (categoryId != null && categoryId != 'all') 'categoryId': categoryId,
+        if (minLat != null) 'minLat': minLat,
+        if (maxLat != null) 'maxLat': maxLat,
+        if (minLon != null) 'minLon': minLon,
+        if (maxLon != null) 'maxLon': maxLon,
       };
 
       final response = await Server.get(

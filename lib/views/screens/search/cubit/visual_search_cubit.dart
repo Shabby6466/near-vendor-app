@@ -73,11 +73,7 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
           );
         }
       } else {
-        emit(
-          VisualSearchFailure(
-            response.message ?? 'Search failed',
-          ),
-        );
+        emit(VisualSearchFailure(response.message ?? 'Search failed'));
       }
     } catch (e) {
       emit(VisualSearchFailure(e.toString()));

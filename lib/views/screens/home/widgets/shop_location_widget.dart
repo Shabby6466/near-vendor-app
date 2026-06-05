@@ -28,6 +28,38 @@ class ShopLocationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bool isLocationValid = latitude.isFinite && longitude.isFinite;
+    if (!isLocationValid) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Colors.grey.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
+        child: const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.map_outlined, color: Colors.grey, size: 36),
+              SizedBox(height: 8),
+              Text(
+                'Map Unavailable',
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final bool isUserLocValid = userLatitude != null &&
+        userLongitude != null &&
+        userLatitude!.isFinite &&
+        userLongitude!.isFinite;
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: FlutterMap(
@@ -57,7 +89,7 @@ class ShopLocationWidget extends StatelessWidget {
                 ),
               ),
               // User Location Marker
-              if (userLatitude != null && userLongitude != null)
+              if (isUserLocValid)
                 Marker(
                   point: LatLng(userLatitude!, userLongitude!),
                   alignment: Alignment.center,
