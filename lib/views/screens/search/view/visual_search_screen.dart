@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/view/visual_search_map_results_screen.dart';
@@ -28,10 +30,12 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
   late Animation<double> _scannerAnimation;
   final ImagePicker _picker = ImagePicker();
   File? _selectedImage;
+  double _currentRadiusKm = 10.0;
 
   @override
   void initState() {
     super.initState();
+    _currentRadiusKm = AppData().discoveryRadius ?? 10.0;
     _scannerController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -42,9 +46,8 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
     ).animate(_scannerController);
 
     if (widget.initialImage != null) {
-      _selectedImage = widget.initialImage;
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        context.read<VisualSearchCubit>().searchByImage(_selectedImage!);
+        _cropAndSearch(widget.initialImage!.path);
       });
     }
   }
@@ -65,9 +68,16 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
       );
 
       if (pickedFile == null) return;
+      await _cropAndSearch(pickedFile.path);
+    } catch (e) {
+      debugPrint("Pick image error: $e");
+    }
+  }
 
+  Future<void> _cropAndSearch(String sourcePath) async {
+    try {
       final croppedFile = await ImageCropper().cropImage(
-        sourcePath: pickedFile.path,
+        sourcePath: sourcePath,
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: 'Frame the product',
@@ -100,9 +110,13 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         if (mounted) {
           context.read<VisualSearchCubit>().searchByImage(_selectedImage!);
         }
+      } else {
+        setState(() {
+          _selectedImage = null;
+        });
       }
     } catch (e) {
-      debugPrint("Pick/crop image error: $e");
+      debugPrint("Crop image error: $e");
     }
   }
 
@@ -117,9 +131,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
             child: _selectedImage != null
                 ? Image.file(
                     _selectedImage!,
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
+                    fit: BoxFit.contain,
                   )
                 : _buildEmptyState(),
           ),
@@ -158,6 +170,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
             child: Column(
               children: [
                 _buildTopBar(context),
+                _buildRadiusSliderCard(),
                 const Spacer(),
                 if (_selectedImage != null)
                   ScanningArea(scannerAnimation: _scannerAnimation),
@@ -411,6 +424,78 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
             });
             context.read<VisualSearchCubit>().reset();
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRadiusSliderCard() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.08),
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Discovery Radius',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      '${_currentRadiusKm.toStringAsFixed(0)} KM',
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w900,
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                SliderTheme(
+                  data: SliderTheme.of(context).copyWith(
+                    trackHeight: 6,
+                    activeTrackColor: Colors.blue,
+                    inactiveTrackColor: Colors.white.withValues(alpha: 0.2),
+                    thumbColor: Colors.blue,
+                    overlayColor: Colors.blue.withValues(alpha: 0.1),
+                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
+                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+                  ),
+                  child: Slider(
+                    value: _currentRadiusKm,
+                    min: 1.0,
+                    max: 50.0,
+                    divisions: 49,
+                    onChanged: (val) {
+                      setState(() {
+                        _currentRadiusKm = val;
+                      });
+                    },
+                    onChangeEnd: (val) async {
+                      await AppData().setDiscoveryRadius(val);
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

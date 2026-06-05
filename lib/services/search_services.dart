@@ -48,19 +48,17 @@ class SearchServices {
     int limit = 20,
   }) async {
     try {
-      final formData = FormData.fromMap({
-        'image': await MultipartFile.fromFile(
-          imagePath,
-          filename: imagePath.split('/').last,
-        ),
-      });
-
       debugPrint(
         'VISUAL SEARCH: radius=$radius, lat=$lat, lon=$lon, path=$imagePath',
       );
       final response = await Server.post(
         ApiConstants.visualSearch,
-        data: formData,
+        data: FormData.fromMap({
+          'image': await MultipartFile.fromFile(
+            imagePath,
+            filename: imagePath.split('/').last,
+          ),
+        }),
         queryParameters: {
           'lat': lat,
           'lon': lon,

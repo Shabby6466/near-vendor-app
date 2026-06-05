@@ -6,7 +6,6 @@ import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 
-/// GPS, geocoding, and profile sync for [AppData] location.
 class AppLocationService {
   AppLocationService._();
 
@@ -58,11 +57,7 @@ class AppLocationService {
       final resolvedName =
           placeName ?? await _getPlaceName(latitude, longitude);
 
-      await _appData.setLocation(
-        latitude,
-        longitude,
-        placeName: resolvedName,
-      );
+      await _appData.setLocation(latitude, longitude, placeName: resolvedName);
 
       if (syncProfile && _appData.isLoggedIn) {
         await _authServices.updateUser(
@@ -89,10 +84,10 @@ class AppLocationService {
 
   Future<String?> _getPlaceName(double lat, double lon) async {
     try {
-      final placemarks = await placemarkFromCoordinates(lat, lon);
-      if (placemarks.isEmpty) return null;
+      final placeMarks = await placemarkFromCoordinates(lat, lon);
+      if (placeMarks.isEmpty) return null;
 
-      final place = placemarks.first;
+      final place = placeMarks.first;
       final city =
           place.locality ??
           place.subAdministrativeArea ??

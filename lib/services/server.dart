@@ -293,20 +293,28 @@ class Server {
             response = await dio.post(
               url,
               data: data,
+              queryParameters: queryParams,
               cancelToken: cancelToken,
             );
           case ApiType.put:
-            response = await dio.put(url, data: data, cancelToken: cancelToken);
+            response = await dio.put(
+              url,
+              data: data,
+              queryParameters: queryParams,
+              cancelToken: cancelToken,
+            );
           case ApiType.delete:
             response = await dio.delete(
               url,
               data: data,
+              queryParameters: queryParams,
               cancelToken: cancelToken,
             );
           case ApiType.patch:
             response = await dio.patch(
               url,
               data: data,
+              queryParameters: queryParams,
               cancelToken: cancelToken,
             );
         }
