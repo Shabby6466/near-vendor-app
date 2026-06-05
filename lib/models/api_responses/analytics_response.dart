@@ -5,14 +5,22 @@ class AnalyticsStatsResponse extends BaseApiResponse {
 
   AnalyticsStatsResponse({super.success, super.status, super.message, required this.data});
 
-  factory AnalyticsStatsResponse.fromJson(Map<String, dynamic> json) {
+  factory AnalyticsStatsResponse.fromJson(dynamic json) {
+    if (json is Map) {
+      return AnalyticsStatsResponse(
+        success: json['success'] as bool? ?? false,
+        status: json['statusCode'] as int? ?? 0,
+        message: json['message'] as String?,
+        data: (json['data'] as List? ?? [])
+            .map((e) => AnalyticsStatEntry.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+    }
     return AnalyticsStatsResponse(
-      success: json['success'] as bool? ?? false,
-      status: json['statusCode'] as int? ?? 0,
-      message: json['message'] as String?,
-      data: (json['data'] as List? ?? [])
-          .map((e) => AnalyticsStatEntry.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      success: false,
+      status: 500,
+      message: 'Unexpected response format',
+      data: const [],
     );
   }
 }

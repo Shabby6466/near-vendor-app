@@ -39,9 +39,7 @@ class WishlistServices {
         ApiConstants.createWishlist,
         data: input.toJson(),
       );
-      return CreateWishlistResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      return CreateWishlistResponse.fromJson(response.data);
     } catch (e) {
       return CreateWishlistResponse(message: e.toString());
     }
@@ -56,9 +54,7 @@ class WishlistServices {
         ApiConstants.getMyWishlists,
         queryParameters: {'page': page, 'limit': limit},
       );
-      return GetWishlistsResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      return GetWishlistsResponse.fromJson(response.data);
     } catch (e) {
       return GetWishlistsResponse(message: e.toString());
     }
@@ -67,9 +63,7 @@ class WishlistServices {
   Future<WishlistActionResponse> deleteWishlist(String id) async {
     try {
       final response = await Server.delete('${ApiConstants.deleteWishlist}$id');
-      return WishlistActionResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      return WishlistActionResponse.fromJson(response.data);
     } catch (e) {
       return WishlistActionResponse(message: e.toString());
     }
@@ -80,9 +74,7 @@ class WishlistServices {
       final response = await Server.patch(
         '${ApiConstants.completeWishlist}$id/complete',
       );
-      return WishlistActionResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      return WishlistActionResponse.fromJson(response.data);
     } catch (e) {
       return WishlistActionResponse(message: e.toString());
     }
@@ -98,9 +90,7 @@ class WishlistServices {
         ApiConstants.exploreWishlists,
         queryParameters: {'lat': lat, 'lon': lon, 'radius': radius},
       );
-      return ExploreDemandResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      return ExploreDemandResponse.fromJson(response.data);
     } catch (e) {
       return ExploreDemandResponse(message: e.toString());
     }

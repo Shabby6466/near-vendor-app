@@ -33,7 +33,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
         ),
       );
 
-      if (response.status == 200 || response.status == 201) {
+      if (response.isSuccess) {
         emit(
           ChangePasswordSuccess(
             response.message ?? 'Password changed successfully',

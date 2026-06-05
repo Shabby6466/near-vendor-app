@@ -7,15 +7,22 @@ class ShopResponse extends BaseApiResponse {
 
   ShopResponse({super.success, super.status, super.message, this.shop});
 
-  factory ShopResponse.fromJson(Map<String, dynamic> json) {
-    final status = (json['statusCode'] as num?)?.toInt() ?? 200;
-    final data = apiResponseData(json);
-    final shopJson = data is Map && data['shop'] != null ? data['shop'] : data;
+  factory ShopResponse.fromJson(dynamic json) {
+    if (json is Map) {
+      final status = (json['statusCode'] as num?)?.toInt() ?? 200;
+      final data = apiResponseData(json);
+      final shopJson = data is Map && data['shop'] != null ? data['shop'] : data;
+      return ShopResponse(
+        success: json['success'] as bool? ?? (status == 200 || status == 201),
+        status: status,
+        message: json['message'] as String? ?? '',
+        shop: shopJson is Map<String, dynamic> ? Shop.fromJson(shopJson) : null,
+      );
+    }
     return ShopResponse(
-      success: json['success'] as bool? ?? (status == 200 || status == 201),
-      status: status,
-      message: json['message'] as String? ?? '',
-      shop: shopJson is Map<String, dynamic> ? Shop.fromJson(shopJson) : null,
+      success: false,
+      status: 500,
+      message: 'Unexpected response format',
     );
   }
 }
@@ -48,31 +55,31 @@ class ShopListResponse extends BaseApiResponse {
       );
     }
 
-    if (json is Map<String, dynamic>) {
+    if (json is Map) {
       final data = json['data'];
       List<dynamic>? shopsData;
       SearchMeta? meta;
-
-      if (data is Map<String, dynamic>) {
+ 
+      if (data is Map) {
         shopsData =
             (data['items'] as List<dynamic>?) ??
             (data['shops'] as List<dynamic>?);
         if (data['meta'] != null) {
-          meta = SearchMeta.fromJson(data['meta'] as Map<String, dynamic>);
+          meta = SearchMeta.fromJson(data['meta']);
         }
       } else if (data is List<dynamic>) {
         shopsData = data;
       }
-
+ 
       // Fallback to root level if no data or data is not a list
       shopsData ??=
           (json['items'] as List<dynamic>?) ??
           (json['shops'] as List<dynamic>?);
-
+ 
       if (meta == null && json['meta'] != null) {
-        meta = SearchMeta.fromJson(json['meta'] as Map<String, dynamic>);
+        meta = SearchMeta.fromJson(json['meta']);
       }
-
+ 
       return ShopListResponse(
         success: json['success'] as bool? ?? (shopsData != null),
         status: (json['statusCode'] as num?)?.toInt() ?? 200,
@@ -83,10 +90,10 @@ class ShopListResponse extends BaseApiResponse {
                 .toList() ??
             [],
         meta: meta,
-        isGlobalFallback: data is Map<String, dynamic>
+        isGlobalFallback: data is Map
             ? data['isGlobalFallback'] as bool? ?? false
             : json['isGlobalFallback'] as bool? ?? false,
-        rangeMessage: data is Map<String, dynamic>
+        rangeMessage: data is Map
             ? data['rangeMessage'] as String? ?? json['message'] as String?
             : json['rangeMessage'] as String? ?? json['message'] as String?,
       );

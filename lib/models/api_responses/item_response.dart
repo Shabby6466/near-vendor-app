@@ -6,8 +6,8 @@ class ItemResponse extends BaseApiResponse {
 
   ItemResponse({super.success, super.status, super.message, this.item});
 
-  ItemResponse.fromJson(Map<String, dynamic> json)
-    : item = _parseItem(json),
+  ItemResponse.fromJson(dynamic json)
+    : item = json is Map ? _parseItem(json as Map<String, dynamic>) : null,
       super.fromJson(json);
 
   static Product? _parseItem(Map<String, dynamic> json) {

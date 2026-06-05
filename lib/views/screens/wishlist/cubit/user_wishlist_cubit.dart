@@ -29,7 +29,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
         page: _currentPage,
       );
 
-      if (response.success == true) {
+      if (response.isSuccess) {
         if (response.totalPages != null) {
           _hasMore = _currentPage < response.totalPages!;
         } else {
@@ -68,7 +68,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
   Future<bool> createWishlist(CreateWishlistInput input) async {
     try {
       final response = await _wishlistServices.createWishlist(input);
-      if (response.success == true) {
+      if (response.isSuccess) {
         getMyWishlists(refresh: true);
         return true;
       }
@@ -81,7 +81,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
   Future<bool> deleteWishlist(String id) async {
     try {
       final response = await _wishlistServices.deleteWishlist(id);
-      if (response.success == true) {
+      if (response.isSuccess) {
         if (state is UserWishlistLoaded) {
           final currentItems = (state as UserWishlistLoaded).wishlists;
           emit(
@@ -102,7 +102,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
   Future<bool> completeWishlist(String id) async {
     try {
       final response = await _wishlistServices.completeWishlist(id);
-      if (response.success == true) {
+      if (response.isSuccess) {
         if (state is UserWishlistLoaded) {
           final currentItems = (state as UserWishlistLoaded).wishlists;
           final updatedItems = currentItems.map((w) {

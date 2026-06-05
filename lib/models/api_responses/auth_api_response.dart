@@ -16,7 +16,7 @@ class VerifyOtpResponse extends BaseApiResponse {
     this.mustChangePassword,
   });
 
-  VerifyOtpResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+  VerifyOtpResponse.fromJson(dynamic json) : super.fromJson(json) {
     final data = apiResponseDataMap(json);
     token = data?["token"] as String?;
     refreshToken = data?["refreshToken"] as String?;
@@ -48,7 +48,7 @@ class LoginResponse extends BaseApiResponse {
     this.user,
   });
 
-  LoginResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+  LoginResponse.fromJson(dynamic json) : super.fromJson(json) {
     final data = apiResponseDataMap(json);
     token = data?["token"] as String?;
     refreshToken = data?["refreshToken"] as String?;
@@ -70,7 +70,7 @@ class MeResponse extends BaseApiResponse {
 
   MeResponse({super.message, super.status, this.user});
 
-  MeResponse.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+  MeResponse.fromJson(dynamic json) : super.fromJson(json) {
     final data = apiResponseDataMap(json);
     user = data != null ? User.fromJson(data) : null;
   }

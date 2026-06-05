@@ -6,15 +6,13 @@ import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 
 class SearchServices {
-  SearchServices();
-
   Future<SearchItemResponse> searchItems(SearchItemInput input) async {
     try {
       final response = await Server.get(
         ApiConstants.searchItems,
         queryParameters: input.toJson(),
       );
-      return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
+      return SearchItemResponse.fromJson(response.data);
     } catch (e) {
       return SearchItemResponse(
         success: false,
@@ -28,7 +26,7 @@ class SearchServices {
   Future<SearchItemResponse> getRecentItems() async {
     try {
       final response = await Server.get(ApiConstants.getRecentItems);
-      return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
+      return SearchItemResponse.fromJson(response.data);
     } catch (e) {
       return SearchItemResponse(
         success: false,
@@ -68,7 +66,7 @@ class SearchServices {
         },
       );
 
-      return SearchItemResponse.fromJson(response.data as Map<String, dynamic>);
+      return SearchItemResponse.fromJson(response.data);
     } catch (e) {
       return SearchItemResponse(
         success: false,

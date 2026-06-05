@@ -4,8 +4,6 @@ import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
 
 class AnalyticsServices {
-  AnalyticsServices();
-
   Future<AnalyticsStatsResponse> getShopStats({
     required String shopId,
     int days = 7,
@@ -15,7 +13,7 @@ class AnalyticsServices {
         '${ApiConstants.getAnalyticsStats}$shopId',
         queryParameters: {'days': days},
       );
-      return AnalyticsStatsResponse.fromJson(response.data as Map<String, dynamic>);
+      return AnalyticsStatsResponse.fromJson(response.data);
     } catch (e) {
       return AnalyticsStatsResponse(
         success: false,
@@ -32,17 +30,15 @@ class AnalyticsServices {
     Map<String, dynamic>? metadata,
   }) async {
     try {
-      final Map<String, dynamic> data = {
-        "targetIds": targetIds,
-        "eventType": eventType,
-        "metadata": metadata ?? {},
-      };
-
       final response = await Server.post(
         ApiConstants.batchAnalytics,
-        data: data,
+        data: {
+          "targetIds": targetIds,
+          "eventType": eventType,
+          "metadata": metadata ?? {},
+        },
       );
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }

@@ -5,13 +5,13 @@ import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
 
 class ItemServices {
-  ItemServices();
-
   Future<ItemResponse> createItem(CreateItemInput input) async {
     try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.post(ApiConstants.createItem, data: data);
-      return ItemResponse.fromJson(response.data as Map<String, dynamic>);
+      final response = await Server.post(
+        ApiConstants.createItem,
+        data: input.toJson(),
+      );
+      return ItemResponse.fromJson(response.data);
     } catch (e) {
       return ItemResponse(success: false, status: 500, message: e.toString());
     }
@@ -19,12 +19,11 @@ class ItemServices {
 
   Future<ItemResponse> updateItem(UpdateItemInput input) async {
     try {
-      final Map<String, dynamic> data = input.toJson();
       final response = await Server.put(
         '${ApiConstants.updateItem}${input.id}',
-        data: data,
+        data: input.toJson(),
       );
-      return ItemResponse.fromJson(response.data as Map<String, dynamic>);
+      return ItemResponse.fromJson(response.data);
     } catch (e) {
       return ItemResponse(success: false, status: 500, message: e.toString());
     }
@@ -33,7 +32,7 @@ class ItemServices {
   Future<GenericApiResponse> deleteItem(String id) async {
     try {
       final response = await Server.delete('${ApiConstants.deleteItem}$id');
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }
@@ -59,7 +58,7 @@ class ItemServices {
   Future<ItemResponse> getItemById(String id) async {
     try {
       final response = await Server.get('${ApiConstants.getItemById}/$id');
-      return ItemResponse.fromJson(response.data as Map<String, dynamic>);
+      return ItemResponse.fromJson(response.data);
     } catch (e) {
       return ItemResponse(success: false, status: 500, message: e.toString());
     }

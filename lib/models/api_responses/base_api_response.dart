@@ -5,15 +5,19 @@ class BaseApiResponse {
 
   BaseApiResponse({this.success, this.status, this.message});
 
-  BaseApiResponse.fromJson(Map<String, dynamic> json)
-    : success = json['success'] is bool
-          ? json['success'] as bool
-          : json['statusCode'] != null
-          ? (json['statusCode'] as num).toInt() >= 200 &&
-                (json['statusCode'] as num).toInt() < 300
+  bool get isSuccess => success ?? (status != null && status! >= 200 && status! < 300);
+
+  BaseApiResponse.fromJson(dynamic json)
+    : success = json is Map
+          ? (json['success'] is bool
+              ? json['success'] as bool
+              : json['statusCode'] != null
+              ? (json['statusCode'] as num).toInt() >= 200 &&
+                    (json['statusCode'] as num).toInt() < 300
+              : null)
           : null,
-      status = (json['statusCode'] as num?)?.toInt(),
-      message = json['message'] as String?;
+      status = json is Map ? (json['statusCode'] as num?)?.toInt() : null,
+      message = json is Map ? json['message'] as String? : null;
 
   Map<String, dynamic> toJson() {
     return {'success': success, 'statusCode': status, 'message': message};

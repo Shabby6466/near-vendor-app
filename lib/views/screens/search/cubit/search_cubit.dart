@@ -28,7 +28,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
     // Fetch recent items from API only if authenticated
     if (AppData().token != null) {
       final response = await _searchServices.getRecentItems();
-      if (response.success == true) {
+      if (response.isSuccess) {
         emit(
           SearchInitial(
             recentSearches: recentSearches,
@@ -76,22 +76,26 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
       shopId: shopId,
     );
 
-    final response = await _searchServices.searchItems(input);
+    try {
+      final response = await _searchServices.searchItems(input);
 
-    if (response.success ?? false) {
-      updateAnalyticsMetadata({'lat': lat, 'lon': lon, 'query': query});
-      emit(
-        SearchSuccess(
-          items: response.items,
-          meta: response.meta,
-          message: response.message,
-          query: query.isNotEmpty ? query : null,
-          isGlobalFallback: response.isGlobalFallback,
-          rangeMessage: response.rangeMessage,
-        ),
-      );
-    } else {
-      emit(SearchFailure(response.message ?? 'Search failed'));
+      if (response.isSuccess) {
+        updateAnalyticsMetadata({'lat': lat, 'lon': lon, 'query': query});
+        emit(
+          SearchSuccess(
+            items: response.items,
+            meta: response.meta,
+            message: response.message,
+            query: query.isNotEmpty ? query : null,
+            isGlobalFallback: response.isGlobalFallback,
+            rangeMessage: response.rangeMessage,
+          ),
+        );
+      } else {
+        emit(SearchFailure(response.message ?? 'Search failed'));
+      }
+    } catch (e) {
+      emit(SearchFailure(e.toString()));
     }
   }
 

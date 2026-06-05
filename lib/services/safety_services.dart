@@ -3,8 +3,6 @@ import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
 
 class SafetyServices {
-  SafetyServices();
-
   Future<GenericApiResponse> reportContent({
     required String targetId,
     required String targetType,
@@ -12,18 +10,16 @@ class SafetyServices {
     String? additionalDetails,
   }) async {
     try {
-      final Map<String, dynamic> data = {
-        'targetId': targetId,
-        'targetType': targetType.toUpperCase(),
-        'reason': reason,
-        if (additionalDetails != null) 'additionalDetails': additionalDetails,
-      };
-
       final response = await Server.post(
         ApiConstants.reportContent,
-        data: data,
+        data: {
+          'targetId': targetId,
+          'targetType': targetType.toUpperCase(),
+          'reason': reason,
+          if (additionalDetails != null) 'additionalDetails': additionalDetails,
+        },
       );
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }
@@ -34,13 +30,14 @@ class SafetyServices {
     String? reason,
   }) async {
     try {
-      final Map<String, dynamic> data = {
-        'blockedId': blockedId,
-        if (reason != null) 'reason': reason,
-      };
-
-      final response = await Server.post(ApiConstants.blockUser, data: data);
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      final response = await Server.post(
+        ApiConstants.blockUser,
+        data: {
+          'blockedId': blockedId,
+          if (reason != null) 'reason': reason,
+        },
+      );
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }
@@ -51,7 +48,7 @@ class SafetyServices {
       final response = await Server.delete(
         '${ApiConstants.blockUser}/$blockedId',
       );
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }

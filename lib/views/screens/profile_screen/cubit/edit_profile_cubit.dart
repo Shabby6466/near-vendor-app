@@ -56,7 +56,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       // 1. If user selected a new local image, upload it first
       if (state.pickedImage != null) {
         final uploadResponse = await MediaServices.uploadImage(state.pickedImage!);
-        if (uploadResponse.status == 200 || uploadResponse.status == 201) {
+        if (uploadResponse.isSuccess) {
           updatedPhotoUrl = uploadResponse.url;
           if (updatedPhotoUrl == null) {
             emit(state.copyWith(
@@ -81,7 +81,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
       );
 
       final response = await AuthServices().updateUser(updateInput);
-      if (response.status == 200 || response.status == 201) {
+      if (response.isSuccess) {
         // Fetch fresh user data to update the local cache
         final meResponse = await AuthServices().getMe();
         if (meResponse.user != null) {

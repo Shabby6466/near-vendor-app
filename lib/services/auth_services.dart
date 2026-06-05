@@ -7,13 +7,13 @@ import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
 
 class AuthServices {
-  AuthServices();
-
   Future<LoginResponse> createUser(CreateUserInput input) async {
     try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.post(ApiConstants.createUser, data: data);
-      return LoginResponse.fromJson(response.data as Map<String, dynamic>);
+      final response = await Server.post(
+        ApiConstants.createUser,
+        data: input.toJson(),
+      );
+      return LoginResponse.fromJson(response.data);
     } catch (e) {
       return LoginResponse(message: e.toString());
     }
@@ -21,9 +21,11 @@ class AuthServices {
 
   Future<VerifyOtpResponse> verifyOtp(VerifyOtpInput input) async {
     try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.post(ApiConstants.verifyOTP, data: data);
-      return VerifyOtpResponse.fromJson(response.data as Map<String, dynamic>);
+      final response = await Server.post(
+        ApiConstants.verifyOTP,
+        data: input.toJson(),
+      );
+      return VerifyOtpResponse.fromJson(response.data);
     } catch (e) {
       return VerifyOtpResponse(message: e.toString());
     }
@@ -31,9 +33,11 @@ class AuthServices {
 
   Future<LoginResponse> login(LoginInput input) async {
     try {
-      final Map<String, dynamic> data = input.toJson();
-      final response = await Server.post(ApiConstants.login, data: data);
-      return LoginResponse.fromJson(response.data as Map<String, dynamic>);
+      final response = await Server.post(
+        ApiConstants.login,
+        data: input.toJson(),
+      );
+      return LoginResponse.fromJson(response.data);
     } catch (e) {
       return LoginResponse(message: e.toString());
     }
@@ -41,12 +45,11 @@ class AuthServices {
 
   Future<GenericApiResponse> changePassword(ChangePasswordInput input) async {
     try {
-      final Map<String, dynamic> data = input.toJson();
       final response = await Server.post(
         ApiConstants.changePassword,
-        data: data,
+        data: input.toJson(),
       );
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }
@@ -55,7 +58,7 @@ class AuthServices {
   Future<MeResponse> getMe() async {
     try {
       final response = await Server.get(ApiConstants.getMe);
-      return MeResponse.fromJson(response.data as Map<String, dynamic>);
+      return MeResponse.fromJson(response.data);
     } catch (e) {
       return MeResponse(message: e.toString());
     }
@@ -67,7 +70,7 @@ class AuthServices {
         ApiConstants.updateUser,
         data: input.toJson(),
       );
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }
@@ -79,7 +82,7 @@ class AuthServices {
         ApiConstants.deleteAccount,
         data: {'password': password},
       );
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }
@@ -94,9 +97,7 @@ class AuthServices {
         ApiConstants.uploadMedia,
         data: formData,
       );
-      return MediaUploadResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      return MediaUploadResponse.fromJson(response.data);
     } catch (e) {
       return MediaUploadResponse(message: e.toString());
     }
@@ -111,7 +112,7 @@ class AuthServices {
           'longitude': double.parse(lon.toStringAsFixed(7)),
         },
       );
-      return GenericApiResponse.fromJson(response.data as Map<String, dynamic>);
+      return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }

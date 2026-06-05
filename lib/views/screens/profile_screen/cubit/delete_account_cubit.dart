@@ -18,7 +18,7 @@ class DeleteAccountCubit extends Cubit<DeleteAccountState> {
     try {
       final response = await AuthServices().deleteAccount(password);
 
-      if (response.success == true) {
+      if (response.isSuccess) {
         emit(DeleteAccountSuccess());
       } else {
         emit(
@@ -27,9 +27,9 @@ class DeleteAccountCubit extends Cubit<DeleteAccountState> {
           ),
         );
       }
-    } catch (_) {
+    } catch (e) {
       emit(
-        const DeleteAccountFailure('Something went wrong. Please try again.'),
+        DeleteAccountFailure(e.toString()),
       );
     }
   }

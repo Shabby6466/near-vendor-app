@@ -79,7 +79,7 @@ class SignupCubit extends Cubit<SignupState> {
         ),
       );
 
-      if (response.status == 200 || response.status == 201) {
+      if (response.isSuccess) {
         if (response.user != null && response.token != null) {
           await AppData().setUser(
             response.user,

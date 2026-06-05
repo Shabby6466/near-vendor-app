@@ -47,32 +47,40 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
         lon: lon,
         radius: radiusMeters,
       );
-      final results = response.items;
-      final radiusUsed = response.radiusUsed ?? radiusMeters;
-      final hasMoreBeyondRadius = response.hasMoreBeyondRadius;
+      if (response.isSuccess) {
+        final results = response.items;
+        final radiusUsed = response.radiusUsed ?? radiusMeters;
+        final hasMoreBeyondRadius = response.hasMoreBeyondRadius;
 
-      if (results.isNotEmpty) {
-        results.sort(
-          (a, b) => (b.visualScore ?? 0).compareTo(a.visualScore ?? 0),
-        );
-        emit(
-          VisualSearchSuccess(
-            results,
-            radiusUsed: radiusUsed,
-            hasMoreBeyondRadius: hasMoreBeyondRadius,
-          ),
-        );
+        if (results.isNotEmpty) {
+          results.sort(
+            (a, b) => (b.visualScore ?? 0).compareTo(a.visualScore ?? 0),
+          );
+          emit(
+            VisualSearchSuccess(
+              results,
+              radiusUsed: radiusUsed,
+              hasMoreBeyondRadius: hasMoreBeyondRadius,
+            ),
+          );
+        } else {
+          emit(
+            VisualSearchFailure(
+              'No match within the selected radius.',
+              radiusUsed: radiusUsed,
+              hasMoreBeyondRadius: hasMoreBeyondRadius,
+            ),
+          );
+        }
       } else {
         emit(
           VisualSearchFailure(
-            'No match within the selected radius.',
-            radiusUsed: radiusUsed,
-            hasMoreBeyondRadius: hasMoreBeyondRadius,
+            response.message ?? 'Search failed',
           ),
         );
       }
     } catch (e) {
-      emit(VisualSearchFailure('Search failed: $e'));
+      emit(VisualSearchFailure(e.toString()));
     }
   }
 

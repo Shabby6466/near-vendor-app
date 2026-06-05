@@ -43,7 +43,7 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
       if (initialShop != null) {
         // Only fetch items since we already have the shop details!
         final itemsResponse = await _itemServices.getItemsByShopId(shopId);
-        if (itemsResponse.success == true) {
+        if (itemsResponse.isSuccess) {
           emit(
             ShopDetailSuccess(
               shop: initialShop,
@@ -67,7 +67,7 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
         final shopResponse = results[0] as ShopResponse;
         final itemsResponse = results[1] as ItemListResponse;
 
-        if (shopResponse.success == true && itemsResponse.success == true) {
+        if (shopResponse.isSuccess && itemsResponse.isSuccess) {
           if (shopResponse.shop != null) {
             emit(
               ShopDetailSuccess(
@@ -79,7 +79,7 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
             emit(const ShopDetailFailure('Shop details not found'));
           }
         } else {
-          final errorMessage = (shopResponse.success != true)
+          final errorMessage = (!shopResponse.isSuccess)
               ? ((shopResponse.message ?? '').isEmpty
                     ? 'Failed to load shop data'
                     : shopResponse.message!)

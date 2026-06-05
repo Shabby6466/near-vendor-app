@@ -19,7 +19,7 @@ class MediaServices {
         ApiConstants.uploadMedia,
         data: formData,
       );
-      return MediaUploadResponse.fromJson(response.data as Map<String, dynamic>);
+      return MediaUploadResponse.fromJson(response.data);
     } catch (e) {
       debugPrint('Error uploading image: $e');
       return MediaUploadResponse(message: e.toString());

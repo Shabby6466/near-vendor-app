@@ -128,7 +128,7 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
               categoryId: _selectedCategory.id,
             );
 
-      if (response.success == true ||
+      if (response.isSuccess ||
           response.status == 410 ||
           response.status == 404) {
         _apiMessage = (response.status == 410 || response.status == 404)

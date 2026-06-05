@@ -38,7 +38,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
     try {
       // 1. Fetch Product Details
       final itemResponse = await _itemServices.getItemById(itemId);
-      if (itemResponse.success != true) {
+      if (!itemResponse.isSuccess) {
         emit(
           ProductDetailFailure(
             itemResponse.message ?? 'Failed to load product',
@@ -58,7 +58,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
       if (item.shopId != null) {
         try {
           final shopResponse = await _shopServices.getShopById(item.shopId!);
-          if (shopResponse.success == true) {
+          if (shopResponse.isSuccess) {
             shop = shopResponse.shop;
           }
         } catch (e) {

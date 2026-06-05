@@ -31,7 +31,7 @@ class VerificationCubit extends Cubit<VerificationState> {
         VerifyOtpInput(email: email, otp: code),
       );
 
-      if (response.status == 200 || response.status == 201) {
+      if (response.isSuccess) {
         if (response.user != null && response.token != null) {
           await CurrentUserStorage.storeUserData(response.user);
           await CurrentUserStorage.storeUserAuthToken(

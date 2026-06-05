@@ -15,9 +15,7 @@ final class CategoriesService {
 
     try {
       final response = await Server.get(ApiConstants.getCategoriesNames);
-      final categories = CategoryListResponse.fromJson(
-        response.data as Map<String, dynamic>,
-      );
+      final categories = CategoryListResponse.fromJson(response.data);
       _cachedCategories = categories;
       return categories;
     } catch (e) {

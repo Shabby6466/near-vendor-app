@@ -7,11 +7,13 @@ class CreateWishlistResponse extends BaseApiResponse {
 
   CreateWishlistResponse({super.message, super.status, this.wishlist});
 
-  CreateWishlistResponse.fromJson(Map<String, dynamic> json)
+  CreateWishlistResponse.fromJson(dynamic json)
     : super.fromJson(json) {
-    final data = json['data'];
-    if (data is Map) {
-      wishlist = WishlistItem.fromJson(data as Map<String, dynamic>);
+    if (json is Map) {
+      final data = json['data'];
+      if (data is Map) {
+        wishlist = WishlistItem.fromJson(data as Map<String, dynamic>);
+      }
     }
   }
 }
@@ -34,24 +36,26 @@ class GetWishlistsResponse extends BaseApiResponse {
     }
   }
 
-  GetWishlistsResponse.fromJson(Map<String, dynamic> json)
+  GetWishlistsResponse.fromJson(dynamic json)
     : super.fromJson(json) {
-    final data = json['data'];
-    List<dynamic> raw = [];
-    Map<String, dynamic>? meta;
+    if (json is Map) {
+      final data = json['data'];
+      List<dynamic> raw = [];
+      Map<String, dynamic>? meta;
 
-    if (data is List) {
-      raw = data;
-    } else if (data is Map) {
-      raw = data['items'] as List<dynamic>? ?? [];
-      meta = data['meta'] as Map<String, dynamic>?;
+      if (data is List) {
+        raw = data;
+      } else if (data is Map) {
+        raw = data['items'] as List<dynamic>? ?? [];
+        meta = data['meta'] as Map<String, dynamic>?;
+      }
+
+      wishlists = raw
+          .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
+          .toList();
+      totalPages = meta?['totalPages'] as int?;
+      currentPage = meta?['currentPage'] as int?;
     }
-
-    wishlists = raw
-        .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
-        .toList();
-    totalPages = meta?['totalPages'] as int?;
-    currentPage = meta?['currentPage'] as int?;
   }
 }
 
@@ -59,7 +63,7 @@ class GetWishlistsResponse extends BaseApiResponse {
 class WishlistActionResponse extends BaseApiResponse {
   WishlistActionResponse({super.message, super.status});
 
-  WishlistActionResponse.fromJson(Map<String, dynamic> json)
+  WishlistActionResponse.fromJson(dynamic json)
     : super.fromJson(json);
 }
 
@@ -77,13 +81,15 @@ class ExploreDemandResponse extends BaseApiResponse {
     }
   }
 
-  ExploreDemandResponse.fromJson(Map<String, dynamic> json)
+  ExploreDemandResponse.fromJson(dynamic json)
     : super.fromJson(json) {
-    final data = json['data'];
-    if (data is List) {
-      demands = data
-          .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
-          .toList();
+    if (json is Map) {
+      final data = json['data'];
+      if (data is List) {
+        demands = data
+            .map((e) => WishlistItem.fromJson(e as Map<String, dynamic>))
+            .toList();
+      }
     }
   }
 }

@@ -5,12 +5,10 @@ import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 
 class ShopServices {
-  ShopServices();
-
   Future<ShopResponse> getShopById(String id) async {
     try {
       final response = await Server.get('${ApiConstants.getShopById}$id');
-      return ShopResponse.fromJson(response.data as Map<String, dynamic>);
+      return ShopResponse.fromJson(response.data);
     } catch (e) {
       return ShopResponse(success: false, status: 500, message: e.toString());
     }
@@ -31,17 +29,14 @@ class ShopServices {
         'radius': radius,
         'page': page,
         'limit': limit,
+        if (categoryId != null && categoryId != 'all') 'categoryId': categoryId,
       };
-
-      if (categoryId != null && categoryId != 'all') {
-        params['categoryId'] = categoryId;
-      }
 
       final response = await Server.get(
         ApiConstants.getShopsByMap,
         queryParameters: params,
       );
-      return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
+      return ShopListResponse.fromJson(response.data);
     } catch (e) {
       return ShopListResponse(
         success: false,
@@ -67,16 +62,14 @@ class ShopServices {
         'radius': radius,
         'page': page,
         'limit': limit,
+        if (categoryId != null && categoryId != 'all') 'categoryId': categoryId,
       };
-      if (categoryId != null && categoryId != 'all') {
-        params['categoryId'] = categoryId;
-      }
 
       final response = await Server.get(
         ApiConstants.getNearbyShops,
         queryParameters: params,
       );
-      return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
+      return ShopListResponse.fromJson(response.data);
     } catch (e) {
       return ShopListResponse(
         success: false,
@@ -96,20 +89,18 @@ class ShopServices {
     int limit = 10,
   }) async {
     try {
-      final Map<String, dynamic> params = {
-        'lat': double.parse(lat.toStringAsFixed(7)),
-        'lon': double.parse(lon.toStringAsFixed(7)),
-        'radius': radius,
-        'query': query,
-        'page': page,
-        'limit': limit,
-      };
-
       final response = await Server.get(
         ApiConstants.searchShops,
-        queryParameters: params,
+        queryParameters: {
+          'lat': double.parse(lat.toStringAsFixed(7)),
+          'lon': double.parse(lon.toStringAsFixed(7)),
+          'radius': radius,
+          'query': query,
+          'page': page,
+          'limit': limit,
+        },
       );
-      return ShopListResponse.fromJson(response.data as Map<String, dynamic>);
+      return ShopListResponse.fromJson(response.data);
     } catch (e) {
       return ShopListResponse(
         success: false,

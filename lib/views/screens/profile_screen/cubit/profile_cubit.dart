@@ -62,7 +62,7 @@ class ProfileCubit extends Cubit<ProfileState> {
   Future<void> updateUserProfile(UpdateUserInput input) async {
     try {
       final response = await AuthServices().updateUser(input);
-      if (response.status == 200 || response.status == 201) {
+      if (response.isSuccess) {
         final meResponse = await AuthServices().getMe();
         if (meResponse.user != null) {
           String? cityName;

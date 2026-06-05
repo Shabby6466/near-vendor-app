@@ -23,7 +23,7 @@ class VendorDemandCubit extends Cubit<VendorDemandState> {
         radius: radius,
       );
 
-      if (response.success == true) {
+      if (response.isSuccess) {
         emit(VendorDemandLoaded(demands: response.demands));
       } else {
         emit(
