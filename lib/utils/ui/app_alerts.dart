@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 
 class AppAlerts {
   AppAlerts._();
@@ -101,12 +102,12 @@ class AppAlerts {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
+            onPressed: () => AppNavigator.pop(ctx),
             child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(ctx).pop();
+              AppNavigator.pop(ctx);
               onConfirm();
             },
             child: Text(

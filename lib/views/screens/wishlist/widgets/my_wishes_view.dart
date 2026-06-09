@@ -776,7 +776,7 @@ class _WishlistCard extends StatelessWidget {
                     children: [
                       Expanded(
                         child: TextButton(
-                          onPressed: () => Navigator.pop(context),
+                          onPressed: () => AppNavigator.pop(context),
                           style: TextButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 16),
                             shape: RoundedRectangleBorder(
@@ -798,7 +798,7 @@ class _WishlistCard extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pop(context);
+                            AppNavigator.pop(context);
                             onConfirm();
                           },
                           style: ElevatedButton.styleFrom(

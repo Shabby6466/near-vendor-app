@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/cubit/edit_profile_cubit.dart';
@@ -45,8 +46,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         listener: (context, state) {
           if (state.status == EditProfileStatus.success) {
             AppAlerts.showSuccess(context, 'Profile updated successfully!');
-            Navigator.pop(context);
-          } else if (state.status == EditProfileStatus.failure && state.errorMessage != null) {
+            AppNavigator.pop(context);
+          } else if (state.status == EditProfileStatus.failure &&
+              state.errorMessage != null) {
             AppAlerts.showError(context, state.errorMessage!);
           }
         },
@@ -66,7 +68,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     size: 20,
                     color: theme.iconTheme.color,
                   ),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => AppNavigator.pop(context),
                 ),
                 centerTitle: true,
                 title: Text(
@@ -102,7 +104,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: theme.primaryColor.withValues(alpha: 0.15),
+                                    color: theme.primaryColor.withValues(
+                                      alpha: 0.15,
+                                    ),
                                     blurRadius: 24,
                                     spreadRadius: 4,
                                     offset: const Offset(0, 8),
@@ -129,7 +133,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               child: GestureDetector(
                                 onTap: isSubmitting
                                     ? null
-                                    : () => context.read<EditProfileCubit>().pickImage(),
+                                    : () => context
+                                          .read<EditProfileCubit>()
+                                          .pickImage(),
                                 child: Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
@@ -141,7 +147,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                     ),
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.black.withValues(alpha: 0.15),
+                                        color: Colors.black.withValues(
+                                          alpha: 0.15,
+                                        ),
                                         blurRadius: 8,
                                         offset: const Offset(0, 4),
                                       ),
@@ -168,7 +176,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            color: theme.textTheme.bodyLarge?.color?.withValues(alpha: 0.8),
+                            color: theme.textTheme.bodyLarge?.color?.withValues(
+                              alpha: 0.8,
+                            ),
                           ),
                         ),
                       ),
@@ -207,7 +217,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             ? null
                             : () {
                                 if (_formKey.currentState!.validate()) {
-                                  context.read<EditProfileCubit>().updateProfile(
+                                  context
+                                      .read<EditProfileCubit>()
+                                      .updateProfile(
                                         newFullName: _nameController.text,
                                       );
                                 }
@@ -215,7 +227,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: theme.primaryColor,
                           foregroundColor: Colors.white,
-                          disabledBackgroundColor: theme.primaryColor.withValues(alpha: 0.6),
+                          disabledBackgroundColor: theme.primaryColor
+                              .withValues(alpha: 0.6),
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           elevation: 0,
                           shape: RoundedRectangleBorder(

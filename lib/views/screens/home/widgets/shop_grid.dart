@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
-import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/explore_shimmer_loading.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
+import 'package:nearvendorapp/views/widgets/location_required_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopGrid extends StatelessWidget {
@@ -29,79 +29,10 @@ class ShopGrid extends StatelessWidget {
         if (state is ExploreScreenNoLocation) {
           return SliverFillRemaining(
             hasScrollBody: false,
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 40),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: theme.primaryColor.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.location_off_rounded,
-                        size: 64,
-                        color: theme.primaryColor.withValues(alpha: 0.4),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    Text(
-                      'Location Not Set',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700,
-                        color: isDark ? Colors.white : Colors.black87,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Please set your location to discover local vendors and shops near you.',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: isDark ? Colors.white54 : Colors.grey.shade600,
-                        height: 1.5,
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton.icon(
-                      onPressed: () async {
-                        await LocationPickerLauncher.open(context);
-                        if (context.mounted) {
-                          context
-                              .read<ExploreScreenCubit>()
-                              .reloadAfterLocationSet();
-                        }
-                      },
-                      icon: const Icon(
-                        Icons.my_location_rounded,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        'Set Location',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.primaryColor,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            child: LocationRequiredWidget(
+              onLocationSet: () {
+                context.read<ExploreScreenCubit>().reloadAfterLocationSet();
+              },
             ),
           );
         }

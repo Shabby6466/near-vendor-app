@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
@@ -75,7 +76,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
                         IconButton(
                           onPressed: () {
                             HapticFeedback.lightImpact();
-                            Navigator.pop(context);
+                            AppNavigator.pop(context);
                           },
                           icon: const Icon(Icons.arrow_back_rounded),
                           tooltip: 'Back',
@@ -174,7 +175,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                ),
+              ),
             ),
             const SizedBox(height: 8),
             Text(

@@ -36,7 +36,7 @@ class _SearchScreenState extends State<SearchScreen> {
         message: 'You need to sign in to make a wish and alert local vendors.',
         confirmButtonText: 'Sign In',
         onConfirm: () {
-          Navigator.pop(context);
+          AppNavigator.pop(context);
           AppNavigator.push(context, const LoginScreen());
         },
       );
@@ -239,11 +239,7 @@ class _SearchTipItem extends StatelessWidget {
                 color: theme.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(
-                icon,
-                color: theme.primaryColor,
-                size: 20,
-              ),
+              child: Icon(icon, color: theme.primaryColor, size: 20),
             ),
             const SizedBox(width: 16),
             Expanded(

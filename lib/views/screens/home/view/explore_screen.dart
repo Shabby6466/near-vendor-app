@@ -3,9 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
-import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
-import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
@@ -22,20 +20,7 @@ class ExploreScreen extends StatelessWidget {
         builder: (context) {
           final theme = Theme.of(context);
 
-          return BlocListener<ExploreScreenCubit, ExploreScreenState>(
-            listenWhen: (previous, current) =>
-                current is ExploreScreenNoLocation &&
-                previous is! ExploreScreenNoLocation,
-            listener: (context, state) async {
-              if (state is ExploreScreenNoLocation) {
-                AppAlerts.showError(context, state.message);
-                await LocationPickerLauncher.open(context);
-                if (context.mounted) {
-                  context.read<ExploreScreenCubit>().reloadAfterLocationSet();
-                }
-              }
-            },
-            child: Scaffold(
+          return Scaffold(
               body: SafeArea(
                 bottom: false,
                 child: NotificationListener<ScrollNotification>(
@@ -213,8 +198,7 @@ class ExploreScreen extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        );
+          );
         },
       ),
     );

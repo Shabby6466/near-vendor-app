@@ -135,7 +135,8 @@ class ProfileScreen extends StatelessWidget {
                                   ProfileMenuItem(
                                     icon: Icons.person_outline_rounded,
                                     title: 'Edit Profile',
-                                    subtitle: 'Update your name and profile picture',
+                                    subtitle:
+                                        'Update your name and profile picture',
                                     onTap: () {
                                       AppNavigator.push(
                                         context,
@@ -348,7 +349,7 @@ class ProfileScreen extends StatelessWidget {
 
   void _showDeleteAccountDialog(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
- 
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -366,9 +367,7 @@ class ProfileScreen extends StatelessWidget {
       context: context,
       barrierDismissible: false,
       builder: (dialogContext) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(28),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
         backgroundColor: isDark ? const Color(0xFF1E242B) : Colors.white,
         contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
         content: Column(
@@ -411,7 +410,7 @@ class ProfileScreen extends StatelessWidget {
               children: [
                 Expanded(
                   child: TextButton(
-                    onPressed: () => Navigator.pop(dialogContext),
+                    onPressed: () => AppNavigator.pop(dialogContext),
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
@@ -431,10 +430,13 @@ class ProfileScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      Navigator.pop(dialogContext);
+                      AppNavigator.pop(dialogContext);
                       await AppData().clear();
                       if (context.mounted) {
-                        AppNavigator.pushAndRemoveUntil(context, const MainScreen());
+                        AppNavigator.pushAndRemoveUntil(
+                          context,
+                          const MainScreen(),
+                        );
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -468,9 +470,7 @@ class ProfileScreen extends StatelessWidget {
 class _DeleteAccountDialog extends StatefulWidget {
   final bool isDark;
 
-  const _DeleteAccountDialog({
-    required this.isDark,
-  });
+  const _DeleteAccountDialog({required this.isDark});
 
   @override
   State<_DeleteAccountDialog> createState() => _DeleteAccountDialogState();
@@ -495,13 +495,10 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
         if (state is DeleteAccountSuccess) {
           // Pop the dialog, then clear session and navigate to WelcomeScreen,
           // removing all existing routes from the stack.
-          Navigator.of(context).pop();
+          AppNavigator.pop(context);
           await AppData().clear();
           if (context.mounted) {
-            Navigator.of(context).pushAndRemoveUntil(
-              MaterialPageRoute(builder: (_) => const WelcomeScreen()),
-              (route) => false,
-            );
+            AppNavigator.pushAndRemoveUntil(context, const WelcomeScreen());
           }
         }
       },
@@ -614,7 +611,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
                     child: TextButton(
                       onPressed: isLoading
                           ? null
-                          : () => Navigator.pop(context),
+                          : () => AppNavigator.pop(context),
                       style: TextButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(

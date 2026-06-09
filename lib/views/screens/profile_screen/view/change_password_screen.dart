@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/change_password_screen/cubit/change_password_cubit.dart';
@@ -36,7 +37,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         listener: (context, state) {
           if (state is ChangePasswordSuccess) {
             AppAlerts.showSuccess(context, state.message);
-            Navigator.pop(context);
+            AppNavigator.pop(context);
           } else if (state is ChangePasswordFailure) {
             AppAlerts.showError(context, state.error);
           }
@@ -54,7 +55,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     size: 20,
                     color: Theme.of(context).iconTheme.color,
                   ),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => AppNavigator.pop(context),
                 ),
               ),
               body: SingleChildScrollView(

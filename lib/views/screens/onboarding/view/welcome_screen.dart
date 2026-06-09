@@ -241,14 +241,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               AppElevatedButton(
                 onPressed: _nextPage,
                 text: _onboardingData[_currentPage].buttonText.toUpperCase(),
-              )
-                  .animate(key: ValueKey(_currentPage))
-                  .scaleY(
-                    begin: 0.95,
-                    duration: 200.ms,
-                    curve: Curves.easeOutBack,
-                  )
-                  .fadeIn(),
+              ),
             ],
           ),
         ),

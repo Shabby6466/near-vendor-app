@@ -6,6 +6,7 @@ import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/constants/default_location.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/vendor_list_overlay.dart';
 
 class VisualSearchMapResultsScreen extends StatefulWidget {
@@ -29,11 +30,13 @@ class _VisualSearchMapResultsScreenState
   void initState() {
     super.initState();
     _markers = widget.results
-        .where((item) =>
-            item.lat != null &&
-            item.long != null &&
-            item.lat!.isFinite &&
-            item.long!.isFinite)
+        .where(
+          (item) =>
+              item.lat != null &&
+              item.long != null &&
+              item.lat!.isFinite &&
+              item.long!.isFinite,
+        )
         .map(
           (item) => Marker(
             point: LatLng(item.lat!, item.long!),
@@ -50,7 +53,8 @@ class _VisualSearchMapResultsScreenState
     return ValueListenableBuilder<AppLocation?>(
       valueListenable: AppData().locationNotifier,
       builder: (context, appLocation, _) {
-        final bool isSavedCenterValid = appLocation != null &&
+        final bool isSavedCenterValid =
+            appLocation != null &&
             appLocation.latitude.isFinite &&
             appLocation.longitude.isFinite;
         final savedCenter = isSavedCenterValid ? appLocation.toLatLng() : null;
@@ -112,7 +116,7 @@ class _VisualSearchMapResultsScreenState
                       child: Row(
                         children: [
                           IconButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => AppNavigator.pop(context),
                             icon: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: const BoxDecoration(

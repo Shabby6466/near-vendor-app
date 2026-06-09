@@ -129,10 +129,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
           // Background: Image or Placeholder
           Positioned.fill(
             child: _selectedImage != null
-                ? Image.file(
-                    _selectedImage!,
-                    fit: BoxFit.contain,
-                  )
+                ? Image.file(_selectedImage!, fit: BoxFit.contain)
                 : _buildEmptyState(),
           ),
 
@@ -217,7 +214,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => AppNavigator.pop(context),
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: const BoxDecoration(
@@ -234,7 +231,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
               fontWeight: FontWeight.w900,
               fontSize: 16,
               letterSpacing: 2,
-              ),
+            ),
           ),
           const SizedBox(width: 48), // Balanced spacer
         ],
@@ -251,7 +248,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            ),
+          ),
         ),
         const SizedBox(height: 8),
         Text(
@@ -259,7 +256,7 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
           style: TextStyle(
             color: Colors.white.withValues(alpha: 0.7),
             fontSize: 16,
-            ),
+          ),
         ),
       ],
     );
@@ -373,14 +370,14 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
         child: VisualSearchResultSheet(
           items: items,
           onAccept: () {
-            Navigator.pop(innerContext);
+            AppNavigator.pop(innerContext);
             AppNavigator.push(
               context,
               VisualSearchMapResultsScreen(results: items),
             );
           },
           onTryAgain: () {
-            Navigator.pop(innerContext);
+            AppNavigator.pop(innerContext);
             setState(() {
               _selectedImage = null;
             });
@@ -408,17 +405,20 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
           radiusUsed: radiusUsed,
           hasMoreBeyondRadius: hasMoreBeyondRadius,
           onIncreaseRadius: () {
-            Navigator.pop(innerContext);
+            AppNavigator.pop(innerContext);
             if (_selectedImage != null && radiusUsed != null) {
-              final double expandedRadiusMeters = (radiusUsed * 3.0).clamp(1000.0, 50000.0);
+              final double expandedRadiusMeters = (radiusUsed * 3.0).clamp(
+                1000.0,
+                50000.0,
+              );
               context.read<VisualSearchCubit>().searchByImage(
-                    _selectedImage!,
-                    customRadiusMeters: expandedRadiusMeters,
-                  );
+                _selectedImage!,
+                customRadiusMeters: expandedRadiusMeters,
+              );
             }
           },
           onDismiss: () {
-            Navigator.pop(innerContext);
+            AppNavigator.pop(innerContext);
             setState(() {
               _selectedImage = null;
             });
@@ -475,8 +475,12 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
                     inactiveTrackColor: Colors.white.withValues(alpha: 0.2),
                     thumbColor: Colors.blue,
                     overlayColor: Colors.blue.withValues(alpha: 0.1),
-                    thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
-                    overlayShape: const RoundSliderOverlayShape(overlayRadius: 16),
+                    thumbShape: const RoundSliderThumbShape(
+                      enabledThumbRadius: 8,
+                    ),
+                    overlayShape: const RoundSliderOverlayShape(
+                      overlayRadius: 16,
+                    ),
                   ),
                   child: Slider(
                     value: _currentRadiusKm,

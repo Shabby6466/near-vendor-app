@@ -5,9 +5,10 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/services/app_location_service.dart';
-import 'package:nearvendorapp/services/location_service.dart';
+import 'package:nearvendorapp/services/location_search_service.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/constants/default_location.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
@@ -23,7 +24,7 @@ class LocationPickerScreen extends StatefulWidget {
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
   final MapController _mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
-  final LocationService _locationService = LocationService();
+  final LocationSearchService _locationService = LocationSearchService();
   List<LocationSuggestion> _suggestions = [];
   Timer? _debounce;
   bool _isLoading = false;
@@ -38,11 +39,19 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     final saved = AppData().location;
     final initial = widget.initialLocation;
 
-    final initialLat = (initial != null && initial.latitude.isFinite) ? initial.latitude : null;
-    final initialLon = (initial != null && initial.longitude.isFinite) ? initial.longitude : null;
+    final initialLat = (initial != null && initial.latitude.isFinite)
+        ? initial.latitude
+        : null;
+    final initialLon = (initial != null && initial.longitude.isFinite)
+        ? initial.longitude
+        : null;
 
-    final savedLat = (saved != null && saved.latitude.isFinite) ? saved.latitude : null;
-    final savedLon = (saved != null && saved.longitude.isFinite) ? saved.longitude : null;
+    final savedLat = (saved != null && saved.latitude.isFinite)
+        ? saved.latitude
+        : null;
+    final savedLon = (saved != null && saved.longitude.isFinite)
+        ? saved.longitude
+        : null;
 
     _centerLat = initialLat ?? savedLat ?? DefaultLocation.latitude;
     _centerLon = initialLon ?? savedLon ?? DefaultLocation.longitude;
@@ -142,10 +151,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       appBar: AppBar(
         title: const Text(
           'Location Picker',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            letterSpacing: -0.5,
-          ),
+          style: TextStyle(fontWeight: FontWeight.w900, letterSpacing: -0.5),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -156,7 +162,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
         ),
         leading: IconButton(
           icon: const Icon(Icons.close_rounded),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => AppNavigator.pop(context),
         ),
       ),
       body: Stack(
@@ -339,7 +345,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                     isLoading: _isLoading,
                     onPressed: () async {
                       setState(() => _isLoading = true);
-                      final nav = Navigator.of(context);
                       try {
                         final placeName =
                             _searchController.text.trim().isNotEmpty
@@ -352,7 +357,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                               placeName: placeName,
                             );
                         if (!mounted) return;
-                        nav.pop(result);
+                        AppNavigator.pop(context, result);
                       } finally {
                         if (mounted) setState(() => _isLoading = false);
                       }

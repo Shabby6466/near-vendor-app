@@ -19,7 +19,7 @@ class LocationSuggestion {
   }
 }
 
-class LocationService {
+class LocationSearchService {
   final Dio _dio = Dio();
 
   Future<List<LocationSuggestion>> getSuggestions(
@@ -61,7 +61,7 @@ class LocationService {
                   LocationSuggestion.fromJson(json as Map<String, dynamic>),
             )
             .toList();
-      }
+          }
       return [];
     } catch (e) {
       debugPrint('Error fetching suggestions: $e');

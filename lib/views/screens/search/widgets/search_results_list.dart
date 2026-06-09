@@ -352,7 +352,7 @@ class _EmptyStateState extends State<_EmptyState> {
                         size: 20,
                         color: isDark ? Colors.white24 : Colors.grey.shade400,
                       ),
-                      onTap: () => Navigator.pop(ctx, cat),
+                      onTap: () => AppNavigator.pop(ctx, cat),
                     );
                   },
                 ),
@@ -710,7 +710,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
                     return ListTile(
                       title: Text(cat.name),
                       trailing: const Icon(Icons.chevron_right, size: 18),
-                      onTap: () => Navigator.pop(ctx, cat),
+                      onTap: () => AppNavigator.pop(ctx, cat),
                     );
                   },
                 ),

@@ -7,7 +7,9 @@ import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart'
 import 'package:nearvendorapp/views/screens/map_screen/view/map_screen.dart';
 import 'package:nearvendorapp/views/screens/search/view/search_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/view/wishlist_main_screen.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/lazy_load_wrapper.dart';
+import 'package:nearvendorapp/views/widgets/location_permission_sheet.dart';
 
 class MainScreen extends StatelessWidget {
   final int initialIndex;
@@ -16,9 +18,15 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 1), () {
-        if (context.mounted) {
-          AppLocationService.instance.checkAndPromptLocation(context);
+      Future.delayed(const Duration(seconds: 1), () async {
+        if (!context.mounted) return;
+        final isResolved = await AppLocationService.instance
+            .tryAutoResolveLocation();
+        if (!isResolved && context.mounted) {
+          AppBottomSheet.showBottomSheet(
+            context: context,
+            child: const LocationPermissionSheet(),
+          );
         }
       });
     });

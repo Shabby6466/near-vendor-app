@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
+import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 
@@ -25,35 +25,13 @@ class SignupCubit extends Cubit<SignupState> {
 
     emit(SignupLoading());
 
-    final bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      emit(SignupRequiresManualLocation());
-      return;
-    }
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        emit(SignupRequiresManualLocation());
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      emit(SignupRequiresManualLocation());
-      return;
-    }
-
     try {
-      // Use non-deprecated LocationSettings API
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.medium,
-          timeLimit: Duration(seconds: 10),
-        ),
-      );
-      await _submitSignup(position.latitude, position.longitude);
+      final position = await AppLocationService.instance.determinePosition();
+      if (position != null) {
+        await _submitSignup(position.latitude, position.longitude);
+      } else {
+        emit(SignupRequiresManualLocation());
+      }
     } catch (e) {
       emit(SignupRequiresManualLocation());
     }

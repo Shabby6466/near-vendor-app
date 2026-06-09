@@ -49,7 +49,7 @@ class ShopDetailScreen extends StatelessWidget {
         message: 'You need to sign in to report content or block vendors.',
         confirmButtonText: 'Sign In',
         onConfirm: () {
-          Navigator.pop(context);
+          AppNavigator.pop(context);
           AppNavigator.push(context, const LoginScreen());
         },
       );
@@ -80,7 +80,7 @@ class ShopDetailScreen extends StatelessWidget {
                   color: Colors.black,
                   size: 18,
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => AppNavigator.pop(context),
               ),
             ),
           ),
@@ -739,7 +739,7 @@ class ShopDetailScreen extends StatelessWidget {
               title: const Text('Report Shop'),
               subtitle: const Text('Report inappropriate content or behavior'),
               onTap: () {
-                Navigator.pop(ctx);
+                AppNavigator.pop(ctx);
                 showDialog(
                   context: context,
                   builder: (dialogCtx) => SafetyReportDialog(
@@ -757,7 +757,7 @@ class ShopDetailScreen extends StatelessWidget {
                 'Stop seeing content from ${shop.shopName ?? 'Shop'}',
               ),
               onTap: () async {
-                Navigator.pop(ctx);
+                AppNavigator.pop(ctx);
                 if (shop.vendorId == null) return;
                 final result = await SafetyServices().blockUser(
                   blockedId: shop.vendorId!,
@@ -768,7 +768,7 @@ class ShopDetailScreen extends StatelessWidget {
                       context,
                       '${shop.shopName ?? 'Shop'} has been blocked.',
                     );
-                    Navigator.pop(
+                    AppNavigator.pop(
                       context,
                     ); // Go back as user shouldn't see this shop anymore
                   } else {

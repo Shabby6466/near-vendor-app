@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -78,13 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
       if (widget.onComplete != null) {
         widget.onComplete!();
       } else {
-        Navigator.of(context).pushReplacement(
-          PageRouteBuilder(
-            pageBuilder: (context, animation, secondaryAnimation) =>
-                widget.nextRoute,
-            transitionDuration: Duration.zero,
-          ),
-        );
+        AppNavigator.pushReplacement(context, widget.nextRoute);
       }
     }
   }

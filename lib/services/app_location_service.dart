@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
-import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class AppLocationService {
   AppLocationService._();
@@ -15,46 +14,66 @@ class AppLocationService {
   final AuthServices _authServices = AuthServices();
   final AppData _appData = AppData();
 
-  Future<void> checkAndPromptLocation(BuildContext context) async {
-    // If location is already set in memory/cache, do nothing
-    if (_appData.location != null) return;
+  /// Checks if location permission is granted.
+  Future<bool> hasLocationPermission() async {
+    final permission = await Geolocator.checkPermission();
+    return permission == LocationPermission.always ||
+           permission == LocationPermission.whileInUse;
+  }
+
+  /// Request permissions from the platform.
+  Future<bool> requestLocationPermission() async {
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return permission == LocationPermission.always ||
+           permission == LocationPermission.whileInUse;
+  }
+
+  /// Retrieve the current GPS position with settings and timeouts unified.
+  Future<Position?> determinePosition() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return null;
+
+    final permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return null;
+    }
+
+    return await Geolocator.getCurrentPosition(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.medium,
+        timeLimit: Duration(seconds: 10),
+      ),
+    );
+  }
+
+  /// Tries to resolve location automatically from GPS.
+  /// Returns [true] if coordinates are cached/set successfully.
+  Future<bool> tryAutoResolveLocation() async {
+    if (_appData.location != null) return true;
 
     try {
-      final permission = await Geolocator.checkPermission();
-      final hasPermission = permission == LocationPermission.always ||
-                            permission == LocationPermission.whileInUse;
+      final hasPerm = await hasLocationPermission();
+      if (!hasPerm) return false;
 
-      // If we do not have permission, show the bottom sheet prompt
-      if (!hasPermission) {
-        if (context.mounted) {
-          await AppBottomSheet.showLocationPermissionPrompt(context);
-        }
-        return;
-      }
-
-      // If we have permission, update location automatically from GPS (with 5s timeout)
-      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) return;
-
-      final position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 5),
-        ),
-      );
+      final position = await determinePosition();
+      if (position == null) return false;
 
       final placeName = await _getPlaceName(
         position.latitude,
         position.longitude,
       );
-
       await saveLocation(
         latitude: position.latitude,
         longitude: position.longitude,
         placeName: placeName,
       );
-    } catch (e) {
-      debugPrint('Error checking or updating location: $e');
+      return true;
+    } catch (_) {
+      return false;
     }
   }
 

@@ -40,14 +40,14 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
     if (_selectedReason == null) return;
 
     if (!AppData().isLoggedIn) {
-      Navigator.pop(context); // Close dialog
+      AppNavigator.pop(context); // Close dialog
       AppBottomSheet.showConfirmationBottomSheet(
         context: context,
         title: 'Sign In Required',
         message: 'You need to sign in to submit a report.',
         confirmButtonText: 'Sign In',
         onConfirm: () {
-          Navigator.pop(context); // Close bottom sheet
+          AppNavigator.pop(context); // Close bottom sheet
           AppNavigator.push(context, const LoginScreen());
         },
       );
@@ -66,7 +66,7 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
     if (mounted) {
       setState(() => _isLoading = false);
       if (result.success == true) {
-        Navigator.pop(context);
+        AppNavigator.pop(context);
         AppAlerts.showSuccess(context, 'Report submitted for review.');
       } else {
         AppAlerts.showError(
@@ -123,7 +123,7 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
       ),
       actions: [
         TextButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => AppNavigator.pop(context),
           child: const Text('Cancel'),
         ),
         ElevatedButton(

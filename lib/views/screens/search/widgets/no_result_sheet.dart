@@ -99,8 +99,12 @@ class _NoResultSheetState extends State<NoResultSheet> {
     final hasQuery =
         widget.searchQuery != null && widget.searchQuery!.isNotEmpty;
 
-    final double? radiusKm = widget.radiusUsed != null ? widget.radiusUsed! / 1000.0 : null;
-    final double? expandedRadiusKm = radiusKm != null ? (radiusKm * 3.0).clamp(1.0, 50.0) : null;
+    final double? radiusKm = widget.radiusUsed != null
+        ? widget.radiusUsed! / 1000.0
+        : null;
+    final double? expandedRadiusKm = radiusKm != null
+        ? (radiusKm * 3.0).clamp(1.0, 50.0)
+        : null;
 
     final String titleText;
     final String bodyText;
@@ -118,7 +122,9 @@ class _NoResultSheetState extends State<NoResultSheet> {
       titleText = hasQuery
           ? '"${widget.searchQuery}" not found nearby'
           : 'No Items Found Nearby';
-      bodyText = widget.message ?? "We couldn't find this product within your discovery radius.";
+      bodyText =
+          widget.message ??
+          "We couldn't find this product within your discovery radius.";
       actionText = 'Increase Discovery Radius';
       showIncreaseAction = true;
     }
@@ -153,10 +159,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
             Text(
               titleText,
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(
@@ -224,7 +227,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
               const SizedBox(height: 12),
             ],
             if (!showIncreaseAction) const SizedBox(height: 12),
-
 
             // Option 2: Wishlist CTA
             Container(
@@ -313,7 +315,7 @@ class _NoResultSheetState extends State<NoResultSheet> {
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         onPressed: () {
-                          Navigator.pop(context);
+                          AppNavigator.pop(context);
                           AppNavigator.push(context, const LoginScreen());
                         },
                         icon: const Icon(Icons.login_rounded, size: 16),
@@ -472,7 +474,7 @@ class _CategoryPickerSheet extends StatelessWidget {
                     size: 20,
                     color: isDark ? Colors.white24 : Colors.grey.shade400,
                   ),
-                  onTap: () => Navigator.pop(context, cat),
+                  onTap: () => AppNavigator.pop(context, cat),
                 );
               },
             ),

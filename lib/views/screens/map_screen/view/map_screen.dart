@@ -11,13 +11,12 @@ import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
-import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/map_screen/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/map_screen/cubit/map_state.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/location_required_widget.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -82,52 +81,10 @@ class _LocationRequiredView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.location_off_rounded,
-                size: 72,
-                color: theme.colorScheme.onSurface.withValues(alpha: 0.25),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Location Not Set',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'Set your location to discover nearby shops on the map.',
-                style: TextStyle(
-                  fontSize: 14,
-                  height: 1.4,
-                  color: theme.colorScheme.onSurface.withValues(alpha: 0.65),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: AppElevatedButton(
-                  text: 'Pick Location',
-                  onPressed: () async {
-                    await LocationPickerLauncher.open(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
+    return const Scaffold(
+      body: LocationRequiredWidget(
+        description: 'Set your location to discover nearby shops on the map.',
+        buttonText: 'Pick Location',
       ),
     );
   }
@@ -166,11 +123,15 @@ class _MapViewState extends State<_MapView> {
 
   List<ShopCluster> _clusterShops(List<Shop> shops, double zoom) {
     if (zoom.isNaN || zoom >= 16.5) {
-      return shops.map((shop) => ShopCluster(
-        latitude: shop.shopLatitude!,
-        longitude: shop.shopLongitude!,
-        shops: [shop],
-      )).toList();
+      return shops
+          .map(
+            (shop) => ShopCluster(
+              latitude: shop.shopLatitude!,
+              longitude: shop.shopLongitude!,
+              shops: [shop],
+            ),
+          )
+          .toList();
     }
 
     final List<ShopCluster> clusters = [];
@@ -179,7 +140,8 @@ class _MapViewState extends State<_MapView> {
 
     for (final shop in shops) {
       if (shop.shopLatitude == null || shop.shopLongitude == null) continue;
-      if (!shop.shopLatitude!.isFinite || !shop.shopLongitude!.isFinite) continue;
+      if (!shop.shopLatitude!.isFinite || !shop.shopLongitude!.isFinite)
+        continue;
 
       ShopCluster? mergedCluster;
       for (final cluster in clusters) {
@@ -208,13 +170,20 @@ class _MapViewState extends State<_MapView> {
     return clusters;
   }
 
-  List<Marker> _buildMarkers(BuildContext context, List<Shop> shops, double zoom) {
-    final validShops = shops.where(
-      (shop) => shop.shopLatitude != null &&
-                shop.shopLongitude != null &&
-                shop.shopLatitude!.isFinite &&
-                shop.shopLongitude!.isFinite,
-    ).toList();
+  List<Marker> _buildMarkers(
+    BuildContext context,
+    List<Shop> shops,
+    double zoom,
+  ) {
+    final validShops = shops
+        .where(
+          (shop) =>
+              shop.shopLatitude != null &&
+              shop.shopLongitude != null &&
+              shop.shopLatitude!.isFinite &&
+              shop.shopLongitude!.isFinite,
+        )
+        .toList();
 
     final clusters = _clusterShops(validShops, zoom);
 
@@ -256,36 +225,40 @@ class _MapViewState extends State<_MapView> {
                 options: MapOptions(
                   initialCenter: LatLng(lat, lon),
                   onPositionChanged: (position, hasGesture) {
-                    if (position.zoom.isFinite && (position.zoom - _currentZoom).abs() > 0.15) {
+                    if (position.zoom.isFinite &&
+                        (position.zoom - _currentZoom).abs() > 0.15) {
                       setState(() {
                         _currentZoom = position.zoom;
                       });
                     }
 
                     _debounceTimer?.cancel();
-                    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
-                      final camera = widget.mapController.camera;
-                      if (!camera.center.latitude.isFinite ||
-                          !camera.center.longitude.isFinite ||
-                          !camera.zoom.isFinite) {
-                        return;
-                      }
-                      final bounds = camera.visibleBounds;
-                      if (!bounds.south.isFinite ||
-                          !bounds.north.isFinite ||
-                          !bounds.west.isFinite ||
-                          !bounds.east.isFinite) {
-                        return;
-                      }
-                      context.read<MapCubit>().fetchShops(
-                        lat: camera.center.latitude,
-                        lon: camera.center.longitude,
-                        minLat: bounds.south,
-                        maxLat: bounds.north,
-                        minLon: bounds.west,
-                        maxLon: bounds.east,
-                      );
-                    });
+                    _debounceTimer = Timer(
+                      const Duration(milliseconds: 400),
+                      () {
+                        final camera = widget.mapController.camera;
+                        if (!camera.center.latitude.isFinite ||
+                            !camera.center.longitude.isFinite ||
+                            !camera.zoom.isFinite) {
+                          return;
+                        }
+                        final bounds = camera.visibleBounds;
+                        if (!bounds.south.isFinite ||
+                            !bounds.north.isFinite ||
+                            !bounds.west.isFinite ||
+                            !bounds.east.isFinite) {
+                          return;
+                        }
+                        context.read<MapCubit>().fetchShops(
+                          lat: camera.center.latitude,
+                          lon: camera.center.longitude,
+                          minLat: bounds.south,
+                          maxLat: bounds.north,
+                          minLon: bounds.west,
+                          maxLon: bounds.east,
+                        );
+                      },
+                    );
                   },
                 ),
                 children: [
@@ -320,8 +293,6 @@ class _MapViewState extends State<_MapView> {
             right: 16,
             child: const _ControlPanel(),
           ),
-
-
 
           Positioned(
             bottom: 10,
@@ -358,10 +329,7 @@ class _ClusterMarker extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        _showShopsBottomSheet(
-          context,
-          cluster.shops,
-        );
+        _showShopsBottomSheet(context, cluster.shops);
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -509,8 +477,7 @@ class _ControlPanel extends StatelessWidget {
                         final category = cubit.categories[index];
                         final isSelected = cubit.selectedCategory == category;
                         return GestureDetector(
-                          onTap: () =>
-                              cubit.selectCategory(category),
+                          onTap: () => cubit.selectCategory(category),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 200),
                             padding: const EdgeInsets.symmetric(
@@ -671,10 +638,7 @@ void _showShopsBottomSheet(BuildContext context, List<Shop> shops) {
               ],
             ),
           ),
-          Divider(
-            height: 1,
-            color: theme.dividerColor.withValues(alpha: 0.1),
-          ),
+          Divider(height: 1, color: theme.dividerColor.withValues(alpha: 0.1)),
           Flexible(
             child: ListView.separated(
               controller: scrollController,
@@ -688,11 +652,15 @@ void _showShopsBottomSheet(BuildContext context, List<Shop> shops) {
                     color: theme.cardColor,
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: theme.dividerColor.withValues(alpha: isDark ? 0.15 : 0.08),
+                      color: theme.dividerColor.withValues(
+                        alpha: isDark ? 0.15 : 0.08,
+                      ),
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
+                        color: Colors.black.withValues(
+                          alpha: isDark ? 0.2 : 0.02,
+                        ),
                         blurRadius: 10,
                         offset: const Offset(0, 4),
                       ),
@@ -712,7 +680,8 @@ void _showShopsBottomSheet(BuildContext context, List<Shop> shops) {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12),
-                        child: shop.storeLogoUrl != null &&
+                        child:
+                            shop.storeLogoUrl != null &&
                                 shop.storeLogoUrl!.isNotEmpty
                             ? CachedNetworkImage(
                                 imageUrl: shop.storeLogoUrl!,
@@ -801,11 +770,8 @@ void _showShopsBottomSheet(BuildContext context, List<Shop> shops) {
                       color: theme.primaryColor.withValues(alpha: 0.7),
                     ),
                     onTap: () {
-                      Navigator.pop(context); // close bottom sheet
-                      AppNavigator.push(
-                        context,
-                        ShopDetailScreen(shop: shop),
-                      );
+                      AppNavigator.pop(context); // close bottom sheet
+                      AppNavigator.push(context, ShopDetailScreen(shop: shop));
                     },
                   ),
                 );

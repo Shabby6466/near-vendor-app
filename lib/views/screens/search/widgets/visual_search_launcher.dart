@@ -23,113 +23,113 @@ class VisualSearchLauncher {
       barrierColor: Colors.black.withValues(alpha: 0.5),
       builder: (dialogContext) {
         return BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-        child: Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-            decoration: BoxDecoration(
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? const Color(0xFF1C1C23).withValues(alpha: 0.9)
-                  : Colors.white.withValues(alpha: 0.95),
-              borderRadius: BorderRadius.circular(32),
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.1),
-                width: 1.5,
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Dialog(
+            backgroundColor: Colors.transparent,
+            insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
+              decoration: BoxDecoration(
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? const Color(0xFF1C1C23).withValues(alpha: 0.9)
+                    : Colors.white.withValues(alpha: 0.95),
+                borderRadius: BorderRadius.circular(32),
+                border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.1),
+                  width: 1.5,
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.2),
+                    blurRadius: 30,
+                    offset: const Offset(0, 15),
+                  ),
+                ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.2),
-                  blurRadius: 30,
-                  offset: const Offset(0, 15),
-                ),
-              ],
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: ColorName.primary.withValues(alpha: 0.1),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Assets.icons.camera.svg(
-                    colorFilter: const ColorFilter.mode(
-                      ColorName.primary,
-                      BlendMode.srcIn,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: ColorName.primary.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
                     ),
-                    width: 32,
-                    height: 32,
+                    child: Assets.icons.camera.svg(
+                      colorFilter: const ColorFilter.mode(
+                        ColorName.primary,
+                        BlendMode.srcIn,
+                      ),
+                      width: 32,
+                      height: 32,
+                    ),
+                  ).animate().scale(
+                    delay: 100.ms,
+                    duration: 400.ms,
+                    curve: Curves.easeOutBack,
                   ),
-                ).animate().scale(
-                  delay: 100.ms,
-                  duration: 400.ms,
-                  curve: Curves.easeOutBack,
-                ),
-                const SizedBox(height: 20),
-                Text(
-                  'Visual Search',
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.5,
+                  const SizedBox(height: 20),
+                  Text(
+                    'Visual Search',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Search for items instantly using your\ncamera or photo gallery.',
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
-                    height: 1.4,
+                  const SizedBox(height: 8),
+                  Text(
+                    'Search for items instantly using your\ncamera or photo gallery.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                      height: 1.4,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 32),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _DialogButton(
-                        icon: CupertinoIcons.camera,
-                        label: 'Camera',
-                        onTap: () => _navigateToVisualSearch(
-                          context,
-                          dialogContext,
-                          ImageSource.camera,
+                  const SizedBox(height: 32),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _DialogButton(
+                          icon: CupertinoIcons.camera,
+                          label: 'Camera',
+                          onTap: () => _navigateToVisualSearch(
+                            context,
+                            dialogContext,
+                            ImageSource.camera,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: _DialogButton(
-                        icon: CupertinoIcons.photo,
-                        label: 'Gallery',
-                        onTap: () => _navigateToVisualSearch(
-                          context,
-                          dialogContext,
-                          ImageSource.gallery,
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: _DialogButton(
+                          icon: CupertinoIcons.photo,
+                          label: 'Gallery',
+                          onTap: () => _navigateToVisualSearch(
+                            context,
+                            dialogContext,
+                            ImageSource.gallery,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                TextButton(
-                  onPressed: () => Navigator.pop(dialogContext),
-                  child: Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Theme.of(context).textTheme.bodySmall?.color,
-                      fontWeight: FontWeight.w600,
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  TextButton(
+                    onPressed: () => AppNavigator.pop(dialogContext),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodySmall?.color,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ).animate().scale(duration: 300.ms, curve: Curves.easeOutBack).fadeIn(),
+          ).animate().scale(duration: 300.ms, curve: Curves.easeOutBack).fadeIn(),
         );
       },
     );
@@ -140,7 +140,7 @@ class VisualSearchLauncher {
     BuildContext dialogContext,
     ImageSource source,
   ) async {
-    Navigator.pop(dialogContext);
+    AppNavigator.pop(dialogContext);
 
     try {
       final picker = ImagePicker();
