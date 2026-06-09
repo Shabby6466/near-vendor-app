@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/enums/wishlist_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
@@ -44,36 +45,53 @@ class WishlistMainScreen extends StatelessWidget {
             );
           }
 
-          return Scaffold(
-            backgroundColor: Colors.transparent,
-            // Add minimal app bar for context
-            appBar: AppBar(
+          return DefaultTabController(
+            length: 2,
+            child: Scaffold(
               backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              title: const Text(
-                'My Wishes',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                centerTitle: true,
+                title: const Text(
+                  'My Wishes',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                bottom: const TabBar(
+                  indicatorColor: ColorName.primary,
+                  labelColor: ColorName.primary,
+                  unselectedLabelColor: Colors.grey,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Tab(text: 'Active'),
+                    Tab(text: 'Completed'),
+                  ],
+                ),
               ),
-            ),
-            body: Stack(
-              children: [
-                const MyWishesView(),
-                Positioned(
-                  bottom: 10,
-                  right: 24,
-                  child: SafeArea(
-                    top: false,
-                    child: FloatingActionButton(
-                      onPressed: () => CreateWishSheet.show(
-                        context,
-                        context.read<UserWishlistCubit>(),
+              body: Stack(
+                children: [
+                  const TabBarView(
+                    children: [
+                      MyWishesView(filterStatus: WishlistStatus.pending),
+                      MyWishesView(filterStatus: WishlistStatus.fulfilled),
+                    ],
+                  ),
+                  Positioned(
+                    bottom: 10,
+                    right: 24,
+                    child: SafeArea(
+                      top: false,
+                      child: FloatingActionButton(
+                        onPressed: () => CreateWishSheet.show(
+                          context,
+                          context.read<UserWishlistCubit>(),
+                        ),
+                        child: const Icon(Icons.add),
                       ),
-                      child: const Icon(Icons.add),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
@@ -81,6 +99,7 @@ class WishlistMainScreen extends StatelessWidget {
     );
   }
 }
+
 
 class _GuestStateView extends StatelessWidget {
   const _GuestStateView();

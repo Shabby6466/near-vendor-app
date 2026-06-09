@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/models/data_models/category_model.dart';
+import 'package:nearvendorapp/services/categories_service.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
@@ -30,7 +32,32 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
   final _nameController = TextEditingController();
   final _descriptionController = TextEditingController();
 
+  List<CategoryModel> _categories = [];
+  CategoryModel? _selectedCategory;
+  bool _loadingCategories = true;
   bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCategories();
+  }
+
+  Future<void> _loadCategories() async {
+    try {
+      final response = await CategoriesService.getCategories();
+      if (mounted) {
+        setState(() {
+          _categories = response.categories;
+          _loadingCategories = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _loadingCategories = false);
+      }
+    }
+  }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
@@ -43,6 +70,7 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
     final input = CreateWishlistInput(
       itemName: _nameController.text.trim(),
       description: _descriptionController.text.trim(),
+      categoryId: _selectedCategory?.id,
       lat: location.latitude,
       lon: location.longitude,
     );
@@ -65,6 +93,13 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
         message: 'Failed to create wish. Please try again.',
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
   }
 
   @override
@@ -136,6 +171,33 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
                 prefixIcon: const Icon(Icons.shopping_bag_outlined),
               ),
               validator: (v) => v!.trim().isEmpty ? 'Required' : null,
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<CategoryModel>(
+              initialValue: _selectedCategory,
+              hint: _loadingCategories
+                  ? const Text('Loading categories...')
+                  : const Text('Select Category (Optional)'),
+              decoration: InputDecoration(
+                labelText: 'Category',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                prefixIcon: const Icon(Icons.category_outlined),
+              ),
+              items: _categories.map((c) {
+                return DropdownMenuItem<CategoryModel>(
+                  value: c,
+                  child: Text(c.name),
+                );
+              }).toList(),
+              onChanged: _loadingCategories
+                  ? null
+                  : (val) {
+                      setState(() {
+                        _selectedCategory = val;
+                      });
+                    },
             ),
             const SizedBox(height: 16),
             TextFormField(

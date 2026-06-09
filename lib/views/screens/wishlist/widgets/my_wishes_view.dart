@@ -2,19 +2,23 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:nearvendorapp/enums/wishlist_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 
 class MyWishesView extends StatefulWidget {
-  const MyWishesView({super.key});
+  final WishlistStatus filterStatus;
+  const MyWishesView({super.key, required this.filterStatus});
 
   @override
   State<MyWishesView> createState() => _MyWishesViewState();
@@ -36,7 +40,6 @@ class _MyWishesViewState extends State<MyWishesView> {
   }
 
   void _onScroll() {
-    // Trigger pagination when within 200px of the bottom
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
       final cubit = context.read<UserWishlistCubit>();
@@ -57,7 +60,7 @@ class _MyWishesViewState extends State<MyWishesView> {
     return BlocBuilder<UserWishlistCubit, UserWishlistState>(
       builder: (context, state) {
         if (state is UserWishlistInitial || state is UserWishlistLoading) {
-          return const AppLoadingIndicator();
+          return _buildShimmerLoading(context, isDark);
         }
 
         if (state is UserWishlistError) {
@@ -76,7 +79,11 @@ class _MyWishesViewState extends State<MyWishesView> {
         }
 
         if (state is UserWishlistLoaded) {
-          if (state.wishlists.isEmpty) {
+          final wishlists = state.wishlists
+              .where((w) => w.status == widget.filterStatus)
+              .toList();
+
+          if (wishlists.isEmpty) {
             return _buildEmptyState(context, isDark);
           }
 
@@ -90,40 +97,41 @@ class _MyWishesViewState extends State<MyWishesView> {
                 parent: BouncingScrollPhysics(),
               ),
               slivers: [
-                SliverToBoxAdapter(
-                  child: Container(
-                    margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-                    padding: const EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      color: ColorName.primary.withValues(alpha: 0.06),
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: ColorName.primary.withValues(alpha: 0.12),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(
-                          Icons.info_outline_rounded,
-                          color: ColorName.primary,
-                          size: 18,
+                if (widget.filterStatus == WishlistStatus.pending)
+                  SliverToBoxAdapter(
+                    child: Container(
+                      margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                      padding: const EdgeInsets.all(14),
+                      decoration: BoxDecoration(
+                        color: ColorName.primary.withValues(alpha: 0.06),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: ColorName.primary.withValues(alpha: 0.12),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Text(
-                            'Your wishes are visible to nearby vendors. When they stock a matching item, it appears here automatically.',
-                            style: TextStyle(
-                              fontSize: 12,
-                              height: 1.4,
-                              fontWeight: FontWeight.w500,
-                              color: isDark ? Colors.white70 : Colors.black54,
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.info_outline_rounded,
+                            color: ColorName.primary,
+                            size: 18,
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Text(
+                              'Your wishes are visible to nearby vendors. When they stock a matching item, it appears here automatically.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                height: 1.4,
+                                fontWeight: FontWeight.w500,
+                                color: isDark ? Colors.white70 : Colors.black54,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
                 SliverPadding(
                   padding: const EdgeInsets.only(
                     left: 16,
@@ -131,31 +139,28 @@ class _MyWishesViewState extends State<MyWishesView> {
                     bottom: 120,
                   ),
                   sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                      (context, index) {
-                        if (index == state.wishlists.length) {
-                          // Loading indicator shown while fetching next page.
-                          // Actual trigger is the ScrollController listener above.
-                          return const Center(
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 16),
-                              child: LoadingAnimation(size: 16),
-                            ),
-                          );
-                        }
-
-                        final wish = state.wishlists[index];
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            top: index == 0 ? 8 : 0,
-                            bottom: 12,
+                    delegate: SliverChildListDelegate([
+                      ...AppAnimateList.stagger(
+                        wishlists
+                            .map(
+                              (wish) => Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: _WishlistCard(
+                                  wish: wish,
+                                  isDark: isDark,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
+                      if (state.hasMore)
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(vertical: 16),
+                            child: LoadingAnimation(size: 16),
                           ),
-                          child: _WishlistCard(wish: wish, isDark: isDark),
-                        );
-                      },
-                      childCount:
-                          state.wishlists.length + (state.hasMore ? 1 : 0),
-                    ),
+                        ),
+                    ]),
                   ),
                 ),
               ],
@@ -164,6 +169,31 @@ class _MyWishesViewState extends State<MyWishesView> {
         }
 
         return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildShimmerLoading(BuildContext context, bool isDark) {
+    return ListView.builder(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+      itemCount: 4,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: Shimmer(
+            duration: const Duration(seconds: 2),
+            interval: const Duration(milliseconds: 200),
+            color: isDark ? const Color(0xFF2D3748) : Colors.grey[300]!,
+            colorOpacity: 0.2,
+            child: Container(
+              height: 140,
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E242B) : Colors.white,
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          ),
+        );
       },
     );
   }
@@ -236,14 +266,18 @@ class _MyWishesViewState extends State<MyWishesView> {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.auto_awesome,
+                widget.filterStatus == WishlistStatus.fulfilled
+                    ? Icons.check_circle_outline_rounded
+                    : Icons.auto_awesome,
                 size: 56,
                 color: theme.primaryColor.withValues(alpha: 0.6),
               ),
             ),
             const SizedBox(height: 24),
             Text(
-              'No Wishes Yet',
+              widget.filterStatus == WishlistStatus.fulfilled
+                  ? 'No Completed Wishes'
+                  : 'No Wishes Yet',
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -253,7 +287,9 @@ class _MyWishesViewState extends State<MyWishesView> {
             ),
             const SizedBox(height: 12),
             Text(
-              "Can't find what you're looking for nearby?\nMake a wish and local vendors will be notified — if they stock it, you'll see it here.",
+              widget.filterStatus == WishlistStatus.fulfilled
+                  ? "When you buy or find a wishlisted product, mark it as completed to keep your feed clean."
+                  : "Can't find what you're looking for nearby?\nMake a wish and local vendors will be notified — if they stock it, you'll see it here.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14,
@@ -261,67 +297,9 @@ class _MyWishesViewState extends State<MyWishesView> {
                 color: isDark ? Colors.white60 : Colors.black45,
               ),
             ),
-            const SizedBox(height: 28),
-            // How-it-works steps
-            _HowItWorksStep(
-              icon: Icons.edit_note_rounded,
-              text: 'Describe the product you need',
-              isDark: isDark,
-            ),
-            const SizedBox(height: 10),
-            _HowItWorksStep(
-              icon: Icons.storefront_rounded,
-              text: 'Nearby vendors see your request',
-              isDark: isDark,
-            ),
-            const SizedBox(height: 10),
-            _HowItWorksStep(
-              icon: Icons.check_circle_outline_rounded,
-              text: 'Get matched when they stock it',
-              isDark: isDark,
-            ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class _HowItWorksStep extends StatelessWidget {
-  final IconData icon;
-  final String text;
-  final bool isDark;
-
-  const _HowItWorksStep({
-    required this.icon,
-    required this.text,
-    required this.isDark,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(6),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Icon(icon, color: theme.colorScheme.onSurface, size: 16),
-        ),
-        const SizedBox(width: 12),
-        Text(
-          text,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: isDark ? Colors.white70 : Colors.black54,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -332,12 +310,125 @@ class _WishlistCard extends StatelessWidget {
 
   const _WishlistCard({required this.wish, required this.isDark});
 
+  void _showShopSelectorSheet(
+    BuildContext context,
+    String productName,
+    List<Product> options,
+  ) {
+    AppBottomSheet.showBottomSheet(
+      context: context,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'Select option for $productName',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 16),
+          ...options.map((item) {
+            final distanceText = item.distanceM != null
+                ? '${(item.distanceM! / 1000).toStringAsFixed(1)} km away'
+                : 'Nearby';
+
+            Widget leadingWidget;
+            if (item.imageUrl != null && item.imageUrl!.isNotEmpty) {
+              leadingWidget = ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: CachedNetworkImage(
+                  imageUrl: item.imageUrl!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) => Container(
+                    width: 40,
+                    height: 40,
+                    color: Colors.grey.shade800,
+                    child: const Center(
+                      child: SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    width: 40,
+                    height: 40,
+                    color: Colors.grey.shade800,
+                    child: const Icon(
+                      Icons.shopping_bag_outlined,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              leadingWidget = Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade800,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.shopping_bag_outlined,
+                  color: ColorName.primary,
+                ),
+              );
+            }
+
+            return ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 4,
+                horizontal: 8,
+              ),
+              leading: leadingWidget,
+              title: Text(
+                item.name,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                'Rs. ${item.price.toStringAsFixed(0)} • $distanceText',
+                style: const TextStyle(color: Colors.grey, fontSize: 13),
+              ),
+              trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+              onTap: () {
+                Navigator.of(context).pop();
+                AppNavigator.push(
+                  context,
+                  BlocProvider(
+                    create: (_) => ProductDetailCubit(),
+                    child: ProductDetailScreen(product: item),
+                  ),
+                );
+              },
+            );
+          }),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final dateStr = wish.createdAt != null
         ? DateFormat('MMM d').format(wish.createdAt!)
         : null;
-    final hasMatches = wish.matchedItems.isNotEmpty;
+
+    // Group matches by barcode or name to display duplicates only once
+    final Map<String, List<Product>> groupedMatches = {};
+    for (final item in wish.matchedItems) {
+      final key = item.barcode?.trim().isNotEmpty == true
+          ? 'barcode:${item.barcode!.trim().toLowerCase()}'
+          : 'name:${item.name.trim().toLowerCase()}';
+      groupedMatches.putIfAbsent(key, () => []).add(item);
+    }
+    final groupedProducts = groupedMatches.values
+        .map((list) => list.first)
+        .toList();
+    final hasMatches = groupedProducts.isNotEmpty;
 
     return Container(
       decoration: BoxDecoration(
@@ -372,7 +463,7 @@ class _WishlistCard extends StatelessWidget {
                   width: 36,
                   height: 36,
                   decoration: BoxDecoration(
-                    color: wish.status == 'FULFILLED'
+                    color: wish.status == WishlistStatus.fulfilled
                         ? Colors.green.withValues(alpha: 0.12)
                         : hasMatches
                         ? Colors.blue.withValues(alpha: 0.12)
@@ -380,12 +471,12 @@ class _WishlistCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
-                    wish.status == 'FULFILLED'
+                    wish.status == WishlistStatus.fulfilled
                         ? Icons.check_circle_rounded
                         : hasMatches
                         ? Icons.star_rounded
                         : Icons.auto_awesome,
-                    color: wish.status == 'FULFILLED'
+                    color: wish.status == WishlistStatus.fulfilled
                         ? Colors.green
                         : hasMatches
                         ? Colors.blue
@@ -437,15 +528,15 @@ class _WishlistCard extends StatelessWidget {
                             ),
                           ],
                           Text(
-                            wish.status == 'FULFILLED'
+                            wish.status == WishlistStatus.fulfilled
                                 ? 'Fulfilled ✓'
                                 : hasMatches
-                                ? '${wish.matchedItems.length} match${wish.matchedItems.length > 1 ? 'es' : ''} found'
+                                ? '${groupedProducts.length} match${groupedProducts.length > 1 ? 'es' : ''} found'
                                 : 'Searching vendors…',
                             style: TextStyle(
                               fontSize: 11,
                               fontWeight: FontWeight.w700,
-                              color: wish.status == 'FULFILLED'
+                              color: wish.status == WishlistStatus.fulfilled
                                   ? Colors.green.shade600
                                   : hasMatches
                                   ? Colors.blue.shade600
@@ -462,7 +553,7 @@ class _WishlistCard extends StatelessWidget {
                 // Actions
                 Row(
                   children: [
-                    if (wish.status != 'FULFILLED')
+                    if (wish.status != WishlistStatus.fulfilled)
                       SizedBox(
                         width: 32,
                         height: 32,
@@ -534,29 +625,42 @@ class _WishlistCard extends StatelessWidget {
               child: Column(
                 children: [
                   SizedBox(
-                    height: 100,
+                    height: 110,
                     child: ListView.separated(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 14,
                         vertical: 10,
                       ),
                       scrollDirection: Axis.horizontal,
-                      itemCount: wish.matchedItems.length,
+                      itemCount: groupedProducts.length,
                       separatorBuilder: (_, _) => const SizedBox(width: 8),
                       itemBuilder: (context, index) {
-                        final item = wish.matchedItems[index];
+                        final item = groupedProducts[index];
+                        final key = item.barcode?.trim().isNotEmpty == true
+                            ? 'barcode:${item.barcode!.trim().toLowerCase()}'
+                            : 'name:${item.name.trim().toLowerCase()}';
+                        final itemOptions = groupedMatches[key] ?? [item];
+
                         return GestureDetector(
                           onTap: () {
-                            AppNavigator.push(
-                              context,
-                              BlocProvider(
-                                create: (_) => ProductDetailCubit(),
-                                child: ProductDetailScreen(product: item),
-                              ),
-                            );
+                            if (itemOptions.length > 1) {
+                              _showShopSelectorSheet(
+                                context,
+                                item.name,
+                                itemOptions,
+                              );
+                            } else {
+                              AppNavigator.push(
+                                context,
+                                BlocProvider(
+                                  create: (_) => ProductDetailCubit(),
+                                  child: ProductDetailScreen(product: item),
+                                ),
+                              );
+                            }
                           },
                           child: Container(
-                            width: 160,
+                            width: 170,
                             decoration: BoxDecoration(
                               color: isDark
                                   ? const Color(0xFF2D3748)
@@ -604,7 +708,7 @@ class _WishlistCard extends StatelessWidget {
                                       children: [
                                         Text(
                                           item.name,
-                                          maxLines: 2,
+                                          maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                           style: TextStyle(
                                             fontSize: 11,
@@ -615,7 +719,7 @@ class _WishlistCard extends StatelessWidget {
                                                 : const Color(0xFF111827),
                                           ),
                                         ),
-                                        const SizedBox(height: 4),
+                                        const SizedBox(height: 2),
                                         Text(
                                           'Rs. ${item.price.toStringAsFixed(0)}',
                                           style: const TextStyle(
@@ -624,6 +728,29 @@ class _WishlistCard extends StatelessWidget {
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
+                                        if (itemOptions.length > 1) ...[
+                                          const SizedBox(height: 2),
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: ColorName.primary
+                                                  .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              '${itemOptions.length} shops',
+                                              style: const TextStyle(
+                                                fontSize: 9,
+                                                color: ColorName.primary,
+                                                fontWeight: FontWeight.w700,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ],
                                     ),
                                   ),
@@ -651,30 +778,34 @@ class _WishlistCard extends StatelessWidget {
             ),
           ] else ...[
             // No matches yet — informative footer
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                border: Border(
-                  top: BorderSide(
-                    color: isDark
-                        ? Colors.white10
-                        : Colors.black.withValues(alpha: 0.05),
+            if (wish.status != WishlistStatus.fulfilled)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: isDark
+                          ? Colors.white10
+                          : Colors.black.withValues(alpha: 0.05),
+                    ),
+                  ),
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.1)
+                      : const Color(0xFFFFFBEB),
+                ),
+                child: const Text(
+                  'No matches yet — vendors near you will be notified and can add this item to their shop.',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                    height: 1.3,
                   ),
                 ),
-                color: isDark
-                    ? Colors.black.withValues(alpha: 0.1)
-                    : const Color(0xFFFFFBEB),
               ),
-              child: Text(
-                'No matches yet — vendors near you will be notified and can add this item to their shop.',
-                style: TextStyle(
-                  color: isDark ? Colors.white : Colors.black,
-                  fontSize: 11,
-                  fontWeight: FontWeight.w500,
-                  height: 1.3,
-                ),
-              ),
-            ),
           ],
         ],
       ),
@@ -701,7 +832,8 @@ class _WishlistCard extends StatelessWidget {
     AppBottomSheet.showConfirmationBottomSheet(
       context: context,
       title: 'Mark as Fulfilled',
-      message: 'Did you find what you were looking for? Marking this as fulfilled stops open demand for vendors.',
+      message:
+          'Did you find what you were looking for? Marking this as fulfilled stops open demand for vendors.',
       confirmButtonText: 'Fulfill Wish',
       confirmButtonColor: ColorName.primary,
       icon: Icons.check_circle_outline_rounded,

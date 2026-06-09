@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/enums/wishlist_status.dart';
 import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 
@@ -112,7 +113,7 @@ class UserWishlistCubit extends Cubit<UserWishlistState> {
                 itemName: w.itemName,
                 description: w.description,
                 categoryId: w.categoryId,
-                status: 'FULFILLED',
+                status: WishlistStatus.fulfilled,
                 createdAt: w.createdAt,
                 matchedItems: w.matchedItems,
               );

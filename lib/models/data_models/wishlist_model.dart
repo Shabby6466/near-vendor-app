@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:nearvendorapp/enums/wishlist_status.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 
 class WishlistItem extends Equatable {
@@ -6,7 +7,7 @@ class WishlistItem extends Equatable {
   final String itemName;
   final String? description;
   final String? categoryId;
-  final String status;
+  final WishlistStatus status;
   final DateTime? createdAt;
   final List<Product> matchedItems;
 
@@ -27,7 +28,7 @@ class WishlistItem extends Equatable {
       itemName: json['itemName'] as String? ?? '',
       description: json['description'] as String?,
       categoryId: json['categoryId'] as String?,
-      status: json['status'] as String? ?? 'PENDING',
+      status: WishlistStatus.fromValue(json['status'] as String?),
       createdAt: json['createdAt'] != null
           ? DateTime.tryParse(json['createdAt'] as String)
           : null,
@@ -37,6 +38,18 @@ class WishlistItem extends Equatable {
                 .toList()
           : [],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'itemName': itemName,
+      'description': description,
+      'categoryId': categoryId,
+      'status': status.value,
+      'createdAt': createdAt?.toIso8601String(),
+      'matchedItems': matchedItems.map((e) => e.toJson()).toList(),
+    };
   }
 
   @override
