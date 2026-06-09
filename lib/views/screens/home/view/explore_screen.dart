@@ -26,7 +26,8 @@ class ExploreScreen extends StatelessWidget {
                 child: NotificationListener<ScrollNotification>(
                   onNotification: (scrollInfo) {
                     if (scrollInfo.metrics.pixels >=
-                        scrollInfo.metrics.maxScrollExtent - 200) {
+                            scrollInfo.metrics.maxScrollExtent - 200 &&
+                        scrollInfo.metrics.pixels > 0) {
                       context.read<ExploreScreenCubit>().loadNextPage();
                     }
                     return false;

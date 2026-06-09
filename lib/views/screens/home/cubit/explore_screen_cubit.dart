@@ -48,6 +48,7 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
   int _currentPage = 1;
   bool _hasReachedMax = false;
   bool _isLoadingNextPage = false;
+  bool _isLoadingFirstPage = false;
   int _loadSessionId = 0;
 
   // Cache for shops and their pagination metadata by category ID
@@ -66,11 +67,13 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
     if (!isRefreshing || _allShops.isEmpty) {
       emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
     }
+    _isLoadingFirstPage = true;
     try {
       final cats = await _shopServices.getCategoryNames();
       _categories = [CategoryModel.all(), ...cats];
       await loadShops(isRefreshing: isRefreshing);
     } catch (e) {
+      _isLoadingFirstPage = false;
       emit(ExploreScreenFailure(e.toString()));
     }
   }
@@ -83,6 +86,7 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
     _currentPage = 1;
     _hasReachedMax = false;
     _isLoadingNextPage = false;
+    _isLoadingFirstPage = true;
     _loadSessionId++;
     final currentSession = _loadSessionId;
 
@@ -91,6 +95,7 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
       final lon = AppData().longitude;
 
       if (lat == null || lon == null) {
+        _isLoadingFirstPage = false;
         emit(const ExploreScreenNoLocation());
         return;
       }
@@ -98,6 +103,7 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
       await _fetchShops(lat: lat, lon: lon, sessionId: currentSession);
     } catch (e) {
       if (currentSession == _loadSessionId) {
+        _isLoadingFirstPage = false;
         emit(ExploreScreenFailure(e.toString()));
       }
     }
@@ -111,27 +117,27 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
     required double lon,
     required int sessionId,
   }) async {
-    final cacheKey = _selectedCategory.id;
-
-    // Check cache first - only if not searching and loading page 1
-    if ((_searchQuery == null || _searchQuery!.isEmpty) &&
-        _currentPage == 1 &&
-        _shopCache.containsKey(cacheKey)) {
-      final entry = _shopCache[cacheKey]!;
-      _allShops = List.from(entry.shops);
-      _currentPage = entry.currentPage;
-      _hasReachedMax = entry.hasReachedMax;
-      _apiMessage = entry.apiMessage;
-      _isGlobalFallback = entry.isGlobalFallback;
-      _rangeMessage = entry.rangeMessage;
-
-      if (sessionId == _loadSessionId) {
-        emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
-      }
-      return;
-    }
-
     try {
+      final cacheKey = _selectedCategory.id;
+
+      // Check cache first - only if not searching and loading page 1
+      if ((_searchQuery == null || _searchQuery!.isEmpty) &&
+          _currentPage == 1 &&
+          _shopCache.containsKey(cacheKey)) {
+        final entry = _shopCache[cacheKey]!;
+        _allShops = List.from(entry.shops);
+        _currentPage = entry.currentPage;
+        _hasReachedMax = entry.hasReachedMax;
+        _apiMessage = entry.apiMessage;
+        _isGlobalFallback = entry.isGlobalFallback;
+        _rangeMessage = entry.rangeMessage;
+
+        if (sessionId == _loadSessionId) {
+          emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+        }
+        return;
+      }
+
       final radiusKm = AppData().discoveryRadius ?? 10.0;
       final radius = (radiusKm * 1000).toInt();
 
@@ -197,11 +203,15 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
       if (sessionId == _loadSessionId) {
         emit(ExploreScreenFailure(e.toString()));
       }
+    } finally {
+      if (sessionId == _loadSessionId) {
+        _isLoadingFirstPage = false;
+      }
     }
   }
 
   Future<void> loadNextPage() async {
-    if (_isLoadingNextPage || _hasReachedMax) return;
+    if (_isLoadingFirstPage || _isLoadingNextPage || _hasReachedMax) return;
 
     final lat = AppData().latitude;
     final lon = AppData().longitude;
