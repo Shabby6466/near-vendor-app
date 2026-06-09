@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class AppAlerts {
   AppAlerts._();
@@ -89,37 +90,19 @@ class AppAlerts {
     required VoidCallback onConfirm,
     String? confirmLabel,
     bool isDestructive = true,
-  }) async {
-    await showDialog<void>(
+  }) {
+    return AppBottomSheet.showConfirmationBottomSheet(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1E1E1E),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(title, style: const TextStyle(color: Colors.white)),
-        content: Text(
-          message,
-          style: const TextStyle(color: Colors.grey, fontSize: 14),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => AppNavigator.pop(ctx),
-            child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
-          ),
-          TextButton(
-            onPressed: () {
-              AppNavigator.pop(ctx);
-              onConfirm();
-            },
-            child: Text(
-              confirmLabel ?? "Confirm",
-              style: TextStyle(
-                color: isDestructive ? Colors.redAccent : Colors.greenAccent,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
-      ),
+      title: title,
+      message: message,
+      confirmButtonText: confirmLabel ?? "Confirm",
+      onConfirm: () {
+        AppNavigator.pop(context);
+        onConfirm();
+      },
+      confirmButtonColor: isDestructive ? const Color(0xFFEF5350) : const Color(0xFF4CAF50),
+      icon: isDestructive ? Icons.warning_amber_rounded : Icons.check_circle_rounded,
+      iconColor: isDestructive ? const Color(0xFFEF5350) : const Color(0xFF4CAF50),
     );
   }
 }

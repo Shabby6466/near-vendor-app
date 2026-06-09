@@ -9,6 +9,7 @@ import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
@@ -681,148 +682,33 @@ class _WishlistCard extends StatelessWidget {
   }
 
   void _showDeleteDialog(BuildContext context) {
-    _showPremiumConfirmation(
+    AppBottomSheet.showConfirmationBottomSheet(
       context: context,
       title: 'Delete Wish',
-      content: 'Are you sure? Local vendors will no longer see this request.',
-      confirmLabel: 'Delete',
-      confirmColor: Colors.red,
+      message: 'Are you sure? Local vendors will no longer see this request.',
+      confirmButtonText: 'Delete',
+      confirmButtonColor: Colors.red.shade600,
       icon: Icons.delete_outline_rounded,
+      iconColor: Colors.red.shade600,
       onConfirm: () {
+        AppNavigator.pop(context);
         context.read<UserWishlistCubit>().deleteWishlist(wish.id);
       },
     );
   }
 
   void _showCompleteDialog(BuildContext context) {
-    _showPremiumConfirmation(
+    AppBottomSheet.showConfirmationBottomSheet(
       context: context,
       title: 'Mark as Fulfilled',
-      content:
-          'Did you find what you were looking for? Marking this as fulfilled stops open demand for vendors.',
-      confirmLabel: 'Fulfill Wish',
-      confirmColor: ColorName.primary,
+      message: 'Did you find what you were looking for? Marking this as fulfilled stops open demand for vendors.',
+      confirmButtonText: 'Fulfill Wish',
+      confirmButtonColor: ColorName.primary,
       icon: Icons.check_circle_outline_rounded,
+      iconColor: ColorName.primary,
       onConfirm: () {
+        AppNavigator.pop(context);
         context.read<UserWishlistCubit>().completeWishlist(wish.id);
-      },
-    );
-  }
-
-  void _showPremiumConfirmation({
-    required BuildContext context,
-    required String title,
-    required String content,
-    required String confirmLabel,
-    required Color confirmColor,
-    required IconData icon,
-    required VoidCallback onConfirm,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: 'Dismiss',
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, anim1, anim2) {
-        return const SizedBox.shrink();
-      },
-      transitionBuilder: (context, anim1, anim2, child) {
-        final curve = Curves.easeOutBack.transform(anim1.value);
-        return Transform.scale(
-          scale: curve,
-          child: Opacity(
-            opacity: anim1.value,
-            child: AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32),
-              ),
-              backgroundColor: isDark ? const Color(0xFF1E242B) : Colors.white,
-              contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: confirmColor.withValues(alpha: 0.1),
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(icon, color: confirmColor, size: 32),
-                  ),
-                  const SizedBox(height: 24),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
-                      color: isDark ? Colors.white : Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Text(
-                    content,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      height: 1.5,
-                      color: isDark ? Colors.white60 : Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextButton(
-                          onPressed: () => AppNavigator.pop(context),
-                          style: TextButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          child: Text(
-                            'Cancel',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: isDark
-                                  ? Colors.white30
-                                  : Colors.grey.shade400,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () {
-                            AppNavigator.pop(context);
-                            onConfirm();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: confirmColor,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            elevation: 0,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                          ),
-                          child: Text(
-                            confirmLabel,
-                            style: const TextStyle(fontWeight: FontWeight.w800),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
       },
     );
   }

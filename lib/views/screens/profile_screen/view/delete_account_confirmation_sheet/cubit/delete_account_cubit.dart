@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
 
@@ -7,7 +8,12 @@ part 'delete_account_state.dart';
 class DeleteAccountCubit extends Cubit<DeleteAccountState> {
   DeleteAccountCubit() : super(DeleteAccountInitial());
 
-  Future<void> deleteAccount(String password) async {
+  final _authServices = AuthServices();
+  final passwordController = TextEditingController();
+
+  Future<void> deleteAccount() async {
+    final password = passwordController.text.trim();
+
     if (password.isEmpty) {
       emit(const DeleteAccountFailure('Please enter your password.'));
       return;
@@ -16,7 +22,7 @@ class DeleteAccountCubit extends Cubit<DeleteAccountState> {
     emit(DeleteAccountLoading());
 
     try {
-      final response = await AuthServices().deleteAccount(password);
+      final response = await _authServices.deleteAccount(password);
 
       if (response.isSuccess) {
         emit(DeleteAccountSuccess());
@@ -28,9 +34,13 @@ class DeleteAccountCubit extends Cubit<DeleteAccountState> {
         );
       }
     } catch (e) {
-      emit(
-        DeleteAccountFailure(e.toString()),
-      );
+      emit(DeleteAccountFailure(e.toString()));
     }
+  }
+
+  @override
+  Future<void> close() {
+    passwordController.dispose();
+    return super.close();
   }
 }

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
+import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 
 class AppBottomSheet {
   AppBottomSheet._();
@@ -143,13 +144,15 @@ class AppBottomSheet {
     VoidCallback? onConfirm,
     VoidCallback? onCancel,
     Color? confirmButtonColor,
+    IconData? icon,
+    Color? iconColor,
   }) {
     return showBottomSheet(
       context: context,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,
-        children: [
+        children: AppAnimateList.stagger([
           Center(
             child: Container(
               height: 4,
@@ -163,6 +166,23 @@ class AppBottomSheet {
               ),
             ),
           ),
+          if (icon != null)
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(18),
+                margin: const EdgeInsets.only(bottom: 20),
+                decoration: BoxDecoration(
+                  color: (iconColor ?? Theme.of(context).primaryColor)
+                      .withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  icon,
+                  color: iconColor ?? Theme.of(context).primaryColor,
+                  size: 32,
+                ),
+              ),
+            ),
           Text(
             title,
             textAlign: TextAlign.center,
@@ -196,6 +216,8 @@ class AppBottomSheet {
           ElevatedButton(
             onPressed: onConfirm,
             style: ElevatedButton.styleFrom(
+              backgroundColor: confirmButtonColor,
+              foregroundColor: confirmButtonColor != null ? Colors.white : null,
               elevation: 0,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
@@ -222,7 +244,7 @@ class AppBottomSheet {
             ),
           ),
           const SizedBox(height: 8),
-        ],
+        ]),
       ),
     );
   }
