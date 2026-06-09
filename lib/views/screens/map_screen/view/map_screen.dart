@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -27,6 +26,7 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   late MapController _mapController;
+  MapCubit? _mapCubit;
   double? _lastLat;
   double? _lastLon;
 
@@ -34,6 +34,52 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _mapController = MapController();
+
+    final location = AppData().location;
+    if (location != null &&
+        location.latitude.isFinite &&
+        location.longitude.isFinite) {
+      _lastLat = location.latitude;
+      _lastLon = location.longitude;
+      _mapCubit = MapCubit(lat: location.latitude, lon: location.longitude);
+    }
+
+    AppData().locationNotifier.addListener(_onLocationChanged);
+  }
+
+  @override
+  void dispose() {
+    AppData().locationNotifier.removeListener(_onLocationChanged);
+    _mapController.dispose();
+    _mapCubit?.close();
+    super.dispose();
+  }
+
+  void _onLocationChanged() {
+    final location = AppData().location;
+    if (location == null ||
+        !location.latitude.isFinite ||
+        !location.longitude.isFinite) {
+      return;
+    }
+
+    if (location.latitude != _lastLat || location.longitude != _lastLon) {
+      _lastLat = location.latitude;
+      _lastLon = location.longitude;
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _mapController.move(location.toLatLng(), 13);
+      });
+
+      if (_mapCubit == null) {
+        setState(() {
+          _mapCubit = MapCubit(lat: location.latitude, lon: location.longitude);
+        });
+      } else {
+        _mapCubit!.fetchShops(lat: location.latitude, lon: location.longitude);
+      }
+    }
   }
 
   @override
@@ -47,21 +93,14 @@ class _MapScreenState extends State<MapScreen> {
           return const _LocationRequiredView();
         }
 
-        if (location.latitude != _lastLat || location.longitude != _lastLon) {
+        if (_mapCubit == null) {
           _lastLat = location.latitude;
           _lastLon = location.longitude;
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!mounted) return;
-            _mapController.move(location.toLatLng(), 13);
-          });
+          _mapCubit = MapCubit(lat: location.latitude, lon: location.longitude);
         }
 
-        return BlocProvider(
-          key: ValueKey(
-            'map_${location.latitude.toStringAsFixed(4)}_${location.longitude.toStringAsFixed(4)}',
-          ),
-          create: (_) =>
-              MapCubit(lat: location.latitude, lon: location.longitude),
+        return BlocProvider<MapCubit>.value(
+          value: _mapCubit!,
           child: BlocListener<MapCubit, MapState>(
             listener: (context, state) {
               if (state is MapFailure) {
@@ -113,13 +152,6 @@ class _MapView extends StatefulWidget {
 
 class _MapViewState extends State<_MapView> {
   double _currentZoom = 13.0;
-  Timer? _debounceTimer;
-
-  @override
-  void dispose() {
-    _debounceTimer?.cancel();
-    super.dispose();
-  }
 
   List<ShopCluster> _clusterShops(List<Shop> shops, double zoom) {
     if (zoom.isNaN || zoom >= 16.5) {
@@ -140,8 +172,9 @@ class _MapViewState extends State<_MapView> {
 
     for (final shop in shops) {
       if (shop.shopLatitude == null || shop.shopLongitude == null) continue;
-      if (!shop.shopLatitude!.isFinite || !shop.shopLongitude!.isFinite)
+      if (!shop.shopLatitude!.isFinite || !shop.shopLongitude!.isFinite) {
         continue;
+      }
 
       ShopCluster? mergedCluster;
       for (final cluster in clusters) {
@@ -231,34 +264,6 @@ class _MapViewState extends State<_MapView> {
                         _currentZoom = position.zoom;
                       });
                     }
-
-                    _debounceTimer?.cancel();
-                    _debounceTimer = Timer(
-                      const Duration(milliseconds: 400),
-                      () {
-                        final camera = widget.mapController.camera;
-                        if (!camera.center.latitude.isFinite ||
-                            !camera.center.longitude.isFinite ||
-                            !camera.zoom.isFinite) {
-                          return;
-                        }
-                        final bounds = camera.visibleBounds;
-                        if (!bounds.south.isFinite ||
-                            !bounds.north.isFinite ||
-                            !bounds.west.isFinite ||
-                            !bounds.east.isFinite) {
-                          return;
-                        }
-                        context.read<MapCubit>().fetchShops(
-                          lat: camera.center.latitude,
-                          lon: camera.center.longitude,
-                          minLat: bounds.south,
-                          maxLat: bounds.north,
-                          minLon: bounds.west,
-                          maxLon: bounds.east,
-                        );
-                      },
-                    );
                   },
                 ),
                 children: [

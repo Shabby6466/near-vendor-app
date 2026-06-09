@@ -356,7 +356,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                               longitude: _centerLon,
                               placeName: placeName,
                             );
-                        if (!mounted) return;
+                        if (!context.mounted) return;
                         AppNavigator.pop(context, result);
                       } finally {
                         if (mounted) setState(() => _isLoading = false);
