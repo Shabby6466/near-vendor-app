@@ -62,21 +62,25 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
   String? get rangeMessage => _rangeMessage;
   bool get isLoadingNextPage => _isLoadingNextPage;
 
-  Future<void> _initialize() async {
-    emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
+  Future<void> _initialize({bool isRefreshing = false}) async {
+    if (!isRefreshing || _allShops.isEmpty) {
+      emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
+    }
     try {
       final cats = await _shopServices.getCategoryNames();
       _categories = [CategoryModel.all(), ...cats];
-      await loadShops();
+      await loadShops(isRefreshing: isRefreshing);
     } catch (e) {
       emit(ExploreScreenFailure(e.toString()));
     }
   }
 
-  Future<void> loadShops() async {
-    emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
+  Future<void> loadShops({bool isRefreshing = false}) async {
+    if (!isRefreshing || _allShops.isEmpty) {
+      emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
+      _allShops.clear(); // Clear old shops immediately to prevent stale data display and duplicate appends
+    }
     _currentPage = 1;
-    _allShops.clear(); // Clear old shops immediately to prevent stale data display and duplicate appends
     _hasReachedMax = false;
     _isLoadingNextPage = false;
     _loadSessionId++;
@@ -303,7 +307,7 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
 
   Future<void> refreshShops() async {
     _shopCache.clear();
-    await _initialize();
+    await _initialize(isRefreshing: true);
   }
 
   @override
