@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/services/safety_services.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
@@ -41,8 +39,7 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
   Future<void> _submitReport() async {
     if (_selectedReason == null) return;
 
-    final session = context.read<SessionCubit>().state;
-    if (session.status != AuthStatus.authenticated) {
+    if (!AppData().isLoggedIn) {
       Navigator.pop(context); // Close dialog
       AppBottomSheet.showConfirmationBottomSheet(
         context: context,

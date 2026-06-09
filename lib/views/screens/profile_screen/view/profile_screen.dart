@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/enums/auth_status.dart';
+import 'package:nearvendorapp/models/data_models/user.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
@@ -40,9 +40,10 @@ class ProfileScreen extends StatelessWidget {
             }
 
             if (state is ProfileSuccess) {
-              return BlocBuilder<SessionCubit, SessionState>(
-                builder: (context, sessionState) {
-                  final bool isGuest = sessionState.status == AuthStatus.guest;
+              return ValueListenableBuilder<User?>(
+                valueListenable: AppData().userNotifier,
+                builder: (context, user, child) {
+                  final bool isGuest = user == null;
 
                   return CustomScrollView(
                     physics: const BouncingScrollPhysics(
@@ -268,12 +269,7 @@ class ProfileScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onTap: () async {
-            await context.read<SessionCubit>().logout();
-            if (context.mounted) {
-              AppNavigator.pushAndRemoveUntil(context, const MainScreen());
-            }
-          },
+          onTap: () => _showLogoutConfirmationDialog(context),
           child: Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(vertical: 18),
@@ -351,15 +347,115 @@ class ProfileScreen extends StatelessWidget {
   }
 
   void _showDeleteAccountDialog(BuildContext context) {
-    final sessionCubit = context.read<SessionCubit>();
     final isDark = Theme.of(context).brightness == Brightness.dark;
-
+ 
     showDialog(
       context: context,
       barrierDismissible: false,
       builder: (_) => BlocProvider(
         create: (_) => DeleteAccountCubit(),
-        child: _DeleteAccountDialog(isDark: isDark, sessionCubit: sessionCubit),
+        child: _DeleteAccountDialog(isDark: isDark),
+      ),
+    );
+  }
+
+  void _showLogoutConfirmationDialog(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) => AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(28),
+        ),
+        backgroundColor: isDark ? const Color(0xFF1E242B) : Colors.white,
+        contentPadding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Colors.red.withValues(alpha: 0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.warning_amber_rounded,
+                color: Colors.red.shade600,
+                size: 32,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Log Out',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w800,
+                letterSpacing: -0.5,
+                color: isDark ? Colors.white : Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Are you sure you want to log out? For your security, all your local data, including cached location details, search history, and offline settings, will be permanently deleted from this device.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 13,
+                height: 1.5,
+                color: isDark ? Colors.white60 : Colors.black54,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: () => Navigator.pop(dialogContext),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w700,
+                        color: isDark ? Colors.white38 : Colors.grey.shade500,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(dialogContext);
+                      await AppData().clear();
+                      if (context.mounted) {
+                        AppNavigator.pushAndRemoveUntil(context, const MainScreen());
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red.shade600,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    child: const Text(
+                      'Log Out',
+                      style: TextStyle(fontWeight: FontWeight.w800),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -371,11 +467,9 @@ class ProfileScreen extends StatelessWidget {
 
 class _DeleteAccountDialog extends StatefulWidget {
   final bool isDark;
-  final SessionCubit sessionCubit;
 
   const _DeleteAccountDialog({
     required this.isDark,
-    required this.sessionCubit,
   });
 
   @override
@@ -402,7 +496,7 @@ class _DeleteAccountDialogState extends State<_DeleteAccountDialog> {
           // Pop the dialog, then clear session and navigate to WelcomeScreen,
           // removing all existing routes from the stack.
           Navigator.of(context).pop();
-          await widget.sessionCubit.logout();
+          await AppData().clear();
           if (context.mounted) {
             Navigator.of(context).pushAndRemoveUntil(
               MaterialPageRoute(builder: (_) => const WelcomeScreen()),

@@ -2,8 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
+import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:nearvendorapp/utils/hive/hive_manager.dart';
 
 /// Singleton app cache. [locationNotifier] is the single source of truth for
 /// the user's last known coordinates and display name.
@@ -14,11 +14,6 @@ class AppData {
   static final AppData _instance = AppData._();
 
   final ValueNotifier<User?> userNotifier = ValueNotifier(null);
-  final ValueNotifier<AuthStatus> authStatusNotifier = ValueNotifier(
-    AuthStatus.guest,
-  );
-  final ValueNotifier<bool> hasOnboardedNotifier = ValueNotifier(false);
-  final ValueNotifier<bool> showMainScreenNotifier = ValueNotifier(false);
 
   /// Reactive last-known location — read this everywhere instead of Hive/Map.
   final ValueNotifier<AppLocation?> locationNotifier = ValueNotifier(null);
@@ -27,8 +22,8 @@ class AppData {
   String? get token => CurrentUserStorage.getUserAuthToken();
   String? get refreshToken => CurrentUserStorage.getUserRefreshAuthToken();
   bool get isLoggedIn => token != null && currentUser != null;
-  AuthStatus get authStatus => authStatusNotifier.value;
-  bool get hasOnboarded => hasOnboardedNotifier.value;
+  AuthStatus get authStatus => isLoggedIn ? AuthStatus.authenticated : AuthStatus.guest;
+  bool get hasOnboarded => CurrentUserStorage.getHasOnboarded();
 
   AppLocation? get location => locationNotifier.value;
   double? get latitude => location?.latitude;
@@ -47,15 +42,11 @@ class AppData {
   }) async {
     userNotifier.value = user;
     if (user != null) {
-      authStatusNotifier.value = AuthStatus.authenticated;
       await CurrentUserStorage.storeUserData(user);
-    } else {
-      authStatusNotifier.value = AuthStatus.guest;
     }
     if (token != null) {
       await CurrentUserStorage.storeUserAuthToken(token, refreshToken);
     }
-    _updateShowMainScreen();
   }
 
   void updateUser(User updatedUser) {
@@ -95,8 +86,6 @@ class AppData {
       locationNotifier.value = stored;
     }
     _discoveryRadiusKm = CurrentUserStorage.getDiscoveryRadius();
-    hasOnboardedNotifier.value = CurrentUserStorage.getHasOnboarded();
-    _updateShowMainScreen();
   }
 
   Future<void> loadHasOnboarded() async {
@@ -104,23 +93,32 @@ class AppData {
   }
 
   void setHasOnboarded(bool value) {
-    hasOnboardedNotifier.value = value;
     CurrentUserStorage.setHasOnboarded(value);
-    _updateShowMainScreen();
   }
 
-  void _updateShowMainScreen() {
-    showMainScreenNotifier.value =
-        authStatus == AuthStatus.authenticated || hasOnboarded;
+  Future<void> initializeSession() async {
+    final token = CurrentUserStorage.getUserAuthToken();
+    final user = CurrentUserStorage.getCurrentUser();
+
+    if (token != null && user != null) {
+      userNotifier.value = user;
+      try {
+        final response = await AuthServices().getMe();
+        if (response.user != null) {
+          await setUser(response.user);
+        } else {
+          await clear();
+        }
+      } catch (e) {
+        debugPrint('Session refresh failed: $e');
+      }
+    }
   }
 
   Future<void> clear() async {
     userNotifier.value = null;
-    authStatusNotifier.value = AuthStatus.guest;
     locationNotifier.value = null;
     _discoveryRadiusKm = null;
     await CurrentUserStorage.clearUserData();
-    HiveManager.onLogout();
-    _updateShowMainScreen();
   }
 }

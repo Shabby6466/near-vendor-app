@@ -3,13 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/opening_hours.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/safety_services.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
@@ -43,8 +42,7 @@ class ShopDetailScreen extends StatelessWidget {
   }
 
   void _handleSafetyAction(BuildContext context, Shop fullShop) {
-    final session = context.read<SessionCubit>().state;
-    if (session.status != AuthStatus.authenticated) {
+    if (!AppData().isLoggedIn) {
       AppBottomSheet.showConfirmationBottomSheet(
         context: context,
         title: 'Sign In Required',

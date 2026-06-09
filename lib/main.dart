@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
@@ -22,6 +21,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveManager.init();
   await AppData().loadPersistedData();
+  AppData().initializeSession(); // Run asynchronously
   await AppLocationService.instance.resolvePlaceNameIfMissing();
   await dotenv.load();
   await SystemChrome.setPreferredOrientations([
@@ -39,7 +39,6 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => SessionCubit()..initialize()),
         BlocProvider(create: (context) => ConnectivityCubit()),
         BlocProvider(create: (context) => ProfileCubit()),
       ],
@@ -56,26 +55,19 @@ class MainApp extends StatelessWidget {
                     onRetry: () => context.read<ConnectivityCubit>().retry(),
                   )
                 : SplashScreen(
-                    nextRoute: ValueListenableBuilder<bool>(
-                      valueListenable: AppData().showMainScreenNotifier,
-                      builder: (context, showMain, child) {
-                        final content = showMain
-                            ? const MainScreen()
-                            : const WelcomeScreen();
-
-                        return UpgradeAlert(
-                          upgrader: Upgrader(
-                            minAppVersion: '0.0.0',
-                            durationUntilAlertAgain: const Duration(hours: 1),
-                          ),
-                          showIgnore: false,
-                          showLater: false,
-                          dialogStyle: Platform.isIOS
-                              ? UpgradeDialogStyle.cupertino
-                              : UpgradeDialogStyle.material,
-                          child: content,
-                        );
-                      },
+                    nextRoute: UpgradeAlert(
+                      upgrader: Upgrader(
+                        minAppVersion: '0.0.0',
+                        durationUntilAlertAgain: const Duration(hours: 1),
+                      ),
+                      showIgnore: false,
+                      showLater: false,
+                      dialogStyle: Platform.isIOS
+                          ? UpgradeDialogStyle.cupertino
+                          : UpgradeDialogStyle.material,
+                      child: (AppData().isLoggedIn || AppData().hasOnboarded)
+                          ? const MainScreen()
+                          : const WelcomeScreen(),
                     ),
                   ),
           );

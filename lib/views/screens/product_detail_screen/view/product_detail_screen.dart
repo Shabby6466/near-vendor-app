@@ -4,12 +4,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/opening_hours.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
@@ -46,8 +45,7 @@ class ProductDetailScreen extends StatelessWidget {
     if (state is! ProductDetailSuccess) return;
 
     final item = state.item;
-    final session = context.read<SessionCubit>().state;
-    if (session.status != AuthStatus.authenticated) {
+    if (!AppData().isLoggedIn) {
       AppBottomSheet.showConfirmationBottomSheet(
         context: context,
         title: 'Sign In Required',

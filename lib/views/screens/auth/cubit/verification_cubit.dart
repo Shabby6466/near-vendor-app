@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
-import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 
 part 'verification_state.dart';
 
@@ -33,10 +33,10 @@ class VerificationCubit extends Cubit<VerificationState> {
 
       if (response.isSuccess) {
         if (response.user != null && response.token != null) {
-          await CurrentUserStorage.storeUserData(response.user);
-          await CurrentUserStorage.storeUserAuthToken(
-            response.token!,
-            response.refreshToken,
+          await AppData().setUser(
+            response.user,
+            token: response.token,
+            refreshToken: response.refreshToken,
           );
         }
         emit(VerificationSuccess(user: response.user));

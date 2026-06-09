@@ -64,7 +64,9 @@ class CurrentUserStorage {
       await _userBox.delete(HiveKeys.currentUserKey);
       await _userBox.delete(HiveKeys.currentUserAuthTokenKey);
       await _userBox.delete(HiveKeys.currentUserRefreshTokenKey);
-      await _userBox.delete(HiveKeys.hasOnboardedKey);
+      await _userBox.delete(HiveKeys.lastLatitudeKey);
+      await _userBox.delete(HiveKeys.lastLongitudeKey);
+      await _userBox.delete(HiveKeys.lastLocationNameKey);
     } catch (e) {
       debugPrint('Error clearing user data: $e');
     }
@@ -72,14 +74,14 @@ class CurrentUserStorage {
 
   static Future<void> setHasOnboarded(bool value) async {
     try {
-      await _userBox.put(HiveKeys.hasOnboardedKey, value);
+      await _preferencesBox.put(HiveKeys.hasOnboardedKey, value);
     } catch (e) {
       debugPrint('Error storing onboarding status: $e');
     }
   }
 
   static bool getHasOnboarded() {
-    return _userBox.get(HiveKeys.hasOnboardedKey, defaultValue: false) as bool;
+    return _preferencesBox.get(HiveKeys.hasOnboardedKey, defaultValue: false) as bool;
   }
 
   static Future<void> setDiscoveryRadius(double radius) async {

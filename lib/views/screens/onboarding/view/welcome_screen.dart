@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
-import 'package:nearvendorapp/services/app_location_service.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
-import 'package:nearvendorapp/views/screens/onboarding/widgets/onboarding_btns.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -58,11 +55,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   }
 
   Future<void> _finishOnboarding() async {
-    await Permission.location.request();
-    if (!mounted) return;
-    await AppLocationService.instance.updateFromGps();
-    if (!mounted) return;
-    context.read<SessionCubit>().setOnboarded();
+    AppData().setHasOnboarded(true);
     AppNavigator.pushReplacement(context, const MainScreen());
   }
 
@@ -245,13 +238,10 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               ),
               const SizedBox(height: 32),
 
-              OnboardingBtns(
-                    btnText: _onboardingData[_currentPage].buttonText,
-                    color: theme.primaryColor,
-                    textColor: Colors.white,
-                    onTap: _nextPage,
-                    borderRadius: BorderRadius.circular(16),
-                  )
+              AppElevatedButton(
+                onPressed: _nextPage,
+                text: _onboardingData[_currentPage].buttonText.toUpperCase(),
+              )
                   .animate(key: ValueKey(_currentPage))
                   .scaleY(
                     begin: 0.95,

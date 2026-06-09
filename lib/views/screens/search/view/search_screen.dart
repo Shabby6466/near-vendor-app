@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/session/session_cubit.dart';
-import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
@@ -31,8 +29,7 @@ class _SearchScreenState extends State<SearchScreen> {
   }
 
   void _handleMakeAWish() {
-    final session = context.read<SessionCubit>().state;
-    if (session.status != AuthStatus.authenticated) {
+    if (!AppData().isLoggedIn) {
       AppBottomSheet.showConfirmationBottomSheet(
         context: context,
         title: 'Sign In Required',

@@ -4,11 +4,11 @@ import 'dart:io';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
-import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
-import 'package:nearvendorapp/views/screens/onboarding/view/welcome_screen.dart';
+import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void hideKeyBoard() {
@@ -106,10 +106,10 @@ bool verifyPassword(String enteredPassword, String storedHash) {
 }
 
 Future<void> logoutUser() async {
-  await CurrentUserStorage.clearUserData();
+  await AppData().clear();
   final context = navigatorKey.currentContext;
   if (context != null && context.mounted) {
-    AppNavigator.pushAndRemoveUntil(context, const WelcomeScreen());
+    AppNavigator.pushAndRemoveUntil(context, const MainScreen());
   }
 }
 

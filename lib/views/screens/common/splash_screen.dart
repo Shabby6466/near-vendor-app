@@ -55,8 +55,10 @@ class _SplashScreenState extends State<SplashScreen>
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    _fadeNextRouteAnimation =
-        Tween<double>(begin: 0, end: 1).animate(_fadeNextRouteController);
+    _fadeNextRouteAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(_fadeNextRouteController);
 
     _runSequence();
   }
@@ -110,8 +112,10 @@ class _SplashScreenState extends State<SplashScreen>
               opacity: ReverseAnimation(_fadeNextRouteAnimation),
               child: Center(
                 child: AnimatedBuilder(
-                  animation:
-                      Listenable.merge([_drawController, _zoomController]),
+                  animation: Listenable.merge([
+                    _drawController,
+                    _zoomController,
+                  ]),
                   builder: (context, child) {
                     return Transform.scale(
                       scale: _zoomAnimation.value,
@@ -192,7 +196,9 @@ class PathPainter extends CustomPainter {
     final Path dest = Path();
     for (final metric in source.computeMetrics()) {
       dest.addPath(
-          metric.extractPath(0, metric.length * animationPercent), Offset.zero);
+        metric.extractPath(0, metric.length * animationPercent),
+        Offset.zero,
+      );
     }
     return dest;
   }

@@ -18,7 +18,4 @@ class HiveManager {
 
   static Box get preferencesBox => Hive.box(HiveKeys.preferencesBox);
 
-  static void onLogout() {
-    currentUserBox.clear();
-  }
 }

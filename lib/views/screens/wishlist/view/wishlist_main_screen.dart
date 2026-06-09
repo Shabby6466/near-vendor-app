@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/enums/auth_status.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
@@ -23,10 +23,10 @@ class WishlistMainScreen extends StatelessWidget {
         }
         return UserWishlistCubit(); // Return empty cubit for guests, won't fetch
       },
-      child: ValueListenableBuilder<AuthStatus>(
-        valueListenable: AppData().authStatusNotifier,
-        builder: (context, authStatus, child) {
-          final isAuthenticated = authStatus == AuthStatus.authenticated;
+      child: ValueListenableBuilder<User?>(
+        valueListenable: AppData().userNotifier,
+        builder: (context, user, child) {
+          final isAuthenticated = user != null;
 
           if (!isAuthenticated) {
             return Scaffold(

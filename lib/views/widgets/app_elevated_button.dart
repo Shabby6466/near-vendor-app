@@ -34,19 +34,7 @@ class AppElevatedButton extends StatelessWidget {
                   size: 20,
                 ),
               )
-            : Text(
-                text,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: 1.2,
-                  // color:
-                  //     theme.elevatedButtonTheme.style?.foregroundColor?.resolve(
-                  //       {},
-                  //     ) ??
-                  //     theme.colorScheme.onSurface,
-                ),
-              ),
+            : Text(text),
       ),
     );
   }

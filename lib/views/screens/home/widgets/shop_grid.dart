@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/explore_shimmer_loading.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
-import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ShopGrid extends StatelessWidget {
@@ -70,7 +70,7 @@ class ShopGrid extends StatelessWidget {
                     const SizedBox(height: 24),
                     ElevatedButton.icon(
                       onPressed: () async {
-                        await AppBottomSheet.openLocationSet();
+                        await LocationPickerLauncher.open(context);
                         if (context.mounted) {
                           context
                               .read<ExploreScreenCubit>()
