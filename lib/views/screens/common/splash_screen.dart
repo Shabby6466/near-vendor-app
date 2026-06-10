@@ -1,18 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:path_drawing/path_drawing.dart';
 
 class SplashScreen extends StatefulWidget {
   final Widget nextRoute;
   final Color logoColor;
-  final VoidCallback? onComplete;
 
   const SplashScreen({
     super.key,
     required this.nextRoute,
     this.logoColor = ColorName.primary,
-    this.onComplete,
   });
 
   @override
@@ -74,13 +71,20 @@ class _SplashScreenState extends State<SplashScreen>
     await Future.delayed(const Duration(milliseconds: 500));
     _fadeNextRouteController.forward();
 
-    await Future.delayed(const Duration(milliseconds: 600));
     if (mounted) {
-      if (widget.onComplete != null) {
-        widget.onComplete!();
-      } else {
-        AppNavigator.pushReplacementNoTransition(context, widget.nextRoute);
-      }
+      Navigator.of(context).pushReplacement(
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              widget.nextRoute,
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 500),
+        ),
+      );
     }
   }
 
@@ -95,40 +99,29 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          FadeTransition(
-            opacity: _fadeNextRouteAnimation,
-            child: widget.nextRoute,
-          ),
-          IgnorePointer(
-            ignoring: _fadeNextRouteController.value > 0.8,
-            child: FadeTransition(
-              opacity: ReverseAnimation(_fadeNextRouteAnimation),
-              child: Center(
-                child: AnimatedBuilder(
-                  animation: Listenable.merge([
-                    _drawController,
-                    _zoomController,
-                  ]),
-                  builder: (context, child) {
-                    return Transform.scale(
-                      scale: _zoomAnimation.value,
-                      child: CustomPaint(
-                        size: const Size(200, 200),
-                        painter: PathPainter(
-                          pathString: svgPath,
-                          progress: _drawAnimation.value,
-                          logoColor: widget.logoColor,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+      body: IgnorePointer(
+        ignoring: _fadeNextRouteController.value > 0.8,
+        child: FadeTransition(
+          opacity: ReverseAnimation(_fadeNextRouteAnimation),
+          child: Center(
+            child: AnimatedBuilder(
+              animation: Listenable.merge([_drawController, _zoomController]),
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _zoomAnimation.value,
+                  child: CustomPaint(
+                    size: const Size(200, 200),
+                    painter: PathPainter(
+                      pathString: svgPath,
+                      progress: _drawAnimation.value,
+                      logoColor: widget.logoColor,
+                    ),
+                  ),
+                );
+              },
             ),
           ),
-        ],
+        ),
       ),
     );
   }
