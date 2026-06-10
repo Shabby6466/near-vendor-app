@@ -79,7 +79,7 @@ class _SplashScreenState extends State<SplashScreen>
       if (widget.onComplete != null) {
         widget.onComplete!();
       } else {
-        AppNavigator.pushReplacement(context, widget.nextRoute);
+        AppNavigator.pushReplacementNoTransition(context, widget.nextRoute);
       }
     }
   }

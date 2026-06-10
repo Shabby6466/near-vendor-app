@@ -49,7 +49,6 @@ class ShopDetailScreen extends StatelessWidget {
         message: 'You need to sign in to report content or block vendors.',
         confirmButtonText: 'Sign In',
         onConfirm: () {
-          AppNavigator.pop(context);
           AppNavigator.push(context, const LoginScreen());
         },
       );

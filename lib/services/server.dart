@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -106,14 +107,14 @@ class Server {
     cancelToken: cancelToken,
   );
 
-  static bool _isRefreshing = false;
+  static Completer<String?>? _refreshCompleter;
 
   static Future<Response> _handle401(
     DioException e,
     String? refreshToken,
     Future<Response> Function() retry,
   ) async {
-    if (refreshToken == null || _isRefreshing) {
+    if (refreshToken == null) {
       await logoutUser();
       final ctx = navigatorKey.currentContext;
       if (ctx != null && ctx.mounted) {
@@ -122,7 +123,18 @@ class Server {
       throw AppStrings.pleaseLoginAgain;
     }
 
-    _isRefreshing = true;
+    if (_refreshCompleter != null) {
+      final newToken = await _refreshCompleter!.future;
+      if (newToken != null) {
+        return await retry();
+      } else {
+        throw AppStrings.pleaseLoginAgain;
+      }
+    }
+
+    final completer = Completer<String?>();
+    _refreshCompleter = completer;
+
     try {
       final dio = Dio();
       dio.options.baseUrl = ApiConstants.baseUrl;
@@ -143,11 +155,14 @@ class Server {
             token: newToken,
             refreshToken: newRefreshToken,
           );
-          _isRefreshing = false;
+          completer.complete(newToken);
+          _refreshCompleter = null;
           return await retry();
         }
       }
 
+      completer.complete(null);
+      _refreshCompleter = null;
       await logoutUser();
       final ctx = navigatorKey.currentContext;
       if (ctx != null && ctx.mounted) {
@@ -155,15 +170,14 @@ class Server {
       }
       throw AppStrings.pleaseLoginAgain;
     } catch (err) {
-      _isRefreshing = false;
+      completer.complete(null);
+      _refreshCompleter = null;
       await logoutUser();
       final ctx = navigatorKey.currentContext;
       if (ctx != null && ctx.mounted) {
         AppAlerts.showError(ctx, AppStrings.pleaseLoginAgain);
       }
       throw AppStrings.pleaseLoginAgain;
-    } finally {
-      _isRefreshing = false;
     }
   }
 

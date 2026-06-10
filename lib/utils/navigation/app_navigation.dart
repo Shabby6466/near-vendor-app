@@ -15,6 +15,16 @@ class AppNavigator {
     ).pushReplacement(MaterialPageRoute(builder: (context) => screen));
   }
 
+  static Future<dynamic> pushReplacementNoTransition(BuildContext context, Widget screen) {
+    return Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
+  }
+
   static void pop(BuildContext context, [dynamic data]) {
     return Navigator.of(context).pop(data);
   }

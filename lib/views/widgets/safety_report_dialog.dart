@@ -47,7 +47,6 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
         message: 'You need to sign in to submit a report.',
         confirmButtonText: 'Sign In',
         onConfirm: () {
-          AppNavigator.pop(context); // Close bottom sheet
           AppNavigator.push(context, const LoginScreen());
         },
       );

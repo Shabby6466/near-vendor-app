@@ -149,102 +149,112 @@ class AppBottomSheet {
   }) {
     return showBottomSheet(
       context: context,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        mainAxisSize: MainAxisSize.min,
-        children: AppAnimateList.stagger([
-          Center(
-            child: Container(
-              height: 4,
-              width: 40,
-              margin: const EdgeInsets.only(bottom: 24),
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(20),
-              ),
-            ),
-          ),
-          if (icon != null)
-            Center(
-              child: Container(
-                padding: const EdgeInsets.all(18),
-                margin: const EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                  color: (iconColor ?? Theme.of(context).primaryColor)
-                      .withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  icon,
-                  color: iconColor ?? Theme.of(context).primaryColor,
-                  size: 32,
+      child: Builder(
+        builder: (sheetContext) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: AppAnimateList.stagger([
+              Center(
+                child: Container(
+                  height: 4,
+                  width: 40,
+                  margin: const EdgeInsets.only(bottom: 24),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      sheetContext,
+                    ).colorScheme.onSurface.withValues(alpha: 0.15),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                 ),
               ),
-            ),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              fontWeight: FontWeight.w900,
-              fontSize: 22,
-              letterSpacing: -0.5,
-            ),
-          ),
-          if (subtitle.isNotEmpty) ...[
-            const SizedBox(height: 8),
-            Text(
-              subtitle,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-                fontSize: 18,
+              if (icon != null)
+                Center(
+                  child: Container(
+                    padding: const EdgeInsets.all(18),
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: (iconColor ?? Theme.of(sheetContext).primaryColor)
+                          .withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      icon,
+                      color: iconColor ?? Theme.of(sheetContext).primaryColor,
+                      size: 32,
+                    ),
+                  ),
+                ),
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: Theme.of(sheetContext).textTheme.titleLarge?.copyWith(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 22,
+                  letterSpacing: -0.5,
+                ),
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-          const SizedBox(height: 16),
-          Text(
-            message,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w400,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 32),
-          ElevatedButton(
-            onPressed: onConfirm,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: confirmButtonColor,
-              foregroundColor: confirmButtonColor != null ? Colors.white : null,
-              elevation: 0,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+              if (subtitle.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  subtitle,
+                  style: Theme.of(sheetContext).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontSize: 18,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+              const SizedBox(height: 16),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: Theme.of(sheetContext).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  height: 1.5,
+                ),
               ),
-            ),
-            child: Text(
-              confirmButtonText,
-              style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
-            ),
-          ),
-          const SizedBox(height: 12),
-          TextButton(
-            onPressed: onCancel ?? () => AppNavigator.pop(context),
-            child: Text(
-              cancelButtonText,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.5),
+              const SizedBox(height: 32),
+              ElevatedButton(
+                onPressed: () {
+                  AppNavigator.pop(sheetContext);
+                  onConfirm?.call();
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: confirmButtonColor,
+                  foregroundColor: confirmButtonColor != null ? Colors.white : null,
+                  elevation: 0,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Text(
+                  confirmButtonText,
+                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                ),
               ),
-            ),
-          ),
-          const SizedBox(height: 8),
-        ]),
+              const SizedBox(height: 12),
+              TextButton(
+                onPressed: () {
+                  AppNavigator.pop(sheetContext);
+                  onCancel?.call();
+                },
+                child: Text(
+                  cancelButtonText,
+                  style: Theme.of(sheetContext).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14,
+                    color: Theme.of(
+                      sheetContext,
+                    ).colorScheme.onSurface.withValues(alpha: 0.5),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+            ]),
+          );
+        },
       ),
     );
   }

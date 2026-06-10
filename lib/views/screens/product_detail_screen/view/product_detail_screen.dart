@@ -52,7 +52,6 @@ class ProductDetailScreen extends StatelessWidget {
         message: 'You need to sign in to report items.',
         confirmButtonText: 'Sign In',
         onConfirm: () {
-          AppNavigator.pop(context);
           AppNavigator.push(context, const LoginScreen());
         },
       );

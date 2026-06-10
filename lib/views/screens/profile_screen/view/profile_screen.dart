@@ -370,7 +370,6 @@ class ProfileScreen extends StatelessWidget {
       icon: Icons.warning_amber_rounded,
       iconColor: Colors.red.shade600,
       onConfirm: () async {
-        AppNavigator.pop(context);
         await AppData().clear();
         if (context.mounted) {
           AppNavigator.pushAndRemoveUntil(context, const MainScreen());

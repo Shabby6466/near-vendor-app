@@ -36,7 +36,6 @@ class _SearchScreenState extends State<SearchScreen> {
         message: 'You need to sign in to make a wish and alert local vendors.',
         confirmButtonText: 'Sign In',
         onConfirm: () {
-          AppNavigator.pop(context);
           AppNavigator.push(context, const LoginScreen());
         },
       );

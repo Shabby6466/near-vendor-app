@@ -822,7 +822,6 @@ class _WishlistCard extends StatelessWidget {
       icon: Icons.delete_outline_rounded,
       iconColor: Colors.red.shade600,
       onConfirm: () {
-        AppNavigator.pop(context);
         context.read<UserWishlistCubit>().deleteWishlist(wish.id);
       },
     );
@@ -839,7 +838,6 @@ class _WishlistCard extends StatelessWidget {
       icon: Icons.check_circle_outline_rounded,
       iconColor: ColorName.primary,
       onConfirm: () {
-        AppNavigator.pop(context);
         context.read<UserWishlistCubit>().completeWishlist(wish.id);
       },
     );

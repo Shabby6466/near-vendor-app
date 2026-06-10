@@ -117,7 +117,6 @@ class AppData {
 
   Future<void> clear() async {
     userNotifier.value = null;
-    locationNotifier.value = null;
     _discoveryRadiusKm = null;
     await CurrentUserStorage.clearUserData();
   }

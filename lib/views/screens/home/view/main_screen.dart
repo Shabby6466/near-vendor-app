@@ -11,18 +11,32 @@ import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/lazy_load_wrapper.dart';
 import 'package:nearvendorapp/views/widgets/location_permission_sheet.dart';
 
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   final int initialIndex;
   const MainScreen({super.key, this.initialIndex = 0});
 
   @override
-  Widget build(BuildContext context) {
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  static bool _hasPromptedLocation = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLocation();
+  }
+
+  void _checkLocation() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(seconds: 1), () async {
-        if (!context.mounted) return;
+        if (!mounted) return;
+        if (_hasPromptedLocation) return;
         final isResolved = await AppLocationService.instance
             .tryAutoResolveLocation();
-        if (!isResolved && context.mounted) {
+        if (!isResolved && mounted) {
+          _hasPromptedLocation = true;
           AppBottomSheet.showBottomSheet(
             context: context,
             child: const LocationPermissionSheet(),
@@ -30,12 +44,15 @@ class MainScreen extends StatelessWidget {
         }
       });
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => MainScreenCubit(initialIndex)),
+        BlocProvider(create: (context) => MainScreenCubit(widget.initialIndex)),
       ],
       child: BlocBuilder<MainScreenCubit, int>(
         builder: (context, currentIndex) {

@@ -1,7 +1,6 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class AppAlerts {
@@ -96,10 +95,7 @@ class AppAlerts {
       title: title,
       message: message,
       confirmButtonText: confirmLabel ?? "Confirm",
-      onConfirm: () {
-        AppNavigator.pop(context);
-        onConfirm();
-      },
+      onConfirm: onConfirm,
       confirmButtonColor: isDestructive ? const Color(0xFFEF5350) : const Color(0xFF4CAF50),
       icon: isDestructive ? Icons.warning_amber_rounded : Icons.check_circle_rounded,
       iconColor: isDestructive ? const Color(0xFFEF5350) : const Color(0xFF4CAF50),
