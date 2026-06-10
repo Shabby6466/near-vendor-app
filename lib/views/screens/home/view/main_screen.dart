@@ -48,8 +48,6 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => MainScreenCubit(widget.initialIndex)),
@@ -58,7 +56,6 @@ class _MainScreenState extends State<MainScreen> {
         builder: (context, currentIndex) {
           return Scaffold(
             extendBody: true,
-            backgroundColor: theme.scaffoldBackgroundColor,
             body: IndexedStack(
               index: currentIndex,
               children: [

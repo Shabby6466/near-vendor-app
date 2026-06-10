@@ -77,10 +77,7 @@ class _SplashScreenState extends State<SplashScreen>
           pageBuilder: (context, animation, secondaryAnimation) =>
               widget.nextRoute,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(
-              opacity: animation,
-              child: child,
-            );
+            return FadeTransition(opacity: animation, child: child);
           },
           transitionDuration: const Duration(milliseconds: 500),
         ),

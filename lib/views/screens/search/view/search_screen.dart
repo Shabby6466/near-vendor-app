@@ -46,13 +46,10 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocProvider(
       create: (context) => SearchCubit(),
       child: _SearchLocationListener(
         child: Scaffold(
-          backgroundColor: theme.scaffoldBackgroundColor,
           body: SafeArea(
             child: Column(
               children: [
