@@ -194,7 +194,10 @@ class _EmptyStateState extends State<_EmptyState> {
     if (!mounted) return;
 
     // Show category picker bottom sheet
-    final selectedCategory = await _showCategoryPicker(context, categories);
+    final selectedCategory = await _showCategoryPicker(
+      context,
+      [CategoryModel(id: '', name: 'None / Skip'), ...categories],
+    );
     if (!mounted) return;
     // null = user dismissed the sheet
     if (selectedCategory == null) return;
@@ -325,20 +328,26 @@ class _EmptyStateState extends State<_EmptyState> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      leading: iconPath != null
-                          ? iconPath.svg(
-                              colorFilter: const ColorFilter.mode(
-                                ColorName.primary,
-                                BlendMode.srcIn,
-                              ),
-                              width: 20,
-                              height: 20,
-                            )
-                          : Icon(
-                              CategoryUtils.getDefaultIcon(cat.name),
+                      leading: cat.id.isEmpty
+                          ? const Icon(
+                              Icons.do_not_disturb_on_rounded,
                               color: ColorName.primary,
                               size: 20,
-                            ),
+                            )
+                          : (iconPath != null
+                              ? iconPath.svg(
+                                  colorFilter: const ColorFilter.mode(
+                                    ColorName.primary,
+                                    BlendMode.srcIn,
+                                  ),
+                                  width: 20,
+                                  height: 20,
+                                )
+                              : Icon(
+                                  CategoryUtils.getDefaultIcon(cat.name),
+                                  color: ColorName.primary,
+                                  size: 20,
+                                )),
                       title: Text(
                         cat.name,
                         style: TextStyle(
@@ -622,7 +631,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
     // I will implement a quick one here for now.
     final selectedCategory = await _showCategoryPickerQuick(
       context,
-      categories,
+      [CategoryModel(id: '', name: 'None / Skip'), ...categories],
     );
     if (!mounted) return;
     if (selectedCategory == null) return;
@@ -708,6 +717,13 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
                   itemBuilder: (context, index) {
                     final cat = categories[index];
                     return ListTile(
+                      leading: cat.id.isEmpty
+                          ? const Icon(
+                              Icons.do_not_disturb_on_rounded,
+                              color: ColorName.primary,
+                              size: 18,
+                            )
+                          : null,
                       title: Text(cat.name),
                       trailing: const Icon(Icons.chevron_right, size: 18),
                       onTap: () => AppNavigator.pop(ctx, cat),

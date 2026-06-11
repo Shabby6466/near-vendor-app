@@ -51,7 +51,9 @@ class _NoResultSheetState extends State<NoResultSheet> {
       context: context,
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (ctx) => _CategoryPickerSheet(categories: categories),
+      builder: (ctx) => _CategoryPickerSheet(
+        categories: [CategoryModel(id: '', name: 'None / Skip'), ...categories],
+      ),
     );
     if (!mounted || selectedCategory == null) return;
 
@@ -447,20 +449,26 @@ class _CategoryPickerSheet extends StatelessWidget {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  leading: iconPath != null
-                      ? iconPath.svg(
-                          colorFilter: const ColorFilter.mode(
-                            ColorName.primary,
-                            BlendMode.srcIn,
-                          ),
-                          width: 20,
-                          height: 20,
-                        )
-                      : Icon(
-                          CategoryUtils.getDefaultIcon(cat.name),
+                  leading: cat.id.isEmpty
+                      ? const Icon(
+                          Icons.do_not_disturb_on_rounded,
                           color: ColorName.primary,
                           size: 20,
-                        ),
+                        )
+                      : (iconPath != null
+                          ? iconPath.svg(
+                              colorFilter: const ColorFilter.mode(
+                                ColorName.primary,
+                                BlendMode.srcIn,
+                              ),
+                              width: 20,
+                              height: 20,
+                            )
+                          : Icon(
+                              CategoryUtils.getDefaultIcon(cat.name),
+                              color: ColorName.primary,
+                              size: 20,
+                            )),
                   title: Text(
                     cat.name,
                     style: TextStyle(

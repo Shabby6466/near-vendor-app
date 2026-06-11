@@ -278,7 +278,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
           Align(
             alignment: Alignment.center,
             child: Transform.translate(
-              offset: const Offset(0, -28), // Shift up by 28 pixels to center the bottom target dot on the map center
+              offset: const Offset(0, -28),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [

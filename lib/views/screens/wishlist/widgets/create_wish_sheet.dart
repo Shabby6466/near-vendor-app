@@ -48,7 +48,10 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
       final response = await CategoriesService.getCategories();
       if (mounted) {
         setState(() {
-          _categories = response.categories;
+          _categories = [
+            CategoryModel(id: '', name: 'None / Skip'),
+            ...response.categories
+          ];
           _loadingCategories = false;
         });
       }
@@ -70,7 +73,9 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
     final input = CreateWishlistInput(
       itemName: _nameController.text.trim(),
       description: _descriptionController.text.trim(),
-      categoryId: _selectedCategory?.id,
+      categoryId: (_selectedCategory?.id.isNotEmpty ?? false)
+          ? _selectedCategory!.id
+          : null,
       lat: location.latitude,
       lon: location.longitude,
     );

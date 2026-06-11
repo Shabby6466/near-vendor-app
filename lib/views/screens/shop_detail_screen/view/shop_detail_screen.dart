@@ -9,6 +9,7 @@ import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/safety_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
@@ -601,14 +602,14 @@ class ShopDetailScreen extends StatelessWidget {
                 context,
                 icon: Icons.call_rounded,
                 color: Colors.white,
-                onTap: () => _launchCaller(shop.shopContactPhone!),
+                onTap: () => launchCaller(shop.shopContactPhone!, context),
               ),
             if (shop.whatsappNumber?.isNotEmpty ?? false)
               _buildPillIconButton(
                 context,
                 icon: Icons.chat_rounded,
                 color: Colors.white,
-                onTap: () => _launchWhatsApp(shop.whatsappNumber!),
+                onTap: () => launchWhatsApp(shop.whatsappNumber!, context),
               ),
             const SizedBox(width: 8),
             Expanded(
@@ -684,20 +685,6 @@ class ShopDetailScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _launchCaller(String phone) async {
-    final Uri url = Uri(scheme: 'tel', path: phone);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    }
-  }
-
-  Future<void> _launchWhatsApp(String phone) async {
-    final whatsappUrl = Uri.parse("https://wa.me/$phone");
-    if (await canLaunchUrl(whatsappUrl)) {
-      await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
-    }
   }
 
   Future<void> _launchMap(double lat, double lon, String title) async {
