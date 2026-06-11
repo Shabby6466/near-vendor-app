@@ -13,6 +13,9 @@ class ApiConstants {
   static const String verifyOTP = 'api/auth/verify-otp';
   static const String login = 'api/auth/login';
   static const String refreshToken = 'api/auth/refresh-token';
+  static const String forgotPassword = 'api/auth/forgot-password';
+  static const String verifyResetOtp = 'api/auth/verify-reset-otp';
+  static const String resetPassword = 'api/auth/reset-password';
   static const String changePassword = 'api/users/change-password';
   static const String getMe = 'api/users/me';
   static const String updateUser = 'api/users/update';

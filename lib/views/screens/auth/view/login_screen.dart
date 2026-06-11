@@ -9,6 +9,7 @@ import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/login_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/view/sign_up_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
+import 'package:nearvendorapp/views/screens/forgot_password/view/forgot_password_screen.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
@@ -131,6 +132,27 @@ class LoginScreen extends StatelessWidget {
                                           prefixIcon: Icons.lock_outline,
                                           validator: TextFieldValidators
                                               .passwordFieldValidator,
+                                        ),
+
+                                        const SizedBox(height: 8),
+
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: TextButton(
+                                            onPressed: () {
+                                              AppNavigator.push(
+                                                context,
+                                                const ForgotPasswordScreen(),
+                                              );
+                                            },
+                                            child: Text(
+                                              'Forgot Password?',
+                                              style: theme.textTheme.bodySmall?.copyWith(
+                                                color: theme.primaryColor,
+                                                fontWeight: FontWeight.w900,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ]),
                                     ),

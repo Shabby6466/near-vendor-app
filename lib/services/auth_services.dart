@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/auth_api_response.dart';
+import 'package:nearvendorapp/models/api_responses/forgot_password_response.dart';
 import 'package:nearvendorapp/models/api_responses/media_upload_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
@@ -115,6 +116,45 @@ class AuthServices {
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
       return GenericApiResponse(message: e.toString());
+    }
+  }
+
+  Future<ForgotPasswordResponse> forgotPassword(String email) async {
+    try {
+      final response = await Server.post(
+        ApiConstants.forgotPassword,
+        data: {'email': email},
+      );
+      return ForgotPasswordResponse.fromJson(response.data);
+    } catch (e) {
+      return ForgotPasswordResponse(message: e.toString());
+    }
+  }
+
+  Future<VerifyResetOtpResponse> verifyResetOtp(
+      String email, String otp) async {
+    try {
+      final response = await Server.post(
+        ApiConstants.verifyResetOtp,
+        data: {'email': email, 'otp': otp},
+      );
+      return VerifyResetOtpResponse.fromJson(response.data);
+    } catch (e) {
+      return VerifyResetOtpResponse(message: e.toString());
+    }
+  }
+
+  Future<ResetPasswordResponse> resetPassword(
+      String resetToken, String newPassword) async {
+    try {
+      final response = await Server.post(
+        ApiConstants.resetPassword,
+        data: {'newPassword': newPassword},
+        headers: {'Authorization': 'Bearer $resetToken'},
+      );
+      return ResetPasswordResponse.fromJson(response.data);
+    } catch (e) {
+      return ResetPasswordResponse(message: e.toString());
     }
   }
 }
