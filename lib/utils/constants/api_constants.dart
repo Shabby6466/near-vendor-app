@@ -5,7 +5,6 @@ class ApiConstants {
 
   static String get baseUrl =>
       dotenv.env['BASE_URL'] ?? 'https://api.nearvendor.pro/';
-  // static String baseurl = 'http://10.0.2.2:3837';
 
   ///AUTH
   static const String createUser = 'api/auth/create';
