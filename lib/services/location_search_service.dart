@@ -54,6 +54,7 @@ class LocationSearchService {
       );
 
       if (response.statusCode == 200) {
+        //TODO: parsing should be in response model class
         final List data = response.data as List;
         return data
             .map(
@@ -61,7 +62,7 @@ class LocationSearchService {
                   LocationSuggestion.fromJson(json as Map<String, dynamic>),
             )
             .toList();
-          }
+      }
       return [];
     } catch (e) {
       debugPrint('Error fetching suggestions: $e');

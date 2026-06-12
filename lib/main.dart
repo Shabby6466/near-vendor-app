@@ -21,7 +21,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await HiveManager.init();
   await AppData().loadPersistedData();
-  AppData().initializeSession(); // Run asynchronously
+  AppData().initializeSession();
   await AppLocationService.instance.resolvePlaceNameIfMissing();
   await dotenv.load();
   await SystemChrome.setPreferredOrientations([

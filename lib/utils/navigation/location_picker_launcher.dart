@@ -17,10 +17,7 @@ class LocationPickerLauncher {
     );
     if (result is LatLng) {
       return AppData().location ??
-          AppLocation(
-            latitude: result.latitude,
-            longitude: result.longitude,
-          );
+          AppLocation(latitude: result.latitude, longitude: result.longitude);
     }
     return AppData().location;
   }

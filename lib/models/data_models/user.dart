@@ -1,9 +1,6 @@
 class User {
   String? _fullName;
   String? _email;
-  // `role` and `cityName` are public fields (not wrapped in getter/setter)
-  // because they are mutated directly by SessionCubit during geocoding and
-  // role assignment. Making them public avoids the unnecessary_getters_setters lint.
   String? role;
   double? _lastKnownLatitude;
   double? _lastKnownLongitude;
@@ -15,7 +12,6 @@ class User {
   String? _id;
   String? _photoUrl;
   String? _phone;
-  String? cityName;
 
   String? get id => _id;
   String? get fullName => _fullName;
@@ -44,7 +40,6 @@ class User {
     String? id,
     String? photoUrl,
     String? phone,
-    this.cityName,
   }) {
     _id = id;
     _fullName = fullName;
@@ -89,7 +84,6 @@ class User {
           : null;
       _photoUrl = json['photoUrl'] as String?;
       _phone = json['phone'] as String?;
-      cityName = json['cityName'] as String?;
     }
   }
 
@@ -123,7 +117,6 @@ class User {
       deletedAt: deletedAt ?? _deletedAt,
       photoUrl: photoUrl ?? _photoUrl,
       phone: phone ?? _phone,
-      cityName: cityName ?? this.cityName,
     );
   }
 
@@ -141,6 +134,5 @@ class User {
     'deletedAt': _deletedAt?.toIso8601String(),
     'photoUrl': _photoUrl,
     'phone': _phone,
-    'cityName': cityName,
   };
 }

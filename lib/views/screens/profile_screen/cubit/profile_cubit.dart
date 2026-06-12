@@ -27,7 +27,8 @@ class ProfileCubit extends Cubit<ProfileState> {
     emit(ProfileLoading());
     final user = AppData().currentUser;
     final radius = CurrentUserStorage.getDiscoveryRadius();
-    final locationName = AppData().locationNotifier.value?.displayLabel ?? 'Location not set';
+    final locationName =
+        AppData().locationNotifier.value?.displayLabel ?? 'Location not set';
 
     emit(
       ProfileSuccess(
