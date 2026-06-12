@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart' hide ShimmerEffect;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
@@ -166,7 +167,7 @@ class _HowToSearchSection extends StatelessWidget {
             child: Column(
               children: [
                 _SearchTipItem(
-                  icon: Icons.search_rounded,
+                  icon: Assets.icons.searchIcon,
                   title: 'Exact Search',
                   subtitle: 'Type the name of the product you are looking for',
                   theme: theme,
@@ -177,7 +178,7 @@ class _HowToSearchSection extends StatelessWidget {
                   child: Divider(height: 1, thickness: 0.5),
                 ),
                 _SearchTipItem(
-                  icon: Icons.camera_alt_rounded,
+                  icon: Assets.icons.camera,
                   title: 'Visual Search',
                   subtitle: 'Search your product via photo',
                   theme: theme,
@@ -188,7 +189,7 @@ class _HowToSearchSection extends StatelessWidget {
                   child: Divider(height: 1, thickness: 0.5),
                 ),
                 _SearchTipItem(
-                  icon: Icons.auto_awesome_rounded,
+                  icon: Assets.icons.wishlistAdd,
                   title: 'Make a Wish',
                   subtitle: "Add unavailable items to your wish list",
                   theme: theme,
@@ -204,7 +205,7 @@ class _HowToSearchSection extends StatelessWidget {
 }
 
 class _SearchTipItem extends StatelessWidget {
-  final IconData icon;
+  final SvgGenImage icon;
   final String title;
   final String subtitle;
   final ThemeData theme;
@@ -235,7 +236,14 @@ class _SearchTipItem extends StatelessWidget {
                 color: theme.primaryColor.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: theme.primaryColor, size: 20),
+              child: icon.svg(
+                colorFilter: ColorFilter.mode(
+                  theme.primaryColor,
+                  BlendMode.srcIn,
+                ),
+                height: 20,
+                width: 20,
+              ),
             ),
             const SizedBox(width: 16),
             Expanded(

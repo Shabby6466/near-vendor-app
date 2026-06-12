@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
@@ -160,7 +161,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
                           ),
                           _NavButton(
                             label: 'Wishes',
-                            icon: Icons.auto_awesome,
+                            icon: Assets.icons.wishlist,
                             isActive: widget.currentIndex == 3,
                           ),
                         ],
@@ -179,7 +180,7 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
 
 class _NavButton extends StatelessWidget {
   final String label;
-  final dynamic icon;
+  final SvgGenImage icon;
   final bool isActive;
 
   const _NavButton({
@@ -202,7 +203,11 @@ class _NavButton extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            _buildIcon(color),
+            icon.svg(
+              colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+              height: 22,
+              width: 22,
+            ),
             const SizedBox(height: 2),
             Text(
               label,
@@ -216,20 +221,6 @@ class _NavButton extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Widget _buildIcon(Color color) {
-    if (icon is IconData) {
-      return Icon(icon as IconData, color: color, size: 22);
-    }
-    if (icon is SvgGenImage) {
-      return (icon as SvgGenImage).svg(
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-        height: 22,
-        width: 22,
-      );
-    }
-    return const SizedBox();
   }
 }
 

@@ -99,6 +99,13 @@ class $AssetsIconsGen {
   /// File path: assets/icons/support.svg
   SvgGenImage get support => const SvgGenImage('assets/icons/support.svg');
 
+  /// File path: assets/icons/wishlist.svg
+  SvgGenImage get wishlist => const SvgGenImage('assets/icons/wishlist.svg');
+
+  /// File path: assets/icons/wishlist_add.svg
+  SvgGenImage get wishlistAdd =>
+      const SvgGenImage('assets/icons/wishlist_add.svg');
+
   /// List of all assets
   List<SvgGenImage> get values => [
     camera,
@@ -121,6 +128,8 @@ class $AssetsIconsGen {
     profileIcon,
     searchIcon,
     support,
+    wishlist,
+    wishlistAdd,
   ];
 }
 
