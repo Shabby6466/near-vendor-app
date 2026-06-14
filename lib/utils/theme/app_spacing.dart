@@ -44,7 +44,7 @@ class AppSpacing {
   }
 
   static double extraLargeVerticalSpacing(BuildContext context) {
-    return MediaQuery.of(context).size.height * 0.05;
+    return MediaQuery.of(context).size.height * 0.08;
   }
 
   static EdgeInsets screenPadding(BuildContext context) {

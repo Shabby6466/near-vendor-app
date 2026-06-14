@@ -32,190 +32,175 @@ class LoginScreen extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = context.read<LoginCubit>();
+          final theme = Theme.of(context);
+
           return LoadingScreenView(
             isLoading: state is LoginLoading,
             child: AuthScaffold(
-              resizeToAvoidBottomInset: false,
               body: SafeArea(
-                child: LayoutBuilder(
-                  builder: (context, constraints) {
-                    final theme = Theme.of(context);
-                    return SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: AppSpacing.bottomNavigationPadding(
-                        context,
-                      ).copyWith(left: 24, right: 24),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                          minHeight:
-                              constraints.maxHeight -
-                              AppSpacing.bottomNavigationPadding(
-                                context,
-                              ).bottom,
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Top Segment: Branding & Identity
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: AppAnimateList.stagger([
-                                const SizedBox(height: 48),
-
-                                // Logo
-                                Assets.icons.nearVendorText.svg(
-                                  height: 32,
-                                  colorFilter: ColorFilter.mode(
-                                    theme.colorScheme.onSurface,
-                                    BlendMode.srcIn,
-                                  ),
-                                ),
-
-                                const SizedBox(height: 24),
-
-                                // Welcome Text
-                                Text(
-                                  'What ever is near you,\nNearvendor is the nearest',
-                                  style: theme.textTheme.headlineMedium
-                                      ?.copyWith(
-                                        color: theme.colorScheme.onSurface,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 28,
-                                        height: 1.1,
-                                        letterSpacing: -1,
-                                      ),
-                                ),
-
-                                const SizedBox(height: 8),
-
-                                Text(
-                                  'Discover millions of specialized items right in your local neighborhood.',
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.colorScheme.onSurface
-                                        .withValues(alpha: 0.6),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ]),
+                child: SingleChildScrollView(
+                  padding: AppSpacing.bottomNavigationPadding(
+                    context,
+                  ).copyWith(left: 24, right: 24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: AppAnimateList.stagger([
+                          SizedBox(
+                            height: AppSpacing.extraLargeVerticalSpacing(
+                              context,
                             ),
+                          ),
 
-                            // Bottom Segment: Interaction
-                            Column(
+                          Assets.icons.nearVendorText.svg(
+                            height: 32,
+                            colorFilter: const ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+
+                          SizedBox(
+                            height: AppSpacing.mediumVerticalSpacing(context),
+                          ),
+
+                          Text(
+                            'What ever is near you,\nNearvendor is the nearest',
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 28,
+                              height: 1.1,
+                              letterSpacing: -1,
+                            ),
+                          ),
+                          SizedBox(
+                            height: AppSpacing.smallVerticalSpacing(context),
+                          ),
+                          Text(
+                            'Discover millions of specialized items right in your local neighborhood.',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.6),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ]),
+                      ),
+
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: AppAnimateList.stagger([
+                          SizedBox(
+                            height:
+                                AppSpacing.extraLargeVerticalSpacing(context) *
+                                3,
+                          ),
+
+                          Form(
+                            key: cubit.formKey,
+                            child: Column(
                               children: AppAnimateList.stagger([
-                                const SizedBox(height: 48),
+                                AppTextField(
+                                  hint: 'Email',
+                                  controller: cubit.emailController,
+                                  prefixIcon: const Icon(Icons.email_outlined),
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator:
+                                      TextFieldValidators.emailFieldValidation,
+                                ),
 
-                                // Form Section
-                                Form(
-                                  key: cubit.formKey,
-                                  child: Column(
-                                    children: AppAnimateList.stagger([
-                                      AppTextField(
-                                        hint: 'email',
-                                        controller: cubit.emailController,
-                                        prefixIcon: const Icon(
-                                          Icons.email_outlined,
-                                        ),
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        validator: TextFieldValidators
-                                            .emailFieldValidation,
-                                      ),
-
-                                      const SizedBox(height: 16),
-
-                                      AppTextField(
-                                        hint: 'password',
-                                        isPassword: true,
-                                        controller: cubit.passwordController,
-                                        prefixIcon: const Icon(
-                                          Icons.lock_outline,
-                                        ),
-                                        validator: TextFieldValidators
-                                            .passwordFieldValidator,
-                                      ),
-
-                                      const SizedBox(height: 8),
-
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: TextButton(
-                                          onPressed: () {
-                                            AppNavigator.push(
-                                              context,
-                                              const ForgotPasswordScreen(),
-                                            );
-                                          },
-                                          child: Text(
-                                            'Forgot Password?',
-                                            style: theme.textTheme.bodySmall
-                                                ?.copyWith(
-                                                  color: theme.primaryColor,
-                                                  fontWeight: FontWeight.w900,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
+                                SizedBox(
+                                  height: AppSpacing.mediumVerticalSpacing(
+                                    context,
                                   ),
                                 ),
 
-                                const SizedBox(height: 40),
-
-                                // CTA Button
-                                AppElevatedButton(
-                                  onPressed: cubit.handleSignin,
-                                  text: 'CONTINUE',
+                                AppTextField(
+                                  hint: 'Password',
+                                  isPassword: true,
+                                  controller: cubit.passwordController,
+                                  prefixIcon: const Icon(Icons.lock_outline),
+                                  validator: TextFieldValidators
+                                      .passwordFieldValidator,
                                 ),
 
-                                const SizedBox(height: 24),
+                                SizedBox(
+                                  height: AppSpacing.smallVerticalSpacing(
+                                    context,
+                                  ),
+                                ),
 
-                                // Footer Links
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Don't have an account? ",
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: TextButton(
+                                    onPressed: () {
+                                      AppNavigator.push(
+                                        context,
+                                        const ForgotPasswordScreen(),
+                                      );
+                                    },
+                                    child: Text(
+                                      'Forgot Password?',
                                       style: theme.textTheme.bodySmall
                                           ?.copyWith(
-                                            color: theme.colorScheme.onSurface
-                                                .withValues(alpha: 0.5),
-                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w900,
                                           ),
                                     ),
-                                    TextButton(
-                                      onPressed: () {
-                                        AppNavigator.pushReplacement(
-                                          context,
-                                          const SignUpScreen(),
-                                        );
-                                      },
-                                      child: Text(
-                                        'SIGN UP',
-                                        style: theme.textTheme.bodySmall
-                                            ?.copyWith(
-                                              color: theme.primaryColor,
-                                              fontWeight: FontWeight.w900,
-                                              letterSpacing: 0.5,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                // Dynamic spacer for keyboard
-                                SizedBox(
-                                  height:
-                                      MediaQuery.of(context).viewInsets.bottom +
-                                      24,
+                                  ),
                                 ),
                               ]),
                             ),
-                          ],
-                        ),
+                          ),
+
+                          SizedBox(
+                            height: AppSpacing.largeVerticalSpacing(context),
+                          ),
+
+                          AppElevatedButton(
+                            onPressed: cubit.handleSignin,
+                            text: 'Continue',
+                          ),
+
+                          SizedBox(
+                            height: AppSpacing.mediumVerticalSpacing(context),
+                          ),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Don't have an account? ",
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: Colors.white.withValues(alpha: 0.5),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  AppNavigator.pushReplacement(
+                                    context,
+                                    const SignUpScreen(),
+                                  );
+                                },
+                                child: Text(
+                                  'Sign up',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900,
+                                    letterSpacing: 0.5,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ]),
                       ),
-                    );
-                  },
+                    ],
+                  ),
                 ),
               ),
             ),

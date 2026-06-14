@@ -38,7 +38,6 @@ class ResetPasswordScreen extends StatelessWidget {
         return LoadingScreenView(
           isLoading: state is ForgotPasswordLoading,
           child: AuthScaffold(
-            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               title: const Text(
                 'RESET PASSWORD',

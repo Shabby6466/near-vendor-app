@@ -52,7 +52,6 @@ class VerificationCodeScreen extends StatelessWidget {
           return LoadingScreenView(
             isLoading: state is VerificationLoading,
             child: AuthScaffold(
-              resizeToAvoidBottomInset: false,
               body: SafeArea(
                 child: LayoutBuilder(
                   builder: (context, constraints) {

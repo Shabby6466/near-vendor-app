@@ -51,7 +51,6 @@ class SignUpScreen extends StatelessWidget {
           return LoadingScreenView(
             isLoading: state is SignupLoading,
             child: AuthScaffold(
-              resizeToAvoidBottomInset: false,
               body: SafeArea(
                 child: LayoutBuilder(
                   builder: (context, constraints) {
