@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
@@ -13,12 +14,12 @@ class EditProfileCubit extends Cubit<EditProfileState> {
   final ImagePicker _picker = ImagePicker();
 
   EditProfileCubit()
-    : super(
-        EditProfileState(
-          fullName: AppData().currentUser?.fullName ?? '',
-          photoUrl: AppData().currentUser?.photoUrl,
-        ),
-      );
+    : super(EditProfileState(photoUrl: AppData().currentUser?.photoUrl));
+
+  final formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController(
+    text: AppData().currentUser?.fullName ?? '',
+  );
 
   Future<void> pickImage() async {
     try {
@@ -44,8 +45,12 @@ class EditProfileCubit extends Cubit<EditProfileState> {
     }
   }
 
-  Future<void> updateProfile({required String newFullName}) async {
-    if (newFullName.trim().isEmpty) {
+  Future<void> updateProfile() async {
+    if (!formKey.currentState!.validate()) return;
+
+    final newFullName = nameController.text.trim();
+
+    if (newFullName.isEmpty) {
       emit(
         state.copyWith(
           status: EditProfileStatus.failure,
@@ -90,7 +95,7 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
       // 2. Call backend update profile API
       final updateInput = UpdateUserInput(
-        fullName: newFullName.trim(),
+        fullName: newFullName,
         photoUrl: updatedPhotoUrl,
       );
 
@@ -107,7 +112,6 @@ class EditProfileCubit extends Cubit<EditProfileState> {
 
           emit(
             state.copyWith(
-              fullName: user.fullName,
               photoUrl: user.photoUrl,
               status: EditProfileStatus.success,
               clearImage: true,
@@ -137,5 +141,11 @@ class EditProfileCubit extends Cubit<EditProfileState> {
         ),
       );
     }
+  }
+
+  @override
+  Future<void> close() {
+    nameController.dispose();
+    return super.close();
   }
 }

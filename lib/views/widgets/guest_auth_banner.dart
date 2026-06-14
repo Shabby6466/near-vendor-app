@@ -49,7 +49,7 @@ class GuestAuthBanner extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Join our community to shop, sell, and connect with top vendors.',
+            'Join our community to shop, and connect with top vendors.',
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
               color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
@@ -58,47 +58,20 @@ class GuestAuthBanner extends StatelessWidget {
           ),
           const SizedBox(height: 24),
           Row(
+            spacing: 12,
             children: [
               Expanded(
                 child: ElevatedButton(
                   onPressed: () =>
                       AppNavigator.push(context, const LoginScreen()),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.primaryColor,
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Login',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      ),
-                  ),
+                  child: const Text('Login'),
                 ),
               ),
-              const SizedBox(width: 12),
               Expanded(
                 child: OutlinedButton(
                   onPressed: () =>
                       AppNavigator.push(context, const SignUpScreen()),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: theme.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    side: BorderSide(color: theme.primaryColor, width: 1.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      ),
-                  ),
+                  child: const Text('Register'),
                 ),
               ),
             ],

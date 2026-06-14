@@ -24,11 +24,6 @@ class AuthTextFieldWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final onSurface = theme.colorScheme.onSurface;
 
-    final baseBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
-      borderSide: BorderSide(color: onSurface.withValues(alpha: 0.08)),
-    );
-
     return Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 400),
@@ -43,36 +38,6 @@ class AuthTextFieldWidget extends StatelessWidget {
             fontSize: 15,
             letterSpacing: 0.3,
             color: onSurface,
-          ),
-          hintStyle: theme.textTheme.bodySmall?.copyWith(
-            fontSize: 10,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.5,
-            color: onSurface.withValues(alpha: 0.35),
-          ),
-          decoration: InputDecoration(
-            filled: true,
-            fillColor: onSurface.withValues(alpha: 0.1),
-            contentPadding: const EdgeInsets.symmetric(
-              vertical: 22,
-              horizontal: 16,
-            ),
-            prefixIcon: prefixIcon != null
-                ? Icon(
-                    prefixIcon,
-                    size: 20,
-                    color: onSurface.withValues(alpha: 0.6),
-                  )
-                : null,
-            border: baseBorder,
-            enabledBorder: baseBorder,
-            focusedBorder: baseBorder.copyWith(
-              borderSide: BorderSide(
-                color: Theme.of(context).primaryColor,
-                width: 1.5,
-              ),
-            ),
-            hintText: label.toUpperCase(),
           ),
         ),
       ),

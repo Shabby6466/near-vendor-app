@@ -91,9 +91,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           controller: _oldPasswordController,
                           hint: 'Enter current password',
                           isPassword: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter your current password';
@@ -116,9 +113,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           controller: _newPasswordController,
                           hint: 'Enter new password',
                           isPassword: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Please enter a new password';
@@ -144,9 +138,6 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           controller: _confirmPasswordController,
                           hint: 'Confirm new password',
                           isPassword: true,
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                          ),
                           validator: (value) {
                             if (value != _newPasswordController.text) {
                               return 'Passwords do not match';

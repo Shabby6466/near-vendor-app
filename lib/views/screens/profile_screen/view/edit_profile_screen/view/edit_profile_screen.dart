@@ -1,39 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/utils/textfield_validations.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_screen/cubit/edit_profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_screen/cubit/edit_profile_state.dart';
+import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 import 'package:nearvendorapp/views/widgets/circular_cached_network_image.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 
-class EditProfileScreen extends StatefulWidget {
+class EditProfileScreen extends StatelessWidget {
   const EditProfileScreen({super.key});
-
-  @override
-  State<EditProfileScreen> createState() => _EditProfileScreenState();
-}
-
-class _EditProfileScreenState extends State<EditProfileScreen> {
-  late final TextEditingController _nameController;
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _nameController = TextEditingController(
-      text: AppData().currentUser?.fullName ?? '',
-    );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,42 +32,21 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           }
         },
         builder: (context, state) {
+          final cubit = context.read<EditProfileCubit>();
           final isSubmitting = state.status == EditProfileStatus.submitting;
 
           return LoadingScreenView(
             isLoading: isSubmitting,
             child: Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-                elevation: 0,
-                leading: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios_new,
-                    size: 20,
-                    color: theme.iconTheme.color,
-                  ),
-                  onPressed: () => AppNavigator.pop(context),
-                ),
-                centerTitle: true,
-                title: Text(
-                  'Edit Profile',
-                  style: theme.textTheme.titleLarge?.copyWith(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-              ),
+              appBar: AppBar(title: const Text('Edit Profile')),
               body: SingleChildScrollView(
                 padding: AppSpacing.screenPadding(context),
-                physics: const BouncingScrollPhysics(),
                 child: Form(
-                  key: _formKey,
+                  key: cubit.formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       const SizedBox(height: 20),
-                      // Avatar Edit Section
                       Center(
                         child: Stack(
                           alignment: Alignment.center,
@@ -133,9 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               child: GestureDetector(
                                 onTap: isSubmitting
                                     ? null
-                                    : () => context
-                                          .read<EditProfileCubit>()
-                                          .pickImage(),
+                                    : () => cubit.pickImage(),
                                 child: Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
@@ -195,54 +151,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           ),
                         ),
                         child: AppTextField(
-                          controller: _nameController,
+                          controller: cubit.nameController,
                           hint: 'Enter your full name',
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 14,
-                          ),
-                          validator: (value) {
-                            if (value == null || value.trim().isEmpty) {
-                              return 'Please enter your full name';
-                            }
-                            return null;
-                          },
+                          validator: (value) =>
+                              TextFieldValidators.emptyFieldValidator(
+                                value,
+                                'Please enter your full name',
+                              ),
                         ),
                       ),
                       const SizedBox(height: 48),
 
-                      // Submit Button
-                      ElevatedButton(
-                        onPressed: isSubmitting
-                            ? null
-                            : () {
-                                if (_formKey.currentState!.validate()) {
-                                  context
-                                      .read<EditProfileCubit>()
-                                      .updateProfile(
-                                        newFullName: _nameController.text,
-                                      );
-                                }
-                              },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: theme.primaryColor,
-                          foregroundColor: Colors.white,
-                          disabledBackgroundColor: theme.primaryColor
-                              .withValues(alpha: 0.6),
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          elevation: 0,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                        ),
-                        child: Text(
-                          'Save Changes',
-                          style: theme.textTheme.labelLarge?.copyWith(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            color: Colors.white,
-                          ),
-                        ),
+                      AppElevatedButton(
+                        onPressed: () =>
+                            context.read<EditProfileCubit>().updateProfile(),
+                        text: 'Save Changes',
+                        isLoading: isSubmitting,
                       ),
                     ],
                   ),

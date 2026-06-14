@@ -83,6 +83,7 @@ class AppThemeData {
     style: ElevatedButton.styleFrom(
       backgroundColor: ColorName.primary,
       foregroundColor: Colors.white,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
     ),
   );
 

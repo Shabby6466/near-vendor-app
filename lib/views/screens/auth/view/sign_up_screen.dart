@@ -6,7 +6,6 @@ import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/utils/textfield_validations.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
-import 'package:nearvendorapp/utils/theme/app_theme_data.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/signup_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
@@ -49,203 +48,198 @@ class SignUpScreen extends StatelessWidget {
         },
         builder: (context, state) {
           final cubit = context.read<SignupCubit>();
-          return Theme(
-            data: AppThemeData.normalDarkTheme,
-            child: LoadingScreenView(
-              isLoading: state is SignupLoading,
-              child: AuthScaffold(
-                resizeToAvoidBottomInset: false,
-                body: SafeArea(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final theme = Theme.of(context);
-                      return SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        padding: AppSpacing.bottomNavigationPadding(
-                          context,
-                        ).copyWith(left: 24, right: 24),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight:
-                                constraints.maxHeight -
-                                AppSpacing.bottomNavigationPadding(
-                                  context,
-                                ).bottom,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Top Segment: Branding & Identity
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: AppAnimateList.stagger([
-                                  const SizedBox(height: 48),
+          return LoadingScreenView(
+            isLoading: state is SignupLoading,
+            child: AuthScaffold(
+              resizeToAvoidBottomInset: false,
+              body: SafeArea(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final theme = Theme.of(context);
+                    return SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: AppSpacing.bottomNavigationPadding(
+                        context,
+                      ).copyWith(left: 24, right: 24),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight:
+                              constraints.maxHeight -
+                              AppSpacing.bottomNavigationPadding(
+                                context,
+                              ).bottom,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Top Segment: Branding & Identity
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: AppAnimateList.stagger([
+                                const SizedBox(height: 48),
 
-                                  // Logo
-                                  Assets.icons.nearVendorText.svg(
-                                    height: 32,
-                                    colorFilter: ColorFilter.mode(
-                                      theme.colorScheme.onSurface,
-                                      BlendMode.srcIn,
-                                    ),
+                                // Logo
+                                Assets.icons.nearVendorText.svg(
+                                  height: 32,
+                                  colorFilter: ColorFilter.mode(
+                                    theme.colorScheme.onSurface,
+                                    BlendMode.srcIn,
                                   ),
+                                ),
 
-                                  const SizedBox(height: 24),
+                                const SizedBox(height: 24),
 
-                                  // Heading
-                                  Text(
-                                    'Create Account to get started',
-                                    style: theme.textTheme.headlineMedium
-                                        ?.copyWith(
-                                          color: theme.colorScheme.onSurface,
-                                          fontWeight: FontWeight.w900,
-                                          fontSize: 28,
-                                          height: 1.1,
-                                          letterSpacing: -1,
-                                        ),
+                                // Heading
+                                Text(
+                                  'Create Account to get started',
+                                  style: theme.textTheme.headlineMedium
+                                      ?.copyWith(
+                                        color: theme.colorScheme.onSurface,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 28,
+                                        height: 1.1,
+                                        letterSpacing: -1,
+                                      ),
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                Text(
+                                  'Join our community of millions of local shoppers and specialized vendors.',
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    color: theme.colorScheme.onSurface
+                                        .withValues(alpha: 0.6),
+                                    fontWeight: FontWeight.w500,
                                   ),
+                                ),
+                              ]),
+                            ),
 
-                                  const SizedBox(height: 8),
-
-                                  Text(
-                                    'Join our community of millions of local shoppers and specialized vendors.',
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onSurface
-                                          .withValues(alpha: 0.6),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ]),
-                              ),
-
-                              // Bottom Segment: Interaction
-                              Column(
-                                children: AppAnimateList.stagger([
-                                  const SizedBox(height: 48),
-                                  // Form Section
-                                  Form(
-                                    key: cubit.formKey,
-                                    child: Column(
-                                      children: AppAnimateList.stagger([
-                                        AuthTextFieldWidget(
-                                          label: 'full name',
-                                          controller: cubit.fullNameController,
-                                          prefixIcon: Icons.person_outline,
-                                          validator: (v) =>
-                                              TextFieldValidators.emptyFieldValidator(
-                                                v,
-                                                'Please enter your full name',
-                                              ),
-                                        ),
-
-                                        const SizedBox(height: 16),
-
-                                        AuthTextFieldWidget(
-                                          label: 'email',
-                                          controller: cubit.emailController,
-                                          prefixIcon: Icons.email_outlined,
-                                          keyboardType:
-                                              TextInputType.emailAddress,
-                                          validator: TextFieldValidators
-                                              .emailFieldValidation,
-                                        ),
-
-                                        const SizedBox(height: 16),
-
-                                        AuthTextFieldWidget(
-                                          label: 'password',
-                                          isPassword: true,
-                                          controller: cubit.passwordController,
-                                          prefixIcon: Icons.lock_outline,
-                                          validator: TextFieldValidators
-                                              .passwordFieldValidator,
-                                        ),
-
-                                        const SizedBox(height: 16),
-
-                                        AuthTextFieldWidget(
-                                          label: 'confirm password',
-                                          isPassword: true,
-                                          controller:
-                                              cubit.confirmPasswordController,
-                                          prefixIcon: Icons.lock_reset_outlined,
-                                          validator: (v) =>
-                                              TextFieldValidators.confirmPasswordValidator(
-                                                v,
-                                                cubit.passwordController.text,
-                                              ),
-                                        ),
-                                      ], interval: 80.ms),
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 40),
-
-                                  // CTA Button
-                                  AppElevatedButton(
-                                    onPressed: () {
-                                      cubit.handleSignup();
-                                    },
-                                    text: 'CONTINUE',
-                                  ),
-
-                                  const SizedBox(height: 24),
-
-                                  // Footer Links
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        'Already have an account? ',
-                                        style: theme.textTheme.bodySmall
-                                            ?.copyWith(
-                                              color: theme.colorScheme.onSurface
-                                                  .withValues(alpha: 0.5),
-                                              fontWeight: FontWeight.w600,
+                            // Bottom Segment: Interaction
+                            Column(
+                              children: AppAnimateList.stagger([
+                                const SizedBox(height: 48),
+                                // Form Section
+                                Form(
+                                  key: cubit.formKey,
+                                  child: Column(
+                                    children: AppAnimateList.stagger([
+                                      AuthTextFieldWidget(
+                                        label: 'full name',
+                                        controller: cubit.fullNameController,
+                                        prefixIcon: Icons.person_outline,
+                                        validator: (v) =>
+                                            TextFieldValidators.emptyFieldValidator(
+                                              v,
+                                              'Please enter your full name',
                                             ),
                                       ),
-                                      TextButton(
-                                        onPressed: () {
-                                          AppNavigator.pushReplacement(
-                                            context,
-                                            const LoginScreen(),
-                                          );
-                                        },
-                                        style: TextButton.styleFrom(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
+
+                                      const SizedBox(height: 16),
+
+                                      AuthTextFieldWidget(
+                                        label: 'email',
+                                        controller: cubit.emailController,
+                                        prefixIcon: Icons.email_outlined,
+                                        keyboardType:
+                                            TextInputType.emailAddress,
+                                        validator: TextFieldValidators
+                                            .emailFieldValidation,
+                                      ),
+
+                                      const SizedBox(height: 16),
+
+                                      AuthTextFieldWidget(
+                                        label: 'password',
+                                        isPassword: true,
+                                        controller: cubit.passwordController,
+                                        prefixIcon: Icons.lock_outline,
+                                        validator: TextFieldValidators
+                                            .passwordFieldValidator,
+                                      ),
+
+                                      const SizedBox(height: 16),
+
+                                      AuthTextFieldWidget(
+                                        label: 'confirm password',
+                                        isPassword: true,
+                                        controller:
+                                            cubit.confirmPasswordController,
+                                        prefixIcon: Icons.lock_reset_outlined,
+                                        validator: (v) =>
+                                            TextFieldValidators.confirmPasswordValidator(
+                                              v,
+                                              cubit.passwordController.text,
+                                            ),
+                                      ),
+                                    ], interval: 80.ms),
+                                  ),
+                                ),
+
+                                const SizedBox(height: 40),
+
+                                // CTA Button
+                                AppElevatedButton(
+                                  onPressed: () {
+                                    cubit.handleSignup();
+                                  },
+                                  text: 'CONTINUE',
+                                ),
+
+                                const SizedBox(height: 24),
+
+                                // Footer Links
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'Already have an account? ',
+                                      style: theme.textTheme.bodySmall
+                                          ?.copyWith(
+                                            color: theme.colorScheme.onSurface
+                                                .withValues(alpha: 0.5),
+                                            fontWeight: FontWeight.w600,
                                           ),
-                                        ),
-                                        child: Text(
-                                          'SIGN IN',
-                                          style: theme.textTheme.bodySmall
-                                              ?.copyWith(
-                                                color: theme.primaryColor,
-                                                fontWeight: FontWeight.w900,
-                                                letterSpacing: 0.5,
-                                              ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        AppNavigator.pushReplacement(
+                                          context,
+                                          const LoginScreen(),
+                                        );
+                                      },
+                                      style: TextButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                      child: Text(
+                                        'SIGN IN',
+                                        style: theme.textTheme.bodySmall
+                                            ?.copyWith(
+                                              color: theme.primaryColor,
+                                              fontWeight: FontWeight.w900,
+                                              letterSpacing: 0.5,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
 
-                                  // Dynamic spacer for keyboard
-                                  SizedBox(
-                                    height:
-                                        MediaQuery.of(
-                                          context,
-                                        ).viewInsets.bottom +
-                                        24,
-                                  ),
-                                ], interval: 80.ms),
-                              ),
-                            ],
-                          ),
+                                // Dynamic spacer for keyboard
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).viewInsets.bottom +
+                                      24,
+                                ),
+                              ], interval: 80.ms),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
