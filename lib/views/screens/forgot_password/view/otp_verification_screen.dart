@@ -35,47 +35,14 @@ class OtpVerificationScreen extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<ForgotPasswordCubit>();
         final theme = Theme.of(context);
-        final onSurface = theme.colorScheme.onSurface;
-
-        final defaultPinTheme = PinTheme(
-          width: 50,
-          height: 56,
-          textStyle: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          decoration: BoxDecoration(
-            color: onSurface.withValues(alpha: 0.1),
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: onSurface.withValues(alpha: 0.08)),
-          ),
-        );
-
-        final focusedPinTheme = defaultPinTheme.copyWith(
-          decoration: defaultPinTheme.decoration!.copyWith(
-            border: Border.all(color: ColorName.primary, width: 2),
-          ),
-        );
-
-        final submittedPinTheme = defaultPinTheme.copyWith(
-          decoration: defaultPinTheme.decoration!.copyWith(
-            border: Border.all(color: ColorName.primary.withValues(alpha: 0.3)),
-          ),
-        );
-
-        final errorPinTheme = defaultPinTheme.copyWith(
-          decoration: defaultPinTheme.decoration!.copyWith(
-            border: Border.all(color: Colors.red, width: 2),
-          ),
-        );
 
         return LoadingScreenView(
           isLoading: state is ForgotPasswordLoading,
           child: AuthScaffold(
             appBar: AppBar(
+              foregroundColor: Colors.white,
               title: const Text(
-                'VERIFY OTP',
+                'Verify OTP',
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.w900,
@@ -84,110 +51,169 @@ class OtpVerificationScreen extends StatelessWidget {
               ),
             ),
             body: SafeArea(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: AppSpacing.bottomNavigationPadding(
-                      context,
-                    ).copyWith(left: 24, right: 24),
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight:
-                            constraints.maxHeight -
-                            AppSpacing.bottomNavigationPadding(context).bottom,
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Top Segment
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: AppAnimateList.stagger([
-                              const SizedBox(height: 32),
-                              const Center(
-                                child: Icon(
-                                  Icons.mark_email_unread_outlined,
-                                  size: 80,
-                                  color: ColorName.primary,
-                                ),
-                              ),
-                              const SizedBox(height: 32),
-                              Center(
-                                child: Text(
-                                  'Verify OTP',
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.headlineMedium
-                                      ?.copyWith(
-                                        color: onSurface,
-                                        fontWeight: FontWeight.w900,
-                                        fontSize: 26,
-                                      ),
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Center(
-                                child: Text(
-                                  'Enter the OTP code sent to\n${cubit.emailController.text}',
-                                  textAlign: TextAlign.center,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: onSurface.withValues(alpha: 0.6),
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ]),
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding: AppSpacing.bottomNavigationPadding(
+                  context,
+                ).copyWith(left: 24, right: 24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Top Segment
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: AppAnimateList.stagger([
+                        SizedBox(
+                          height: AppSpacing.largeVerticalSpacing(context),
+                        ),
+                        const Center(
+                          child: Icon(
+                            Icons.mark_email_unread_outlined,
+                            size: 80,
+                            color: Colors.white,
                           ),
-
-                          // Bottom Segment
-                          Column(
-                            children: AppAnimateList.stagger([
-                              const SizedBox(height: 48),
-                              Form(
-                                key: cubit.otpFormKey,
-                                child: Center(
-                                  child: Pinput(
-                                    length: 6,
-                                    controller: cubit.otpController,
-                                    inputFormatters: [
-                                      FilteringTextInputFormatter.digitsOnly,
-                                    ],
-                                    defaultPinTheme: defaultPinTheme,
-                                    focusedPinTheme: focusedPinTheme,
-                                    submittedPinTheme: submittedPinTheme,
-                                    errorPinTheme: errorPinTheme,
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'OTP is required';
-                                      }
-                                      if (value.length < 6) {
-                                        return 'OTP must be 6 digits';
-                                      }
-                                      return null;
-                                    },
-                                    onCompleted: (pin) => cubit.verifyOtp(),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 40),
-                              AppElevatedButton(
-                                onPressed: cubit.verifyOtp,
-                                text: 'VERIFY OTP',
-                              ),
-                              // Dynamic spacer for keyboard
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).viewInsets.bottom +
-                                    24,
-                              ),
-                            ]),
+                        ),
+                        SizedBox(
+                          height: AppSpacing.largeVerticalSpacing(context),
+                        ),
+                        Center(
+                          child: Text(
+                            'Verify OTP',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.headlineMedium?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w900,
+                              fontSize: 26,
+                            ),
                           ),
-                        ],
-                      ),
+                        ),
+                        SizedBox(
+                          height: AppSpacing.smallVerticalSpacing(context),
+                        ),
+                        Center(
+                          child: Text(
+                            'Enter the OTP code sent to\n${cubit.emailController.text}',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.6),
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ]),
                     ),
-                  );
-                },
+
+                    // Bottom Segment
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: AppAnimateList.stagger([
+                        SizedBox(
+                          height:
+                              AppSpacing.extraLargeVerticalSpacing(context) * 2,
+                        ),
+                        Form(
+                          key: cubit.otpFormKey,
+                          child: Center(
+                            child: Pinput(
+                              length: 6,
+                              controller: cubit.otpController,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              defaultPinTheme: PinTheme(
+                                width: 50,
+                                height: 56,
+                                textStyle: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.08),
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              focusedPinTheme: PinTheme(
+                                width: 50,
+                                height: 56,
+                                textStyle: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(14),
+                                  border: Border.all(
+                                    color: ColorName.primary,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              submittedPinTheme: PinTheme(
+                                width: 50,
+                                height: 56,
+                                textStyle: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: ColorName.primary.withValues(
+                                      alpha: 0.3,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              errorPinTheme: PinTheme(
+                                width: 50,
+                                height: 56,
+                                textStyle: const TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(12),
+                                  border: Border.all(
+                                    color: Colors.red,
+                                    width: 2,
+                                  ),
+                                ),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'OTP is required';
+                                }
+                                if (value.length < 6) {
+                                  return 'OTP must be 6 digits';
+                                }
+                                return null;
+                              },
+                              onCompleted: (pin) => cubit.verifyOtp(),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: AppSpacing.largeVerticalSpacing(context),
+                        ),
+                        AppElevatedButton(
+                          onPressed: cubit.verifyOtp,
+                          text: 'Verify OTP',
+                        ),
+                        // Dynamic spacer for keyboard
+                        SizedBox(
+                          height: MediaQuery.of(context).viewInsets.bottom + 24,
+                        ),
+                      ]),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
