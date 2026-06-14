@@ -17,7 +17,6 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return BlocProvider(
       create: (context) => EditProfileCubit(),
@@ -139,26 +138,15 @@ class EditProfileScreen extends StatelessWidget {
                         ),
                       ),
 
-                      // Styled TextFormField wrapper matching existing theme
-                      Container(
-                        decoration: BoxDecoration(
-                          color: isDark
-                              ? Colors.white.withValues(alpha: 0.05)
-                              : Colors.black.withValues(alpha: 0.03),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(
-                            color: theme.dividerColor.withValues(alpha: 0.1),
-                          ),
-                        ),
-                        child: AppTextField(
-                          controller: cubit.nameController,
-                          hint: 'Enter your full name',
-                          validator: (value) =>
-                              TextFieldValidators.emptyFieldValidator(
-                                value,
-                                'Please enter your full name',
-                              ),
-                        ),
+                      AppTextField(
+                        controller: cubit.nameController,
+                        hint: 'Enter your full name',
+                        showBorder: true,
+                        validator: (value) =>
+                            TextFieldValidators.emptyFieldValidator(
+                              value,
+                              'Please enter your full name',
+                            ),
                       ),
                       const SizedBox(height: 48),
 

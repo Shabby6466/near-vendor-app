@@ -190,11 +190,6 @@ class LoginScreen extends StatelessWidget {
                                           const SignUpScreen(),
                                         );
                                       },
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                        ),
-                                      ),
                                       child: Text(
                                         'SIGN UP',
                                         style: theme.textTheme.bodySmall

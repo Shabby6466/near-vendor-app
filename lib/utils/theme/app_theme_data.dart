@@ -70,22 +70,82 @@ class AppThemeData {
     scrolledUnderElevation: 0,
   );
 
-  static final _inputDecorationTheme = InputDecorationTheme(
-    filled: true,
-    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-    border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(18),
-      borderSide: BorderSide.none,
-    ),
-  );
+  static InputDecorationTheme _buildInputDecorationTheme(
+    Brightness brightness,
+  ) {
+    final bool isDark = brightness == Brightness.dark;
+    final Color fillColor = isDark ? const Color(0xFF2C2C2E) : Colors.white;
+    final Color hintColor = isDark ? Colors.white54 : Colors.black45;
 
-  static final _elevatedButtonTheme = ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      backgroundColor: ColorName.primary,
-      foregroundColor: Colors.white,
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-    ),
-  );
+    return InputDecorationTheme(
+      filled: true,
+      fillColor: fillColor,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(100),
+        borderSide: BorderSide.none,
+      ),
+      hintStyle: TextStyle(
+        fontFamily: _fontFamily,
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        letterSpacing: 0.3,
+        color: hintColor,
+      ),
+    );
+  }
+
+  static ElevatedButtonThemeData _buildElevatedButtonTheme(
+    Brightness brightness,
+  ) {
+    return ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: ColorName.primary,
+        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        textStyle: const TextStyle(
+          fontFamily: _fontFamily,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+
+  static TextButtonThemeData _buildTextButtonTheme(Brightness brightness) {
+    return TextButtonThemeData(
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        shape: const StadiumBorder(),
+        textStyle: const TextStyle(
+          fontFamily: _fontFamily,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+
+  static OutlinedButtonThemeData _buildOutlinedButtonTheme(Brightness brightness) {
+    final bool isDark = brightness == Brightness.dark;
+    final Color outlineColor = isDark ? Colors.white30 : Colors.black26;
+
+    return OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        shape: const StadiumBorder(),
+        side: BorderSide(color: outlineColor),
+        textStyle: const TextStyle(
+          fontFamily: _fontFamily,
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
 
   static ThemeData get normalLightTheme => ThemeData(
     useMaterial3: true,
@@ -103,10 +163,10 @@ class AppThemeData {
       primary: ColorName.primary,
       secondary: ColorName.secondary,
     ),
-    inputDecorationTheme: _inputDecorationTheme.copyWith(
-      fillColor: Colors.white,
-    ),
-    elevatedButtonTheme: _elevatedButtonTheme,
+    inputDecorationTheme: _buildInputDecorationTheme(Brightness.light),
+    elevatedButtonTheme: _buildElevatedButtonTheme(Brightness.light),
+    textButtonTheme: _buildTextButtonTheme(Brightness.light),
+    outlinedButtonTheme: _buildOutlinedButtonTheme(Brightness.light),
   );
 
   static ThemeData get normalDarkTheme => ThemeData(
@@ -125,9 +185,9 @@ class AppThemeData {
       secondary: ColorName.secondary,
       surface: const Color(0xFF1E1E1E),
     ),
-    inputDecorationTheme: _inputDecorationTheme.copyWith(
-      fillColor: const Color(0xFF2C2C2E),
-    ),
-    elevatedButtonTheme: _elevatedButtonTheme,
+    inputDecorationTheme: _buildInputDecorationTheme(Brightness.dark),
+    elevatedButtonTheme: _buildElevatedButtonTheme(Brightness.dark),
+    textButtonTheme: _buildTextButtonTheme(Brightness.dark),
+    outlinedButtonTheme: _buildOutlinedButtonTheme(Brightness.dark),
   );
 }

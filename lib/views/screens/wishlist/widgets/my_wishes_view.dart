@@ -238,12 +238,6 @@ class _MyWishesViewState extends State<MyWishesView> {
                 'Try Again',
                 style: TextStyle(color: Colors.white),
               ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: ColorName.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
             ),
           ],
         ),

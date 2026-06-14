@@ -82,69 +82,54 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
 
                       _buildLabel('Old Password'),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: AppTextField(
-                          controller: _oldPasswordController,
-                          hint: 'Enter current password',
-                          isPassword: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your current password';
-                            }
-                            return null;
-                          },
-                        ),
+                      AppTextField(
+                        controller: _oldPasswordController,
+                        hint: 'Enter current password',
+                        isPassword: true,
+                        showBorder: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter your current password';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(
                         height: AppSpacing.mediumVerticalSpacing(context),
                       ),
 
                       _buildLabel('New Password'),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: AppTextField(
-                          controller: _newPasswordController,
-                          hint: 'Enter new password',
-                          isPassword: true,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter a new password';
-                            }
-                            if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
-                            }
-                            return null;
-                          },
-                        ),
+                      AppTextField(
+                        controller: _newPasswordController,
+                        hint: 'Enter new password',
+                        isPassword: true,
+                        showBorder: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a new password';
+                          }
+                          if (value.length < 6) {
+                            return 'Password must be at least 6 characters';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(
                         height: AppSpacing.mediumVerticalSpacing(context),
                       ),
 
                       _buildLabel('Confirm New Password'),
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: AppTextField(
-                          controller: _confirmPasswordController,
-                          hint: 'Confirm new password',
-                          isPassword: true,
-                          validator: (value) {
-                            if (value != _newPasswordController.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                        ),
+                      AppTextField(
+                        controller: _confirmPasswordController,
+                        hint: 'Confirm new password',
+                        isPassword: true,
+                        showBorder: true,
+                        validator: (value) {
+                          if (value != _newPasswordController.text) {
+                            return 'Passwords do not match';
+                          }
+                          return null;
+                        },
                       ),
 
                       const SizedBox(height: 40),

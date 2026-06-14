@@ -515,11 +515,6 @@ class _EmptyStateState extends State<_EmptyState> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorName.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                           elevation: 0,
                         ),
                       ),
@@ -541,10 +536,6 @@ class _EmptyStateState extends State<_EmptyState> {
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: ColorName.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                           side: BorderSide(
                             color: ColorName.primary.withValues(alpha: 0.3),
                           ),
@@ -781,13 +772,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
                       ? _createWish
                       : () => AppNavigator.push(context, const LoginScreen())),
             style: ElevatedButton.styleFrom(
-              backgroundColor: ColorName.primary,
-              foregroundColor: Colors.white,
               elevation: 0,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
             ),
             child: _isCreatingWish
                 ? const SizedBox(

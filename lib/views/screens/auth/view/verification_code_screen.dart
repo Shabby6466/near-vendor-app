@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
-import 'package:nearvendorapp/utils/theme/app_theme_data.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/utils/ui/app_strings.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/verification_cubit.dart';
@@ -50,152 +49,144 @@ class VerificationCodeScreen extends StatelessWidget {
           final isButtonEnabled =
               state is! VerificationLoading && currentCode.length == 6;
 
-          return Theme(
-            data: AppThemeData.normalDarkTheme,
-            child: LoadingScreenView(
-              isLoading: state is VerificationLoading,
-              child: AuthScaffold(
-                resizeToAvoidBottomInset: false,
-                body: SafeArea(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      final theme = Theme.of(context);
-                      final onSurface = theme.colorScheme.onSurface;
+          return LoadingScreenView(
+            isLoading: state is VerificationLoading,
+            child: AuthScaffold(
+              resizeToAvoidBottomInset: false,
+              body: SafeArea(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    final theme = Theme.of(context);
+                    final onSurface = theme.colorScheme.onSurface;
 
-                      final defaultPinTheme = PinTheme(
-                        width: 56,
-                        height: 64,
-                        textStyle: theme.textTheme.headlineSmall?.copyWith(
-                          color: onSurface,
-                          fontWeight: FontWeight.w900,
+                    final defaultPinTheme = PinTheme(
+                      width: 56,
+                      height: 64,
+                      textStyle: theme.textTheme.headlineSmall?.copyWith(
+                        color: onSurface,
+                        fontWeight: FontWeight.w900,
+                      ),
+                      decoration: BoxDecoration(
+                        color: onSurface.withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: onSurface.withValues(alpha: 0.08),
                         ),
-                        decoration: BoxDecoration(
-                          color: onSurface.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: onSurface.withValues(alpha: 0.08),
-                          ),
-                        ),
-                      );
+                      ),
+                    );
 
-                      final focusedPinTheme = defaultPinTheme.copyWith(
-                        decoration: defaultPinTheme.decoration?.copyWith(
-                          border: Border.all(
-                            color: theme.primaryColor,
-                            width: 2,
-                          ),
-                        ),
-                      );
+                    final focusedPinTheme = defaultPinTheme.copyWith(
+                      decoration: defaultPinTheme.decoration?.copyWith(
+                        border: Border.all(color: theme.primaryColor, width: 2),
+                      ),
+                    );
 
-                      return SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        padding: AppSpacing.bottomNavigationPadding(
-                          context,
-                        ).copyWith(left: 24, right: 24),
-                        child: ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minHeight:
-                                constraints.maxHeight -
-                                AppSpacing.bottomNavigationPadding(
-                                  context,
-                                ).bottom,
-                          ),
-                          child: Column(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Top: Branding
-                              Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                children: AppAnimateList.stagger([
-                                  const SizedBox(height: 48),
-                                  Assets.icons.nearVendorText.svg(
-                                    height: 32,
-                                    colorFilter: ColorFilter.mode(
-                                      onSurface,
-                                      BlendMode.srcIn,
-                                    ),
+                    return SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      padding: AppSpacing.bottomNavigationPadding(
+                        context,
+                      ).copyWith(left: 24, right: 24),
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight:
+                              constraints.maxHeight -
+                              AppSpacing.bottomNavigationPadding(
+                                context,
+                              ).bottom,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Top: Branding
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: AppAnimateList.stagger([
+                                const SizedBox(height: 48),
+                                Assets.icons.nearVendorText.svg(
+                                  height: 32,
+                                  colorFilter: ColorFilter.mode(
+                                    onSurface,
+                                    BlendMode.srcIn,
                                   ),
-                                  const SizedBox(height: 24),
-                                  Text(
-                                    AppStrings.enterCodeTitle,
-                                    style: theme.textTheme.headlineMedium?.copyWith(
-                                      color: onSurface,
-                                      fontWeight: FontWeight.w900,
-                                      fontSize: 28,
-                                      height: 1.1,
-                                      letterSpacing: -1,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  RichText(
-                                    text: TextSpan(
-                                      text: AppStrings.enterCodeSubtitle,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: onSurface.withValues(
-                                          alpha: 0.6,
-                                        ),
-                                        fontWeight: FontWeight.w500,
+                                ),
+                                const SizedBox(height: 24),
+                                Text(
+                                  AppStrings.enterCodeTitle,
+                                  style: theme.textTheme.headlineMedium
+                                      ?.copyWith(
+                                        color: onSurface,
+                                        fontWeight: FontWeight.w900,
+                                        fontSize: 28,
+                                        height: 1.1,
+                                        letterSpacing: -1,
                                       ),
-                                      children: [
-                                        TextSpan(
-                                          text: ' $email',
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            color: theme.primaryColor,
-                                            fontWeight: FontWeight.w900,
-                                          ),
-                                        ),
-                                      ],
+                                ),
+                                const SizedBox(height: 8),
+                                RichText(
+                                  text: TextSpan(
+                                    text: AppStrings.enterCodeSubtitle,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: onSurface.withValues(alpha: 0.6),
+                                      fontWeight: FontWeight.w500,
                                     ),
-                                  ),
-                                ], interval: 80.ms),
-                              ),
-
-                              // Bottom: PIN input + CTA
-                              Column(
-                                children: AppAnimateList.stagger([
-                                  const SizedBox(height: 48),
-                                  Center(
-                                    child: Pinput(
-                                      controller: cubit.codeController,
-                                      length: 6,
-                                      defaultPinTheme: defaultPinTheme,
-                                      focusedPinTheme: focusedPinTheme,
-                                      submittedPinTheme: focusedPinTheme,
-                                      onChanged: cubit.onCodeChanged,
-                                      // Submit directly when all 6 digits are entered
-                                      onCompleted: (_) => cubit.verifyOtp(),
-                                      cursor: Container(
-                                        height: 24,
-                                        width: 2,
-                                        color: theme.primaryColor,
+                                    children: [
+                                      TextSpan(
+                                        text: ' $email',
+                                        style: theme.textTheme.bodyMedium
+                                            ?.copyWith(
+                                              color: theme.primaryColor,
+                                              fontWeight: FontWeight.w900,
+                                            ),
                                       ),
+                                    ],
+                                  ),
+                                ),
+                              ], interval: 80.ms),
+                            ),
+
+                            // Bottom: PIN input + CTA
+                            Column(
+                              children: AppAnimateList.stagger([
+                                const SizedBox(height: 48),
+                                Center(
+                                  child: Pinput(
+                                    controller: cubit.codeController,
+                                    length: 6,
+                                    defaultPinTheme: defaultPinTheme,
+                                    focusedPinTheme: focusedPinTheme,
+                                    submittedPinTheme: focusedPinTheme,
+                                    onChanged: cubit.onCodeChanged,
+                                    // Submit directly when all 6 digits are entered
+                                    onCompleted: (_) => cubit.verifyOtp(),
+                                    cursor: Container(
+                                      height: 24,
+                                      width: 2,
+                                      color: theme.primaryColor,
                                     ),
                                   ),
-                                  const SizedBox(height: 48),
-                                  AppElevatedButton(
-                                    onPressed: isButtonEnabled
-                                        ? cubit.verifyOtp
-                                        : null,
-                                    isEnabled: isButtonEnabled,
-                                    text: AppStrings.verifyButton.toUpperCase(),
-                                  ),
-                                  const SizedBox(height: 24),
-                                  SizedBox(
-                                    height:
-                                        MediaQuery.of(context).viewInsets.bottom +
-                                        24,
-                                  ),
-                                ], interval: 80.ms),
-                              ),
-                            ],
-                          ),
+                                ),
+                                const SizedBox(height: 48),
+                                AppElevatedButton(
+                                  onPressed: isButtonEnabled
+                                      ? cubit.verifyOtp
+                                      : null,
+                                  isEnabled: isButtonEnabled,
+                                  text: AppStrings.verifyButton.toUpperCase(),
+                                ),
+                                const SizedBox(height: 24),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).viewInsets.bottom +
+                                      24,
+                                ),
+                              ], interval: 80.ms),
+                            ),
+                          ],
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),

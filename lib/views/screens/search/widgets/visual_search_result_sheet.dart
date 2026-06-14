@@ -182,10 +182,6 @@ class VisualSearchResultSheet extends StatelessWidget {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF004AAD),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
                       elevation: 0,
                     ),
                     child: Row(
@@ -211,21 +207,17 @@ class VisualSearchResultSheet extends StatelessWidget {
                   child: OutlinedButton(
                     onPressed: onTryAgain,
                     style: OutlinedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      foregroundColor: const Color(0xFF004AAD),
                       side: const BorderSide(color: Color(0xFF004AAD)),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
                     ),
                     child: const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.refresh, size: 20, color: Color(0xFF004AAD)),
+                        Icon(Icons.refresh, size: 20),
                         SizedBox(width: 8),
                         Text(
                           "Try again",
                           style: TextStyle(
-                            color: Color(0xFF004AAD),
                             fontWeight: FontWeight.bold,
                           ),
                         ),

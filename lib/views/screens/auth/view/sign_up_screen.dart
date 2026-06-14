@@ -10,9 +10,9 @@ import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/cubit/signup_cubit.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/auth/view/verification_code_screen.dart';
-import 'package:nearvendorapp/views/screens/auth/widgets/auth_text_field_widget.dart';
 import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/app_text_field.dart';
 import 'package:nearvendorapp/views/widgets/auth_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 
@@ -125,53 +125,69 @@ class SignUpScreen extends StatelessWidget {
                                   key: cubit.formKey,
                                   child: Column(
                                     children: AppAnimateList.stagger([
-                                      AuthTextFieldWidget(
-                                        label: 'full name',
-                                        controller: cubit.fullNameController,
-                                        prefixIcon: Icons.person_outline,
-                                        validator: (v) =>
-                                            TextFieldValidators.emptyFieldValidator(
-                                              v,
-                                              'Please enter your full name',
-                                            ),
+                                      Center(
+                                        child: AppTextField(
+                                          hint: 'FULL NAME',
+                                          controller: cubit.fullNameController,
+                                          prefixIcon: const Icon(
+                                            Icons.person_outline,
+                                          ),
+                                          validator: (v) =>
+                                              TextFieldValidators.emptyFieldValidator(
+                                                v,
+                                                'Please enter your full name',
+                                              ),
+                                        ),
                                       ),
 
                                       const SizedBox(height: 16),
 
-                                      AuthTextFieldWidget(
-                                        label: 'email',
-                                        controller: cubit.emailController,
-                                        prefixIcon: Icons.email_outlined,
-                                        keyboardType:
-                                            TextInputType.emailAddress,
-                                        validator: TextFieldValidators
-                                            .emailFieldValidation,
+                                      Center(
+                                        child: AppTextField(
+                                          hint: 'EMAIL',
+                                          controller: cubit.emailController,
+                                          prefixIcon: const Icon(
+                                            Icons.email_outlined,
+                                          ),
+                                          keyboardType:
+                                              TextInputType.emailAddress,
+                                          validator: TextFieldValidators
+                                              .emailFieldValidation,
+                                        ),
                                       ),
 
                                       const SizedBox(height: 16),
 
-                                      AuthTextFieldWidget(
-                                        label: 'password',
-                                        isPassword: true,
-                                        controller: cubit.passwordController,
-                                        prefixIcon: Icons.lock_outline,
-                                        validator: TextFieldValidators
-                                            .passwordFieldValidator,
+                                      Center(
+                                        child: AppTextField(
+                                          hint: 'PASSWORD',
+                                          isPassword: true,
+                                          controller: cubit.passwordController,
+                                          prefixIcon: const Icon(
+                                            Icons.lock_outline,
+                                          ),
+                                          validator: TextFieldValidators
+                                              .passwordFieldValidator,
+                                        ),
                                       ),
 
                                       const SizedBox(height: 16),
 
-                                      AuthTextFieldWidget(
-                                        label: 'confirm password',
-                                        isPassword: true,
-                                        controller:
-                                            cubit.confirmPasswordController,
-                                        prefixIcon: Icons.lock_reset_outlined,
-                                        validator: (v) =>
-                                            TextFieldValidators.confirmPasswordValidator(
-                                              v,
-                                              cubit.passwordController.text,
-                                            ),
+                                      Center(
+                                        child: AppTextField(
+                                          hint: 'CONFIRM PASSWORD',
+                                          isPassword: true,
+                                          controller:
+                                              cubit.confirmPasswordController,
+                                          prefixIcon: const Icon(
+                                            Icons.lock_reset_outlined,
+                                          ),
+                                          validator: (v) =>
+                                              TextFieldValidators.confirmPasswordValidator(
+                                                v,
+                                                cubit.passwordController.text,
+                                              ),
+                                        ),
                                       ),
                                     ], interval: 80.ms),
                                   ),
@@ -209,11 +225,6 @@ class SignUpScreen extends StatelessWidget {
                                           const LoginScreen(),
                                         );
                                       },
-                                      style: TextButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                        ),
-                                      ),
                                       child: Text(
                                         'SIGN IN',
                                         style: theme.textTheme.bodySmall

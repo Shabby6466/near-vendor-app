@@ -193,10 +193,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF004AAD),
-                  minimumSize: const Size(double.infinity, 52),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
                   elevation: 0,
                 ),
               ),
@@ -303,11 +299,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
                           ),
                         ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: ColorName.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
                           elevation: 0,
                         ),
                       ),
@@ -330,10 +321,6 @@ class _NoResultSheetState extends State<NoResultSheet> {
                         ),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: ColorName.primary,
-                          padding: const EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
                           side: BorderSide(
                             color: ColorName.primary.withValues(alpha: 0.3),
                           ),

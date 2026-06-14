@@ -16,6 +16,7 @@ class AppTextField extends StatefulWidget {
   final TextAlign? textAlign;
   final Widget? prefix;
   final TextStyle? style;
+  final bool showBorder;
 
   const AppTextField({
     super.key,
@@ -33,6 +34,7 @@ class AppTextField extends StatefulWidget {
     this.autofocus = false,
     this.prefixIcon,
     this.prefix,
+    this.showBorder = false,
   });
 
   @override
@@ -52,6 +54,83 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final border = widget.showBorder
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(100),
+            borderSide: BorderSide(
+              color: theme.colorScheme.outline.withValues(alpha: 0.3),
+            ),
+          )
+        : widget.isMultiline
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          )
+        : null;
+
+    final enabledBorder = widget.showBorder
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(100),
+            borderSide: BorderSide(
+              color: theme.colorScheme.outline.withValues(alpha: 0.3),
+            ),
+          )
+        : widget.isMultiline
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          )
+        : null;
+
+    final focusedBorder = widget.showBorder
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(100),
+            borderSide: BorderSide(
+              color: theme.colorScheme.primary,
+              width: 1.5,
+            ),
+          )
+        : widget.isMultiline
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          )
+        : null;
+
+    final errorBorder = widget.showBorder
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(100),
+            borderSide: BorderSide(color: theme.colorScheme.error),
+          )
+        : null;
+
+    final focusedErrorBorder = widget.showBorder
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(100),
+            borderSide: BorderSide(color: theme.colorScheme.error, width: 1.5),
+          )
+        : null;
+
+    final disabledBorder = widget.showBorder
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(100),
+            borderSide: BorderSide(
+              color: theme.colorScheme.outline.withValues(alpha: 0.1),
+            ),
+          )
+        : widget.isMultiline
+        ? OutlineInputBorder(
+            borderRadius: BorderRadius.circular(10),
+            borderSide: BorderSide.none,
+          )
+        : null;
+
+    final defaultStyle = theme.textTheme.bodyMedium?.copyWith(
+      fontWeight: FontWeight.w600,
+      fontSize: 15,
+      letterSpacing: 0.3,
+    );
+
     return TextFormField(
       onTapOutside: (event) => hideKeyBoard(),
       autofocus: widget.autofocus,
@@ -63,35 +142,9 @@ class _AppTextFieldState extends State<AppTextField> {
       obscureText: _obscureText,
       keyboardType: widget.keyboardType,
       validator: widget.validator,
-      style: widget.style ?? theme.textTheme.bodyMedium,
+      style: widget.style ?? defaultStyle,
       decoration:
           InputDecoration(
-                hintStyle: TextStyle(
-                  color: theme.textTheme.bodySmall?.color?.withValues(
-                    alpha: 0.5,
-                  ),
-                ),
-              )
-              .applyDefaults(theme.inputDecorationTheme)
-              .copyWith(
-                focusedBorder: widget.isMultiline
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      )
-                    : null,
-                enabledBorder: widget.isMultiline
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      )
-                    : null,
-                disabledBorder: widget.isMultiline
-                    ? OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      )
-                    : null,
                 hintText: widget.hint,
                 prefix: widget.prefix,
                 prefixIcon: widget.prefixIcon != null
@@ -116,6 +169,15 @@ class _AppTextFieldState extends State<AppTextField> {
                       )
                     : widget.suffixIcon,
                 errorMaxLines: 2,
+              )
+              .applyDefaults(theme.inputDecorationTheme)
+              .copyWith(
+                border: border,
+                enabledBorder: enabledBorder,
+                focusedBorder: focusedBorder,
+                errorBorder: errorBorder,
+                focusedErrorBorder: focusedErrorBorder,
+                disabledBorder: disabledBorder,
               ),
     );
   }

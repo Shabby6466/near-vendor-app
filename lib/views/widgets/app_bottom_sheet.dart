@@ -224,10 +224,6 @@ class AppBottomSheet {
                   backgroundColor: confirmButtonColor,
                   foregroundColor: confirmButtonColor != null ? Colors.white : null,
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
                 ),
                 child: Text(
                   confirmButtonText,
