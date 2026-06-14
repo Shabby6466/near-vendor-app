@@ -7,7 +7,7 @@ import 'package:nearvendorapp/services/auth_services.dart';
 import 'package:nearvendorapp/services/media_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
-import 'package:nearvendorapp/views/screens/profile_screen/cubit/edit_profile_state.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_screen/cubit/edit_profile_state.dart';
 
 class EditProfileCubit extends Cubit<EditProfileState> {
   final ImagePicker _picker = ImagePicker();

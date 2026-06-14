@@ -9,7 +9,7 @@ import 'package:nearvendorapp/views/screens/profile_screen/cubit/profile_cubit.d
 import 'package:nearvendorapp/views/screens/profile_screen/view/change_password_screen/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/cubit/delete_account_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/view/delete_account_confirmation_sheet.dart';
-import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_screen.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_screen/view/edit_profile_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_menu_item.dart';
