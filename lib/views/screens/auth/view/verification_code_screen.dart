@@ -10,9 +10,9 @@ import 'package:nearvendorapp/views/screens/auth/cubit/verification_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/app_pin_code_field.dart';
 import 'package:nearvendorapp/views/widgets/auth_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
-import 'package:pinput/pinput.dart';
 
 class VerificationCodeScreen extends StatelessWidget {
   const VerificationCodeScreen({super.key, required this.email});
@@ -126,57 +126,16 @@ class VerificationCodeScreen extends StatelessWidget {
                                 3,
                           ),
                           Center(
-                            child: Pinput(
+                            child: AppPinCodeField(
                               controller: cubit.codeController,
-                              length: 6,
-                              defaultPinTheme: PinTheme(
-                                width: 56,
-                                height: 64,
-                                textStyle: theme.textTheme.headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.w900),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.08),
-                                  ),
-                                ),
-                              ),
-                              focusedPinTheme: PinTheme(
-                                width: 56,
-                                height: 64,
-                                textStyle: theme.textTheme.headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.w900),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: theme.primaryColor,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                              submittedPinTheme: PinTheme(
-                                width: 56,
-                                height: 64,
-                                textStyle: theme.textTheme.headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.w900),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: theme.primaryColor,
-                                    width: 2,
-                                  ),
-                                ),
+                              fieldWidth: 56,
+                              fieldHeight: 64,
+                              textStyle: theme.textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w900,
                               ),
                               onChanged: cubit.onCodeChanged,
-                              // Submit directly when all 6 digits are entered
                               onCompleted: (_) => cubit.verifyOtp(),
-                              cursor: Container(
-                                height: 24,
-                                width: 2,
-                                color: theme.primaryColor,
-                              ),
                             ),
                           ),
                           SizedBox(

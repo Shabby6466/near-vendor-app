@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
@@ -9,9 +7,9 @@ import 'package:nearvendorapp/views/screens/forgot_password/cubit/forgot_passwor
 import 'package:nearvendorapp/views/screens/forgot_password/view/reset_password_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/app_pin_code_field.dart';
 import 'package:nearvendorapp/views/widgets/auth_scaffold.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
-import 'package:pinput/pinput.dart';
 
 class OtpVerificationScreen extends StatelessWidget {
   const OtpVerificationScreen({super.key});
@@ -115,77 +113,8 @@ class OtpVerificationScreen extends StatelessWidget {
                         Form(
                           key: cubit.otpFormKey,
                           child: Center(
-                            child: Pinput(
-                              length: 6,
+                            child: AppPinCodeField(
                               controller: cubit.otpController,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              defaultPinTheme: PinTheme(
-                                width: 50,
-                                height: 56,
-                                textStyle: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.08),
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                              focusedPinTheme: PinTheme(
-                                width: 50,
-                                height: 56,
-                                textStyle: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                    color: ColorName.primary,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
-                              submittedPinTheme: PinTheme(
-                                width: 50,
-                                height: 56,
-                                textStyle: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: ColorName.primary.withValues(
-                                      alpha: 0.3,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              errorPinTheme: PinTheme(
-                                width: 50,
-                                height: 56,
-                                textStyle: const TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: Colors.red,
-                                    width: 2,
-                                  ),
-                                ),
-                              ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'OTP is required';
