@@ -22,35 +22,44 @@ class AppBottomSheet {
       useSafeArea: true,
       enableDrag: isDismissible,
       isScrollControlled: isScrollControlled,
-      builder: (context) => ClipRRect(
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 20.1, sigmaY: 20.1),
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              padding: padding,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(22),
+      builder: (context) {
+        final mediaQuery = MediaQuery.of(context);
+        final bottomNavBarHeight = mediaQuery.viewPadding.bottom;
+
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20.1, sigmaY: 20.1),
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: padding.copyWith(
+                  bottom: padding.bottom + bottomNavBarHeight,
                 ),
-                border: Border.all(
-                  color: Theme.of(context).dividerColor.withValues(alpha: 0.15),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(22),
+                  ),
+                  border: Border.all(
+                    color: Theme.of(
+                      context,
+                    ).dividerColor.withValues(alpha: 0.15),
+                  ),
                 ),
-              ),
-              child: AnimatedPadding(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.easeOut,
-                padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                child: AnimatedPadding(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  padding: EdgeInsets.only(
+                    bottom: mediaQuery.viewInsets.bottom,
+                  ),
+                  child: child,
                 ),
-                child: child,
               ),
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -222,12 +231,17 @@ class AppBottomSheet {
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: confirmButtonColor,
-                  foregroundColor: confirmButtonColor != null ? Colors.white : null,
+                  foregroundColor: confirmButtonColor != null
+                      ? Colors.white
+                      : null,
                   elevation: 0,
                 ),
                 child: Text(
                   confirmButtonText,
-                  style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 15),
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 15,
+                  ),
                 ),
               ),
               const SizedBox(height: 12),

@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 
 class AppAlerts {
@@ -39,6 +40,21 @@ class AppAlerts {
     );
   }
 
+  static void showInfo(
+    BuildContext context,
+    String message, {
+    String title = "Notification",
+    bool isDarkBackground = false,
+  }) {
+    _showLiquidGlassNotification(
+      context: context,
+      message: message,
+      title: title,
+      accentColor: Theme.of(context).primaryColor,
+      isDarkBackground: isDarkBackground,
+    );
+  }
+
   // ── Liquid glass notification ────────────────────────────────────────────
 
   static void _showLiquidGlassNotification({
@@ -51,7 +67,11 @@ class AppAlerts {
     _currentOverlay?.remove();
     _currentOverlay = null;
 
-    final overlay = Overlay.of(context, rootOverlay: true);
+    final overlay = Overlay.maybeOf(context, rootOverlay: true) ?? navigatorKey.currentState?.overlay;
+    if (overlay == null) {
+      debugPrint('AppAlerts: No Overlay found, cannot show notification.');
+      return;
+    }
     final topPadding = MediaQuery.of(context).padding.top + 8;
     final screenWidth = MediaQuery.of(context).size.width;
 
@@ -276,7 +296,9 @@ class _LiquidGlassOverlayState extends State<_LiquidGlassOverlay>
                             child: Icon(
                               widget.accentColor == const Color(0xFF4CAF50)
                                   ? Icons.check_circle_rounded
-                                  : Icons.error_rounded,
+                                  : widget.accentColor == const Color(0xFFEF5350)
+                                      ? Icons.error_rounded
+                                      : Icons.notifications_rounded,
                               color: widget.accentColor,
                               size: 20,
                             ),

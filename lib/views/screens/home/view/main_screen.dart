@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/services/app_location_service.dart';
+import 'package:nearvendorapp/utils/push_notification_controller.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/main_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/view/explore_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/custom_bottom_bar.dart';
@@ -26,6 +27,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _checkLocation();
+    PushNotificationController.updateNotificationToken();
   }
 
   void _checkLocation() {

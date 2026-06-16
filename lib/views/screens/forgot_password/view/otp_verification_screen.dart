@@ -134,6 +134,7 @@ class OtpVerificationScreen extends StatelessWidget {
                         AppElevatedButton(
                           onPressed: cubit.verifyOtp,
                           text: 'Verify OTP',
+                          color: theme.colorScheme.secondary,
                         ),
                         // Dynamic spacer for keyboard
                         SizedBox(

@@ -65,7 +65,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: AppAnimateList.stagger([
-                          SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                          SizedBox(
+                            height: AppSpacing.largeVerticalSpacing(context),
+                          ),
                           const Center(
                             child: Icon(
                               Icons.vpn_key_outlined,
@@ -73,7 +75,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                               color: Colors.white,
                             ),
                           ),
-                          SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                          SizedBox(
+                            height: AppSpacing.largeVerticalSpacing(context),
+                          ),
                           Center(
                             child: Text(
                               'Forgot Password',
@@ -85,7 +89,9 @@ class ForgotPasswordScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
+                          SizedBox(
+                            height: AppSpacing.smallVerticalSpacing(context),
+                          ),
                           Center(
                             child: Text(
                               'Enter your email address below to reset your password.',
@@ -104,31 +110,33 @@ class ForgotPasswordScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: AppAnimateList.stagger([
                           SizedBox(
-                            height: AppSpacing.extraLargeVerticalSpacing(context) * 2,
+                            height:
+                                AppSpacing.extraLargeVerticalSpacing(context) *
+                                2,
                           ),
                           Form(
                             key: cubit.emailFormKey,
                             child: AppTextField(
                               hint: 'Email Address',
                               controller: cubit.emailController,
-                              prefixIcon: const Icon(
-                                Icons.email_outlined,
-                              ),
+                              prefixIcon: const Icon(Icons.email_outlined),
                               keyboardType: TextInputType.emailAddress,
-                              validator: TextFieldValidators
-                                  .emailFieldValidation,
+                              validator:
+                                  TextFieldValidators.emailFieldValidation,
                             ),
                           ),
-                          SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                          SizedBox(
+                            height: AppSpacing.largeVerticalSpacing(context),
+                          ),
                           AppElevatedButton(
                             onPressed: cubit.sendOtp,
                             text: 'Send OTP',
+                            color: theme.colorScheme.secondary,
                           ),
                           // Dynamic spacer for keyboard
                           SizedBox(
                             height:
-                                MediaQuery.of(context).viewInsets.bottom +
-                                24,
+                                MediaQuery.of(context).viewInsets.bottom + 24,
                           ),
                         ]),
                       ),

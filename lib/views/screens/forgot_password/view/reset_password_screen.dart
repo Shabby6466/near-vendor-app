@@ -61,7 +61,9 @@ class ResetPasswordScreen extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: AppAnimateList.stagger([
-                        SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                        SizedBox(
+                          height: AppSpacing.largeVerticalSpacing(context),
+                        ),
                         const Center(
                           child: Icon(
                             Icons.lock_reset,
@@ -69,7 +71,9 @@ class ResetPasswordScreen extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                        SizedBox(
+                          height: AppSpacing.largeVerticalSpacing(context),
+                        ),
                         Center(
                           child: Text(
                             'Reset Password',
@@ -81,7 +85,9 @@ class ResetPasswordScreen extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
+                        SizedBox(
+                          height: AppSpacing.smallVerticalSpacing(context),
+                        ),
                         Center(
                           child: Text(
                             'Enter your new password below.',
@@ -100,7 +106,8 @@ class ResetPasswordScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: AppAnimateList.stagger([
                         SizedBox(
-                          height: AppSpacing.extraLargeVerticalSpacing(context) * 2,
+                          height:
+                              AppSpacing.extraLargeVerticalSpacing(context) * 2,
                         ),
                         Form(
                           key: cubit.passwordFormKey,
@@ -110,21 +117,20 @@ class ResetPasswordScreen extends StatelessWidget {
                                 hint: 'New Password',
                                 isPassword: true,
                                 controller: cubit.newPasswordController,
-                                prefixIcon: const Icon(
-                                  Icons.lock_outline,
-                                ),
-                                validator: TextFieldValidators
-                                    .passwordFieldValidator,
+                                prefixIcon: const Icon(Icons.lock_outline),
+                                validator:
+                                    TextFieldValidators.passwordFieldValidator,
                               ),
-                              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+                              SizedBox(
+                                height: AppSpacing.mediumVerticalSpacing(
+                                  context,
+                                ),
+                              ),
                               AppTextField(
                                 hint: 'Confirm Password',
                                 isPassword: true,
-                                controller:
-                                    cubit.confirmPasswordController,
-                                prefixIcon: const Icon(
-                                  Icons.lock_outline,
-                                ),
+                                controller: cubit.confirmPasswordController,
+                                prefixIcon: const Icon(Icons.lock_outline),
                                 validator: (value) =>
                                     TextFieldValidators.confirmPasswordValidator(
                                       value,
@@ -134,16 +140,17 @@ class ResetPasswordScreen extends StatelessWidget {
                             ]),
                           ),
                         ),
-                        SizedBox(height: AppSpacing.largeVerticalSpacing(context)),
+                        SizedBox(
+                          height: AppSpacing.largeVerticalSpacing(context),
+                        ),
                         AppElevatedButton(
                           onPressed: cubit.resetPassword,
                           text: 'Reset Password',
+                          color: theme.colorScheme.secondary,
                         ),
                         // Dynamic spacer for keyboard
                         SizedBox(
-                          height:
-                              MediaQuery.of(context).viewInsets.bottom +
-                              24,
+                          height: MediaQuery.of(context).viewInsets.bottom + 24,
                         ),
                       ]),
                     ),

@@ -1,14 +1,17 @@
 import 'dart:io';
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:nearvendorapp/cubits/connectivity/connectivity_cubit.dart';
+import 'package:nearvendorapp/firebase_options.dart';
 import 'package:nearvendorapp/services/app_location_service.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
 import 'package:nearvendorapp/utils/hive/hive_manager.dart';
+import 'package:nearvendorapp/utils/push_notification_controller.dart';
 import 'package:nearvendorapp/utils/theme/app_theme_data.dart';
 import 'package:nearvendorapp/views/screens/common/no_internet_screen.dart';
 import 'package:nearvendorapp/views/screens/common/splash_screen.dart';
@@ -19,6 +22,10 @@ import 'package:upgrader/upgrader.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  await PushNotificationController.initPushNotifications();
   await HiveManager.init();
   await AppData().loadPersistedData();
   AppData().initializeSession();

@@ -163,6 +163,7 @@ class LoginScreen extends StatelessWidget {
                           AppElevatedButton(
                             onPressed: cubit.handleSignin,
                             text: 'Continue',
+                            color: theme.colorScheme.secondary,
                           ),
 
                           SizedBox(

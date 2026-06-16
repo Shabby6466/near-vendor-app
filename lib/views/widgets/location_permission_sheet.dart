@@ -65,7 +65,6 @@ class LocationPermissionSheet extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 8),
       ]),
     );
   }

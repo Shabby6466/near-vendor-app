@@ -129,9 +129,7 @@ class SignUpScreen extends StatelessWidget {
                                 AppTextField(
                                   hint: 'Full Name',
                                   controller: cubit.fullNameController,
-                                  prefixIcon: const Icon(
-                                    Icons.person_outline,
-                                  ),
+                                  prefixIcon: const Icon(Icons.person_outline),
                                   validator: (v) =>
                                       TextFieldValidators.emptyFieldValidator(
                                         v,
@@ -148,13 +146,10 @@ class SignUpScreen extends StatelessWidget {
                                 AppTextField(
                                   hint: 'Email',
                                   controller: cubit.emailController,
-                                  prefixIcon: const Icon(
-                                    Icons.email_outlined,
-                                  ),
-                                  keyboardType:
-                                      TextInputType.emailAddress,
-                                  validator: TextFieldValidators
-                                      .emailFieldValidation,
+                                  prefixIcon: const Icon(Icons.email_outlined),
+                                  keyboardType: TextInputType.emailAddress,
+                                  validator:
+                                      TextFieldValidators.emailFieldValidation,
                                 ),
 
                                 SizedBox(
@@ -167,9 +162,7 @@ class SignUpScreen extends StatelessWidget {
                                   hint: 'Password',
                                   isPassword: true,
                                   controller: cubit.passwordController,
-                                  prefixIcon: const Icon(
-                                    Icons.lock_outline,
-                                  ),
+                                  prefixIcon: const Icon(Icons.lock_outline),
                                   validator: TextFieldValidators
                                       .passwordFieldValidator,
                                 ),
@@ -183,8 +176,7 @@ class SignUpScreen extends StatelessWidget {
                                 AppTextField(
                                   hint: 'Confirm Password',
                                   isPassword: true,
-                                  controller:
-                                      cubit.confirmPasswordController,
+                                  controller: cubit.confirmPasswordController,
                                   prefixIcon: const Icon(
                                     Icons.lock_reset_outlined,
                                   ),
@@ -204,9 +196,8 @@ class SignUpScreen extends StatelessWidget {
 
                           // CTA Button
                           AppElevatedButton(
-                            onPressed: () {
-                              cubit.handleSignup();
-                            },
+                            onPressed: cubit.handleSignup,
+                            color: theme.colorScheme.secondary,
                             text: 'Continue',
                           ),
 
@@ -247,8 +238,7 @@ class SignUpScreen extends StatelessWidget {
                           // Dynamic spacer for keyboard
                           SizedBox(
                             height:
-                                MediaQuery.of(context).viewInsets.bottom +
-                                24,
+                                MediaQuery.of(context).viewInsets.bottom + 24,
                           ),
                         ], interval: 80.ms),
                       ),

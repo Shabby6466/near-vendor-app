@@ -35,6 +35,8 @@ dependencies:
   cupertino_icons: ^1.0.9
   dio: ^5.9.2
   equatable: ^2.0.8
+  firebase_core: ^4.10.0
+  firebase_messaging: ^16.3.0
   fl_chart: ^1.2.0
   flutter:
     sdk: flutter

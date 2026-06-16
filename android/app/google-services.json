@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "518934785627",
+    "project_id": "nearvendor-9ea67",
+    "storage_bucket": "nearvendor-9ea67.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518934785627:android:559eaed138499088c4597e",
+        "android_client_info": {
+          "package_name": "com.terarare.nearvendor"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANi8yPFGAS1c2uDc70pWGwbsg9YezX5e0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

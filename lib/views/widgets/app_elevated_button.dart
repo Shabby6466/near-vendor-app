@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class AppElevatedButton extends StatelessWidget {
@@ -20,8 +19,9 @@ class AppElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final buttonColor = color ?? ColorName.secondary;
-    final foregroundColor = ThemeData.estimateBrightnessForColor(buttonColor) == Brightness.light
+    final buttonColor = color ?? Theme.of(context).primaryColor;
+    final foregroundColor =
+        ThemeData.estimateBrightnessForColor(buttonColor) == Brightness.light
         ? Colors.black87
         : Colors.white;
 
@@ -31,9 +31,7 @@ class AppElevatedButton extends StatelessWidget {
         backgroundColor: buttonColor,
         foregroundColor: foregroundColor,
       ),
-      child: isLoading
-          ? LoadingAnimation(color: foregroundColor)
-          : Text(text),
+      child: isLoading ? LoadingAnimation(color: foregroundColor) : Text(text),
     );
   }
 }
