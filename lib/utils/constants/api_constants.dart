@@ -30,6 +30,7 @@ class ApiConstants {
   static const String getItemsByShop = 'api/item/get-all-by-shop';
   static const String getItemById = 'api/item/';
   static const String getCategoriesNames = 'api/shops/categories';
+  static const String getProductCategories = 'api/categories/get-all-names';
   static const String searchItems = 'api/explore/items/search';
   static const String searchShops = 'api/explore/shops/search';
   static const String getShopById = 'api/shops/';

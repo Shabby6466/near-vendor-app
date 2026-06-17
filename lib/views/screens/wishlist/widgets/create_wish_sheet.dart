@@ -45,7 +45,7 @@ class _CreateWishSheetState extends State<CreateWishSheet> {
 
   Future<void> _loadCategories() async {
     try {
-      final response = await CategoriesService.getCategories();
+      final response = await CategoriesService.getProductCategories();
       if (mounted) {
         setState(() {
           _categories = [

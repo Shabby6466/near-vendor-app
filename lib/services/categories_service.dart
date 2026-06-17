@@ -7,6 +7,7 @@ final class CategoriesService {
   CategoriesService._();
 
   static CategoryListResponse? _cachedCategories;
+  static CategoryListResponse? _cachedProductCategories;
 
   static Future<CategoryListResponse> getCategories() async {
     if (_cachedCategories != null && _cachedCategories!.categories.isNotEmpty) {
@@ -23,7 +24,23 @@ final class CategoriesService {
     }
   }
 
+  static Future<CategoryListResponse> getProductCategories() async {
+    if (_cachedProductCategories != null && _cachedProductCategories!.categories.isNotEmpty) {
+      return _cachedProductCategories!;
+    }
+
+    try {
+      final response = await Server.get(ApiConstants.getProductCategories);
+      final categories = CategoryListResponse.fromJson(response.data);
+      _cachedProductCategories = categories;
+      return categories;
+    } catch (e) {
+      return CategoryListResponse(success: false, message: e.toString());
+    }
+  }
+
   static void clearCache() {
     _cachedCategories = null;
+    _cachedProductCategories = null;
   }
 }
