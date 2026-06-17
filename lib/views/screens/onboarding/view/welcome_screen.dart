@@ -242,8 +242,8 @@ class OnboardingPageContent extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           if (isActive)
-            SizedBox(
-              height: _headingHeight,
+            ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: _headingHeight),
               child: index == 2
                   ? TypewriterText(
                       text: heading,
@@ -266,8 +266,8 @@ class OnboardingPageContent extends StatelessWidget {
           const SizedBox(height: 16),
 
           if (isActive)
-            SizedBox(
-              height: _subHeadingHeight,
+            ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: _subHeadingHeight),
               child: Text(subHeading, style: _subHeadingStyle)
                   .animate(delay: 300.ms + delayOffset)
                   .fadeIn(duration: 500.ms, curve: Curves.easeOut)
@@ -590,6 +590,7 @@ class _TypewriterTextState extends State<TypewriterText>
       builder: (context, child) {
         final showCursor = _cursorController.value < 0.5;
         return RichText(
+          textScaler: MediaQuery.textScalerOf(context),
           text: TextSpan(
             style: widget.style,
             children: [
