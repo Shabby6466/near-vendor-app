@@ -31,6 +31,9 @@ class $AssetsFontsGen {
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/app_icon.svg
+  SvgGenImage get appIcon => const SvgGenImage('assets/icons/app_icon.svg');
+
   /// File path: assets/icons/camera.svg
   SvgGenImage get camera => const SvgGenImage('assets/icons/camera.svg');
 
@@ -108,6 +111,7 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
+    appIcon,
     camera,
     electronics,
     everythingNearYouText,
@@ -155,6 +159,18 @@ class $AssetsImagesGen {
   AssetGenImage get nearVendorSideCut =>
       const AssetGenImage('assets/images/near_vendor_side_cut.png');
 
+  /// File path: assets/images/onboarding_0.png
+  AssetGenImage get onboarding0 =>
+      const AssetGenImage('assets/images/onboarding_0.png');
+
+  /// File path: assets/images/onboarding_1.png
+  AssetGenImage get onboarding1 =>
+      const AssetGenImage('assets/images/onboarding_1.png');
+
+  /// File path: assets/images/onboarding_2.png
+  AssetGenImage get onboarding2 =>
+      const AssetGenImage('assets/images/onboarding_2.png');
+
   /// File path: assets/images/onboarding_offers.png
   AssetGenImage get onboardingOffers =>
       const AssetGenImage('assets/images/onboarding_offers.png');
@@ -174,6 +190,9 @@ class $AssetsImagesGen {
     itemsArt,
     nearVendorRightCut,
     nearVendorSideCut,
+    onboarding0,
+    onboarding1,
+    onboarding2,
     onboardingOffers,
     onboardingProximity,
     onboardingSearch,
