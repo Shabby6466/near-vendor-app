@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
@@ -134,7 +135,9 @@ class AuthServices {
   }
 
   Future<VerifyResetOtpResponse> verifyResetOtp(
-      String email, String otp) async {
+    String email,
+    String otp,
+  ) async {
     try {
       final response = await Server.post(
         ApiConstants.verifyResetOtp,
@@ -147,7 +150,9 @@ class AuthServices {
   }
 
   Future<ResetPasswordResponse> resetPassword(
-      String resetToken, String newPassword) async {
+    String resetToken,
+    String newPassword,
+  ) async {
     try {
       final response = await Server.post(
         ApiConstants.resetPassword,
@@ -160,31 +165,30 @@ class AuthServices {
     }
   }
 
-  Future<GenericApiResponse> updateNotificationToken(String? fcmToken) async {
+  Future<GenericApiResponse> updateNotificationToken(String fcmToken) async {
     try {
-      if (fcmToken != null) {
-        final deviceType = Platform.isAndroid ? 'ANDROID' : 'IOS';
-        final response = await Server.post(
+      final deviceType = Platform.isAndroid ? 'ANDROID' : 'IOS';
+      final response = await Server.post(
+        ApiConstants.deviceToken,
+        data: {'deviceToken': fcmToken, 'deviceType': deviceType},
+      );
+      return GenericApiResponse.fromJson(response.data);
+    } catch (e) {
+      return GenericApiResponse(message: e.toString());
+    }
+  }
+
+  Future<GenericApiResponse> deleteNotificationToken() async {
+    try {
+      final currentToken = await FirebaseMessaging.instance.getToken();
+      if (currentToken != null) {
+        final response = await Server.delete(
           ApiConstants.deviceToken,
-          data: {
-            'deviceToken': fcmToken,
-            'deviceType': deviceType,
-          },
+          data: {'deviceToken': currentToken},
         );
         return GenericApiResponse.fromJson(response.data);
-      } else {
-        final currentToken = await FirebaseMessaging.instance.getToken();
-        if (currentToken != null) {
-          final response = await Server.delete(
-            ApiConstants.deviceToken,
-            data: {
-              'deviceToken': currentToken,
-            },
-          );
-          return GenericApiResponse.fromJson(response.data);
-        }
-        return GenericApiResponse(message: 'No token to remove');
       }
+      return GenericApiResponse(message: 'No token to remove');
     } catch (e) {
       return GenericApiResponse(message: e.toString());
     }

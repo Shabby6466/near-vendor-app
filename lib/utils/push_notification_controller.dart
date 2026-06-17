@@ -73,7 +73,7 @@ class PushNotificationController {
   static Future<void> onLogout() async {
     try {
       final AuthServices authServices = AuthServices();
-      await authServices.updateNotificationToken(null);
+      await authServices.deleteNotificationToken();
       await FirebaseMessaging.instance.deleteToken();
     } catch (e) {
       debugPrint('onLogout() error: $e');

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
-import 'package:nearvendorapp/views/screens/home/view/main_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/change_password_screen/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/cubit/delete_account_cubit.dart';
@@ -369,12 +369,7 @@ class ProfileScreen extends StatelessWidget {
       confirmButtonColor: Colors.red.shade600,
       icon: Icons.warning_amber_rounded,
       iconColor: Colors.red.shade600,
-      onConfirm: () async {
-        await AppData().clear();
-        if (context.mounted) {
-          AppNavigator.pushAndRemoveUntil(context, const MainScreen());
-        }
-      },
+      onConfirm: logoutUser,
     );
   }
 }
