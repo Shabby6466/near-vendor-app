@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -18,7 +16,7 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
-  late PageController _pageController;
+  late final PageController _pageController;
   double _pageOffset = 0.0;
   int _currentPage = 0;
 
@@ -51,6 +49,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
     super.initState();
     _pageController = PageController()
       ..addListener(() {
+        if (!mounted) return;
         setState(() {
           _pageOffset = _pageController.page ?? 0.0;
         });
@@ -76,6 +75,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
 
   Future<void> _finishOnboarding() async {
     AppData().setHasOnboarded(true);
+    if (!mounted) return;
     AppNavigator.pushReplacement(context, const MainScreen());
   }
 
@@ -91,16 +91,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             pageCount: _onboardingData.length,
             images: _onboardingData.map((d) => d.imagePath).toList(),
           ),
-
           ColoredBox(color: Colors.black.withValues(alpha: 0.3)),
 
           PageView.builder(
             controller: _pageController,
-            onPageChanged: (index) {
-              setState(() {
-                _currentPage = index;
-              });
-            },
+            onPageChanged: (index) => setState(() => _currentPage = index),
             itemCount: _onboardingData.length,
             itemBuilder: (context, index) {
               final data = _onboardingData[index];
@@ -118,27 +113,21 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             },
           ),
 
-          // 4. Logo Overlay (Shared element, scales in once on load, animates position & size between pages)
           AnimatedPositioned(
             duration: const Duration(milliseconds: 600),
             curve: Curves.easeOutBack,
             top:
-                MediaQuery.of(context).padding.top +
+                MediaQuery.paddingOf(context).top +
                 (_currentPage == 1 ? 28.0 : 20.0),
             left: _currentPage == 1 ? 32.0 : 24.0,
             child: AnimatedScale(
               scale: _currentPage == 1 ? 0.9 : 1.0,
               duration: const Duration(milliseconds: 600),
               curve: Curves.easeOutBack,
-              child:
-                  SvgEmbeddedImage(
-                    assetPath: Assets
-                        .icons
-                        .appIcon
-                        .path, // Uses build_runner generated asset path
-                    width: 60,
-                    height: 60,
-                  ).animate().scale(
+              child: Assets.appIcons.nearvendor
+                  .image(width: 64, height: 64)
+                  .animate()
+                  .scale(
                     begin: Offset.zero,
                     end: const Offset(1, 1),
                     duration: 800.ms,
@@ -147,9 +136,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
             ),
           ),
 
-          // 5. Progress Bar Overlay
           Positioned(
-            bottom: MediaQuery.of(context).padding.bottom + 20,
+            bottom: MediaQuery.paddingOf(context).bottom + 20,
             left: 0,
             right: 0,
             child: Center(
@@ -171,7 +159,7 @@ class OnboardingData {
   final String subHeading;
   final String buttonText;
 
-  OnboardingData({
+  const OnboardingData({
     required this.imagePath,
     required this.heading,
     required this.subHeading,
@@ -197,10 +185,27 @@ class OnboardingPageContent extends StatelessWidget {
     required this.isActive,
   });
 
+  static const double _headingHeight = 90.0;
+  static const double _subHeadingHeight = 75.0;
+  static const Duration _initialDelay = Duration(milliseconds: 800);
+
+  static const TextStyle _headingStyle = TextStyle(
+    color: Colors.white,
+    fontSize: 32,
+    fontWeight: FontWeight.w800,
+    height: 1.25,
+  );
+
+  static final TextStyle _subHeadingStyle = TextStyle(
+    color: Colors.white.withValues(alpha: 0.75),
+    fontSize: 15,
+    fontWeight: FontWeight.w400,
+    height: 1.45,
+  );
+
   @override
   Widget build(BuildContext context) {
-    // Page 0 waits for the initial logo spring animation (800ms) to complete before building foreground
-    final delayOffset = index == 0 ? 800.ms : 0.ms;
+    final delayOffset = index == 0 ? _initialDelay : Duration.zero;
 
     Widget button = _buildCTAButton(
       context: context,
@@ -236,30 +241,16 @@ class OnboardingPageContent extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          // Headline
           if (isActive)
             SizedBox(
-              height: 90,
+              height: _headingHeight,
               child: index == 2
                   ? TypewriterText(
                       text: heading,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 32,
-                        fontWeight: FontWeight.w800,
-                        height: 1.25,
-                      ),
+                      style: _headingStyle,
                       delay: 1000.ms + delayOffset,
                     )
-                  : Text(
-                          heading,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 32,
-                            fontWeight: FontWeight.w800,
-                            height: 1.25,
-                          ),
-                        )
+                  : Text(heading, style: _headingStyle)
                         .animate(delay: delayOffset)
                         .fadeIn(duration: 500.ms, curve: Curves.easeOut)
                         .slideY(
@@ -270,39 +261,28 @@ class OnboardingPageContent extends StatelessWidget {
                         ),
             )
           else
-            const SizedBox(height: 90),
+            const SizedBox(height: _headingHeight),
 
           const SizedBox(height: 16),
 
-          // Description
           if (isActive)
             SizedBox(
-              height: 75,
-              child:
-                  Text(
-                        subHeading,
-                        style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.75),
-                          fontSize: 15,
-                          fontWeight: FontWeight.w400,
-                          height: 1.45,
-                        ),
-                      )
-                      .animate(delay: 300.ms + delayOffset)
-                      .fadeIn(duration: 500.ms, curve: Curves.easeOut)
-                      .slideY(
-                        begin: 0.15,
-                        end: 0,
-                        duration: 500.ms,
-                        curve: Curves.easeOutCubic,
-                      ),
+              height: _subHeadingHeight,
+              child: Text(subHeading, style: _subHeadingStyle)
+                  .animate(delay: 300.ms + delayOffset)
+                  .fadeIn(duration: 500.ms, curve: Curves.easeOut)
+                  .slideY(
+                    begin: 0.15,
+                    end: 0,
+                    duration: 500.ms,
+                    curve: Curves.easeOutCubic,
+                  ),
             )
           else
-            const SizedBox(height: 75),
+            const SizedBox(height: _subHeadingHeight),
 
           const SizedBox(height: 48),
 
-          // Button
           Align(
             child: SizedBox(height: 60, child: Center(child: button)),
           ),
@@ -319,7 +299,7 @@ class OnboardingPageContent extends StatelessWidget {
     required VoidCallback onPressed,
   }) {
     final Color buttonColor = Theme.of(context).colorScheme.secondary;
-    // Uses AppElevatedButton from widgets with custom theme override to match styling and animations
+
     return Theme(
       data: Theme.of(context).copyWith(
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -352,14 +332,14 @@ class ParallaxBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    final size = MediaQuery.sizeOf(context);
+
     return AnimatedBuilder(
       animation: pageController,
       builder: (context, child) {
-        double pageOffset = 0.0;
-        if (pageController.hasClients) {
-          pageOffset = pageController.page ?? 0.0;
-        }
+        final double pageOffset = pageController.hasClients
+            ? (pageController.page ?? 0.0)
+            : 0.0;
 
         return Stack(
           fit: StackFit.expand,
@@ -378,21 +358,31 @@ class ParallaxBackground extends StatelessWidget {
                 opacity: opacity,
                 child: KenBurnsBackground(
                   imagePath: images[index],
-                  startScale: index == 0 ? 1.0 : (index == 1 ? 1.15 : 1.05),
-                  endScale: index == 0 ? 1.15 : (index == 1 ? 1.0 : 1.25),
-                  startAlignment: index == 0
-                      ? Alignment.bottomLeft
-                      : (index == 1
-                            ? Alignment.topRight
-                            : Alignment.bottomRight),
-                  endAlignment: index == 0
-                      ? Alignment.topRight
-                      : (index == 1 ? Alignment.bottomLeft : Alignment.topLeft),
-                  duration: index == 0
-                      ? const Duration(seconds: 15)
-                      : (index == 1
-                            ? const Duration(seconds: 18)
-                            : const Duration(seconds: 22)),
+                  startScale: switch (index) {
+                    0 => 1.0,
+                    1 => 1.15,
+                    _ => 1.05,
+                  },
+                  endScale: switch (index) {
+                    0 => 1.15,
+                    1 => 1.0,
+                    _ => 1.25,
+                  },
+                  startAlignment: switch (index) {
+                    0 => Alignment.bottomLeft,
+                    1 => Alignment.topRight,
+                    _ => Alignment.bottomRight,
+                  },
+                  endAlignment: switch (index) {
+                    0 => Alignment.topRight,
+                    1 => Alignment.bottomLeft,
+                    _ => Alignment.topLeft,
+                  },
+                  duration: switch (index) {
+                    0 => const Duration(seconds: 15),
+                    1 => const Duration(seconds: 18),
+                    _ => const Duration(seconds: 22),
+                  },
                   animate: isVisible,
                 ),
               ),
@@ -449,9 +439,7 @@ class _KenBurnsBackgroundState extends State<KenBurnsBackground>
       end: widget.endAlignment,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
-    if (widget.animate) {
-      _controller.repeat(reverse: true);
-    }
+    if (widget.animate) _controller.repeat(reverse: true);
   }
 
   @override
@@ -504,12 +492,16 @@ class ProgressBarIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Color activeColor = Theme.of(context).colorScheme.secondary;
-    final Color inactiveColor = Colors.white.withValues(alpha: 0.25);
+    final colorScheme = Theme.of(context).colorScheme;
+    final activeColor = colorScheme.secondary;
+    final inactiveColor = Colors.white.withValues(alpha: 0.25);
+
     const double barWidth = 140.0;
     const double barHeight = 4.0;
 
-    final double fillRatio = (pageOffset + 1.0) / pageCount;
+    final double fillRatio = pageCount == 1
+        ? 1.0
+        : (pageOffset + 1.0) / pageCount;
 
     return Container(
       width: barWidth,
@@ -558,31 +550,23 @@ class _TypewriterTextState extends State<TypewriterText>
   int _currentCharCount = 0;
   Timer? _typingTimer;
   Timer? _startTimer;
-  bool _showCursor = true;
 
   @override
   void initState() {
     super.initState();
-    _cursorController =
-        AnimationController(
-          vsync: this,
-          duration: const Duration(milliseconds: 500),
-        )..addListener(() {
-          setState(() {
-            _showCursor = _cursorController.value < 0.5;
-          });
-        });
+    _cursorController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
     _cursorController.repeat();
-
     _startTimer = Timer(widget.delay, _startTyping);
   }
 
   void _startTyping() {
     _typingTimer = Timer.periodic(widget.speed, (timer) {
       if (_currentCharCount < widget.text.length) {
-        setState(() {
-          _currentCharCount++;
-        });
+        if (!mounted) return;
+        setState(() => _currentCharCount++);
       } else {
         _typingTimer?.cancel();
       }
@@ -600,109 +584,29 @@ class _TypewriterTextState extends State<TypewriterText>
   @override
   Widget build(BuildContext context) {
     final displayedText = widget.text.substring(0, _currentCharCount);
-    return RichText(
-      text: TextSpan(
-        style: widget.style,
-        children: [
-          TextSpan(text: displayedText),
-          TextSpan(
-            text: '|',
-            style: widget.style?.copyWith(
-              color: _showCursor ? const Color(0xFFBCFF5E) : Colors.transparent,
-              fontWeight: FontWeight.bold,
-            ),
+
+    return AnimatedBuilder(
+      animation: _cursorController,
+      builder: (context, child) {
+        final showCursor = _cursorController.value < 0.5;
+        return RichText(
+          text: TextSpan(
+            style: widget.style,
+            children: [
+              TextSpan(text: displayedText),
+              TextSpan(
+                text: '|',
+                style: widget.style?.copyWith(
+                  color: showCursor
+                      ? const Color(0xFFBCFF5E)
+                      : Colors.transparent,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
-  }
-}
-
-class SvgEmbeddedImage extends StatefulWidget {
-  final String assetPath;
-  final double width;
-  final double height;
-
-  const SvgEmbeddedImage({
-    super.key,
-    required this.assetPath,
-    required this.width,
-    required this.height,
-  });
-
-  @override
-  State<SvgEmbeddedImage> createState() => _SvgEmbeddedImageState();
-}
-
-class _SvgEmbeddedImageState extends State<SvgEmbeddedImage> {
-  Uint8List? _bytes;
-  bool _hasError = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadSvgImage();
-  }
-
-  Future<void> _loadSvgImage() async {
-    try {
-      final svgString = await DefaultAssetBundle.of(
-        context,
-      ).loadString(widget.assetPath);
-      final match = RegExp(
-        'data:image/png;base64,([^"]+)',
-      ).firstMatch(svgString);
-      if (match != null) {
-        final base64Str = match.group(1)!;
-        final cleanBase64 = base64Str.replaceAll(RegExp(r'\s+'), '');
-        final bytes = base64Decode(cleanBase64);
-        if (mounted) {
-          setState(() {
-            _bytes = bytes;
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            _hasError = true;
-          });
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _hasError = true;
-        });
-      }
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_bytes != null) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(14),
-        child: Image.memory(
-          _bytes!,
-          width: widget.width,
-          height: widget.height,
-          fit: BoxFit.cover,
-        ),
-      );
-    }
-
-    if (_hasError) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(14),
-        child: Image.asset(
-          'assets/app_icons/nearvendor.png',
-          width: widget.width,
-          height: widget.height,
-          fit: BoxFit.cover,
-        ),
-      );
-    }
-
-    return SizedBox(width: widget.width, height: widget.height);
   }
 }

@@ -15,6 +15,17 @@ import 'package:flutter_svg/flutter_svg.dart' as _svg;
 import 'package:lottie/lottie.dart' as _lottie;
 import 'package:vector_graphics/vector_graphics.dart' as _vg;
 
+class $AssetsAppIconsGen {
+  const $AssetsAppIconsGen();
+
+  /// File path: assets/app_icons/nearvendor.png
+  AssetGenImage get nearvendor =>
+      const AssetGenImage('assets/app_icons/nearvendor.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [nearvendor];
+}
+
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
@@ -218,6 +229,7 @@ class Assets {
   const Assets._();
 
   static const String aEnv = '.env';
+  static const $AssetsAppIconsGen appIcons = $AssetsAppIconsGen();
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
