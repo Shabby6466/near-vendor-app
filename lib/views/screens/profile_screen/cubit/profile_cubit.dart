@@ -89,9 +89,9 @@ class ProfileCubit extends Cubit<ProfileState> {
 
   Future<String?> _getCityName(double lat, double lon) async {
     try {
-      final placemarks = await placemarkFromCoordinates(lat, lon);
-      if (placemarks.isNotEmpty) {
-        final place = placemarks.first;
+      final placeMarks = await placemarkFromCoordinates(lat, lon);
+      if (placeMarks.isNotEmpty) {
+        final place = placeMarks.first;
         final city =
             place.locality ??
             place.subAdministrativeArea ??
