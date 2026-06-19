@@ -28,16 +28,17 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  app_links: ^7.1.1
+  app_links: ^7.1.2
   cached_network_image: ^3.4.1
+  camera: ^0.10.5
   connectivity_plus: ^7.1.1
   crypto: ^3.0.7
   cupertino_icons: ^1.0.9
   dio: ^5.9.2
   equatable: ^2.0.8
-  firebase_core: ^4.10.0
-  firebase_crashlytics: ^5.2.3
-  firebase_messaging: ^16.3.0
+  firebase_core: ^4.11.0
+  firebase_crashlytics: ^5.2.4
+  firebase_messaging: ^16.4.0
   fl_chart: ^1.2.0
   flutter:
     sdk: flutter
@@ -51,9 +52,10 @@ dependencies:
   flutter_secure_storage: ^10.3.1
   flutter_svg: ^2.3.0
   geocoding: ^4.0.0
-  geolocator: ^14.0.2
+  geolocator: ^14.0.3
   hive_ce_flutter: ^2.3.4
   http: ^1.6.0
+  image: ^4.1.7
   image_cropper: ^12.2.1
   image_picker: ^1.2.2
   intl: ^0.20.2

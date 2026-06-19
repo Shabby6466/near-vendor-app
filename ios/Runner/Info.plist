@@ -28,6 +28,8 @@
 	<true/>
 	<key>NSCameraUsageDescription</key>
 	<string>Near Vendor needs access to your camera to search for items by taking a photo.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Near Vendor may access your microphone for video recording during visual search.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Near Vendor needs your location to connect you with nearby shops and vendors.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

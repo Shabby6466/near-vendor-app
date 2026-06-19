@@ -83,4 +83,15 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
   void reset() {
     emit(VisualSearchInitial());
   }
+
+  /// Groups products by [productId] or [name] for deduplicated display.
+  static Map<String, List<Product>> groupByProduct(List<Product> items) {
+    final map = <String, List<Product>>{};
+    for (final item in items) {
+      final key = item.productId ?? item.name;
+      map.putIfAbsent(key, () => []);
+      map[key]!.add(item);
+    }
+    return map;
+  }
 }

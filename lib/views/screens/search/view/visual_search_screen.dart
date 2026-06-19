@@ -1,123 +1,289 @@
 import 'dart:io';
-import 'dart:ui';
 
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_cropper/image_cropper.dart';
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/view/visual_search_map_results_screen.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/no_result_sheet.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/scanning_area.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/camera_preview_widget.dart';
+import 'package:nearvendorapp/views/screens/search/widgets/crop_overlay_widget.dart';
 import 'package:nearvendorapp/views/screens/search/widgets/visual_search_result_sheet.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class VisualSearchScreen extends StatefulWidget {
-  final File? initialImage;
-  const VisualSearchScreen({super.key, this.initialImage});
+  const VisualSearchScreen({super.key});
 
   @override
   State<VisualSearchScreen> createState() => _VisualSearchScreenState();
 }
 
-class _VisualSearchScreenState extends State<VisualSearchScreen>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _scannerController;
-  late Animation<double> _scannerAnimation;
-  final ImagePicker _picker = ImagePicker();
+class _VisualSearchScreenState extends State<VisualSearchScreen> {
+  // Mode
+  bool _isCameraMode = true;
+
+  // Camera
+  CameraController? _cameraController;
+  bool _isFlashOn = false;
+  bool _isCameraInitializing = true;
+
+  // Image state
   File? _selectedImage;
+  File? _currentCroppedFile;
   double _currentRadiusKm = 10.0;
+
+  // Display size (set via LayoutBuilder in preview mode)
+  Size? _imageDisplaySize;
+
+  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
     _currentRadiusKm = AppData().discoveryRadius ?? 10.0;
-    _scannerController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    )..repeat(reverse: true);
-    _scannerAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(_scannerController);
-
-    if (widget.initialImage != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _cropAndSearch(widget.initialImage!.path);
-      });
-    }
+    _initCamera();
   }
 
   @override
   void dispose() {
-    _scannerController.dispose();
+    _cameraController?.dispose();
     super.dispose();
   }
 
-  Future<void> _pickImage(ImageSource source) async {
+  Future<void> _initCamera() async {
+    setState(() => _isCameraInitializing = true);
+    try {
+      final cameras = await availableCameras();
+      if (cameras.isEmpty) {
+        if (mounted) setState(() => _isCameraInitializing = false);
+        return;
+      }
+      final camera = cameras.firstWhere(
+        (c) => c.lensDirection == CameraLensDirection.back,
+        orElse: () => cameras.first,
+      );
+      final controller = CameraController(
+        camera,
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
+      await controller.initialize();
+      if (!mounted) {
+        controller.dispose();
+        return;
+      }
+      setState(() {
+        _cameraController = controller;
+        _isCameraInitializing = false;
+      });
+    } catch (e) {
+      debugPrint('Camera init error: $e');
+      if (mounted) setState(() => _isCameraInitializing = false);
+    }
+  }
+
+  Future<void> _takePicture() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized) {
+      return;
+    }
+    try {
+      final XFile photo = await _cameraController!.takePicture();
+      final file = File(photo.path);
+      await _cameraController?.dispose();
+      _cameraController = null;
+      if (!mounted) return;
+      setState(() {
+        _isCameraMode = false;
+        _selectedImage = file;
+        _currentCroppedFile = file;
+      });
+      context.read<VisualSearchCubit>().searchByImage(
+        file,
+        customRadiusMeters: _currentRadiusKm * 1000,
+      );
+    } catch (e) {
+      debugPrint('Take picture error: $e');
+    }
+  }
+
+  Future<void> _pickFromGallery() async {
     try {
       final XFile? pickedFile = await _picker.pickImage(
-        source: source,
+        source: ImageSource.gallery,
         maxWidth: 1200,
         maxHeight: 1200,
         imageQuality: 85,
       );
-
       if (pickedFile == null) return;
-      await _cropAndSearch(pickedFile.path);
+      final file = File(pickedFile.path);
+      if (!mounted) return;
+      setState(() {
+        _isCameraMode = false;
+        _selectedImage = file;
+        _currentCroppedFile = file;
+      });
+      context.read<VisualSearchCubit>().searchByImage(
+        file,
+        customRadiusMeters: _currentRadiusKm * 1000,
+      );
     } catch (e) {
-      debugPrint("Pick image error: $e");
+      debugPrint('Pick gallery error: $e');
     }
   }
 
-  Future<void> _cropAndSearch(String sourcePath) async {
+  Future<void> _toggleFlash() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized) {
+      return;
+    }
+    final newMode = _isFlashOn ? FlashMode.off : FlashMode.torch;
+    await _cameraController!.setFlashMode(newMode);
+    setState(() => _isFlashOn = !_isFlashOn);
+  }
+
+  void _goBackToCamera() {
+    setState(() {
+      _isCameraMode = true;
+      _selectedImage = null;
+      _currentCroppedFile = null;
+    });
+    context.read<VisualSearchCubit>().reset();
+    _initCamera();
+  }
+
+  Future<void> _applyCrop(Rect region) async {
+    if (_selectedImage == null) return;
     try {
-      final croppedFile = await ImageCropper().cropImage(
-        sourcePath: sourcePath,
-        uiSettings: [
-          AndroidUiSettings(
-            toolbarTitle: 'Frame the product',
-            toolbarColor: Colors.black,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square,
-              CropAspectRatioPreset.ratio4x3,
-              CropAspectRatioPreset.original,
-            ],
-          ),
-          IOSUiSettings(
-            title: 'Frame the product',
-            doneButtonTitle: 'Search',
-            aspectRatioPresets: [
-              CropAspectRatioPreset.square,
-              CropAspectRatioPreset.ratio4x3,
-              CropAspectRatioPreset.original,
-            ],
-          ),
-        ],
+      final bytes = await _selectedImage!.readAsBytes();
+      final original = img.decodeImage(bytes);
+      if (original == null) return;
+
+      final displayedW = _imageDisplaySize?.width ?? original.width.toDouble();
+      final displayedH =
+          _imageDisplaySize?.height ?? original.height.toDouble();
+      final scaleX = original.width / displayedW;
+      final scaleY = original.height / displayedH;
+
+      final cropped = img.copyCrop(
+        original,
+        x: (region.left * scaleX).round(),
+        y: (region.top * scaleY).round(),
+        width: (region.width * scaleX).round(),
+        height: (region.height * scaleY).round(),
       );
 
-      if (croppedFile != null) {
-        setState(() {
-          _selectedImage = File(croppedFile.path);
-        });
-        if (mounted) {
-          context.read<VisualSearchCubit>().searchByImage(_selectedImage!);
-        }
-      } else {
-        setState(() {
-          _selectedImage = null;
-        });
+      final tempDir = Directory.systemTemp;
+      final tempFile = File(
+        '${tempDir.path}/crop_${DateTime.now().millisecondsSinceEpoch}.jpg',
+      );
+      await tempFile.writeAsBytes(img.encodeJpg(cropped));
+      _currentCroppedFile = tempFile;
+      if (mounted) {
+        context.read<VisualSearchCubit>().searchByImage(
+          tempFile,
+          customRadiusMeters: _currentRadiusKm * 1000,
+        );
       }
     } catch (e) {
-      debugPrint("Crop image error: $e");
+      debugPrint('Crop error: $e');
     }
+  }
+
+  void _showShopSelectorSheet(
+    BuildContext context,
+    String productName,
+    List<Product> options,
+  ) {
+    AppBottomSheet.showBottomSheet(
+      context: context,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              'Select shop for $productName',
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+          ),
+          ...options.map((item) {
+            final distanceText = item.distanceM != null
+                ? '${(item.distanceM! / 1000).toStringAsFixed(1)} km away'
+                : 'Nearby';
+
+            Widget leadingWidget;
+            if (item.imageUrl != null && item.imageUrl!.isNotEmpty) {
+              leadingWidget = ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  item.imageUrl!,
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    width: 40,
+                    height: 40,
+                    color: Colors.grey.shade800,
+                    child: const Icon(
+                      Icons.shopping_bag_outlined,
+                      color: Colors.grey,
+                    ),
+                  ),
+                ),
+              );
+            } else {
+              leadingWidget = Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade800,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Icon(
+                  Icons.shopping_bag_outlined,
+                  color: Colors.blue,
+                ),
+              );
+            }
+
+            return ListTile(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 4,
+                horizontal: 16,
+              ),
+              leading: leadingWidget,
+              title: Text(
+                item.name,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              subtitle: Text(
+                'Rs. ${item.price.toStringAsFixed(0)} • $distanceText',
+                style: const TextStyle(color: Colors.grey, fontSize: 13),
+              ),
+              trailing: const Icon(Icons.chevron_right, color: Colors.grey),
+              onTap: () {
+                Navigator.of(context).pop();
+                AppNavigator.push(
+                  context,
+                  BlocProvider(
+                    create: (_) => ProductDetailCubit(),
+                    child: ProductDetailScreen(product: item),
+                  ),
+                );
+              },
+            );
+          }),
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
   }
 
   @override
@@ -126,381 +292,246 @@ class _VisualSearchScreenState extends State<VisualSearchScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Background: Image or Placeholder
-          Positioned.fill(
-            child: _selectedImage != null
-                ? Image.file(_selectedImage!, fit: BoxFit.contain)
-                : _buildEmptyState(),
-          ),
-
-          // Dim overlay
-          Positioned.fill(
-            child: Container(color: Colors.black.withValues(alpha: 0.3)),
-          ),
-
-          // Search Results Bottom Sheet Trigger
-          BlocListener<VisualSearchCubit, VisualSearchState>(
-            listener: (context, state) {
-              if (state is VisualSearchSuccess) {
-                if (state.results.isEmpty) {
-                  _showNoResultBottomSheet(
-                    context,
-                    radiusUsed: state.radiusUsed,
-                    hasMoreBeyondRadius: state.hasMoreBeyondRadius,
-                  );
-                } else {
-                  _showScanResultBottomSheet(context, state.results);
-                }
-              } else if (state is VisualSearchFailure) {
-                _showNoResultBottomSheet(
-                  context,
-                  message: state.message,
-                  radiusUsed: state.radiusUsed,
-                  hasMoreBeyondRadius: state.hasMoreBeyondRadius,
-                );
-              }
-            },
-            child: const SizedBox.shrink(),
-          ),
-
-          SafeArea(
-            child: Column(
-              children: [
-                _buildTopBar(context),
-                _buildRadiusSliderCard(),
-                const Spacer(),
-                if (_selectedImage != null)
-                  ScanningArea(scannerAnimation: _scannerAnimation),
-                const Spacer(),
-                if (_selectedImage == null) _buildInstructionText(),
-                const SizedBox(height: 48),
-                BlocBuilder<VisualSearchCubit, VisualSearchState>(
-                  builder: (context, state) {
-                    if (state is VisualSearchLoading) {
-                      return const AppLoadingIndicator();
-                    }
-                    return _buildBottomActions();
-                  },
-                ),
-                const SizedBox(height: 32),
-              ],
-            ),
-          ),
+          if (_isCameraMode) _buildCameraMode() else _buildPreviewMode(),
         ],
       ),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildCameraMode() {
+    return Stack(
+      children: [
+        if (_isCameraInitializing)
+          const Center(child: LoadingAnimation(size: 32))
+        else if (_cameraController != null &&
+            _cameraController!.value.isInitialized)
+          Positioned.fill(
+            child: FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                width: _cameraController!.value.previewSize?.height ?? 1,
+                height: _cameraController!.value.previewSize?.width ?? 1,
+                child: CameraPreview(_cameraController!),
+              ),
+            ),
+          )
+        else
+          _buildCameraFallback(),
+
+        CameraControlsOverlay(
+          onShutter: _takePicture,
+          onGallery: _pickFromGallery,
+          onClose: () => AppNavigator.pop(context),
+          isFlashOn: _isFlashOn,
+          onToggleFlash: _toggleFlash,
+          bottomContent: _buildRadiusSlider(compact: true),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCameraFallback() {
     return Container(
-      color: Colors.grey[900],
-      child: Center(
-        child: Assets.icons.camera.svg(
-          height: 80,
-          width: 80,
-          colorFilter: ColorFilter.mode(
-            Colors.white.withValues(alpha: 0.1),
-            BlendMode.srcIn,
-          ),
+      width: double.infinity,
+      height: double.infinity,
+      color: Colors.black,
+      child: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Assets.icons.camera.svg(
+              height: 80,
+              width: 80,
+              colorFilter: ColorFilter.mode(
+                Colors.white.withValues(alpha: 0.1),
+                BlendMode.srcIn,
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Camera unavailable',
+              style: TextStyle(color: Colors.white, fontSize: 18),
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: _initCamera,
+              child: const Text(
+                'Try again',
+                style: TextStyle(color: Colors.blue),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildTopBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          IconButton(
-            onPressed: () => AppNavigator.pop(context),
+  Widget _buildPreviewMode() {
+    if (_selectedImage == null) return const SizedBox.shrink();
+
+    return Stack(
+      children: [
+        // 1. Image & Crop Overlay (Top 60%)
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: ColoredBox(
+            color: Colors.black,
+            child: SafeArea(
+              bottom: false, // Let it extend behind the bottom sheet
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final size = Size(
+                    constraints.maxWidth,
+                    constraints.maxHeight,
+                  );
+                  _imageDisplaySize = size;
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.file(
+                        _selectedImage!,
+                        fit: BoxFit.contain,
+                        width: size.width,
+                        height: size.height,
+                      ),
+                      SizedBox(
+                        width: size.width,
+                        height: size.height,
+                        child: CropOverlayWidget(
+                          imageDisplaySize: size,
+                          onCropComplete: _applyCrop,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        ),
+
+        // 2. Bottom Sheet (Persistent)
+        Positioned.fill(
+          child: VisualSearchResultSheet(
+            radiusKm: _currentRadiusKm,
+            onRadiusChanged: (val) {
+              setState(() => _currentRadiusKm = val);
+            },
+            onRadiusChangeEnd: (val) async {
+              await AppData().setDiscoveryRadius(val);
+              if (_currentCroppedFile != null && mounted) {
+                context.read<VisualSearchCubit>().searchByImage(
+                  _currentCroppedFile!,
+                  customRadiusMeters: val * 1000,
+                );
+              }
+            },
+            onGroupTap: (groupItems) {
+              if (groupItems.length > 1) {
+                _showShopSelectorSheet(
+                  context,
+                  groupItems.first.name,
+                  groupItems,
+                );
+              } else if (groupItems.isNotEmpty) {
+                AppNavigator.push(
+                  context,
+                  BlocProvider(
+                    create: (_) => ProductDetailCubit(),
+                    child: ProductDetailScreen(product: groupItems.first),
+                  ),
+                );
+              }
+            },
+            onTryAgain: _goBackToCamera,
+          ),
+        ),
+
+        // 3. Top Back Button (Always on top)
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 16,
+          left: 16,
+          child: IconButton(
+            onPressed: _goBackToCamera,
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: const BoxDecoration(
                 color: Colors.black38,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.close, color: Colors.white, size: 24),
+              child: const Icon(
+                Icons.arrow_back,
+                color: Colors.white,
+                size: 24,
+              ),
             ),
-          ),
-          const Text(
-            'VISUAL SEARCH',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w900,
-              fontSize: 16,
-              letterSpacing: 2,
-            ),
-          ),
-          const SizedBox(width: 48), // Balanced spacer
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInstructionText() {
-    return Column(
-      children: [
-        const Text(
-          'Capture or Select an Image',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          'تصویر لیں یا گیلری سے منتخب کریں',
-          style: TextStyle(
-            color: Colors.white.withValues(alpha: 0.7),
-            fontSize: 16,
           ),
         ),
       ],
     );
   }
 
-  // Widget _buildLoadingState() {
-  //   return Center(
-  //     child: Column(
-  //       children: [
-  //         const LoadingAnimation(color: Colors.white, size: 28),
-  //         const SizedBox(height: 16),
-  //         const Text(
-  //           "Analyzing Product...",
-  //           style: TextStyle(
-  //             color: Colors.white,
-  //             fontWeight: FontWeight.bold,
-  //             //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-  Widget _buildBottomActions() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildActionIconButton(
-            const Icon(
-              Icons.collections_outlined,
-              color: Colors.white,
-              size: 28,
-            ),
-            "GALLERY",
-            () => _pickImage(ImageSource.gallery),
-          ),
-          const SizedBox(width: 24),
-          GestureDetector(
-            onTap: () => _pickImage(ImageSource.camera),
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: Colors.white, width: 4),
-              ),
-              child: Container(
-                width: 64,
-                height: 64,
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                ),
-                child: Center(
-                  child: Assets.icons.camera.svg(
-                    colorFilter: const ColorFilter.mode(
-                      Colors.blue,
-                      BlendMode.srcIn,
-                    ),
-                    width: 32,
-                    height: 32,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(width: 24),
-          const SizedBox(width: 60), // Balanced spacer
-        ],
+  Widget _buildRadiusSlider({bool compact = false}) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      decoration: BoxDecoration(
+        color: Colors.black54,
+        borderRadius: BorderRadius.circular(16),
       ),
-    );
-  }
-
-  Widget _buildActionIconButton(Widget icon, String label, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: const BoxDecoration(
-              color: Colors.black38,
-              shape: BoxShape.circle,
-            ),
-            child: icon,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Discovery Radius',
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  fontSize: compact ? 12 : 15,
+                  color: Colors.white,
+                ),
+              ),
+              Text(
+                '${_currentRadiusKm.toStringAsFixed(0)} KM',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  color: Colors.white,
+                  fontSize: compact ? 12 : 15,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1,
+          const SizedBox(height: 4),
+          SliderTheme(
+            data: SliderTheme.of(context).copyWith(
+              trackHeight: 4,
+              activeTrackColor: Colors.blue,
+              inactiveTrackColor: Colors.white.withValues(alpha: 0.2),
+              thumbColor: Colors.blue,
+              overlayColor: Colors.blue.withValues(alpha: 0.1),
+              thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+              overlayShape: const RoundSliderOverlayShape(overlayRadius: 12),
+            ),
+            child: Slider(
+              value: _currentRadiusKm,
+              min: 1.0,
+              max: 100.0,
+              divisions: 49,
+              onChanged: (val) {
+                setState(() => _currentRadiusKm = val);
+              },
+              onChangeEnd: (val) async {
+                await AppData().setDiscoveryRadius(val);
+                // In camera view, it just updates the preferred radius for next search
+              },
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showScanResultBottomSheet(BuildContext context, List<Product> items) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (innerContext) => BlocProvider.value(
-        value: context.read<VisualSearchCubit>(),
-        child: VisualSearchResultSheet(
-          items: items,
-          onAccept: () {
-            AppNavigator.pop(innerContext);
-            AppNavigator.push(
-              context,
-              VisualSearchMapResultsScreen(results: items),
-            );
-          },
-          onTryAgain: () {
-            AppNavigator.pop(innerContext);
-            setState(() {
-              _selectedImage = null;
-            });
-            context.read<VisualSearchCubit>().reset();
-          },
-        ),
-      ),
-    );
-  }
-
-  void _showNoResultBottomSheet(
-    BuildContext context, {
-    String? message,
-    double? radiusUsed,
-    bool hasMoreBeyondRadius = false,
-  }) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (innerContext) => BlocProvider.value(
-        value: context.read<VisualSearchCubit>(),
-        child: NoResultSheet(
-          message: message,
-          radiusUsed: radiusUsed,
-          hasMoreBeyondRadius: hasMoreBeyondRadius,
-          onIncreaseRadius: () {
-            AppNavigator.pop(innerContext);
-            if (_selectedImage != null && radiusUsed != null) {
-              final double expandedRadiusMeters = (radiusUsed * 3.0).clamp(
-                1000.0,
-                50000.0,
-              );
-              context.read<VisualSearchCubit>().searchByImage(
-                _selectedImage!,
-                customRadiusMeters: expandedRadiusMeters,
-              );
-            }
-          },
-          onDismiss: () {
-            AppNavigator.pop(innerContext);
-            setState(() {
-              _selectedImage = null;
-            });
-            context.read<VisualSearchCubit>().reset();
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRadiusSliderCard() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.08),
-              borderRadius: BorderRadius.circular(24),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.15)),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      'Discovery Radius',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 15,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Text(
-                      '${_currentRadiusKm.toStringAsFixed(0)} KM',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                SliderTheme(
-                  data: SliderTheme.of(context).copyWith(
-                    trackHeight: 6,
-                    activeTrackColor: Colors.blue,
-                    inactiveTrackColor: Colors.white.withValues(alpha: 0.2),
-                    thumbColor: Colors.blue,
-                    overlayColor: Colors.blue.withValues(alpha: 0.1),
-                    thumbShape: const RoundSliderThumbShape(
-                      enabledThumbRadius: 8,
-                    ),
-                    overlayShape: const RoundSliderOverlayShape(
-                      overlayRadius: 16,
-                    ),
-                  ),
-                  child: Slider(
-                    value: _currentRadiusKm,
-                    min: 1.0,
-                    max: 50.0,
-                    divisions: 49,
-                    onChanged: (val) {
-                      setState(() {
-                        _currentRadiusKm = val;
-                      });
-                    },
-                    onChangeEnd: (val) async {
-                      await AppData().setDiscoveryRadius(val);
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }
