@@ -6,7 +6,7 @@ import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/cubit/shop_detail_cubit.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 

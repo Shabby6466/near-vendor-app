@@ -46,3 +46,5 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 .env
+/graphify-out
+update_graphify.sh

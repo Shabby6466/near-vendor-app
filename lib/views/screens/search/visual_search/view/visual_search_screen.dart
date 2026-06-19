@@ -11,10 +11,10 @@ import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/camera_preview_widget.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/crop_overlay_widget.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/visual_search_result_sheet.dart';
+import 'package:nearvendorapp/views/screens/search/visual_search/cubit/visual_search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/visual_search/widgets/camera_preview_widget.dart';
+import 'package:nearvendorapp/views/screens/search/visual_search/widgets/crop_overlay_widget.dart';
+import 'package:nearvendorapp/views/screens/search/visual_search/widgets/visual_search_result_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 

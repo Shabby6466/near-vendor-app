@@ -14,7 +14,7 @@ import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/widgets/item_card.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
@@ -194,10 +194,10 @@ class _EmptyStateState extends State<_EmptyState> {
     if (!mounted) return;
 
     // Show category picker bottom sheet
-    final selectedCategory = await _showCategoryPicker(
-      context,
-      [CategoryModel(id: '', name: 'None / Skip'), ...categories],
-    );
+    final selectedCategory = await _showCategoryPicker(context, [
+      CategoryModel(id: '', name: 'None / Skip'),
+      ...categories,
+    ]);
     if (!mounted) return;
     // null = user dismissed the sheet
     if (selectedCategory == null) return;
@@ -335,19 +335,19 @@ class _EmptyStateState extends State<_EmptyState> {
                               size: 20,
                             )
                           : (iconPath != null
-                              ? iconPath.svg(
-                                  colorFilter: const ColorFilter.mode(
-                                    ColorName.primary,
-                                    BlendMode.srcIn,
-                                  ),
-                                  width: 20,
-                                  height: 20,
-                                )
-                              : Icon(
-                                  CategoryUtils.getDefaultIcon(cat.name),
-                                  color: ColorName.primary,
-                                  size: 20,
-                                )),
+                                ? iconPath.svg(
+                                    colorFilter: const ColorFilter.mode(
+                                      ColorName.primary,
+                                      BlendMode.srcIn,
+                                    ),
+                                    width: 20,
+                                    height: 20,
+                                  )
+                                : Icon(
+                                    CategoryUtils.getDefaultIcon(cat.name),
+                                    color: ColorName.primary,
+                                    size: 20,
+                                  )),
                       title: Text(
                         cat.name,
                         style: TextStyle(
@@ -514,9 +514,7 @@ class _EmptyStateState extends State<_EmptyState> {
                             color: Colors.white,
                           ),
                         ),
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                        ),
+                        style: ElevatedButton.styleFrom(elevation: 0),
                       ),
                     )
                   else if (!isAuthenticated)
@@ -620,10 +618,10 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
     // Show category picker bottom sheet (reusing the one from _EmptyState logic)
     // For simplicity, I will implement a similar helper here or make the other one static.
     // I will implement a quick one here for now.
-    final selectedCategory = await _showCategoryPickerQuick(
-      context,
-      [CategoryModel(id: '', name: 'None / Skip'), ...categories],
-    );
+    final selectedCategory = await _showCategoryPickerQuick(context, [
+      CategoryModel(id: '', name: 'None / Skip'),
+      ...categories,
+    ]);
     if (!mounted) return;
     if (selectedCategory == null) return;
 
@@ -771,9 +769,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
                 : (isAuthenticated
                       ? _createWish
                       : () => AppNavigator.push(context, const LoginScreen())),
-            style: ElevatedButton.styleFrom(
-              elevation: 0,
-            ),
+            style: ElevatedButton.styleFrom(elevation: 0),
             child: _isCreatingWish
                 ? const SizedBox(
                     width: 16,

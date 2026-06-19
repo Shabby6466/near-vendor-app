@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/search_bar_field.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/search_results_list.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/widgets/search_bar_field.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/widgets/search_results_list.dart';
 import 'package:nearvendorapp/views/widgets/location_display_row.dart';
 
 class SearchResultsScreen extends StatefulWidget {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/utils/search_navigation.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/utils/search_navigation.dart';
 
 class RecentSearchSection extends StatelessWidget {
   const RecentSearchSection({super.key});

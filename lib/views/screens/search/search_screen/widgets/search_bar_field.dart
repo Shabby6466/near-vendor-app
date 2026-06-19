@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/search_cubit.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/visual_search_launcher.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/visual_search/widgets/visual_search_launcher.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class SearchBarField extends StatefulWidget {

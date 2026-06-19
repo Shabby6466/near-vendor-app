@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
-import 'package:nearvendorapp/views/screens/search/cubit/visual_search_cubit.dart';
+import 'package:nearvendorapp/views/screens/search/visual_search/cubit/visual_search_cubit.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class VisualSearchResultSheet extends StatelessWidget {

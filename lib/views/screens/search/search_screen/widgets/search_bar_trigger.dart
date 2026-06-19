@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:nearvendorapp/gen/assets.gen.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
-import 'package:nearvendorapp/views/screens/search/utils/search_navigation.dart';
-import 'package:nearvendorapp/views/screens/search/widgets/visual_search_launcher.dart';
+import 'package:nearvendorapp/views/screens/search/search_screen/utils/search_navigation.dart';
+import 'package:nearvendorapp/views/screens/search/visual_search/widgets/visual_search_launcher.dart';
 
 class SearchBarTrigger extends StatelessWidget {
   const SearchBarTrigger({super.key});
