@@ -22,12 +22,51 @@ class MultiImagePicker extends StatefulWidget {
     this.onImageUrlsChanged,
   });
 
+  /// Public helper so external widgets (e.g. CommentInput) can show the same
+  /// camera / gallery picker sheet and receive the chosen [File] via [onPicked].
+  static void showPickerSheet({
+    required BuildContext context,
+    required ValueChanged<File> onPicked,
+  }) {
+    final picker = ImagePicker();
+    AppBottomSheet.showBottomSheet(
+      context: context,
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.camera_alt_outlined),
+              title: const Text('Camera'),
+              onTap: () async {
+                AppNavigator.pop(context);
+                final image =
+                    await picker.pickImage(source: ImageSource.camera);
+                if (image != null) onPicked(File(image.path));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.photo_outlined),
+              title: const Text('Gallery'),
+              onTap: () async {
+                AppNavigator.pop(context);
+                final image =
+                    await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) onPicked(File(image.path));
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   State<MultiImagePicker> createState() => _MultiImagePickerState();
 }
 
 class _MultiImagePickerState extends State<MultiImagePicker> {
-  final ImagePicker _picker = ImagePicker();
   late List<File> _images;
   late List<String> _imageUrls;
 
@@ -36,16 +75,6 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
     super.initState();
     _images = List.from(widget.initialImages);
     _imageUrls = List.from(widget.initialImageUrls);
-  }
-
-  Future<void> _pickImage(ImageSource source) async {
-    final totalCount = _imageUrls.length + _images.length;
-    if (totalCount >= widget.maxImages) return;
-    final image = await _picker.pickImage(source: source);
-    if (image == null || !mounted) return;
-    setState(() => _images.add(File(image.path)));
-    widget.onImagesChanged?.call(_images);
-    AppNavigator.pop(context);
   }
 
   void _removeNetworkImage(int index) {
@@ -59,23 +88,15 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
   }
 
   void _showImageSourceSheet() {
-    AppBottomSheet.showBottomSheet(
+    MultiImagePicker.showPickerSheet(
       context: context,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.camera_alt_outlined),
-            title: const Text('Camera'),
-            onTap: () => _pickImage(ImageSource.camera),
-          ),
-          ListTile(
-            leading: const Icon(Icons.photo_outlined),
-            title: const Text('Gallery'),
-            onTap: () => _pickImage(ImageSource.gallery),
-          ),
-        ],
-      ),
+      onPicked: (file) {
+        if (!mounted) return;
+        final totalCount = _imageUrls.length + _images.length;
+        if (totalCount >= widget.maxImages) return;
+        setState(() => _images.add(file));
+        widget.onImagesChanged?.call(_images);
+      },
     );
   }
 
@@ -241,7 +262,8 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
             Text(
               '$totalCount/${widget.maxImages}',
               style: theme.textTheme.labelSmall?.copyWith(
-                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                color:
+                    theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
               ),
             ),
           ],

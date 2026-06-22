@@ -34,8 +34,19 @@ class _CommentInputState extends State<CommentInput> {
     final success = await widget.onSubmit(text, _images);
     if (success && mounted) {
       _controller.clear();
-      setState(_images.clear);
+      setState(() => _images.clear());
     }
+  }
+
+  void _openImagePicker() {
+    MultiImagePicker.showPickerSheet(
+      context: context,
+      onPicked: (file) {
+        if (!mounted) return;
+        if (_images.length >= 5) return;
+        setState(() => _images.add(file));
+      },
+    );
   }
 
   @override
@@ -69,12 +80,12 @@ class _CommentInputState extends State<CommentInput> {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.add_photo_alternate_outlined,
-                      color: theme.primaryColor, size: 22),
-                  onPressed: () {
-                    setState(() {});
-                    // Toggle image picker visibility
-                  },
+                  icon: Icon(
+                    Icons.add_photo_alternate_outlined,
+                    color: theme.primaryColor,
+                    size: 22,
+                  ),
+                  onPressed: _openImagePicker,
                 ),
                 Expanded(
                   child: TextField(

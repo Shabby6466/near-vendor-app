@@ -115,13 +115,26 @@ class ReviewDetailScreen extends StatelessWidget {
                             color: theme.dividerColor.withValues(alpha: 0.1),
                           ),
                           const SizedBox(height: 16),
-                          Text(
-                            'Comments',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              Container(
+                                width: 3,
+                                height: 16,
+                                margin: const EdgeInsets.only(right: 8),
+                                decoration: BoxDecoration(
+                                  color: theme.primaryColor,
+                                  borderRadius: BorderRadius.circular(2),
+                                ),
+                              ),
+                              Text(
+                                'Comments',
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 12),
+                          const SizedBox(height: 14),
                           if (state is ReviewDetailLoading)
                             _buildCommentsShimmer(context)
                           else if (state is ReviewDetailError)
@@ -131,11 +144,16 @@ class ReviewDetailScreen extends StatelessWidget {
                             )
                           else if (state is ReviewDetailLoaded) ...[
                             if (state.comments.isEmpty)
-                              Text(
-                                'No comments yet. Be the first to comment.',
-                                style: theme.textTheme.bodySmall?.copyWith(
-                                  color: theme.textTheme.bodySmall?.color
-                                      ?.withValues(alpha: 0.5),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
+                                child: Text(
+                                  'No comments yet. Be the first to comment.',
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.textTheme.bodySmall?.color
+                                        ?.withValues(alpha: 0.5),
+                                  ),
                                 ),
                               )
                             else
@@ -194,7 +212,7 @@ class ReviewDetailScreen extends StatelessWidget {
             }
           },
           child: CircleAvatar(
-            radius: 22,
+            radius: 24,
             backgroundColor: theme.primaryColor.withValues(alpha: 0.1),
             backgroundImage:
                 review.userPhotoUrl != null && review.userPhotoUrl!.isNotEmpty
@@ -203,7 +221,11 @@ class ReviewDetailScreen extends StatelessWidget {
             child: review.userPhotoUrl == null || review.userPhotoUrl!.isEmpty
                 ? Text(
                     (review.userName ?? '?')[0].toUpperCase(),
-                    style: TextStyle(color: theme.primaryColor),
+                    style: TextStyle(
+                      color: theme.primaryColor,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
                   )
                 : null,
           ),
@@ -212,6 +234,7 @@ class ReviewDetailScreen extends StatelessWidget {
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 review.userName ?? 'Anonymous',
@@ -219,23 +242,20 @@ class ReviewDetailScreen extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Row(
-                children: [
-                  RatingBarWidget.display(
-                    rating: (review.rating ?? 0).toDouble(),
+              const SizedBox(height: 4),
+              RatingBarWidget.display(
+                rating: (review.rating ?? 0).toDouble(),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                review.isEdited == true
+                    ? 'Edited · ${TimeFormatter.timeAgo(review.updatedAt)}'
+                    : TimeFormatter.timeAgo(review.createdAt),
+                style: theme.textTheme.labelSmall?.copyWith(
+                  color: theme.textTheme.bodySmall?.color?.withValues(
+                    alpha: 0.5,
                   ),
-                  const SizedBox(width: 8),
-                  Text(
-                    review.isEdited == true
-                        ? 'Edited · ${TimeFormatter.timeAgo(review.updatedAt)}'
-                        : TimeFormatter.timeAgo(review.createdAt),
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: theme.textTheme.bodySmall?.color?.withValues(
-                        alpha: 0.5,
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ],
           ),
