@@ -48,6 +48,7 @@ dependencies:
   flutter_launcher_icons: ^0.14.4
   flutter_map: ^8.3.0
   flutter_native_splash: ^2.4.8
+  flutter_rating_bar: ^4.0.1
   flutter_secure_storage: ^10.3.1
   flutter_svg: ^2.3.0
   geocoding: ^4.0.0
@@ -58,6 +59,7 @@ dependencies:
   image_cropper: ^12.2.1
   image_picker: ^1.2.2
   intl: ^0.20.2
+  jiffy: ^6.4.5
   latlong2: ^0.9.1
   local_auth: ^3.0.1
   lottie: ^3.3.3

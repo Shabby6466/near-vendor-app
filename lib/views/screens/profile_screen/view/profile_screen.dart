@@ -13,6 +13,7 @@ import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_scr
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/discovery_settings.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_menu_item.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/widgets/review_notification_toggle.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_version_widget.dart';
 import 'package:nearvendorapp/views/widgets/guest_auth_banner.dart';
@@ -122,6 +123,17 @@ class ProfileScreen extends StatelessWidget {
                                 onAlertsToggled: (value) => context
                                     .read<ProfileCubit>()
                                     .toggleOfferAlerts(value),
+                              ),
+                              SizedBox(
+                                height: AppSpacing.mediumVerticalSpacing(
+                                  context,
+                                ),
+                              ),
+                              ReviewNotificationToggle(
+                                enabled: state.reviewNotifications,
+                                onToggle: (value) => context
+                                    .read<ProfileCubit>()
+                                    .toggleReviewNotifications(value),
                               ),
                               SizedBox(
                                 height: AppSpacing.mediumVerticalSpacing(

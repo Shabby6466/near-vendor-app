@@ -1,9 +1,12 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
+import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/globals.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 
 String? _previousNotificationId;
 
@@ -84,29 +87,27 @@ class PushNotificationController {
     if (message.messageId == _previousNotificationId) return;
     _previousNotificationId = message.messageId;
     try {
-      // final notification = PushNotification.fromJson(message.data);
+      final data = message.data;
+      final type = data['type'];
 
-      // switch (notification.type) {
-      //   case PushNotificationType.chat:
-      //     if (notification.message?.senderProfile != null &&
-      //         _openedChatScreen != notification.message?.sessionId) {
-      //       AppNavigator.push(
-      //         navigatorKey.currentContext!,
-      //         ChatScreen(otherUser: notification.message?.senderProfile),
-      //       );
-      //     }
-
-      //   case PushNotificationType.order:
-      //     if (notification.orderId != null) {
-      //       AppNavigator.push(
-      //         navigatorKey.currentContext!,
-      //         OrderDetailScreen(Order(id: notification.orderId)),
-      //       );
-      //     }
-      //   case null:
-      // }
+      if (type == 'review_comment') {
+        final shopId = data['shopId'] as String?;
+        if (shopId != null && navigatorKey.currentContext != null) {
+          _navigateToShopReview(navigatorKey.currentContext!, shopId);
+        }
+      }
     } catch (e) {
       debugPrint('_handleMessage $e');
+    }
+  }
+
+  static Future<void> _navigateToShopReview(
+    BuildContext context,
+    String shopId,
+  ) async {
+    final shopResponse = await ShopServices().getShopById(shopId);
+    if (shopResponse.shop != null && context.mounted) {
+      AppNavigator.push(context, ShopDetailScreen(shop: shopResponse.shop!));
     }
   }
 

@@ -17,6 +17,7 @@ final class ProfileSuccess extends ProfileState {
   final String? photoUrl;
   final double discoveryRadius;
   final bool newOfferAlerts;
+  final bool reviewNotifications;
   final bool isUploadingImage;
 
   const ProfileSuccess({
@@ -25,6 +26,7 @@ final class ProfileSuccess extends ProfileState {
     this.photoUrl,
     required this.discoveryRadius,
     required this.newOfferAlerts,
+    this.reviewNotifications = true,
     this.isUploadingImage = false,
   });
 
@@ -34,6 +36,7 @@ final class ProfileSuccess extends ProfileState {
     String? photoUrl,
     double? discoveryRadius,
     bool? newOfferAlerts,
+    bool? reviewNotifications,
     bool? isUploadingImage,
   }) {
     return ProfileSuccess(
@@ -42,6 +45,7 @@ final class ProfileSuccess extends ProfileState {
       photoUrl: photoUrl ?? this.photoUrl,
       discoveryRadius: discoveryRadius ?? this.discoveryRadius,
       newOfferAlerts: newOfferAlerts ?? this.newOfferAlerts,
+      reviewNotifications: reviewNotifications ?? this.reviewNotifications,
       isUploadingImage: isUploadingImage ?? this.isUploadingImage,
     );
   }
@@ -53,6 +57,7 @@ final class ProfileSuccess extends ProfileState {
     photoUrl,
     discoveryRadius,
     newOfferAlerts,
+    reviewNotifications,
     isUploadingImage,
   ];
 }

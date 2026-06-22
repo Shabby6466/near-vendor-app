@@ -13,9 +13,9 @@ import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/product_detail_screen/widgets/product_detail_shimmer_loading.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
 import 'package:nearvendorapp/views/widgets/shop_timing_view.dart';
@@ -121,7 +121,7 @@ class ProductDetailScreen extends StatelessWidget {
         body: BlocBuilder<ProductDetailCubit, ProductDetailState>(
           builder: (context, state) {
             if (state is ProductDetailLoading) {
-              return const AppLoadingIndicator();
+              return const ProductDetailShimmerLoading();
             }
             if (state is ProductDetailSuccess) {
               return _buildMainContent(context, state.item, state.shop);

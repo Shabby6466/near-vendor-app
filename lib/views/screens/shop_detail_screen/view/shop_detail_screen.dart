@@ -7,6 +7,7 @@ import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/opening_hours.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
+import 'package:nearvendorapp/services/review_services.dart';
 import 'package:nearvendorapp/services/safety_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/helper_functions.dart';
@@ -17,9 +18,12 @@ import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/cubit/shop_detail_cubit.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/view/reviews_screen.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/rating_summary_widget.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/review_card.dart';
+import 'package:nearvendorapp/views/screens/shop_detail_screen/widgets/shop_detail_shimmer_loading.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/widgets/app_loading_indicator.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
 import 'package:nearvendorapp/views/widgets/shop_timing_view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -112,7 +116,7 @@ class ShopDetailScreen extends StatelessWidget {
         body: BlocBuilder<ShopDetailCubit, ShopDetailState>(
           builder: (context, state) {
             if (state is ShopDetailLoading) {
-              return const AppLoadingIndicator();
+              return const ShopDetailShimmerLoading();
             }
 
             if (state is ShopDetailFailure) {
@@ -129,23 +133,36 @@ class ShopDetailScreen extends StatelessWidget {
 
               return Stack(
                 children: [
-                  SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: 120),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _buildHeaderImage(context, fullShop),
-                        _buildSellerCard(context, fullShop),
-                        SizedBox(
-                          height: AppSpacing.mediumVerticalSpacing(context),
-                        ),
-                        _buildMapSection(context, fullShop),
-                        SizedBox(
-                          height: AppSpacing.mediumVerticalSpacing(context),
-                        ),
-                        _buildShopAds(context, fullShop, inventory),
-                      ],
+                  RefreshIndicator(
+                    onRefresh: () async {
+                      await context
+                          .read<ShopDetailCubit>()
+                          .loadShopData(fullShop.id ?? '');
+                    },
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
+                      padding: const EdgeInsets.only(bottom: 120),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          _buildHeaderImage(context, fullShop),
+                          _buildSellerCard(context, fullShop),
+                          SizedBox(
+                            height: AppSpacing.mediumVerticalSpacing(context),
+                          ),
+                          _buildReviewsSection(context, fullShop),
+                          SizedBox(
+                            height: AppSpacing.mediumVerticalSpacing(context),
+                          ),
+                          _buildMapSection(context, fullShop),
+                          SizedBox(
+                            height: AppSpacing.mediumVerticalSpacing(context),
+                          ),
+                          _buildShopAds(context, fullShop, inventory),
+                        ],
+                      ),
                     ),
                   ),
                   _buildFloatingActionPill(context, fullShop),
@@ -156,6 +173,67 @@ class ShopDetailScreen extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
+      ),
+    );
+  }
+
+  Widget _buildReviewsSection(BuildContext context, Shop fullShop) {
+    final state = context.read<ShopDetailCubit>().state;
+    final stats = state is ShopDetailSuccess ? state.reviewStats : null;
+
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: AppSpacing.mediumHorizontalSpacing(context),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RatingSummaryWidget(
+            stats: stats,
+            onTap: () {
+              AppNavigator.push(
+                context,
+                ReviewsScreen(shop: fullShop),
+              ).then((_) {
+                if (context.mounted) {
+                  context
+                      .read<ShopDetailCubit>()
+                      .loadShopData(fullShop.id ?? '');
+                }
+              });
+            },
+          ),
+          if (fullShop.userReview != null) ...[
+            const SizedBox(height: 16),
+            Text(
+              'Your Review',
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: 8),
+            ReviewCard(
+              review: fullShop.userReview!,
+              shop: fullShop,
+              onDeleted: () async {
+                // Delete review and reload
+                if (fullShop.userReview!.id != null) {
+                  final res = await ReviewServices().deleteReview(
+                    fullShop.userReview!.id!,
+                  );
+                  if (res.isSuccess && context.mounted) {
+                    context
+                        .read<ShopDetailCubit>()
+                        .loadShopData(fullShop.id ?? '');
+                  }
+                }
+              },
+              onEdited: () {
+                context.read<ShopDetailCubit>().loadShopData(fullShop.id ?? '');
+              },
+            ),
+          ],
+        ],
       ),
     );
   }

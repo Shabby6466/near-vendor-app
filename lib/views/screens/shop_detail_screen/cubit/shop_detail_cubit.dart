@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
 import 'package:nearvendorapp/models/api_responses/item_response.dart';
+import 'package:nearvendorapp/models/api_responses/review_response.dart';
 import 'package:nearvendorapp/models/api_responses/shop_response.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
@@ -22,7 +23,11 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
 
   Future<void> loadShopData(String shopId, {Shop? initialShop}) async {
     if (initialShop != null) {
-      emit(ShopDetailSuccess(shop: initialShop, inventory: const []));
+      emit(ShopDetailSuccess(
+        shop: initialShop,
+        inventory: const [],
+        reviewStats: initialShop.reviewStats, // May be null initially
+      ));
     } else {
       emit(ShopDetailLoading());
     }
@@ -40,54 +45,36 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
         updateAnalyticsMetadata({'shopId': shopId});
       }
 
-      if (initialShop != null) {
-        // Only fetch items since we already have the shop details!
-        final itemsResponse = await _itemServices.getItemsByShopId(shopId);
-        if (itemsResponse.isSuccess) {
+      // Fetch full shop details (which now includes reviewStats and userReview) and inventory
+      final results = await Future.wait([
+        _shopServices.getShopById(shopId),
+        _itemServices.getItemsByShopId(shopId),
+      ]);
+
+      final shopResponse = results[0] as ShopResponse;
+      final itemsResponse = results[1] as ItemListResponse;
+
+      if (shopResponse.isSuccess && itemsResponse.isSuccess) {
+        if (shopResponse.shop != null) {
           emit(
             ShopDetailSuccess(
-              shop: initialShop,
+              shop: shopResponse.shop!,
               inventory: itemsResponse.items,
+              reviewStats: shopResponse.shop!.reviewStats,
             ),
           );
         } else {
-          emit(
-            ShopDetailFailure(
-              itemsResponse.message ?? 'Failed to load items',
-            ),
-          );
+          emit(const ShopDetailFailure('Shop details not found'));
         }
       } else {
-        // Fetch shop details and inventory in parallel
-        final results = await Future.wait([
-          _shopServices.getShopById(shopId),
-          _itemServices.getItemsByShopId(shopId),
-        ]);
-
-        final shopResponse = results[0] as ShopResponse;
-        final itemsResponse = results[1] as ItemListResponse;
-
-        if (shopResponse.isSuccess && itemsResponse.isSuccess) {
-          if (shopResponse.shop != null) {
-            emit(
-              ShopDetailSuccess(
-                shop: shopResponse.shop!,
-                inventory: itemsResponse.items,
-              ),
-            );
-          } else {
-            emit(const ShopDetailFailure('Shop details not found'));
-          }
-        } else {
-          final errorMessage = (!shopResponse.isSuccess)
-              ? ((shopResponse.message ?? '').isEmpty
-                    ? 'Failed to load shop data'
-                    : shopResponse.message!)
-              : ((itemsResponse.message ?? '').isEmpty
-                    ? 'Failed to load items'
-                    : itemsResponse.message!);
-          emit(ShopDetailFailure(errorMessage));
-        }
+        final errorMessage = (!shopResponse.isSuccess)
+            ? ((shopResponse.message ?? '').isEmpty
+                  ? 'Failed to load shop data'
+                  : shopResponse.message!)
+            : ((itemsResponse.message ?? '').isEmpty
+                  ? 'Failed to load items'
+                  : itemsResponse.message!);
+        emit(ShopDetailFailure(errorMessage));
       }
     } catch (e) {
       emit(ShopDetailFailure(e.toString()));

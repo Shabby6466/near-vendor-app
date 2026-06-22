@@ -55,4 +55,20 @@ class ApiConstants {
 
   /// NOTIFICATIONS
   static const String deviceToken = 'api/notifications/device-token';
+
+  /// REVIEWS
+  static const String createReview = 'api/reviews';
+  static String reviewById(String id) => 'api/reviews/$id';
+  static String shopReviews(String shopId) => 'api/reviews/shop/$shopId';
+  static String shopReviewStats(String shopId) =>
+      'api/reviews/shop/$shopId/stats';
+  static String reportReview(String id) => 'api/reviews/$id/report';
+  static String reviewComments(String reviewId) =>
+      'api/reviews/$reviewId/comments';
+  static String commentById(String id) => 'api/reviews/comments/$id';
+  static String reportComment(String id) => 'api/reviews/comments/$id/report';
+  static const String userReviewNotifications =
+      'api/reviews/notifications/user';
+  static String shopReviewNotifications(String shopId) =>
+      'api/reviews/notifications/shop/$shopId';
 }

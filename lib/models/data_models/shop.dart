@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:nearvendorapp/models/api_responses/review_response.dart';
+import 'package:nearvendorapp/models/data_models/review.dart';
 
 class Shop extends Equatable {
   final String? id;
@@ -27,6 +29,8 @@ class Shop extends Equatable {
   final double? distance;
   final DateTime? createdAt;
   final DateTime? updatedAt;
+  final ReviewStats? reviewStats;
+  final Review? userReview;
 
   const Shop({
     this.id,
@@ -55,6 +59,8 @@ class Shop extends Equatable {
     this.distance,
     this.createdAt,
     this.updatedAt,
+    this.reviewStats,
+    this.userReview,
   });
 
   factory Shop.fromJson(Map<String, dynamic> json) {
@@ -110,6 +116,12 @@ class Shop extends Equatable {
           : null,
       updatedAt: json['updatedAt'] != null
           ? DateTime.tryParse(json['updatedAt'].toString())
+          : null,
+      reviewStats: json['reviewStats'] != null
+          ? ReviewStats.fromJson(json['reviewStats'] as Map<String, dynamic>)
+          : null,
+      userReview: json['userReview'] != null
+          ? Review.fromJson(json['userReview'] as Map<String, dynamic>)
           : null,
     );
   }
@@ -173,5 +185,7 @@ class Shop extends Equatable {
     distance,
     createdAt,
     updatedAt,
+    reviewStats,
+    userReview,
   ];
 }

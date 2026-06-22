@@ -4,12 +4,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:nearvendorapp/models/api_request_models/auth_api_inputs.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
+import 'package:nearvendorapp/services/review_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/hive/current_user_storage.dart';
 
 part 'profile_state.dart';
 
 class ProfileCubit extends Cubit<ProfileState> {
+  final ReviewServices _reviewServices = ReviewServices();
+
   ProfileCubit() : super(ProfileInitial()) {
     _loadProfile();
     // Listen to AppData user and location changes
@@ -55,6 +58,16 @@ class ProfileCubit extends Cubit<ProfileState> {
     final currentState = state;
     if (currentState is ProfileSuccess) {
       emit(currentState.copyWith(newOfferAlerts: value));
+    }
+  }
+
+  /// Toggles review comment notifications silently in the background.
+  /// UI updates optimistically — no loading state.
+  void toggleReviewNotifications(bool value) {
+    final currentState = state;
+    if (currentState is ProfileSuccess) {
+      emit(currentState.copyWith(reviewNotifications: value));
+      _reviewServices.toggleReviewNotifications(value);
     }
   }
 
