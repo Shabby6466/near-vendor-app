@@ -4,8 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/models/data_models/comment.dart';
 import 'package:nearvendorapp/models/data_models/review.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
+import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/time_formatter.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
+import 'package:nearvendorapp/views/screens/common/image_viewer_screen.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/cubit/review_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/comment_card.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/comment_input.dart';
@@ -93,7 +95,7 @@ class ReviewDetailScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildReviewHeader(theme),
+                          _buildReviewHeader(context, theme),
                           if (review.text != null &&
                               review.text!.isNotEmpty) ...[
                             const SizedBox(height: 12),
@@ -176,22 +178,35 @@ class ReviewDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewHeader(ThemeData theme) {
+  Widget _buildReviewHeader(BuildContext context, ThemeData theme) {
     return Row(
       children: [
-        CircleAvatar(
-          radius: 22,
-          backgroundColor: theme.primaryColor.withValues(alpha: 0.1),
-          backgroundImage:
-              review.userPhotoUrl != null && review.userPhotoUrl!.isNotEmpty
-              ? CachedNetworkImageProvider(review.userPhotoUrl!)
-              : null,
-          child: review.userPhotoUrl == null || review.userPhotoUrl!.isEmpty
-              ? Text(
-                  (review.userName ?? '?')[0].toUpperCase(),
-                  style: TextStyle(color: theme.primaryColor),
-                )
-              : null,
+        GestureDetector(
+          onTap: () {
+            if (review.userPhotoUrl != null &&
+                review.userPhotoUrl!.isNotEmpty) {
+              AppNavigator.push(
+                context,
+                ImageViewerScreen(
+                  imageUrls: [review.userPhotoUrl!],
+                ),
+              );
+            }
+          },
+          child: CircleAvatar(
+            radius: 22,
+            backgroundColor: theme.primaryColor.withValues(alpha: 0.1),
+            backgroundImage:
+                review.userPhotoUrl != null && review.userPhotoUrl!.isNotEmpty
+                ? CachedNetworkImageProvider(review.userPhotoUrl!)
+                : null,
+            child: review.userPhotoUrl == null || review.userPhotoUrl!.isEmpty
+                ? Text(
+                    (review.userName ?? '?')[0].toUpperCase(),
+                    style: TextStyle(color: theme.primaryColor),
+                  )
+                : null,
+          ),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -236,17 +251,28 @@ class ReviewDetailScreen extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: review.images.length,
         separatorBuilder: (_, _) => const SizedBox(width: 10),
-        itemBuilder: (context, index) => ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: CachedNetworkImage(
-            imageUrl: review.images[index],
-            width: 120,
-            height: 120,
-            fit: BoxFit.cover,
-            errorWidget: (_, _, _) => Container(
+        itemBuilder: (context, index) => GestureDetector(
+          onTap: () {
+            AppNavigator.push(
+              context,
+              ImageViewerScreen(
+                imageUrls: review.images,
+                initialIndex: index,
+              ),
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(14),
+            child: CachedNetworkImage(
+              imageUrl: review.images[index],
               width: 120,
               height: 120,
-              color: theme.dividerColor.withValues(alpha: 0.1),
+              fit: BoxFit.cover,
+              errorWidget: (_, _, _) => Container(
+                width: 120,
+                height: 120,
+                color: theme.dividerColor.withValues(alpha: 0.1),
+              ),
             ),
           ),
         ),

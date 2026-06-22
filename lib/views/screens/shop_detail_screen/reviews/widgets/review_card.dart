@@ -5,6 +5,7 @@ import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/time_formatter.dart';
+import 'package:nearvendorapp/views/screens/common/image_viewer_screen.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/view/add_edit_review_screen.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/view/review_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/rating_bar_widget.dart';
@@ -55,22 +56,35 @@ class ReviewCard extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 18,
-                  backgroundColor: theme.primaryColor.withValues(alpha: 0.1),
-                  backgroundImage:
-                      review.userPhotoUrl != null &&
-                          review.userPhotoUrl!.isNotEmpty
-                      ? CachedNetworkImageProvider(review.userPhotoUrl!)
-                      : null,
-                  child:
-                      review.userPhotoUrl == null ||
-                          review.userPhotoUrl!.isEmpty
-                      ? Text(
-                          (review.userName ?? '?')[0].toUpperCase(),
-                          style: TextStyle(color: theme.primaryColor),
-                        )
-                      : null,
+                GestureDetector(
+                  onTap: () {
+                    if (review.userPhotoUrl != null &&
+                        review.userPhotoUrl!.isNotEmpty) {
+                      AppNavigator.push(
+                        context,
+                        ImageViewerScreen(
+                          imageUrls: [review.userPhotoUrl!],
+                        ),
+                      );
+                    }
+                  },
+                  child: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: theme.primaryColor.withValues(alpha: 0.1),
+                    backgroundImage:
+                        review.userPhotoUrl != null &&
+                            review.userPhotoUrl!.isNotEmpty
+                        ? CachedNetworkImageProvider(review.userPhotoUrl!)
+                        : null,
+                    child:
+                        review.userPhotoUrl == null ||
+                            review.userPhotoUrl!.isEmpty
+                        ? Text(
+                            (review.userName ?? '?')[0].toUpperCase(),
+                            style: TextStyle(color: theme.primaryColor),
+                          )
+                        : null,
+                  ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -211,17 +225,28 @@ class ReviewCard extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: review.images.length,
                   separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) => ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: CachedNetworkImage(
-                      imageUrl: review.images[index],
-                      width: 70,
-                      height: 70,
-                      fit: BoxFit.cover,
-                      errorWidget: (_, _, _) => Container(
+                  itemBuilder: (context, index) => GestureDetector(
+                    onTap: () {
+                      AppNavigator.push(
+                        context,
+                        ImageViewerScreen(
+                          imageUrls: review.images,
+                          initialIndex: index,
+                        ),
+                      );
+                    },
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: review.images[index],
                         width: 70,
                         height: 70,
-                        color: theme.dividerColor.withValues(alpha: 0.1),
+                        fit: BoxFit.cover,
+                        errorWidget: (_, _, _) => Container(
+                          width: 70,
+                          height: 70,
+                          color: theme.dividerColor.withValues(alpha: 0.1),
+                        ),
                       ),
                     ),
                   ),

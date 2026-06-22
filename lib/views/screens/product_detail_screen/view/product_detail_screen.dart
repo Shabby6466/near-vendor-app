@@ -12,6 +12,7 @@ import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
+import 'package:nearvendorapp/views/screens/common/image_viewer_screen.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/cubit/product_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/widgets/product_detail_shimmer_loading.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
@@ -610,19 +611,30 @@ class _ProductImageCarouselState extends State<_ProductImageCarousel> {
                   },
                   itemCount: widget.imageUrls.length,
                   itemBuilder: (context, index) {
-                    final content = CachedNetworkImage(
-                      imageUrl: widget.imageUrls[index],
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                      placeholder: (context, url) => ColoredBox(
-                        color: theme.primaryColor.withValues(alpha: 0.05),
-                        child: const LoadingAnimation(size: 16),
-                      ),
-                      errorWidget: (context, url, error) => Icon(
-                        Icons.image_not_supported_rounded,
-                        size: 50,
-                        color: theme.primaryColor.withValues(alpha: 0.2),
+                    final content = GestureDetector(
+                      onTap: () {
+                        AppNavigator.push(
+                          context,
+                          ImageViewerScreen(
+                            imageUrls: widget.imageUrls,
+                            initialIndex: index,
+                          ),
+                        );
+                      },
+                      child: CachedNetworkImage(
+                        imageUrl: widget.imageUrls[index],
+                        fit: BoxFit.cover,
+                        width: double.infinity,
+                        height: double.infinity,
+                        placeholder: (context, url) => ColoredBox(
+                          color: theme.primaryColor.withValues(alpha: 0.05),
+                          child: const LoadingAnimation(size: 16),
+                        ),
+                        errorWidget: (context, url, error) => Icon(
+                          Icons.image_not_supported_rounded,
+                          size: 50,
+                          color: theme.primaryColor.withValues(alpha: 0.2),
+                        ),
                       ),
                     );
 

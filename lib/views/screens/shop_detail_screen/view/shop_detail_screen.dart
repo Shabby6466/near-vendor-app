@@ -15,6 +15,7 @@ import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
+import 'package:nearvendorapp/views/screens/common/image_viewer_screen.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/shop_location_widget.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/cubit/shop_detail_cubit.dart';
@@ -361,19 +362,30 @@ class ShopDetailScreen extends StatelessWidget {
 
   Widget _buildHeaderImage(BuildContext context, Shop fullShop) {
     final theme = Theme.of(context);
+    final coverUrl = fullShop.coverImageUrl ?? shop.coverImageUrl;
     return SizedBox(
       height: AppSpacing.screenHeight(context) * 0.35,
       width: double.infinity,
-      child: CachedNetworkImage(
-        imageUrl: fullShop.coverImageUrl ?? shop.coverImageUrl ?? '',
-        fit: BoxFit.cover,
-        placeholder: (context, url) => ColoredBox(
-          color: theme.dividerColor.withValues(alpha: 0.1),
-          child: const Center(child: CircularProgressIndicator()),
-        ),
-        errorWidget: (context, error, stackTrace) => ColoredBox(
-          color: theme.dividerColor.withValues(alpha: 0.1),
-          child: const Icon(Icons.store, size: 50),
+      child: GestureDetector(
+        onTap: () {
+          if (coverUrl != null && coverUrl.isNotEmpty) {
+            AppNavigator.push(
+              context,
+              ImageViewerScreen(imageUrls: [coverUrl]),
+            );
+          }
+        },
+        child: CachedNetworkImage(
+          imageUrl: coverUrl ?? '',
+          fit: BoxFit.cover,
+          placeholder: (context, url) => ColoredBox(
+            color: theme.dividerColor.withValues(alpha: 0.1),
+            child: const Center(child: CircularProgressIndicator()),
+          ),
+          errorWidget: (context, error, stackTrace) => ColoredBox(
+            color: theme.dividerColor.withValues(alpha: 0.1),
+            child: const Icon(Icons.store, size: 50),
+          ),
         ),
       ),
     );
@@ -450,25 +462,36 @@ class ShopDetailScreen extends StatelessWidget {
           Positioned(
             left: 0,
             top: -50,
-            child: Container(
-              padding: const EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor,
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, 10),
+            child: GestureDetector(
+              onTap: () {
+                final logoUrl = fullShop.storeLogoUrl;
+                if (logoUrl != null && logoUrl.isNotEmpty) {
+                  AppNavigator.push(
+                    context,
+                    ImageViewerScreen(imageUrls: [logoUrl]),
+                  );
+                }
+              },
+              child: Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: theme.scaffoldBackgroundColor,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.1),
+                      blurRadius: 20,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
+                child: CircleAvatar(
+                  radius: 45,
+                  backgroundColor: theme.cardColor,
+                  backgroundImage: CachedNetworkImageProvider(
+                    fullShop.storeLogoUrl ??
+                        'https://i.pravatar.cc/150?u=a042581f4e29026704d',
                   ),
-                ],
-              ),
-              child: CircleAvatar(
-                radius: 45,
-                backgroundColor: theme.cardColor,
-                backgroundImage: CachedNetworkImageProvider(
-                  fullShop.storeLogoUrl ??
-                      'https://i.pravatar.cc/150?u=a042581f4e29026704d',
                 ),
               ),
             ),

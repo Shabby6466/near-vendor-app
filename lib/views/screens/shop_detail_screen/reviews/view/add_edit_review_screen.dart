@@ -29,6 +29,7 @@ class _AddEditReviewScreenState extends State<AddEditReviewScreen> {
   final TextEditingController _textController = TextEditingController();
   double _rating = 0;
   final List<File> _images = [];
+  final List<String> _existingUrls = [];
   bool _isSubmitting = false;
 
   bool get _isEditing => widget.existingReview != null;
@@ -39,6 +40,7 @@ class _AddEditReviewScreenState extends State<AddEditReviewScreen> {
     if (_isEditing) {
       _rating = (widget.existingReview!.rating ?? 0).toDouble();
       _textController.text = widget.existingReview!.text ?? '';
+      _existingUrls.addAll(widget.existingReview!.images);
     }
   }
 
@@ -62,7 +64,7 @@ class _AddEditReviewScreenState extends State<AddEditReviewScreen> {
             rating: _rating.round(),
             text: _textController.text.trim(),
             newImages: _images,
-            existingImageUrls: widget.existingReview!.images,
+            existingImageUrls: _existingUrls,
           )
         : await _reviewServices.createReview(
             shopId: widget.shop.id!,
@@ -157,9 +159,14 @@ class _AddEditReviewScreenState extends State<AddEditReviewScreen> {
               ),
               const SizedBox(height: 8),
               MultiImagePicker(
+                initialImageUrls: _existingUrls,
                 onImagesChanged: (images) => setState(() {
                   _images.clear();
                   _images.addAll(images);
+                }),
+                onImageUrlsChanged: (urls) => setState(() {
+                  _existingUrls.clear();
+                  _existingUrls.addAll(urls);
                 }),
               ),
               const SizedBox(height: 32),
