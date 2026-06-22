@@ -10,7 +10,7 @@ class AppAlerts {
     String message, {
     bool isDarkBackground = false,
   }) {
-    final topPadding = MediaQuery.of(context).padding.top + 8;
+    final topPadding = MediaQuery.paddingOf(context).top + 8;
     AlertInfo.show(
       context: context,
       text: message,
@@ -26,7 +26,7 @@ class AppAlerts {
     String message, {
     bool isDarkBackground = false,
   }) {
-    final topPadding = MediaQuery.of(context).padding.top + 8;
+    final topPadding = MediaQuery.paddingOf(context).top + 8;
     AlertInfo.show(
       context: context,
       text: message,
@@ -43,7 +43,7 @@ class AppAlerts {
     String title = "Notification",
     bool isDarkBackground = false,
   }) {
-    final topPadding = MediaQuery.of(context).padding.top + 8;
+    final topPadding = MediaQuery.paddingOf(context).top + 8;
     AlertInfo.show(
       context: context,
       text: message,
