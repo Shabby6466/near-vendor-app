@@ -207,6 +207,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				AD0D2B35449B4286496E1C25 /* [CP] Embed Pods Frameworks */,
 				E5C0C4A0037A382FB40D5403 /* [CP] Copy Pods Resources */,
+				FA1B2C3D4E5F6A7B8C9D0E1F /* Upload dSYM to Crashlytics */,
 			);
 			buildRules = (
 			);
@@ -387,6 +388,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FA1B2C3D4E5F6A7B8C9D0E1F /* Upload dSYM to Crashlytics */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"$(SRCROOT)/GoogleService-Info.plist",
+				"${BUILT_PRODUCTS_DIR}/${INFOPLIST_PATH}",
+			);
+			name = "Upload dSYM to Crashlytics";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "${PODS_ROOT}/FirebaseCrashlytics/run\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
