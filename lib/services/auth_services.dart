@@ -19,6 +19,13 @@ class AuthServices {
       );
       return LoginResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return LoginResponse.fromJson(e.response?.data);
+        } else {
+          return LoginResponse(message: e.message);
+        }
+      }
       return LoginResponse(message: e.toString());
     }
   }
@@ -31,6 +38,13 @@ class AuthServices {
       );
       return VerifyOtpResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return VerifyOtpResponse.fromJson(e.response?.data);
+        } else {
+          return VerifyOtpResponse(message: e.message);
+        }
+      }
       return VerifyOtpResponse(message: e.toString());
     }
   }
@@ -43,6 +57,13 @@ class AuthServices {
       );
       return LoginResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return LoginResponse.fromJson(e.response?.data);
+        } else {
+          return LoginResponse(message: e.message);
+        }
+      }
       return LoginResponse(message: e.toString());
     }
   }
@@ -55,6 +76,13 @@ class AuthServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -64,6 +92,13 @@ class AuthServices {
       final response = await Server.get(ApiConstants.getMe);
       return MeResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return MeResponse.fromJson(e.response?.data);
+        } else {
+          return MeResponse(message: e.message);
+        }
+      }
       return MeResponse(message: e.toString());
     }
   }
@@ -76,6 +111,13 @@ class AuthServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -88,6 +130,13 @@ class AuthServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -103,6 +152,13 @@ class AuthServices {
       );
       return MediaUploadResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return MediaUploadResponse.fromJson(e.response?.data);
+        } else {
+          return MediaUploadResponse(message: e.message);
+        }
+      }
       return MediaUploadResponse(message: e.toString());
     }
   }
@@ -118,6 +174,13 @@ class AuthServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -130,6 +193,13 @@ class AuthServices {
       );
       return ForgotPasswordResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ForgotPasswordResponse.fromJson(e.response?.data);
+        } else {
+          return ForgotPasswordResponse(message: e.message);
+        }
+      }
       return ForgotPasswordResponse(message: e.toString());
     }
   }
@@ -145,6 +215,13 @@ class AuthServices {
       );
       return VerifyResetOtpResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return VerifyResetOtpResponse.fromJson(e.response?.data);
+        } else {
+          return VerifyResetOtpResponse(message: e.message);
+        }
+      }
       return VerifyResetOtpResponse(message: e.toString());
     }
   }
@@ -161,6 +238,13 @@ class AuthServices {
       );
       return ResetPasswordResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ResetPasswordResponse.fromJson(e.response?.data);
+        } else {
+          return ResetPasswordResponse(message: e.message);
+        }
+      }
       return ResetPasswordResponse(message: e.toString());
     }
   }
@@ -174,6 +258,13 @@ class AuthServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -190,6 +281,13 @@ class AuthServices {
       }
       return GenericApiResponse(message: 'No token to remove');
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }

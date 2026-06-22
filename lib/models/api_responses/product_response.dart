@@ -1,12 +1,12 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 
-class ItemResponse extends BaseApiResponse {
+class ProductResponse extends BaseApiResponse {
   final Product? item;
 
-  ItemResponse({super.success, super.status, super.message, this.item});
+  ProductResponse({super.success, super.status, super.message, this.item});
 
-  ItemResponse.fromJson(dynamic json)
+  ProductResponse.fromJson(dynamic json)
     : item = json is Map ? _parseItem(json as Map<String, dynamic>) : null,
       super.fromJson(json);
 
@@ -43,11 +43,11 @@ class PaginationMeta {
   }
 }
 
-class ItemListResponse extends BaseApiResponse {
+class ProductListResponse extends BaseApiResponse {
   final List<Product> items;
   final PaginationMeta? meta;
 
-  ItemListResponse({
+  ProductListResponse({
     super.success,
     super.status,
     super.message,
@@ -55,9 +55,9 @@ class ItemListResponse extends BaseApiResponse {
     this.meta,
   });
 
-  factory ItemListResponse.fromJson(dynamic json) {
+  factory ProductListResponse.fromJson(dynamic json) {
     if (json is List) {
-      return ItemListResponse(
+      return ProductListResponse(
         success: true,
         status: 200,
         message: 'Success',
@@ -83,7 +83,7 @@ class ItemListResponse extends BaseApiResponse {
 
       metaData ??= json['meta'] as Map<String, dynamic>?;
 
-      return ItemListResponse(
+      return ProductListResponse(
         success: json['success'] as bool? ?? true,
         status: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? 'Success',
@@ -94,7 +94,7 @@ class ItemListResponse extends BaseApiResponse {
       );
     }
 
-    return ItemListResponse(
+    return ProductListResponse(
       success: false,
       status: 500,
       message: 'Unexpected response format',

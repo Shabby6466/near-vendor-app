@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/shop_response.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/services/categories_service.dart';
@@ -10,7 +11,14 @@ class ShopServices {
       final response = await Server.get('${ApiConstants.getShopById}$id');
       return ShopResponse.fromJson(response.data);
     } catch (e) {
-      return ShopResponse(success: false, status: 500, message: e.toString());
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ShopResponse.fromJson(e.response?.data);
+        } else {
+          return ShopResponse(message: e.message);
+        }
+      }
+      return ShopResponse(message: e.toString());
     }
   }
 
@@ -28,8 +36,8 @@ class ShopServices {
   }) async {
     try {
       final Map<String, dynamic> params = {
-        'lat': double.parse(lat.toStringAsFixed(7)),
-        'lon': double.parse(lon.toStringAsFixed(7)),
+        'lat': lat,
+        'lon': lon,
         'radius': radius,
         'page': page,
         'limit': limit,
@@ -46,12 +54,14 @@ class ShopServices {
       );
       return ShopListResponse.fromJson(response.data);
     } catch (e) {
-      return ShopListResponse(
-        success: false,
-        status: 500,
-        message: e.toString(),
-        shops: [],
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ShopListResponse.fromJson(e.response?.data);
+        } else {
+          return ShopListResponse(message: e.message, shops: []);
+        }
+      }
+      return ShopListResponse(message: e.toString(), shops: []);
     }
   }
 
@@ -65,8 +75,8 @@ class ShopServices {
   }) async {
     try {
       final Map<String, dynamic> params = {
-        'lat': double.parse(lat.toStringAsFixed(7)),
-        'lon': double.parse(lon.toStringAsFixed(7)),
+        'lat': lat,
+        'lon': lon,
         'radius': radius,
         'page': page,
         'limit': limit,
@@ -79,12 +89,14 @@ class ShopServices {
       );
       return ShopListResponse.fromJson(response.data);
     } catch (e) {
-      return ShopListResponse(
-        success: false,
-        status: 500,
-        message: e.toString(),
-        shops: [],
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ShopListResponse.fromJson(e.response?.data);
+        } else {
+          return ShopListResponse(message: e.message, shops: []);
+        }
+      }
+      return ShopListResponse(message: e.toString(), shops: []);
     }
   }
 
@@ -100,8 +112,8 @@ class ShopServices {
       final response = await Server.get(
         ApiConstants.searchShops,
         queryParameters: {
-          'lat': double.parse(lat.toStringAsFixed(7)),
-          'lon': double.parse(lon.toStringAsFixed(7)),
+          'lat': lat,
+          'lon': lon,
           'radius': radius,
           'query': query,
           'page': page,
@@ -110,12 +122,14 @@ class ShopServices {
       );
       return ShopListResponse.fromJson(response.data);
     } catch (e) {
-      return ShopListResponse(
-        success: false,
-        status: 500,
-        message: e.toString(),
-        shops: [],
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ShopListResponse.fromJson(e.response?.data);
+        } else {
+          return ShopListResponse(message: e.message, shops: []);
+        }
+      }
+      return ShopListResponse(message: e.toString(), shops: []);
     }
   }
 

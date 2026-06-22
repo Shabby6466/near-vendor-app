@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
@@ -21,6 +22,13 @@ class SafetyServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -32,13 +40,17 @@ class SafetyServices {
     try {
       final response = await Server.post(
         ApiConstants.blockUser,
-        data: {
-          'blockedId': blockedId,
-          if (reason != null) 'reason': reason,
-        },
+        data: {'blockedId': blockedId, if (reason != null) 'reason': reason},
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -50,6 +62,13 @@ class SafetyServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }

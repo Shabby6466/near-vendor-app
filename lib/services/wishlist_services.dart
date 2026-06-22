@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/wishlist_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
@@ -41,6 +42,13 @@ class WishlistServices {
       );
       return CreateWishlistResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return CreateWishlistResponse.fromJson(e.response?.data);
+        } else {
+          return CreateWishlistResponse(message: e.message);
+        }
+      }
       return CreateWishlistResponse(message: e.toString());
     }
   }
@@ -56,6 +64,13 @@ class WishlistServices {
       );
       return GetWishlistsResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GetWishlistsResponse.fromJson(e.response?.data);
+        } else {
+          return GetWishlistsResponse(message: e.message);
+        }
+      }
       return GetWishlistsResponse(message: e.toString());
     }
   }
@@ -65,6 +80,13 @@ class WishlistServices {
       final response = await Server.delete('${ApiConstants.deleteWishlist}$id');
       return WishlistActionResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return WishlistActionResponse.fromJson(e.response?.data);
+        } else {
+          return WishlistActionResponse(message: e.message);
+        }
+      }
       return WishlistActionResponse(message: e.toString());
     }
   }
@@ -76,6 +98,13 @@ class WishlistServices {
       );
       return WishlistActionResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return WishlistActionResponse.fromJson(e.response?.data);
+        } else {
+          return WishlistActionResponse(message: e.message);
+        }
+      }
       return WishlistActionResponse(message: e.toString());
     }
   }
@@ -92,6 +121,13 @@ class WishlistServices {
       );
       return ExploreDemandResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ExploreDemandResponse.fromJson(e.response?.data);
+        } else {
+          return ExploreDemandResponse(message: e.message);
+        }
+      }
       return ExploreDemandResponse(message: e.toString());
     }
   }

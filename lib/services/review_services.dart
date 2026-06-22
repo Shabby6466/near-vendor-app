@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/review_response.dart';
 import 'package:nearvendorapp/services/media_services.dart';
 import 'package:nearvendorapp/services/server.dart';
@@ -22,12 +23,14 @@ class ReviewServices {
       );
       return ReviewListResponse.fromJson(response.data);
     } catch (e) {
-      return ReviewListResponse(
-        success: false,
-        status: 500,
-        message: e.toString(),
-        reviews: const [],
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ReviewListResponse.fromJson(e.response?.data);
+        } else {
+          return ReviewListResponse(message: e.message, reviews: const []);
+        }
+      }
+      return ReviewListResponse(message: e.toString(), reviews: const []);
     }
   }
 
@@ -36,11 +39,14 @@ class ReviewServices {
       final response = await Server.get(ApiConstants.shopReviewStats(shopId));
       return ReviewStatsResponse.fromJson(response.data);
     } catch (e) {
-      return ReviewStatsResponse(
-        success: false,
-        status: 500,
-        message: e.toString(),
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return ReviewStatsResponse.fromJson(e.response?.data);
+        } else {
+          return ReviewStatsResponse(message: e.message);
+        }
+      }
+      return ReviewStatsResponse(message: e.toString());
     }
   }
 
@@ -63,6 +69,13 @@ class ReviewServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -87,6 +100,13 @@ class ReviewServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -96,6 +116,13 @@ class ReviewServices {
       final response = await Server.delete(ApiConstants.reviewById(reviewId));
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -115,6 +142,13 @@ class ReviewServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -131,12 +165,14 @@ class ReviewServices {
       );
       return CommentListResponse.fromJson(response.data);
     } catch (e) {
-      return CommentListResponse(
-        success: false,
-        status: 500,
-        message: e.toString(),
-        comments: const [],
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return CommentListResponse.fromJson(e.response?.data);
+        } else {
+          return CommentListResponse(message: e.message, comments: const []);
+        }
+      }
+      return CommentListResponse(message: e.toString(), comments: const []);
     }
   }
 
@@ -153,6 +189,13 @@ class ReviewServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -172,6 +215,13 @@ class ReviewServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -181,6 +231,13 @@ class ReviewServices {
       final response = await Server.delete(ApiConstants.commentById(commentId));
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
@@ -200,6 +257,13 @@ class ReviewServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }

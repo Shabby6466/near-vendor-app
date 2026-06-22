@@ -14,12 +14,14 @@ class SearchServices {
       );
       return SearchItemResponse.fromJson(response.data);
     } catch (e) {
-      return SearchItemResponse(
-        success: false,
-        status: 500,
-        items: [],
-        message: e.toString(),
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return SearchItemResponse.fromJson(e.response?.data);
+        } else {
+          return SearchItemResponse(message: e.message, items: []);
+        }
+      }
+      return SearchItemResponse(message: e.toString(), items: []);
     }
   }
 
@@ -28,12 +30,14 @@ class SearchServices {
       final response = await Server.get(ApiConstants.getRecentItems);
       return SearchItemResponse.fromJson(response.data);
     } catch (e) {
-      return SearchItemResponse(
-        success: false,
-        status: 500,
-        items: [],
-        message: e.toString(),
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return SearchItemResponse.fromJson(e.response?.data);
+        } else {
+          return SearchItemResponse(message: e.message, items: []);
+        }
+      }
+      return SearchItemResponse(message: e.toString(), items: []);
     }
   }
 
@@ -68,12 +72,14 @@ class SearchServices {
 
       return SearchItemResponse.fromJson(response.data);
     } catch (e) {
-      return SearchItemResponse(
-        success: false,
-        status: 500,
-        items: [],
-        message: e.toString(),
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return SearchItemResponse.fromJson(e.response?.data);
+        } else {
+          return SearchItemResponse(message: e.message, items: []);
+        }
+      }
+      return SearchItemResponse(message: e.toString(), items: []);
     }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/analytics_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
@@ -15,12 +16,14 @@ class AnalyticsServices {
       );
       return AnalyticsStatsResponse.fromJson(response.data);
     } catch (e) {
-      return AnalyticsStatsResponse(
-        success: false,
-        status: 500,
-        message: e.toString(),
-        data: [],
-      );
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return AnalyticsStatsResponse.fromJson(e.response?.data);
+        } else {
+          return AnalyticsStatsResponse(message: e.message, data: []);
+        }
+      }
+      return AnalyticsStatsResponse(message: e.toString(), data: []);
     }
   }
 
@@ -40,6 +43,13 @@ class AnalyticsServices {
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return GenericApiResponse.fromJson(e.response?.data);
+        } else {
+          return GenericApiResponse(message: e.message);
+        }
+      }
       return GenericApiResponse(message: e.toString());
     }
   }
