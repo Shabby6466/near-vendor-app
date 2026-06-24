@@ -6,6 +6,7 @@ import 'package:nearvendorapp/views/screens/onboarding/view/welcome_screen.dart'
 import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/cubit/delete_account_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_animate_list.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class DeleteAccountConfirmationSheet extends StatelessWidget {
   const DeleteAccountConfirmationSheet({super.key});
@@ -107,10 +108,7 @@ class DeleteAccountConfirmationSheet extends StatelessWidget {
                   ? const SizedBox(
                       width: 18,
                       height: 18,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
+                      child: LoadingAnimation(size: 18, color: Colors.white),
                     )
                   : const Text(
                       'Delete',

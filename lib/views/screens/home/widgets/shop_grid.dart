@@ -9,6 +9,7 @@ import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart
 import 'package:nearvendorapp/views/screens/home/widgets/explore_shimmer_loading.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/location_required_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -138,9 +139,7 @@ class ShopGrid extends StatelessWidget {
                         key: Key('shop-${shop.id ?? index}'),
                         onVisibilityChanged: (info) {
                           if (info.visibleFraction > 0.5) {
-                            cubit.trackImpression(
-                              shop.id ?? '',
-                            );
+                            cubit.trackImpression(shop.id ?? '');
                           }
                         },
                         child: ShopCard(shop: shop),
@@ -158,7 +157,7 @@ class ShopGrid extends StatelessWidget {
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 16.0),
-                        child: CircularProgressIndicator(),
+                        child: LoadingAnimation(),
                       ),
                     ),
                   ),

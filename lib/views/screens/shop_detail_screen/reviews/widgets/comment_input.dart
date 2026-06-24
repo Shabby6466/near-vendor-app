@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/multi_image_picker.dart';
 
 class CommentInput extends StatefulWidget {
@@ -97,8 +98,9 @@ class _CommentInputState extends State<CommentInput> {
                     decoration: InputDecoration(
                       hintText: 'Write a comment...',
                       hintStyle: TextStyle(
-                        color: theme.textTheme.bodySmall?.color
-                            ?.withValues(alpha: 0.5),
+                        color: theme.textTheme.bodySmall?.color?.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                       isDense: true,
                       contentPadding: const EdgeInsets.symmetric(
@@ -119,9 +121,7 @@ class _CommentInputState extends State<CommentInput> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
-                        borderSide: BorderSide(
-                          color: theme.primaryColor,
-                        ),
+                        borderSide: BorderSide(color: theme.primaryColor),
                       ),
                     ),
                   ),
@@ -133,9 +133,9 @@ class _CommentInputState extends State<CommentInput> {
                       ? SizedBox(
                           width: 18,
                           height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
+                          child: LoadingAnimation(
                             color: theme.primaryColor,
+                            size: 18,
                           ),
                         )
                       : Icon(Icons.send_rounded, color: theme.primaryColor),

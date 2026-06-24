@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class ImageViewerScreen extends StatefulWidget {
   final List<String> imageUrls;
@@ -69,9 +70,8 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
               child: CachedNetworkImage(
                 imageUrl: widget.imageUrls[index],
                 fit: BoxFit.contain,
-                placeholder: (context, url) => const Center(
-                  child: CircularProgressIndicator(color: Colors.white),
-                ),
+                placeholder: (context, url) =>
+                    const Center(child: LoadingAnimation(color: Colors.white)),
                 errorWidget: (context, url, error) => const Icon(
                   Icons.error_outline,
                   color: Colors.white,

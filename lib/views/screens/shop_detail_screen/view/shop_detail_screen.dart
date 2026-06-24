@@ -25,6 +25,7 @@ import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/r
 import 'package:nearvendorapp/views/screens/shop_detail_screen/widgets/shop_detail_shimmer_loading.dart';
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
 import 'package:nearvendorapp/views/widgets/shop_timing_view.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -136,9 +137,9 @@ class ShopDetailScreen extends StatelessWidget {
                 children: [
                   RefreshIndicator(
                     onRefresh: () async {
-                      await context
-                          .read<ShopDetailCubit>()
-                          .loadShopData(fullShop.id ?? '');
+                      await context.read<ShopDetailCubit>().loadShopData(
+                        fullShop.id ?? '',
+                      );
                     },
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(
@@ -192,14 +193,13 @@ class ShopDetailScreen extends StatelessWidget {
           RatingSummaryWidget(
             stats: stats,
             onTap: () {
-              AppNavigator.push(
-                context,
-                ReviewsScreen(shop: fullShop),
-              ).then((_) {
+              AppNavigator.push(context, ReviewsScreen(shop: fullShop)).then((
+                _,
+              ) {
                 if (context.mounted) {
-                  context
-                      .read<ShopDetailCubit>()
-                      .loadShopData(fullShop.id ?? '');
+                  context.read<ShopDetailCubit>().loadShopData(
+                    fullShop.id ?? '',
+                  );
                 }
               });
             },
@@ -208,9 +208,9 @@ class ShopDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               'Your Review',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             ReviewCard(
@@ -223,9 +223,9 @@ class ShopDetailScreen extends StatelessWidget {
                     fullShop.userReview!.id!,
                   );
                   if (res.isSuccess && context.mounted) {
-                    context
-                        .read<ShopDetailCubit>()
-                        .loadShopData(fullShop.id ?? '');
+                    context.read<ShopDetailCubit>().loadShopData(
+                      fullShop.id ?? '',
+                    );
                   }
                 }
               },
@@ -380,7 +380,7 @@ class ShopDetailScreen extends StatelessWidget {
           fit: BoxFit.cover,
           placeholder: (context, url) => ColoredBox(
             color: theme.dividerColor.withValues(alpha: 0.1),
-            child: const Center(child: CircularProgressIndicator()),
+            child: const Center(child: LoadingAnimation()),
           ),
           errorWidget: (context, error, stackTrace) => ColoredBox(
             color: theme.dividerColor.withValues(alpha: 0.1),

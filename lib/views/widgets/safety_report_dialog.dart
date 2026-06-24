@@ -5,6 +5,7 @@ import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class SafetyReportDialog extends StatefulWidget {
   final String targetId;
@@ -137,10 +138,7 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
               ? const SizedBox(
                   width: 20,
                   height: 20,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    color: Colors.white,
-                  ),
+                  child: LoadingAnimation(size: 20, color: Colors.white),
                 )
               : const Text('Submit Report'),
         ),

@@ -16,6 +16,7 @@ import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/r
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class ReviewsScreen extends StatelessWidget {
   final Shop shop;
@@ -129,7 +130,7 @@ class ReviewsScreen extends StatelessWidget {
             const SliverToBoxAdapter(
               child: Padding(
                 padding: EdgeInsets.all(16),
-                child: Center(child: CircularProgressIndicator()),
+                child: Center(child: LoadingAnimation()),
               ),
             ),
           const SliverToBoxAdapter(child: SizedBox(height: 80)),
@@ -213,17 +214,17 @@ class ReviewsScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: theme.primaryColor.withValues(alpha: 0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.rate_review_outlined,
-                  size: 80,
-                  color: theme.primaryColor,
-                ),
-              )
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: theme.primaryColor.withValues(alpha: 0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.rate_review_outlined,
+                      size: 80,
+                      color: theme.primaryColor,
+                    ),
+                  )
                   .animate(onPlay: (controller) => controller.repeat())
                   .shimmer(
                     duration: 2.seconds,

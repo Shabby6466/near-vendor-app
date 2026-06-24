@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 
 class MultiImagePicker extends StatefulWidget {
   final List<File> initialImages;
@@ -41,8 +42,9 @@ class MultiImagePicker extends StatefulWidget {
               title: const Text('Camera'),
               onTap: () async {
                 AppNavigator.pop(context);
-                final image =
-                    await picker.pickImage(source: ImageSource.camera);
+                final image = await picker.pickImage(
+                  source: ImageSource.camera,
+                );
                 if (image != null) onPicked(File(image.path));
               },
             ),
@@ -51,8 +53,9 @@ class MultiImagePicker extends StatefulWidget {
               title: const Text('Gallery'),
               onTap: () async {
                 AppNavigator.pop(context);
-                final image =
-                    await picker.pickImage(source: ImageSource.gallery);
+                final image = await picker.pickImage(
+                  source: ImageSource.gallery,
+                );
                 if (image != null) onPicked(File(image.path));
               },
             ),
@@ -170,7 +173,7 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
                   child: SizedBox(
                     width: 20,
                     height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                    child: LoadingAnimation(size: 20),
                   ),
                 ),
               ),
@@ -262,8 +265,7 @@ class _MultiImagePickerState extends State<MultiImagePicker> {
             Text(
               '$totalCount/${widget.maxImages}',
               style: theme.textTheme.labelSmall?.copyWith(
-                color:
-                    theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
+                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.6),
               ),
             ),
           ],
@@ -308,9 +310,8 @@ class _ImageFullScreenViewer extends StatelessWidget {
           if (item is String) {
             imageWidget = CachedNetworkImage(
               imageUrl: item,
-              placeholder: (context, url) => const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              ),
+              placeholder: (context, url) =>
+                  const Center(child: LoadingAnimation(color: Colors.white)),
               errorWidget: (context, url, error) => const Icon(
                 Icons.error_outline,
                 color: Colors.white,
@@ -322,9 +323,7 @@ class _ImageFullScreenViewer extends StatelessWidget {
           } else {
             imageWidget = const SizedBox.shrink();
           }
-          return InteractiveViewer(
-            child: Center(child: imageWidget),
-          );
+          return InteractiveViewer(child: Center(child: imageWidget));
         },
       ),
     );

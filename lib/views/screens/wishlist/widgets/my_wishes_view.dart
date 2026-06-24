@@ -342,7 +342,7 @@ class _WishlistCard extends StatelessWidget {
                       child: SizedBox(
                         width: 16,
                         height: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
+                        child: LoadingAnimation(size: 16),
                       ),
                     ),
                   ),

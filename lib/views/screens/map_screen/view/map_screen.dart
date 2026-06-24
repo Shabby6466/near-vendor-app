@@ -15,6 +15,7 @@ import 'package:nearvendorapp/views/screens/map_screen/cubit/map_cubit.dart';
 import 'package:nearvendorapp/views/screens/map_screen/cubit/map_state.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
+import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/location_required_widget.dart';
 
 class MapScreen extends StatefulWidget {
@@ -695,9 +696,9 @@ void _showShopsBottomSheet(BuildContext context, List<Shop> shops) {
                                   child: SizedBox(
                                     width: 16,
                                     height: 16,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
+                                    child: LoadingAnimation(
                                       color: theme.primaryColor,
+                                      size: 16,
                                     ),
                                   ),
                                 ),
