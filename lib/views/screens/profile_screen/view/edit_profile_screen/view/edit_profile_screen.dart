@@ -154,7 +154,6 @@ class EditProfileScreen extends StatelessWidget {
                         onPressed: () =>
                             context.read<EditProfileCubit>().updateProfile(),
                         text: 'Save Changes',
-                        isLoading: isSubmitting,
                       ),
                     ],
                   ),

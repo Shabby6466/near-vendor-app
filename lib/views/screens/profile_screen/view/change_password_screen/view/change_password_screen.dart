@@ -4,30 +4,12 @@ import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/change_password_screen/cubit/change_password_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
 import 'package:nearvendorapp/views/widgets/app_text_field.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 
-class ChangePasswordScreen extends StatefulWidget {
+class ChangePasswordScreen extends StatelessWidget {
   const ChangePasswordScreen({super.key});
-
-  @override
-  State<ChangePasswordScreen> createState() => _ChangePasswordScreenState();
-}
-
-class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
-  final _oldPasswordController = TextEditingController();
-  final _newPasswordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  void dispose() {
-    _oldPasswordController.dispose();
-    _newPasswordController.dispose();
-    _confirmPasswordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +25,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
           }
         },
         builder: (context, state) {
+          final cubit = context.read<ChangePasswordCubit>();
+          final theme = Theme.of(context);
+          final isLoading = state is ChangePasswordLoading;
+
           return LoadingScreenView(
-            isLoading: state is ChangePasswordLoading,
+            isLoading: isLoading,
             child: Scaffold(
               appBar: AppBar(
                 backgroundColor: Colors.transparent,
@@ -53,7 +39,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   icon: Icon(
                     Icons.arrow_back_ios_new,
                     size: 20,
-                    color: Theme.of(context).iconTheme.color,
+                    color: theme.iconTheme.color,
                   ),
                   onPressed: () => AppNavigator.pop(context),
                 ),
@@ -61,29 +47,30 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               body: SingleChildScrollView(
                 padding: AppSpacing.screenPadding(context),
                 child: Form(
-                  key: _formKey,
+                  key: cubit.formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
                         'Change Password',
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.bold),
+                        style: theme.textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
                       Text(
                         'Secure your account by updating your password regularly.',
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyMedium?.copyWith(color: Colors.grey),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: Colors.grey,
+                        ),
                       ),
                       SizedBox(
                         height: AppSpacing.largeVerticalSpacing(context),
                       ),
 
-                      _buildLabel('Old Password'),
+                      _buildLabel(context, 'Old Password'),
                       AppTextField(
-                        controller: _oldPasswordController,
+                        controller: cubit.oldPasswordController,
                         hint: 'Enter current password',
                         isPassword: true,
                         showBorder: true,
@@ -98,9 +85,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         height: AppSpacing.mediumVerticalSpacing(context),
                       ),
 
-                      _buildLabel('New Password'),
+                      _buildLabel(context, 'New Password'),
                       AppTextField(
-                        controller: _newPasswordController,
+                        controller: cubit.newPasswordController,
                         hint: 'Enter new password',
                         isPassword: true,
                         showBorder: true,
@@ -118,14 +105,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         height: AppSpacing.mediumVerticalSpacing(context),
                       ),
 
-                      _buildLabel('Confirm New Password'),
+                      _buildLabel(context, 'Confirm New Password'),
                       AppTextField(
-                        controller: _confirmPasswordController,
+                        controller: cubit.confirmPasswordController,
                         hint: 'Confirm new password',
                         isPassword: true,
                         showBorder: true,
                         validator: (value) {
-                          if (value != _newPasswordController.text) {
+                          if (value != cubit.newPasswordController.text) {
                             return 'Passwords do not match';
                           }
                           return null;
@@ -134,36 +121,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
                       const SizedBox(height: 40),
 
-                      BlocBuilder<ChangePasswordCubit, ChangePasswordState>(
-                        builder: (context, state) {
-                          return ElevatedButton(
-                            onPressed: state is ChangePasswordLoading
-                                ? null
-                                : () {
-                                    if (_formKey.currentState!.validate()) {
-                                      context
-                                          .read<ChangePasswordCubit>()
-                                          .handleChangePassword(
-                                            oldPassword:
-                                                _oldPasswordController.text,
-                                            newPassword:
-                                                _newPasswordController.text,
-                                          );
-                                    }
-                                  },
-                            child: state is ChangePasswordLoading
-                                ? const LoadingAnimation(
-                                    color: Colors.white,
-                                    size: 20,
-                                  )
-                                : Text(
-                                    'Update Password',
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.labelLarge,
-                                  ),
-                          );
-                        },
+                      AppElevatedButton(
+                        onPressed: cubit.handleChangePassword,
+                        text: 'Update Password',
                       ),
                     ],
                   ),
@@ -176,7 +136,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
     );
   }
 
-  Widget _buildLabel(String text) {
+  Widget _buildLabel(BuildContext context, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
       child: Text(

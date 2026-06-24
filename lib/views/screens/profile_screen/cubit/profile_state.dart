@@ -12,54 +12,12 @@ final class ProfileInitial extends ProfileState {}
 final class ProfileLoading extends ProfileState {}
 
 final class ProfileSuccess extends ProfileState {
-  final String userName;
-  final String userLocation;
-  final String? photoUrl;
-  final double discoveryRadius;
-  final bool newOfferAlerts;
-  final bool reviewNotifications;
-  final bool isUploadingImage;
+  final DateTime _timestamp;
 
-  const ProfileSuccess({
-    required this.userName,
-    required this.userLocation,
-    this.photoUrl,
-    required this.discoveryRadius,
-    required this.newOfferAlerts,
-    this.reviewNotifications = true,
-    this.isUploadingImage = false,
-  });
-
-  ProfileSuccess copyWith({
-    String? userName,
-    String? userLocation,
-    String? photoUrl,
-    double? discoveryRadius,
-    bool? newOfferAlerts,
-    bool? reviewNotifications,
-    bool? isUploadingImage,
-  }) {
-    return ProfileSuccess(
-      userName: userName ?? this.userName,
-      userLocation: userLocation ?? this.userLocation,
-      photoUrl: photoUrl ?? this.photoUrl,
-      discoveryRadius: discoveryRadius ?? this.discoveryRadius,
-      newOfferAlerts: newOfferAlerts ?? this.newOfferAlerts,
-      reviewNotifications: reviewNotifications ?? this.reviewNotifications,
-      isUploadingImage: isUploadingImage ?? this.isUploadingImage,
-    );
-  }
+  ProfileSuccess() : _timestamp = DateTime.now();
 
   @override
-  List<Object?> get props => [
-    userName,
-    userLocation,
-    photoUrl,
-    discoveryRadius,
-    newOfferAlerts,
-    reviewNotifications,
-    isUploadingImage,
-  ];
+  List<Object?> get props => [_timestamp];
 }
 
 final class ProfileFailure extends ProfileState {
