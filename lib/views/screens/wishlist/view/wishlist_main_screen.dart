@@ -6,8 +6,8 @@ import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
+import 'package:nearvendorapp/views/screens/wishlist/create_wish_sheet/view/create_wish_sheet.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
-import 'package:nearvendorapp/views/screens/wishlist/widgets/create_wish_sheet.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/my_wishes_view.dart';
 
 //TODO: optimize this screen
@@ -16,36 +16,30 @@ class WishlistMainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) {
-        final isAuthenticated = AppData().isLoggedIn;
-        if (isAuthenticated) {
-          return UserWishlistCubit()..getMyWishlists();
-        }
-        return UserWishlistCubit(); // Return empty cubit for guests, won't fetch
-      },
-      child: ValueListenableBuilder<User?>(
-        valueListenable: AppData().userNotifier,
-        builder: (context, user, child) {
-          final isAuthenticated = user != null;
+    return ValueListenableBuilder<User?>(
+      valueListenable: AppData().userNotifier,
+      builder: (context, user, child) {
+        final isAuthenticated = user != null;
 
-          if (!isAuthenticated) {
-            return Scaffold(
+        if (!isAuthenticated) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: AppBar(
               backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                centerTitle: true,
-                title: const Text(
-                  'My Wishes',
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
+              elevation: 0,
+              centerTitle: true,
+              title: const Text(
+                'My Wishes',
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              body: const _GuestStateView(),
-            );
-          }
+            ),
+            body: const _GuestStateView(),
+          );
+        }
 
-          return DefaultTabController(
+        return BlocProvider(
+          create: (context) => UserWishlistCubit()..getMyWishlists(),
+          child: DefaultTabController(
             length: 2,
             child: Scaffold(
               backgroundColor: Colors.transparent,
@@ -81,25 +75,25 @@ class WishlistMainScreen extends StatelessWidget {
                     right: 24,
                     child: SafeArea(
                       top: false,
-                      child: FloatingActionButton(
-                        onPressed: () => CreateWishSheet.show(
-                          context,
-                          context.read<UserWishlistCubit>(),
-                        ),
-                        child: const Icon(Icons.add),
+                      child: Builder(
+                        builder: (context) {
+                          return FloatingActionButton(
+                            onPressed: () => CreateWishSheet.show(context),
+                            child: const Icon(Icons.add),
+                          );
+                        },
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
-
 
 class _GuestStateView extends StatelessWidget {
   const _GuestStateView();
@@ -144,9 +138,7 @@ class _GuestStateView extends StatelessWidget {
               onPressed: () {
                 AppNavigator.push(context, const LoginScreen());
               },
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-              ),
+              style: ElevatedButton.styleFrom(elevation: 0),
               child: const Text(
                 'Sign In / Register',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

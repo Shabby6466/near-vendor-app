@@ -802,74 +802,57 @@ class ShopDetailScreen extends StatelessWidget {
   }
 
   void _showSafetyMenu(BuildContext context, Shop shop) {
-    showModalBottomSheet(
+    AppBottomSheet.showBottomSheet(
       context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) => SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 12),
-            Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: Colors.grey.shade300,
-                borderRadius: BorderRadius.circular(2),
-              ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 4),
+          ListTile(
+            leading: const Icon(Icons.flag_outlined, color: Colors.orange),
+            title: const Text('Report Shop'),
+            subtitle: const Text('Report inappropriate content or behavior'),
+            onTap: () {
+              AppNavigator.pop(context);
+              showDialog(
+                context: context,
+                builder: (dialogCtx) => SafetyReportDialog(
+                  targetId: shop.id ?? '',
+                  targetType: 'SHOP',
+                  targetName: shop.shopName ?? 'Shop',
+                ),
+              );
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.block_flipped, color: Colors.red),
+            title: const Text('Block Vendor'),
+            subtitle: Text(
+              'Stop seeing content from ${shop.shopName ?? 'Shop'}',
             ),
-            const SizedBox(height: 16),
-            ListTile(
-              leading: const Icon(Icons.flag_outlined, color: Colors.orange),
-              title: const Text('Report Shop'),
-              subtitle: const Text('Report inappropriate content or behavior'),
-              onTap: () {
-                AppNavigator.pop(ctx);
-                showDialog(
-                  context: context,
-                  builder: (dialogCtx) => SafetyReportDialog(
-                    targetId: shop.id ?? '',
-                    targetType: 'SHOP',
-                    targetName: shop.shopName ?? 'Shop',
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.block_flipped, color: Colors.red),
-              title: const Text('Block Vendor'),
-              subtitle: Text(
-                'Stop seeing content from ${shop.shopName ?? 'Shop'}',
-              ),
-              onTap: () async {
-                AppNavigator.pop(ctx);
-                if (shop.vendorId == null) return;
-                final result = await SafetyServices().blockUser(
-                  blockedId: shop.vendorId!,
-                );
-                if (context.mounted) {
-                  if (result.success == true) {
-                    AppAlerts.showSuccess(
-                      context,
-                      '${shop.shopName ?? 'Shop'} has been blocked.',
-                    );
-                    AppNavigator.pop(
-                      context,
-                    ); // Go back as user shouldn't see this shop anymore
-                  } else {
-                    AppAlerts.showError(
-                      context,
-                      result.message ?? 'Failed to block user',
-                    );
-                  }
+            onTap: () async {
+              AppNavigator.pop(context);
+              if (shop.vendorId == null) return;
+              final result = await SafetyServices().blockUser(
+                blockedId: shop.vendorId!,
+              );
+              if (context.mounted) {
+                if (result.success == true) {
+                  AppAlerts.showSuccess(
+                    context,
+                    '${shop.shopName ?? 'Shop'} has been blocked.',
+                  );
+                  AppNavigator.pop(context);
+                } else {
+                  AppAlerts.showError(
+                    context,
+                    result.message ?? 'Failed to block user',
+                  );
                 }
-              },
-            ),
-            const SizedBox(height: 16),
-          ],
-        ),
+              }
+            },
+          ),
+        ],
       ),
     );
   }

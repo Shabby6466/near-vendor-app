@@ -15,6 +15,7 @@ import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
 import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/item_card.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
@@ -242,134 +243,117 @@ class _EmptyStateState extends State<_EmptyState> {
     BuildContext context,
     List<CategoryModel> categories,
   ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return showModalBottomSheet<CategoryModel>(
+    return AppBottomSheet.showBottomSheet<CategoryModel>(
       context: context,
-      backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (ctx) {
-        return Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.5,
-          ),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF171D25) : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: ColorName.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.category_rounded,
+                    color: ColorName.primary,
+                    size: 18,
+                  ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
-                child: Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: ColorName.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: const Icon(
-                        Icons.category_rounded,
-                        color: ColorName.primary,
-                        size: 18,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Pick a Category',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: isDark ? Colors.white : Colors.black87,
-                            ),
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            'Helps vendors match your wish faster',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: isDark ? Colors.white54 : Colors.black45,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const Divider(height: 24),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                  itemCount: categories.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 4),
-                  itemBuilder: (context, index) {
-                    final cat = categories[index];
-                    final iconPath = CategoryUtils.getCategoryIcon(cat.name);
-
-                    return ListTile(
-                      dense: true,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      leading: cat.id.isEmpty
-                          ? const Icon(
-                              Icons.do_not_disturb_on_rounded,
-                              color: ColorName.primary,
-                              size: 20,
-                            )
-                          : (iconPath != null
-                                ? iconPath.svg(
-                                    colorFilter: const ColorFilter.mode(
-                                      ColorName.primary,
-                                      BlendMode.srcIn,
-                                    ),
-                                    width: 20,
-                                    height: 20,
-                                  )
-                                : Icon(
-                                    CategoryUtils.getDefaultIcon(cat.name),
-                                    color: ColorName.primary,
-                                    size: 20,
-                                  )),
-                      title: Text(
-                        cat.name,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Pick a Category',
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: isDark ? Colors.white : Colors.black87,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black87,
                         ),
                       ),
-                      trailing: Icon(
-                        Icons.chevron_right_rounded,
-                        size: 20,
-                        color: isDark ? Colors.white24 : Colors.grey.shade400,
+                      const SizedBox(height: 2),
+                      Text(
+                        'Helps vendors match your wish faster',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white54
+                              : Colors.black45,
+                        ),
                       ),
-                      onTap: () => AppNavigator.pop(ctx, cat),
-                    );
-                  },
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        );
-      },
+          const Divider(height: 24),
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+              itemCount: categories.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 4),
+              itemBuilder: (context, index) {
+                final cat = categories[index];
+                final iconPath = CategoryUtils.getCategoryIcon(cat.name);
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+
+                return ListTile(
+                  dense: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  leading: cat.id.isEmpty
+                      ? const Icon(
+                          Icons.do_not_disturb_on_rounded,
+                          color: ColorName.primary,
+                          size: 20,
+                        )
+                      : (iconPath != null
+                            ? iconPath.svg(
+                                colorFilter: const ColorFilter.mode(
+                                  ColorName.primary,
+                                  BlendMode.srcIn,
+                                ),
+                                width: 20,
+                                height: 20,
+                              )
+                            : Icon(
+                                CategoryUtils.getDefaultIcon(cat.name),
+                                color: ColorName.primary,
+                                size: 20,
+                              )),
+                  title: Text(
+                    cat.name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: isDark ? Colors.white : Colors.black87,
+                    ),
+                  ),
+                  trailing: Icon(
+                    Icons.chevron_right_rounded,
+                    size: 20,
+                    color: isDark ? Colors.white24 : Colors.grey.shade400,
+                  ),
+                  onTap: () => AppNavigator.pop(context, cat),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -662,68 +646,50 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
     BuildContext context,
     List<CategoryModel> categories,
   ) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    return showModalBottomSheet<CategoryModel>(
+    return AppBottomSheet.showBottomSheet<CategoryModel>(
       context: context,
-      backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (ctx) {
-        return Container(
-          padding: const EdgeInsets.only(bottom: 24),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF171D25) : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 4),
+          Text(
+            'Select Category',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white
+                  : Colors.black87,
+            ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 12),
-              Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: Colors.grey.withValues(alpha: 0.3),
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Select Category',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: isDark ? Colors.white : Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: categories.length,
-                  separatorBuilder: (_, _) => const SizedBox(height: 4),
-                  itemBuilder: (context, index) {
-                    final cat = categories[index];
-                    return ListTile(
-                      leading: cat.id.isEmpty
-                          ? const Icon(
-                              Icons.do_not_disturb_on_rounded,
-                              color: ColorName.primary,
-                              size: 18,
-                            )
-                          : null,
-                      title: Text(cat.name),
-                      trailing: const Icon(Icons.chevron_right, size: 18),
-                      onTap: () => AppNavigator.pop(ctx, cat),
-                    );
-                  },
-                ),
-              ),
-            ],
+          const SizedBox(height: 12),
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: categories.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 4),
+              itemBuilder: (context, index) {
+                final cat = categories[index];
+                return ListTile(
+                  leading: cat.id.isEmpty
+                      ? const Icon(
+                          Icons.do_not_disturb_on_rounded,
+                          color: ColorName.primary,
+                          size: 18,
+                        )
+                      : null,
+                  title: Text(cat.name),
+                  trailing: const Icon(Icons.chevron_right, size: 18),
+                  onTap: () => AppNavigator.pop(context, cat),
+                );
+              },
+            ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
