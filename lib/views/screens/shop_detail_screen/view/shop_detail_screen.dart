@@ -831,15 +831,15 @@ class ShopDetailScreen extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.block_flipped, color: Colors.red),
-            title: const Text('Block Vendor'),
+            title: const Text('Block Shop'),
             subtitle: Text(
               'Stop seeing content from ${shop.shopName ?? 'Shop'}',
             ),
             onTap: () async {
               AppNavigator.pop(context);
-              if (shop.vendorId == null) return;
-              final result = await SafetyServices().blockUser(
-                blockedId: shop.vendorId!,
+              if (shop.id == null) return;
+              final result = await SafetyServices().blockShop(
+                blockedShopId: shop.id!,
               );
               if (context.mounted) {
                 if (result.success == true) {
@@ -851,7 +851,7 @@ class ShopDetailScreen extends StatelessWidget {
                 } else {
                   AppAlerts.showError(
                     context,
-                    result.message ?? 'Failed to block user',
+                    result.message ?? 'Failed to block shop',
                   );
                 }
               }

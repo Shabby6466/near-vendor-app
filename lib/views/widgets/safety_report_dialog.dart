@@ -90,24 +90,22 @@ class _SafetyReportDialogState extends State<SafetyReportDialog> {
               style: TextStyle(fontSize: 13, color: Colors.grey),
             ),
             const SizedBox(height: 16),
-            RadioGroup<String>(
-              groupValue: _selectedReason,
-              onChanged: (val) => setState(() => _selectedReason = val),
-              child: Column(
-                children: _reasons
-                    .map(
-                      (reason) => RadioListTile<String>(
-                        title: Text(
-                          reason,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                        value: reason,
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
+            Column(
+              children: _reasons
+                  .map(
+                    (reason) => RadioListTile<String>(
+                      title: Text(
+                        reason,
+                        style: const TextStyle(fontSize: 14),
                       ),
-                    )
-                    .toList(),
-              ),
+                      value: reason,
+                      groupValue: _selectedReason,
+                      onChanged: (val) => setState(() => _selectedReason = val),
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  )
+                  .toList(),
             ),
             if (_selectedReason == 'Other')
               TextField(

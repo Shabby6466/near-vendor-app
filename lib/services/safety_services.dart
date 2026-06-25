@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:nearvendorapp/models/api_responses/blocked_shops_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
 import 'package:nearvendorapp/utils/generic_api_response.dart';
@@ -33,14 +34,14 @@ class SafetyServices {
     }
   }
 
-  Future<GenericApiResponse> blockUser({
-    required String blockedId,
+  Future<GenericApiResponse> blockShop({
+    required String blockedShopId,
     String? reason,
   }) async {
     try {
       final response = await Server.post(
-        ApiConstants.blockUser,
-        data: {'blockedId': blockedId, if (reason != null) 'reason': reason},
+        ApiConstants.blockShop,
+        data: {'blockedShopId': blockedShopId, if (reason != null) 'reason': reason},
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
@@ -55,10 +56,10 @@ class SafetyServices {
     }
   }
 
-  Future<GenericApiResponse> unblockUser(String blockedId) async {
+  Future<GenericApiResponse> unblockShop(String blockedShopId) async {
     try {
       final response = await Server.delete(
-        '${ApiConstants.blockUser}/$blockedId',
+        '${ApiConstants.blockShop}/$blockedShopId',
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
@@ -70,6 +71,24 @@ class SafetyServices {
         }
       }
       return GenericApiResponse(message: e.toString());
+    }
+  }
+
+  Future<BlockedShopsResponse> getBlockedShops() async {
+    try {
+      final response = await Server.get(
+        ApiConstants.blockedShops,
+      );
+      return BlockedShopsResponse.fromJson(response.data);
+    } catch (e) {
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return BlockedShopsResponse.fromJson(e.response?.data);
+        } else {
+          return BlockedShopsResponse(success: false, message: e.message, shops: []);
+        }
+      }
+      return BlockedShopsResponse(success: false, message: e.toString(), shops: []);
     }
   }
 }

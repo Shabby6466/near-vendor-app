@@ -51,7 +51,8 @@ class ApiConstants {
 
   /// SAFETY
   static const String reportContent = 'api/safety/report';
-  static const String blockUser = 'api/safety/block';
+  static const String blockShop = 'api/safety/block';
+  static const String blockedShops = 'api/safety/blocked-shops';
 
   /// NOTIFICATIONS
   static const String deviceToken = 'api/notifications/device-token';

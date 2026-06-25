@@ -4,6 +4,7 @@ import 'package:nearvendorapp/utils/helper_functions.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/cubit/profile_cubit.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/view/blocked_shops_screen/view/blocked_shops_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/change_password_screen/view/change_password_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/cubit/delete_account_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/view/delete_account_confirmation_sheet.dart';
@@ -147,6 +148,14 @@ class ProfileScreen extends StatelessWidget {
                   subtitle: 'Update your security credentials',
                   onTap: () =>
                       AppNavigator.push(context, const ChangePasswordScreen()),
+                ),
+                const _SectionDivider(),
+                ProfileMenuItem(
+                  icon: Icons.block_flipped,
+                  title: 'Blocked Shops',
+                  subtitle: 'Manage shops you have blocked',
+                  onTap: () =>
+                      AppNavigator.push(context, const BlockedShopsScreen()),
                 ),
               ],
             ),
