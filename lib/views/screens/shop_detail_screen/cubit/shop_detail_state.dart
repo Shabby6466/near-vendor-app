@@ -15,15 +15,17 @@ final class ShopDetailSuccess extends ShopDetailState {
   final Shop shop;
   final List<Product> inventory;
   final ReviewStats? reviewStats;
+  final bool isLoadingInventory;
 
   const ShopDetailSuccess({
     required this.shop,
     required this.inventory,
     this.reviewStats,
+    this.isLoadingInventory = false,
   });
 
   @override
-  List<Object?> get props => [shop, inventory, reviewStats];
+  List<Object?> get props => [shop, inventory, reviewStats, isLoadingInventory];
 }
 
 final class ShopDetailFailure extends ShopDetailState {

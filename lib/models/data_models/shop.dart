@@ -88,10 +88,12 @@ class Shop extends Equatable {
       shopLatitude: double.tryParse(
         (json['shopLatitude'] ?? json['latitude'])?.toString() ?? '',
       ),
-      shopContactPhone: json['shopContactPhone'] as String? ??
+      shopContactPhone:
+          json['shopContactPhone'] as String? ??
           json['whatsappNumber'] as String? ??
           json['phone'] as String?,
-      whatsappNumber: json['whatsappNumber'] as String? ??
+      whatsappNumber:
+          json['whatsappNumber'] as String? ??
           json['shopContactPhone'] as String? ??
           json['phone'] as String?,
       storeEmail: json['storeEmail'] as String?,

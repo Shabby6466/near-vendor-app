@@ -601,6 +601,9 @@ class ShopDetailScreen extends StatelessWidget {
     List<Product> inventory,
   ) {
     final theme = Theme.of(context);
+    final state = context.read<ShopDetailCubit>().state;
+    final isLoadingInventory = state is ShopDetailSuccess && state.isLoadingInventory;
+
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: AppSpacing.mediumHorizontalSpacing(context),
@@ -639,7 +642,9 @@ class ShopDetailScreen extends StatelessWidget {
             ],
           ),
           SizedBox(height: AppSpacing.smallVerticalSpacing(context)),
-          if (inventory.isEmpty)
+          if (isLoadingInventory)
+            const ShopInventoryShimmerLoading()
+          else if (inventory.isEmpty)
             const Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 40),

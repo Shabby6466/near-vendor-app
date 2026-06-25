@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearvendorapp/gen/colors.gen.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/opening_hours.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
@@ -28,18 +28,6 @@ class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({super.key, this.productId, this.product});
 
   String get _effectiveItemId => productId ?? product?.id ?? '';
-
-  bool _shouldPreventLoading(Product? prod) {
-    if (prod == null) return false;
-    final hasProductInfo = prod.id.isNotEmpty && prod.name.isNotEmpty;
-    final shopMap = prod.shop;
-    final hasShopInfo =
-        shopMap != null &&
-        (shopMap['id']?.toString().isNotEmpty ?? false) &&
-        (shopMap['shopName']?.toString().isNotEmpty ?? false);
-
-    return hasProductInfo && hasShopInfo;
-  }
 
   void _handleReport(BuildContext context) {
     final state = context.read<ProductDetailCubit>().state;
@@ -74,16 +62,12 @@ class ProductDetailScreen extends StatelessWidget {
     return BlocProvider<ProductDetailCubit>(
       create: (context) {
         final cubit = ProductDetailCubit(initialProduct: product);
-        if (!_shouldPreventLoading(product)) {
-          cubit.fetchDetails(_effectiveItemId);
-        }
+        cubit.fetchDetails(_effectiveItemId);
         return cubit;
       },
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
           leading: Padding(
             padding: const EdgeInsets.only(left: 12.0),
             child: CircleAvatar(
@@ -108,7 +92,7 @@ class ProductDetailScreen extends StatelessWidget {
                     return IconButton(
                       icon: const Icon(
                         Icons.flag_outlined,
-                        color: ColorName.secondary,
+                        color: Colors.red,
                         size: 20,
                       ),
                       onPressed: () => _handleReport(context),
@@ -249,6 +233,17 @@ class ProductDetailScreen extends StatelessWidget {
 
   Widget _buildFloatingActionPill(BuildContext context, Shop? shop) {
     if (shop == null) return const SizedBox.shrink();
+
+    final hasPhone = shop.shopContactPhone?.isNotEmpty ?? false;
+    final hasWhatsapp = shop.whatsappNumber?.isNotEmpty ?? false;
+    final hasMap =
+        shop.shopLatitude != null &&
+        shop.shopLongitude != null &&
+        shop.shopName != null;
+    if (!hasPhone && !hasWhatsapp && !hasMap) {
+      return const SizedBox.shrink();
+    }
+
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -465,20 +460,20 @@ class ProductDetailScreen extends StatelessWidget {
   }
 
   Widget _buildDistanceBadge(BuildContext context, Shop? shop) {
-    if (shop == null) return const SizedBox.shrink();
+    if (shop == null ||
+        shop.shopLatitude == null ||
+        shop.shopLongitude == null) {
+      return const SizedBox.shrink();
+    }
     final theme = Theme.of(context);
-    return FutureBuilder<Object?>(
-      future: Geolocator.getLastKnownPosition(),
-      builder: (context, snapshot) {
-        final positionData = snapshot.data as Position?;
+    return ValueListenableBuilder<AppLocation?>(
+      valueListenable: AppData().locationNotifier,
+      builder: (context, userLocation, _) {
         String distanceText = '---';
-        if (snapshot.hasData &&
-            positionData != null &&
-            shop.shopLatitude != null &&
-            shop.shopLongitude != null) {
+        if (userLocation != null) {
           final distance = Geolocator.distanceBetween(
-            positionData.latitude,
-            positionData.longitude,
+            userLocation.latitude,
+            userLocation.longitude,
             shop.shopLatitude!,
             shop.shopLongitude!,
           );
@@ -508,7 +503,7 @@ class ProductDetailScreen extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 distanceText,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                style: theme.textTheme.labelSmall?.copyWith(
                   fontWeight: FontWeight.w800,
                   color: theme.colorScheme.onSurface,
                 ),

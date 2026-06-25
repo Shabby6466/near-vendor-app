@@ -40,17 +40,25 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
       // 1. Fetch Product Details
       final productResponse = await _productServices.getProductById(itemId);
       if (!productResponse.isSuccess) {
-        emit(
-          ProductDetailFailure(
-            productResponse.message ?? 'Failed to load product',
-          ),
-        );
+        if (state is! ProductDetailSuccess) {
+          emit(
+            ProductDetailFailure(
+              productResponse.message ?? 'Failed to load product',
+            ),
+          );
+        } else {
+          debugPrint('Silent product refresh failure: ${productResponse.message}');
+        }
         return;
       }
 
       final item = productResponse.item;
       if (item == null) {
-        emit(const ProductDetailFailure('Product details not found'));
+        if (state is! ProductDetailSuccess) {
+          emit(const ProductDetailFailure('Product details not found'));
+        } else {
+          debugPrint('Silent product refresh failure: Product details not found');
+        }
         return;
       }
 
@@ -69,7 +77,11 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
 
       emit(ProductDetailSuccess(item: item, shop: shop));
     } catch (e) {
-      emit(ProductDetailFailure(e.toString()));
+      if (state is! ProductDetailSuccess) {
+        emit(ProductDetailFailure(e.toString()));
+      } else {
+        debugPrint('Silent product refresh exception: $e');
+      }
     }
   }
 

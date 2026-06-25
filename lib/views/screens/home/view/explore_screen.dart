@@ -6,7 +6,7 @@ import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/home/widgets/category_selector.dart';
-import 'package:nearvendorapp/views/screens/home/widgets/shop_grid.dart';
+import 'package:nearvendorapp/views/screens/home/widgets/shops_grid.dart';
 import 'package:nearvendorapp/views/widgets/app_search_bar.dart';
 
 class ExploreScreen extends StatelessWidget {
@@ -193,7 +193,7 @@ class ExploreScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      const ShopGrid(),
+                      const ShopsGrid(),
                     ],
                   ),
                 ),

@@ -227,71 +227,7 @@ class ShopDetailShimmerLoading extends StatelessWidget {
                   child: const ShimmerEffect(borderRadius: 4),
                 ),
                 const SizedBox(height: 16),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    childAspectRatio: 0.8,
-                  ),
-                  itemCount: 4,
-                  itemBuilder: (_, index) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: theme.cardColor,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(
-                          color: theme.dividerColor.withValues(alpha: 0.05),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Container(
-                              clipBehavior: Clip.antiAlias,
-                              decoration: const BoxDecoration(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16),
-                                ),
-                              ),
-                              child: const ShimmerEffect(borderRadius: 0),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 80,
-                                  height: 12,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                                  ),
-                                  child: const ShimmerEffect(borderRadius: 4),
-                                ),
-                                const SizedBox(height: 6),
-                                Container(
-                                  width: 50,
-                                  height: 10,
-                                  clipBehavior: Clip.antiAlias,
-                                  decoration: const BoxDecoration(
-                                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                                  ),
-                                  child: const ShimmerEffect(borderRadius: 4),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                const ShopInventoryShimmerLoading(),
               ],
             ),
           ),
@@ -299,6 +235,82 @@ class ShopDetailShimmerLoading extends StatelessWidget {
           const SizedBox(height: 120),
         ],
       ),
+    );
+  }
+}
+
+class ShopInventoryShimmerLoading extends StatelessWidget {
+  const ShopInventoryShimmerLoading({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return GridView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.zero,
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 0.82,
+      ),
+      itemCount: 4,
+      itemBuilder: (_, index) {
+        return Container(
+          decoration: BoxDecoration(
+            color: theme.cardColor,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(
+              color: theme.dividerColor.withValues(alpha: 0.05),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Container(
+                  clipBehavior: Clip.antiAlias,
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                  ),
+                  child: const ShimmerEffect(borderRadius: 0),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 12,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      child: const ShimmerEffect(borderRadius: 4),
+                    ),
+                    const SizedBox(height: 6),
+                    Container(
+                      width: 50,
+                      height: 10,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(4)),
+                      ),
+                      child: const ShimmerEffect(borderRadius: 4),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

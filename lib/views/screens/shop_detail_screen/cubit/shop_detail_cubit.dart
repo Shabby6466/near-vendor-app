@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:nearvendorapp/cubits/analytics_mixin.dart';
@@ -28,6 +29,7 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
           shop: initialShop,
           inventory: const [],
           reviewStats: initialShop.reviewStats, // May be null initially
+          isLoadingInventory: true,
         ),
       );
     } else {
@@ -66,7 +68,18 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
             ),
           );
         } else {
-          emit(const ShopDetailFailure('Shop details not found'));
+          if (state is! ShopDetailSuccess) {
+            emit(const ShopDetailFailure('Shop details not found'));
+          } else {
+            final successState = state as ShopDetailSuccess;
+            emit(
+              ShopDetailSuccess(
+                shop: successState.shop,
+                inventory: successState.inventory,
+                reviewStats: successState.reviewStats,
+              ),
+            );
+          }
         }
       } else {
         final errorMessage = (!shopResponse.isSuccess)
@@ -76,10 +89,35 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
             : ((productsResponse.message ?? '').isEmpty
                   ? 'Failed to load items'
                   : productsResponse.message!);
-        emit(ShopDetailFailure(errorMessage));
+
+        if (state is! ShopDetailSuccess) {
+          emit(ShopDetailFailure(errorMessage));
+        } else {
+          final successState = state as ShopDetailSuccess;
+          emit(
+            ShopDetailSuccess(
+              shop: successState.shop,
+              inventory: successState.inventory,
+              reviewStats: successState.reviewStats,
+            ),
+          );
+          debugPrint('Silent shop detail refresh failure: $errorMessage');
+        }
       }
     } catch (e) {
-      emit(ShopDetailFailure(e.toString()));
+      if (state is! ShopDetailSuccess) {
+        emit(ShopDetailFailure(e.toString()));
+      } else {
+        final successState = state as ShopDetailSuccess;
+        emit(
+          ShopDetailSuccess(
+            shop: successState.shop,
+            inventory: successState.inventory,
+            reviewStats: successState.reviewStats,
+          ),
+        );
+        debugPrint('Silent shop detail refresh exception: $e');
+      }
     }
   }
 

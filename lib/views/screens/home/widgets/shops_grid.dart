@@ -1,7 +1,12 @@
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/common/fallback_banner.dart';
@@ -13,8 +18,8 @@ import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/location_required_widget.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class ShopGrid extends StatelessWidget {
-  const ShopGrid({super.key});
+class ShopsGrid extends StatelessWidget {
+  const ShopsGrid({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -186,21 +191,23 @@ class ShopCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: theme.dividerColor.withValues(alpha: isDark ? 0.1 : 0.06),
+          width: 0.8,
+        ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-            blurRadius: 10,
+            color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.03),
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
-        border: isDark
-            ? Border.all(color: theme.dividerColor.withValues(alpha: 0.1))
-            : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
+          AspectRatio(
+            aspectRatio: 1.5,
             child: Stack(
               children: [
                 ClipRRect(
@@ -211,12 +218,13 @@ class ShopCard extends StatelessWidget {
                     imageUrl: shop.coverImageUrl ?? '',
                     fit: BoxFit.cover,
                     width: double.infinity,
+                    height: double.infinity,
                     placeholder: (context, url) => Container(
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            theme.primaryColor.withValues(alpha: 0.1),
-                            theme.primaryColor.withValues(alpha: 0.05),
+                            theme.primaryColor.withValues(alpha: 0.06),
+                            theme.primaryColor.withValues(alpha: 0.02),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -224,9 +232,9 @@ class ShopCard extends StatelessWidget {
                       ),
                       child: Center(
                         child: Icon(
-                          Icons.storefront_outlined,
-                          color: theme.primaryColor.withValues(alpha: 0.4),
-                          size: 32,
+                          Icons.storefront_rounded,
+                          color: theme.primaryColor.withValues(alpha: 0.2),
+                          size: 36,
                         ),
                       ),
                     ),
@@ -234,8 +242,8 @@ class ShopCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           colors: [
-                            theme.primaryColor.withValues(alpha: 0.1),
-                            theme.primaryColor.withValues(alpha: 0.05),
+                            theme.primaryColor.withValues(alpha: 0.06),
+                            theme.primaryColor.withValues(alpha: 0.02),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -243,149 +251,135 @@ class ShopCard extends StatelessWidget {
                       ),
                       child: Center(
                         child: Icon(
-                          Icons.storefront_outlined,
-                          color: theme.primaryColor.withValues(alpha: 0.4),
-                          size: 32,
+                          Icons.storefront_rounded,
+                          color: theme.primaryColor.withValues(alpha: 0.2),
+                          size: 36,
                         ),
                       ),
                     ),
                   ),
                 ),
-                if (shop.distance != null)
-                  Positioned(
-                    top: 8,
-                    right: 8,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withValues(alpha: 0.6),
+                ValueListenableBuilder<AppLocation?>(
+                  valueListenable: AppData().locationNotifier,
+                  builder: (context, userLocation, _) {
+                    double? calculatedDistance = shop.distance;
+                    if (userLocation != null &&
+                        shop.shopLatitude != null &&
+                        shop.shopLongitude != null) {
+                      calculatedDistance = Geolocator.distanceBetween(
+                        userLocation.latitude,
+                        userLocation.longitude,
+                        shop.shopLatitude!,
+                        shop.shopLongitude!,
+                      );
+                    }
+
+                    if (calculatedDistance == null) return const SizedBox.shrink();
+
+                    return Positioned(
+                      top: 8,
+                      right: 8,
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.location_on_rounded,
-                            color: Colors.white,
-                            size: 10,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            shop.distance! < 1000
-                                ? '${shop.distance!.toInt()}m'
-                                : '${(shop.distance! / 1000).toStringAsFixed(1)}km',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 10,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                // Badge Overlays
-                Positioned(
-                  top: 8,
-                  left: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      if (shop.isVerifiedBadge ?? false)
-                        Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 4,
-                                offset: Offset(0, 2),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.verified_rounded,
-                            color: Colors.blue,
-                            size: 14,
-                          ),
-                        ),
-                      if (shop.isRecentlyActive ?? false)
-                        Padding(
-                          padding: const EdgeInsets.only(top: 4),
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
                           child: Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                              boxShadow: const [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 4,
-                                  offset: Offset(0, 2),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            color: Colors.black.withValues(alpha: 0.4),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(
+                                  Icons.location_on_rounded,
+                                  color: Colors.white,
+                                  size: 10,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  calculatedDistance < 1000
+                                      ? '${calculatedDistance.toInt()}m'
+                                      : '${(calculatedDistance / 1000).toStringAsFixed(1)}km',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                         ),
-                    ],
-                  ),
-                ),
-                // Category Tag
-                Positioned(
-                  bottom: 8,
-                  left: 8,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 6,
-                      vertical: 2,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withValues(alpha: 0.6),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      shop.businessCategory?.toUpperCase() ?? 'N/A',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 8,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.5,
                       ),
-                    ),
-                  ),
+                    );
+                  },
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  shop.shopName ?? 'Unknown Shop',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 13,
-                    letterSpacing: -0.2,
+                if (shop.businessCategory?.isNotEmpty ?? false) ...[
+                  Text(
+                    shop.businessCategory!.toUpperCase(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: theme.primaryColor,
+                      fontSize: 8.5,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 0.8,
+                    ),
                   ),
+                  const SizedBox(height: 4),
+                ],
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        shop.shopName ?? 'Unknown Shop',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                    ),
+                    if (shop.isVerifiedBadge ?? false) ...[
+                      const SizedBox(width: 4),
+                      Icon(
+                        Icons.verified_rounded,
+                        color: theme.primaryColor,
+                        size: 14,
+                      ),
+                    ],
+                    if (shop.isRecentlyActive ?? false) ...[
+                      const SizedBox(width: 4),
+                      Container(
+                        width: 7,
+                        height: 7,
+                        decoration: const BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Row(
                   children: [
                     Icon(
                       Icons.location_on_rounded,
-                      size: 12,
-                      color: theme.primaryColor.withValues(alpha: 0.7),
+                      size: 11,
+                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4),
                     ),
                     const SizedBox(width: 2),
                     Expanded(
@@ -405,17 +399,6 @@ class ShopCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (shop.itemCount != null) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    '${shop.itemCount} Items Available',
-                    style: TextStyle(
-                      color: theme.primaryColor,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
               ],
             ),
           ),

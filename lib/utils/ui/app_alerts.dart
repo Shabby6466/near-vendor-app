@@ -5,17 +5,29 @@ import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 class AppAlerts {
   AppAlerts._();
 
+  static double _getSafeTopPadding(BuildContext context) {
+    double topPadding = MediaQuery.paddingOf(context).top;
+    if (topPadding == 0) {
+      try {
+        final view = View.of(context);
+        topPadding = view.padding.top / view.devicePixelRatio;
+      } catch (e) {
+        debugPrint('Error getting raw view padding: $e');
+      }
+    }
+    return topPadding + 8;
+  }
+
   static void showSuccess(
     BuildContext context,
     String message, {
     bool isDarkBackground = false,
   }) {
-    final topPadding = MediaQuery.paddingOf(context).top + 8;
     AlertInfo.show(
       context: context,
       text: message,
       typeInfo: TypeInfo.success,
-      padding: topPadding,
+      padding: _getSafeTopPadding(context),
       backgroundColor: isDarkBackground ? Colors.black87 : null,
       textColor: isDarkBackground ? Colors.white : null,
     );
@@ -26,12 +38,11 @@ class AppAlerts {
     String message, {
     bool isDarkBackground = false,
   }) {
-    final topPadding = MediaQuery.paddingOf(context).top + 8;
     AlertInfo.show(
       context: context,
       text: message,
       typeInfo: TypeInfo.error,
-      padding: topPadding,
+      padding: _getSafeTopPadding(context),
       backgroundColor: isDarkBackground ? Colors.black87 : null,
       textColor: isDarkBackground ? Colors.white : null,
     );
@@ -43,11 +54,10 @@ class AppAlerts {
     String title = "Notification",
     bool isDarkBackground = false,
   }) {
-    final topPadding = MediaQuery.paddingOf(context).top + 8;
     AlertInfo.show(
       context: context,
       text: message,
-      padding: topPadding,
+      padding: _getSafeTopPadding(context),
       backgroundColor: isDarkBackground ? Colors.black87 : null,
       textColor: isDarkBackground ? Colors.white : null,
     );
