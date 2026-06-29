@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:nearvendorapp/enums/report_target_type.dart';
 import 'package:nearvendorapp/models/api_responses/blocked_shops_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
@@ -7,7 +8,7 @@ import 'package:nearvendorapp/utils/generic_api_response.dart';
 class SafetyServices {
   Future<GenericApiResponse> reportContent({
     required String targetId,
-    required String targetType,
+    required ReportTargetType targetType,
     required String reason,
     String? additionalDetails,
   }) async {
@@ -16,7 +17,7 @@ class SafetyServices {
         ApiConstants.reportContent,
         data: {
           'targetId': targetId,
-          'targetType': targetType.toUpperCase(),
+          'targetType': targetType.name.toUpperCase(),
           'reason': reason,
           if (additionalDetails != null) 'additionalDetails': additionalDetails,
         },

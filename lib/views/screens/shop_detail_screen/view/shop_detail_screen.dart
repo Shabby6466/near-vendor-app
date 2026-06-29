@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:nearvendorapp/enums/report_target_type.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/opening_hours.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
@@ -26,7 +27,7 @@ import 'package:nearvendorapp/views/screens/shop_detail_screen/widgets/shop_deta
 import 'package:nearvendorapp/views/widgets/animated_error_state.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:nearvendorapp/views/widgets/safety_report/safety_report_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/shop_timing_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -602,7 +603,8 @@ class ShopDetailScreen extends StatelessWidget {
   ) {
     final theme = Theme.of(context);
     final state = context.read<ShopDetailCubit>().state;
-    final isLoadingInventory = state is ShopDetailSuccess && state.isLoadingInventory;
+    final isLoadingInventory =
+        state is ShopDetailSuccess && state.isLoadingInventory;
 
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -819,11 +821,12 @@ class ShopDetailScreen extends StatelessWidget {
             subtitle: const Text('Report inappropriate content or behavior'),
             onTap: () {
               AppNavigator.pop(context);
-              showDialog(
+              AppBottomSheet.showBottomSheet(
                 context: context,
-                builder: (dialogCtx) => SafetyReportDialog(
+                isScrollControlled: true,
+                child: SafetyReportBottomSheet(
                   targetId: shop.id ?? '',
-                  targetType: 'SHOP',
+                  targetType: ReportTargetType.shop,
                   targetName: shop.shopName ?? 'Shop',
                 ),
               );

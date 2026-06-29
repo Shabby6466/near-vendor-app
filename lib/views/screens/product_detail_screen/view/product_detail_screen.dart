@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:nearvendorapp/enums/report_target_type.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/opening_hours.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
@@ -18,7 +19,7 @@ import 'package:nearvendorapp/views/screens/product_detail_screen/widgets/produc
 import 'package:nearvendorapp/views/screens/shop_detail_screen/view/shop_detail_screen.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:nearvendorapp/views/widgets/safety_report/safety_report_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/shop_timing_view.dart';
 
 class ProductDetailScreen extends StatelessWidget {
@@ -47,11 +48,12 @@ class ProductDetailScreen extends StatelessWidget {
       return;
     }
 
-    showDialog(
+    AppBottomSheet.showBottomSheet(
       context: context,
-      builder: (ctx) => SafetyReportDialog(
+      isScrollControlled: true,
+      child: SafetyReportBottomSheet(
         targetId: item.id,
-        targetType: 'ITEM',
+        targetType: ReportTargetType.item,
         targetName: item.name,
       ),
     );

@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/blocked_shops_screen/cubit/blocked_shops_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
@@ -18,26 +17,7 @@ class BlockedShopsScreen extends StatelessWidget {
     return BlocProvider(
       create: (context) => BlockedShopsCubit()..fetchBlockedShops(),
       child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.arrow_back_ios_new,
-              size: 20,
-              color: theme.iconTheme.color,
-            ),
-            onPressed: () => AppNavigator.pop(context),
-          ),
-          centerTitle: true,
-          title: Text(
-            'Blocked Shops',
-            style: theme.textTheme.titleLarge?.copyWith(
-              fontSize: 18,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
+        appBar: AppBar(title: const Text('Blocked Shops')),
         body: BlocConsumer<BlockedShopsCubit, BlockedShopsState>(
           listener: (context, state) {
             if (state is BlockedShopsFailure) {
@@ -55,7 +35,10 @@ class BlockedShopsScreen extends StatelessWidget {
                 return _buildEmptyState(context);
               }
               return ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 itemCount: shops.length,
                 itemBuilder: (context, index) {
                   final shop = shops[index];
@@ -77,11 +60,7 @@ class BlockedShopsScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.block_flipped,
-            size: 80,
-            color: Colors.grey.shade400,
-          ),
+          Icon(Icons.block_flipped, size: 80, color: Colors.grey.shade400),
           const SizedBox(height: 16),
           Text(
             'No Blocked Shops',
@@ -93,9 +72,7 @@ class BlockedShopsScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             'Shops you block will appear here.',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: Colors.grey,
-            ),
+            style: theme.textTheme.bodyMedium?.copyWith(color: Colors.grey),
           ),
         ],
       ),
@@ -111,9 +88,7 @@ class BlockedShopsScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: theme.dividerColor.withValues(alpha: 0.05),
-        ),
+        border: Border.all(color: theme.dividerColor.withValues(alpha: 0.05)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.02),
@@ -185,7 +160,9 @@ class BlockedShopsScreen extends StatelessWidget {
             );
           },
           style: OutlinedButton.styleFrom(
-            side: BorderSide(color: theme.colorScheme.primary.withValues(alpha: 0.5)),
+            side: BorderSide(
+              color: theme.colorScheme.primary.withValues(alpha: 0.5),
+            ),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),

@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/enums/report_target_type.dart';
 import 'package:nearvendorapp/models/data_models/comment.dart';
 import 'package:nearvendorapp/models/data_models/review.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
@@ -11,9 +12,10 @@ import 'package:nearvendorapp/views/screens/common/image_viewer_screen.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/cubit/review_detail_cubit.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/comment_card.dart';
 import 'package:nearvendorapp/views/screens/shop_detail_screen/reviews/widgets/comment_input.dart';
+import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 import 'package:nearvendorapp/views/widgets/rating_bar_widget.dart';
-import 'package:nearvendorapp/views/widgets/safety_report_dialog.dart';
+import 'package:nearvendorapp/views/widgets/safety_report/safety_report_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
 
 class ReviewDetailScreen extends StatelessWidget {
@@ -33,22 +35,24 @@ class ReviewDetailScreen extends StatelessWidget {
       AppAlerts.showError(context, 'Please sign in to report');
       return;
     }
-    showDialog(
+    AppBottomSheet.showBottomSheet(
       context: context,
-      builder: (ctx) => SafetyReportDialog(
+      isScrollControlled: true,
+      child: SafetyReportBottomSheet(
         targetId: reviewId,
-        targetType: 'REVIEW',
+        targetType: ReportTargetType.review,
         targetName: 'Review',
       ),
     );
   }
 
   void _showCommentReportDialog(BuildContext context, Comment comment) {
-    showDialog(
+    AppBottomSheet.showBottomSheet(
       context: context,
-      builder: (ctx) => SafetyReportDialog(
+      isScrollControlled: true,
+      child: SafetyReportBottomSheet(
         targetId: comment.id ?? '',
-        targetType: 'COMMENT',
+        targetType: ReportTargetType.comment,
         targetName: 'Comment',
       ),
     );
@@ -205,9 +209,7 @@ class ReviewDetailScreen extends StatelessWidget {
                 review.userPhotoUrl!.isNotEmpty) {
               AppNavigator.push(
                 context,
-                ImageViewerScreen(
-                  imageUrls: [review.userPhotoUrl!],
-                ),
+                ImageViewerScreen(imageUrls: [review.userPhotoUrl!]),
               );
             }
           },
@@ -243,9 +245,7 @@ class ReviewDetailScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 4),
-              RatingBarWidget.display(
-                rating: (review.rating ?? 0).toDouble(),
-              ),
+              RatingBarWidget.display(rating: (review.rating ?? 0).toDouble()),
               const SizedBox(height: 2),
               Text(
                 review.isEdited == true
@@ -275,10 +275,7 @@ class ReviewDetailScreen extends StatelessWidget {
           onTap: () {
             AppNavigator.push(
               context,
-              ImageViewerScreen(
-                imageUrls: review.images,
-                initialIndex: index,
-              ),
+              ImageViewerScreen(imageUrls: review.images, initialIndex: index),
             );
           },
           child: ClipRRect(
