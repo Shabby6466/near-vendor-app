@@ -7,7 +7,6 @@ import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
 import 'package:nearvendorapp/services/wishlist_services.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
-import 'package:nearvendorapp/utils/category_utils.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/utils/theme/app_spacing.dart';
@@ -19,7 +18,6 @@ import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/item_card.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
 import 'package:nearvendorapp/views/widgets/shimmer_effect.dart';
-import 'package:toasty_box/toast_service.dart';
 
 class SearchResultsList extends StatelessWidget {
   const SearchResultsList({super.key});
@@ -195,10 +193,7 @@ class _EmptyStateState extends State<_EmptyState> {
     if (!mounted) return;
 
     // Show category picker bottom sheet
-    final selectedCategory = await _showCategoryPicker(context, [
-      CategoryModel(id: '', name: 'None / Skip'),
-      ...categories,
-    ]);
+    final selectedCategory = await _showCategoryPicker(context, categories);
     if (!mounted) return;
     // null = user dismissed the sheet
     if (selectedCategory == null) return;
@@ -219,22 +214,22 @@ class _EmptyStateState extends State<_EmptyState> {
       setState(() => _isCreatingWish = false);
 
       if (response.success == true) {
-        ToastService.showSuccessToast(
+        AppAlerts.showSuccess(
           context,
-          message: '✨ Wish added! Local vendors will be notified.',
+          '✨ Wish added! Local vendors will be notified.',
         );
       } else {
-        ToastService.showErrorToast(
+        AppAlerts.showError(
           context,
-          message: (response.message) ?? 'Failed to create wish.',
+          (response.message) ?? 'Failed to create wish.',
         );
       }
     } catch (e) {
       if (!mounted) return;
       setState(() => _isCreatingWish = false);
-      ToastService.showErrorToast(
+      AppAlerts.showError(
         context,
-        message: 'Failed to create wish. Please try again.',
+        'Failed to create wish. Please try again.',
       );
     }
   }
@@ -251,7 +246,7 @@ class _EmptyStateState extends State<_EmptyState> {
         children: [
           const SizedBox(height: 4),
           Padding(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 4),
+            padding: const EdgeInsets.symmetric(vertical: 8),
             child: Row(
               children: [
                 Container(
@@ -294,6 +289,18 @@ class _EmptyStateState extends State<_EmptyState> {
                     ],
                   ),
                 ),
+                TextButton(
+                  onPressed: () {
+                    AppNavigator.pop(context, CategoryModel(id: '', name: 'None / Skip'));
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: ColorName.primary,
+                  ),
+                  child: const Text(
+                    'Skip',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
               ],
             ),
           ),
@@ -306,48 +313,30 @@ class _EmptyStateState extends State<_EmptyState> {
               separatorBuilder: (_, _) => const SizedBox(height: 4),
               itemBuilder: (context, index) {
                 final cat = categories[index];
-                final iconPath = CategoryUtils.getCategoryIcon(cat.name);
                 final isDark = Theme.of(context).brightness == Brightness.dark;
 
-                return ListTile(
-                  dense: true,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  leading: cat.id.isEmpty
-                      ? const Icon(
-                          Icons.do_not_disturb_on_rounded,
-                          color: ColorName.primary,
-                          size: 20,
-                        )
-                      : (iconPath != null
-                            ? iconPath.svg(
-                                colorFilter: const ColorFilter.mode(
-                                  ColorName.primary,
-                                  BlendMode.srcIn,
-                                ),
-                                width: 20,
-                                height: 20,
-                              )
-                            : Icon(
-                                CategoryUtils.getDefaultIcon(cat.name),
-                                color: ColorName.primary,
-                                size: 20,
-                              )),
-                  title: Text(
-                    cat.name,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: isDark ? Colors.white : Colors.black87,
+                return Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    dense: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    title: Text(
+                      cat.name,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right_rounded,
+                      size: 20,
+                      color: isDark ? Colors.white24 : Colors.grey.shade400,
+                    ),
+                    onTap: () => AppNavigator.pop(context, cat),
                   ),
-                  trailing: Icon(
-                    Icons.chevron_right_rounded,
-                    size: 20,
-                    color: isDark ? Colors.white24 : Colors.grey.shade400,
-                  ),
-                  onTap: () => AppNavigator.pop(context, cat),
                 );
               },
             ),
@@ -602,10 +591,7 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
     // Show category picker bottom sheet (reusing the one from _EmptyState logic)
     // For simplicity, I will implement a similar helper here or make the other one static.
     // I will implement a quick one here for now.
-    final selectedCategory = await _showCategoryPickerQuick(context, [
-      CategoryModel(id: '', name: 'None / Skip'),
-      ...categories,
-    ]);
+    final selectedCategory = await _showCategoryPickerQuick(context, categories);
     if (!mounted) return;
     if (selectedCategory == null) return;
 
@@ -625,20 +611,20 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
       setState(() => _isCreatingWish = false);
 
       if (response.success == true) {
-        ToastService.showSuccessToast(
+        AppAlerts.showSuccess(
           context,
-          message: '✨ Wish added! Vendors will be notified.',
+          '✨ Wish added! Vendors will be notified.',
         );
       } else {
-        ToastService.showErrorToast(
+        AppAlerts.showError(
           context,
-          message: (response.message) ?? 'Failed to create wish.',
+          (response.message) ?? 'Failed to create wish.',
         );
       }
     } catch (e) {
       if (!mounted) return;
       setState(() => _isCreatingWish = false);
-      ToastService.showErrorToast(context, message: 'Failed to create wish.');
+      AppAlerts.showError(context, 'Failed to create wish.');
     }
   }
 
@@ -653,37 +639,77 @@ class _CompactWishlistCTAState extends State<_CompactWishlistCTA> {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(height: 4),
-          Text(
-            'Select Category',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black87,
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: ColorName.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.category_rounded,
+                    color: ColorName.primary,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    'Select Category',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? Colors.white
+                          : Colors.black87,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    AppNavigator.pop(context, CategoryModel(id: '', name: 'None / Skip'));
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: ColorName.primary,
+                  ),
+                  child: const Text(
+                    'Skip',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 12),
+          const Divider(height: 24),
           Flexible(
             child: ListView.separated(
               shrinkWrap: true,
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
               itemCount: categories.length,
               separatorBuilder: (_, _) => const SizedBox(height: 4),
               itemBuilder: (context, index) {
                 final cat = categories[index];
-                return ListTile(
-                  leading: cat.id.isEmpty
-                      ? const Icon(
-                          Icons.do_not_disturb_on_rounded,
-                          color: ColorName.primary,
-                          size: 18,
-                        )
-                      : null,
-                  title: Text(cat.name),
-                  trailing: const Icon(Icons.chevron_right, size: 18),
-                  onTap: () => AppNavigator.pop(context, cat),
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+                return Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    dense: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    title: Text(
+                      cat.name,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                    ),
+                    trailing: const Icon(Icons.chevron_right, size: 18),
+                    onTap: () => AppNavigator.pop(context, cat),
+                  ),
                 );
               },
             ),

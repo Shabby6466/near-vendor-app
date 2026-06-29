@@ -25,7 +25,10 @@ class CreateWishCubit extends Cubit<CreateWishState> {
 
   void selectCategory(CategoryModel? category) {
     _selectedCategory = category;
-    emit(CreateWishCategoriesLoaded());
+    emit(CreateWishCategoriesLoaded(
+      selectedCategory: category,
+      timestamp: DateTime.now(),
+    ));
   }
 
   Future<void> loadCategories() async {
@@ -34,10 +37,16 @@ class CreateWishCubit extends Cubit<CreateWishState> {
       _categories
         ..clear()
         ..addAll(response.categories);
-      emit(CreateWishCategoriesLoaded());
+      emit(CreateWishCategoriesLoaded(
+        selectedCategory: _selectedCategory,
+        timestamp: DateTime.now(),
+      ));
     } catch (_) {
       _categories.clear();
-      emit(CreateWishCategoriesLoaded());
+      emit(CreateWishCategoriesLoaded(
+        selectedCategory: _selectedCategory,
+        timestamp: DateTime.now(),
+      ));
     }
   }
 

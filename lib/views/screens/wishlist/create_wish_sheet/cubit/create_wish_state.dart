@@ -9,7 +9,15 @@ sealed class CreateWishState extends Equatable {
 
 final class CreateWishInitial extends CreateWishState {}
 
-final class CreateWishCategoriesLoaded extends CreateWishState {}
+final class CreateWishCategoriesLoaded extends CreateWishState {
+  final CategoryModel? selectedCategory;
+  final DateTime? timestamp;
+
+  const CreateWishCategoriesLoaded({this.selectedCategory, this.timestamp});
+
+  @override
+  List<Object?> get props => [selectedCategory, timestamp];
+}
 
 final class CreateWishSubmitting extends CreateWishState {}
 

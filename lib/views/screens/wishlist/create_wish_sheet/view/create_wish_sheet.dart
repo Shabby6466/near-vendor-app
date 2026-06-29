@@ -3,21 +3,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/wishlist/create_wish_sheet/cubit/create_wish_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
 import 'package:nearvendorapp/views/widgets/loading_animation.dart';
-import 'package:toasty_box/toasty_box.dart';
 
 class CreateWishSheet extends StatelessWidget {
   const CreateWishSheet({super.key});
 
   static Future<void> show(BuildContext context) {
+    UserWishlistCubit? userWishlistCubit;
+    try {
+      userWishlistCubit = context.read<UserWishlistCubit>();
+    } catch (_) {}
+
     return AppBottomSheet.showBottomSheet(
       context: context,
       isScrollControlled: true,
-      child: BlocProvider(
-        create: (context) => CreateWishCubit()..loadCategories(),
+      padding: EdgeInsets.zero,
+      child: MultiBlocProvider(
+        providers: [
+          if (userWishlistCubit != null)
+            BlocProvider.value(value: userWishlistCubit),
+          BlocProvider(
+            create: (context) => CreateWishCubit()..loadCategories(),
+          ),
+        ],
         child: const CreateWishSheet(),
       ),
     );
@@ -28,14 +40,18 @@ class CreateWishSheet extends StatelessWidget {
     return BlocConsumer<CreateWishCubit, CreateWishState>(
       listener: (context, state) {
         if (state is CreateWishSuccess) {
-          context.read<UserWishlistCubit>().getMyWishlists(refresh: true);
-          AppNavigator.pop(context);
-          ToastService.showSuccessToast(
+          try {
+            context.read<UserWishlistCubit>().getMyWishlists(refresh: true);
+          } catch (e) {
+            debugPrint('UserWishlistCubit not found in context: $e');
+          }
+          AppAlerts.showSuccess(
             context,
-            message: 'Wish submitted! We will notify local vendors.',
+            'Wish submitted! We will notify local vendors.',
           );
+          AppNavigator.pop(context);
         } else if (state is CreateWishFailure) {
-          ToastService.showErrorToast(context, message: state.message);
+          AppAlerts.showError(context, state.message);
         }
       },
       builder: (context, state) {
@@ -110,27 +126,32 @@ class CreateWishSheet extends StatelessWidget {
                   validator: (v) => v!.trim().isEmpty ? 'Required' : null,
                 ),
                 const SizedBox(height: 16),
-                DropdownButtonFormField<CategoryModel>(
-                  initialValue: cubit.selectedCategory,
-                  hint: state is! CreateWishCategoriesLoaded
-                      ? const Text('Loading categories...')
-                      : const Text('Select Category (Optional)'),
-                  decoration: InputDecoration(
-                    labelText: 'Category',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    prefixIcon: const Icon(Icons.category_outlined),
-                  ),
-                  items: cubit.categories.map((c) {
-                    return DropdownMenuItem<CategoryModel>(
-                      value: c,
-                      child: Text(c.name),
-                    );
-                  }).toList(),
-                  onChanged: state is! CreateWishCategoriesLoaded
+                InkWell(
+                  onTap: state is! CreateWishCategoriesLoaded
                       ? null
-                      : (val) => cubit.selectCategory(val),
+                      : () => _showCategorySheet(context, cubit),
+                  borderRadius: BorderRadius.circular(12),
+                  child: InputDecorator(
+                    decoration: InputDecoration(
+                      labelText: 'Category',
+                      hintText: state is! CreateWishCategoriesLoaded
+                          ? 'Loading categories...'
+                          : 'Select Category (Optional)',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: const Icon(Icons.category_outlined),
+                      suffixIcon: const Icon(Icons.arrow_drop_down),
+                    ),
+                    isEmpty: cubit.selectedCategory == null,
+                    child: Text(
+                      cubit.selectedCategory?.name ?? '',
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: isDark ? Colors.white : Colors.black,
+                      ),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -172,5 +193,130 @@ class CreateWishSheet extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> _showCategorySheet(BuildContext context, CreateWishCubit cubit) async {
+    final selected = await AppBottomSheet.showBottomSheet<CategoryModel>(
+      context: context,
+      isScrollControlled: true,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const SizedBox(height: 4),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: ColorName.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Icon(
+                    Icons.category_rounded,
+                    color: ColorName.primary,
+                    size: 18,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Select Category',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        'Helps vendors match your wish faster',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white54
+                              : Colors.black45,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    AppNavigator.pop(context, CategoryModel(id: '', name: 'None / Skip'));
+                  },
+                  style: TextButton.styleFrom(
+                    foregroundColor: cubit.selectedCategory == null
+                        ? ColorName.primary
+                        : Colors.redAccent,
+                  ),
+                  child: Text(
+                    cubit.selectedCategory == null ? 'Skip' : 'Clear',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(height: 24),
+          Flexible(
+            child: ListView.separated(
+              shrinkWrap: true,
+              itemCount: cubit.categories.length,
+              separatorBuilder: (_, _) => const SizedBox(height: 4),
+              itemBuilder: (context, index) {
+                final cat = cubit.categories[index];
+                final isDark = Theme.of(context).brightness == Brightness.dark;
+                final isSelected = cubit.selectedCategory?.id == cat.id;
+
+                return Material(
+                  color: Colors.transparent,
+                  child: ListTile(
+                    dense: true,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    selected: isSelected,
+                    selectedTileColor: ColorName.primary.withValues(alpha: 0.08),
+                    title: Text(
+                      cat.name,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                        color: isSelected
+                            ? ColorName.primary
+                            : (isDark ? Colors.white : Colors.black87),
+                      ),
+                    ),
+                    trailing: isSelected
+                        ? const Icon(Icons.check_circle_rounded, color: ColorName.primary, size: 20)
+                        : Icon(
+                            Icons.chevron_right_rounded,
+                            size: 20,
+                            color: isDark ? Colors.white24 : Colors.grey.shade400,
+                          ),
+                    onTap: () => AppNavigator.pop(context, cat),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (selected != null) {
+      if (selected.id.isEmpty) {
+        cubit.selectCategory(null);
+      } else {
+        cubit.selectCategory(selected);
+      }
+    }
   }
 }

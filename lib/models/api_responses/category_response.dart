@@ -14,8 +14,8 @@ class CategoryListResponse extends BaseApiResponse {
   CategoryListResponse.fromJson(dynamic json)
     : categories = json is Map
           ? apiResponseDataList(json)
-              .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
-              .toList()
+                .map((e) => CategoryModel.fromJson(e as Map<String, dynamic>))
+                .toList()
           : const [],
       super.fromJson(json);
 }
