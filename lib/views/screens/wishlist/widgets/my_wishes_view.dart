@@ -133,9 +133,10 @@ class _MyWishesViewState extends State<MyWishesView> {
                     ),
                   ),
                 SliverPadding(
-                  padding: const EdgeInsets.only(
+                  padding: EdgeInsets.only(
                     left: 16,
                     right: 16,
+                    top: widget.filterStatus == WishlistStatus.fulfilled ? 16 : 0,
                     bottom: 120,
                   ),
                   sliver: SliverList(
