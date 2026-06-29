@@ -22,7 +22,6 @@ class WishlistMainScreen extends StatelessWidget {
       builder: (context, user, child) {
         if (user == null) {
           return Scaffold(
-            backgroundColor: Colors.transparent,
             appBar: _buildAppBar(),
             body: const _GuestStateView(),
           );
@@ -36,7 +35,6 @@ class WishlistMainScreen extends StatelessWidget {
           child: DefaultTabController(
             length: 2,
             child: Scaffold(
-              backgroundColor: Colors.transparent,
               appBar: _buildAppBar(
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(60),
@@ -90,8 +88,6 @@ class WishlistMainScreen extends StatelessWidget {
     );
   }
 }
-
-// ── Segmented pill tab bar ────────────────────────────────────────────────────
 
 class _SegmentedTabBar extends StatefulWidget {
   final bool isDark;
@@ -165,7 +161,6 @@ class _SegmentedTabBarState extends State<_SegmentedTabBar> {
 
               return Stack(
                 children: [
-                  // Animated selection pill — stadium shape, primary tint
                   AnimatedPositioned(
                     duration: const Duration(milliseconds: 280),
                     curve: Curves.easeInOutCubic,
@@ -236,7 +231,6 @@ class _SegmentedTabBarState extends State<_SegmentedTabBar> {
     );
   }
 }
-// ── Guest view ────────────────────────────────────────────────────────────────
 
 class _GuestStateView extends StatelessWidget {
   const _GuestStateView();

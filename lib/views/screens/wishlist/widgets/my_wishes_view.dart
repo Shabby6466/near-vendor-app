@@ -133,10 +133,9 @@ class _MyWishesViewState extends State<MyWishesView> {
                     ),
                   ),
                 SliverPadding(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                     left: 16,
                     right: 16,
-                    top: widget.filterStatus == WishlistStatus.fulfilled ? 16 : 0,
                     bottom: 120,
                   ),
                   sliver: SliverList(
@@ -179,18 +178,98 @@ class _MyWishesViewState extends State<MyWishesView> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
       itemCount: 4,
       itemBuilder: (context, index) {
+        final blockColor = isDark ? Colors.white12 : Colors.grey[200]!;
+
         return Padding(
           padding: const EdgeInsets.only(bottom: 12),
-          child: Shimmer(
-            duration: const Duration(seconds: 2),
-            interval: const Duration(milliseconds: 200),
-            color: isDark ? const Color(0xFF2D3748) : Colors.grey[300]!,
-            colorOpacity: 0.2,
-            child: Container(
-              height: 140,
-              decoration: BoxDecoration(
-                color: isDark ? const Color(0xFF1E242B) : Colors.white,
-                borderRadius: BorderRadius.circular(16),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E242B) : Colors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.06)
+                    : Colors.black.withValues(alpha: 0.06),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: isDark
+                      ? Colors.black.withValues(alpha: 0.2)
+                      : Colors.black.withValues(alpha: 0.04),
+                  blurRadius: 12,
+                  offset: const Offset(0, 4),
+                ),
+              ],
+            ),
+            padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
+            child: Shimmer(
+              duration: const Duration(seconds: 2),
+              interval: const Duration(milliseconds: 200),
+              color: isDark ? const Color(0xFF2D3748) : Colors.grey[300]!,
+              colorOpacity: 0.2,
+              child: Row(
+                children: [
+                  // Status indicator dot placeholder
+                  Container(
+                    width: 36,
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: blockColor,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  // Title + meta placeholders
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title line
+                        Container(
+                          width: 120,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            color: blockColor,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const SizedBox(height: 6),
+                        // Subtitle line
+                        Container(
+                          width: 180,
+                          height: 10,
+                          decoration: BoxDecoration(
+                            color: blockColor,
+                            borderRadius: BorderRadius.circular(3),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  // Actions placeholders
+                  Row(
+                    children: [
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: blockColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        width: 24,
+                        height: 24,
+                        decoration: BoxDecoration(
+                          color: blockColor,
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
