@@ -8,8 +8,9 @@ class VerifyOtpResponse extends BaseApiResponse {
   bool? mustChangePassword;
 
   VerifyOtpResponse({
-    super.message,
     super.status,
+    super.statusCode,
+    super.message,
     this.token,
     this.refreshToken,
     this.user,
@@ -41,8 +42,9 @@ class LoginResponse extends BaseApiResponse {
   User? user;
 
   LoginResponse({
-    super.message,
     super.status,
+    super.statusCode,
+    super.message,
     this.token,
     this.refreshToken,
     this.user,
@@ -68,7 +70,12 @@ class LoginResponse extends BaseApiResponse {
 class MeResponse extends BaseApiResponse {
   User? user;
 
-  MeResponse({super.message, super.status, this.user});
+  MeResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    this.user,
+  });
 
   MeResponse.fromJson(dynamic json) : super.fromJson(json) {
     final data = apiResponseDataMap(json);

@@ -7,8 +7,8 @@ class ReviewListResponse extends BaseApiResponse {
   final int? total;
 
   ReviewListResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
     required this.reviews,
     this.total,
@@ -26,8 +26,7 @@ class ReviewListResponse extends BaseApiResponse {
       itemsData ??= json['items'] as List<dynamic>?;
 
       return ReviewListResponse(
-        success: json['success'] as bool? ?? (itemsData != null),
-        status: (json['statusCode'] as num?)?.toInt() ?? 200,
+        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? '',
         reviews: itemsData
                 ?.map((e) => Review.fromJson(e as Map<String, dynamic>))
@@ -39,8 +38,7 @@ class ReviewListResponse extends BaseApiResponse {
       );
     }
     return ReviewListResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
       reviews: const [],
     );
@@ -81,8 +79,8 @@ class ReviewStatsResponse extends BaseApiResponse {
   final ReviewStats? stats;
 
   ReviewStatsResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
     this.stats,
   });
@@ -91,8 +89,7 @@ class ReviewStatsResponse extends BaseApiResponse {
     if (json is Map) {
       final data = apiResponseData(json);
       return ReviewStatsResponse(
-        success: json['success'] as bool? ?? true,
-        status: (json['statusCode'] as num?)?.toInt() ?? 200,
+        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? '',
         stats: data is Map<String, dynamic>
             ? ReviewStats.fromJson(data)
@@ -100,8 +97,7 @@ class ReviewStatsResponse extends BaseApiResponse {
       );
     }
     return ReviewStatsResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
     );
   }
@@ -112,8 +108,8 @@ class CommentListResponse extends BaseApiResponse {
   final int? total;
 
   CommentListResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
     required this.comments,
     this.total,
@@ -131,8 +127,7 @@ class CommentListResponse extends BaseApiResponse {
       itemsData ??= json['items'] as List<dynamic>?;
 
       return CommentListResponse(
-        success: json['success'] as bool? ?? (itemsData != null),
-        status: (json['statusCode'] as num?)?.toInt() ?? 200,
+        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? '',
         comments: itemsData
                 ?.map((e) => Comment.fromJson(e as Map<String, dynamic>))
@@ -144,8 +139,7 @@ class CommentListResponse extends BaseApiResponse {
       );
     }
     return CommentListResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
       comments: const [],
     );

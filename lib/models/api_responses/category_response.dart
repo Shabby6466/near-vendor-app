@@ -5,8 +5,8 @@ class CategoryListResponse extends BaseApiResponse {
   final List<CategoryModel> categories;
 
   CategoryListResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
     this.categories = const [],
   });

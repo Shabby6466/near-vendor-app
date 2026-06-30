@@ -4,12 +4,16 @@ import 'package:nearvendorapp/models/data_models/order.dart';
 class CreateOrderResponse extends BaseApiResponse {
   final Order? order;
 
-  CreateOrderResponse({super.success, super.status, super.message, this.order});
+  CreateOrderResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    this.order,
+  });
 
   factory CreateOrderResponse.fromJson(Map<String, dynamic> json) {
     return CreateOrderResponse(
-      success: json['success'] as bool? ?? false,
-      status: json['statusCode'] as int? ?? 0,
+      statusCode: json['statusCode'] as int? ?? 0,
       message: json['message'] as String? ?? '',
       order: json['data'] != null
           ? Order.fromJson(json['data'] as Map<String, dynamic>)
@@ -24,8 +28,8 @@ class OrderListResponse extends BaseApiResponse {
   final List<Order> orders;
 
   OrderListResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
     required this.orders,
   });
@@ -51,8 +55,7 @@ class OrderListResponse extends BaseApiResponse {
     }
 
     return OrderListResponse(
-      success: json['success'] as bool? ?? orders.isNotEmpty,
-      status: json['statusCode'] as int? ?? 200,
+      statusCode: json['statusCode'] as int? ?? 200,
       message: json['message'] as String? ?? 'Success',
       orders: orders,
     );

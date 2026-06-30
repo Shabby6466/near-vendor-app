@@ -5,23 +5,26 @@ import 'package:nearvendorapp/models/data_models/shop.dart';
 class ShopResponse extends BaseApiResponse {
   final Shop? shop;
 
-  ShopResponse({super.success, super.status, super.message, this.shop});
+  ShopResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    this.shop,
+  });
 
   factory ShopResponse.fromJson(dynamic json) {
     if (json is Map) {
-      final status = (json['statusCode'] as num?)?.toInt() ?? 200;
+      final statusCode = (json['statusCode'] as num?)?.toInt() ?? 200;
       final data = apiResponseData(json);
       final shopJson = data is Map && data['shop'] != null ? data['shop'] : data;
       return ShopResponse(
-        success: json['success'] as bool? ?? (status == 200 || status == 201),
-        status: status,
+        statusCode: statusCode,
         message: json['message'] as String? ?? '',
         shop: shopJson is Map<String, dynamic> ? Shop.fromJson(shopJson) : null,
       );
     }
     return ShopResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
     );
   }
@@ -34,8 +37,8 @@ class ShopListResponse extends BaseApiResponse {
   final String? rangeMessage;
 
   ShopListResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
     required this.shops,
     this.meta,
@@ -46,8 +49,7 @@ class ShopListResponse extends BaseApiResponse {
   factory ShopListResponse.fromJson(dynamic json) {
     if (json is List) {
       return ShopListResponse(
-        success: true,
-        status: 200,
+        statusCode: 200,
         message: 'Success',
         shops: json
             .map((e) => Shop.fromJson(e as Map<String, dynamic>))
@@ -81,8 +83,7 @@ class ShopListResponse extends BaseApiResponse {
       }
  
       return ShopListResponse(
-        success: json['success'] as bool? ?? (shopsData != null),
-        status: (json['statusCode'] as num?)?.toInt() ?? 200,
+        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? '',
         shops:
             shopsData
@@ -100,8 +101,7 @@ class ShopListResponse extends BaseApiResponse {
     }
 
     return ShopListResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
       shops: [],
     );

@@ -9,21 +9,21 @@ sealed class SearchState extends Equatable {
 
 final class SearchInitial extends SearchState {
   final List<String> recentSearches;
-  final List<Product> recentItems;
+  final List<Product> recentProducts;
 
   const SearchInitial({
     this.recentSearches = const [],
-    this.recentItems = const [],
+    this.recentProducts = const [],
   });
 
   @override
-  List<Object?> get props => [recentSearches, recentItems];
+  List<Object?> get props => [recentSearches, recentProducts];
 }
 
 final class SearchLoading extends SearchState {}
 
 final class SearchSuccess extends SearchState {
-  final List<Product> items;
+  final List<Product> products;
   final SearchMeta? meta;
   final String? message;
   final String? query;
@@ -31,7 +31,7 @@ final class SearchSuccess extends SearchState {
   final String? rangeMessage;
 
   const SearchSuccess({
-    required this.items,
+    required this.products,
     this.meta,
     this.message,
     this.query,
@@ -41,7 +41,7 @@ final class SearchSuccess extends SearchState {
 
   @override
   List<Object?> get props => [
-    items,
+    products,
     meta,
     message,
     query,

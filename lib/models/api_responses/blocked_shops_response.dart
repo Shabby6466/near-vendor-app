@@ -1,12 +1,12 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
-import 'package:nearvendorapp/views/screens/profile_screen/view/blocked_shops_screen/cubit/blocked_shops_cubit.dart';
+import 'package:nearvendorapp/models/data_models/blocked_shop.dart';
 
 class BlockedShopsResponse extends BaseApiResponse {
   final List<BlockedShop> shops;
 
   BlockedShopsResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
     required this.shops,
   });
@@ -17,8 +17,7 @@ class BlockedShopsResponse extends BaseApiResponse {
       final rawData = apiResponseData(json);
       final shopsData = rawData is List ? rawData : [];
       return BlockedShopsResponse(
-        success: json['success'] as bool? ?? (status == 200 || status == 201),
-        status: status,
+        statusCode: status,
         message: json['message'] as String? ?? '',
         shops: shopsData
             .map((e) => BlockedShop.fromJson(e as Map<String, dynamic>))
@@ -26,10 +25,9 @@ class BlockedShopsResponse extends BaseApiResponse {
       );
     }
     return BlockedShopsResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
-      shops: [],
+      shops: const [],
     );
   }
 }

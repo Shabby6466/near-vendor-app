@@ -2,7 +2,7 @@ import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 
 class SearchItemResponse extends BaseApiResponse {
-  final List<Product> items;
+  final List<Product> products;
   final SearchMeta? meta;
   final bool isGlobalFallback;
   final String? rangeMessage;
@@ -10,10 +10,10 @@ class SearchItemResponse extends BaseApiResponse {
   final bool hasMoreBeyondRadius;
 
   SearchItemResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
-    required this.items,
+    required this.products,
     this.meta,
     this.isGlobalFallback = false,
     this.rangeMessage,
@@ -24,7 +24,7 @@ class SearchItemResponse extends BaseApiResponse {
   factory SearchItemResponse.fromJson(dynamic json) {
     if (json is Map) {
       final data = apiResponseData(json);
-      final itemsData = apiResponseDataList(json);
+      final productsData = apiResponseDataList(json);
       final metaJson = data is Map
           ? data['meta'] as Map?
           : json['meta'] as Map?;
@@ -36,9 +36,8 @@ class SearchItemResponse extends BaseApiResponse {
           false;
 
       return SearchItemResponse(
-        success: json['success'] as bool? ?? false,
-        status: (json['statusCode'] as num?)?.toInt() ?? 200,
-        items: itemsData
+        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
+        products: productsData
             .map((e) => Product.fromJson(e as Map<String, dynamic>))
             .toList(),
         meta: metaJson != null ? SearchMeta.fromJson(metaJson) : null,
@@ -54,9 +53,8 @@ class SearchItemResponse extends BaseApiResponse {
       );
     }
     return SearchItemResponse(
-      success: false,
-      status: 500,
-      items: const [],
+      statusCode: 500,
+      products: const [],
       message: 'Unexpected response format',
     );
   }

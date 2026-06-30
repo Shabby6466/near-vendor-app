@@ -1,7 +1,11 @@
 import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 
 class ForgotPasswordResponse extends BaseApiResponse {
-  ForgotPasswordResponse({super.message, super.status});
+  ForgotPasswordResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+  });
 
   ForgotPasswordResponse.fromJson(dynamic json) : super.fromJson(json);
 }
@@ -9,7 +13,12 @@ class ForgotPasswordResponse extends BaseApiResponse {
 class VerifyResetOtpResponse extends BaseApiResponse {
   String? resetToken;
 
-  VerifyResetOtpResponse({super.message, super.status, this.resetToken});
+  VerifyResetOtpResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    this.resetToken,
+  });
 
   VerifyResetOtpResponse.fromJson(dynamic json) : super.fromJson(json) {
     final data = apiResponseDataMap(json);
@@ -21,7 +30,11 @@ class VerifyResetOtpResponse extends BaseApiResponse {
 }
 
 class ResetPasswordResponse extends BaseApiResponse {
-  ResetPasswordResponse({super.message, super.status});
+  ResetPasswordResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+  });
 
   ResetPasswordResponse.fromJson(dynamic json) : super.fromJson(json);
 }

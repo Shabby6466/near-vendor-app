@@ -3,7 +3,12 @@ import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 class MediaUploadResponse extends BaseApiResponse {
   String? url;
 
-  MediaUploadResponse({super.message, super.status, this.url});
+  MediaUploadResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    this.url,
+  });
 
   MediaUploadResponse.fromJson(dynamic json)
     : super.fromJson(json) {

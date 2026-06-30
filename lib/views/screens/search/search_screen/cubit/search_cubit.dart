@@ -32,7 +32,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
         emit(
           SearchInitial(
             recentSearches: recentSearches,
-            recentItems: response.items,
+            recentProducts: response.products,
           ),
         );
       }
@@ -83,7 +83,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
         updateAnalyticsMetadata({'lat': lat, 'lon': lon, 'query': query});
         emit(
           SearchSuccess(
-            items: response.items,
+            products: response.products,
             meta: response.meta,
             message: response.message,
             query: query.isNotEmpty ? query : null,
@@ -112,7 +112,7 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
       emit(
         SearchInitial(
           recentSearches: recentSearches,
-          recentItems: current.recentItems,
+          recentProducts: current.recentProducts,
         ),
       );
     } else {

@@ -48,7 +48,7 @@ class VisualSearchCubit extends Cubit<VisualSearchState> {
         radius: radiusMeters,
       );
       if (response.isSuccess) {
-        final results = response.items;
+        final results = response.products;
         final radiusUsed = response.radiusUsed ?? radiusMeters;
         final hasMoreBeyondRadius = response.hasMoreBeyondRadius;
 

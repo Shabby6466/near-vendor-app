@@ -17,11 +17,11 @@ class RecentItemsSection extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchState>(
       buildWhen: (previous, current) => current is SearchInitial,
       builder: (context, state) {
-        if (state is! SearchInitial || state.recentItems.isEmpty) {
+        if (state is! SearchInitial || state.recentProducts.isEmpty) {
           return const SizedBox.shrink();
         }
 
-        final recentItems = state.recentItems;
+        final recentItems = state.recentProducts;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

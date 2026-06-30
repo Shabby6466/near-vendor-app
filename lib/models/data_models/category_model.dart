@@ -11,8 +11,6 @@ class CategoryModel {
     if (json is Map) {
       final id =
           (json['id'] ??
-                  json['_id'] ??
-                  json['uuid'] ??
                   json['categoryId'] ??
                   json['category_id'] ??
                   '')
@@ -21,7 +19,6 @@ class CategoryModel {
           (json['name'] ??
                   json['categoryName'] ??
                   json['title'] ??
-                  json['category_name'] ??
                   '')
               .toString();
 

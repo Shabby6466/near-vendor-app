@@ -63,7 +63,7 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
           emit(
             ShopDetailSuccess(
               shop: shopResponse.shop!,
-              inventory: productsResponse.items,
+              inventory: productsResponse.products,
               reviewStats: shopResponse.shop!.reviewStats,
             ),
           );

@@ -35,12 +35,12 @@ class SearchResultsList extends StatelessWidget {
         }
 
         if (state is SearchSuccess) {
-          if (state.items.isEmpty) {
+          if (state.products.isEmpty) {
             return _EmptyState(query: state.query);
           }
 
           return _ResultsGrid(
-            items: state.items,
+            items: state.products,
             message: state.message,
             isGlobalFallback: state.isGlobalFallback,
             rangeMessage: state.rangeMessage,

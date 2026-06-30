@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/models/data_models/blocked_shop.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/blocked_shops_screen/cubit/blocked_shops_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';

@@ -2,18 +2,27 @@ import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 
 class ProductResponse extends BaseApiResponse {
-  final Product? item;
+  final Product? product;
 
-  ProductResponse({super.success, super.status, super.message, this.item});
+  ProductResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    this.product,
+  });
 
   ProductResponse.fromJson(dynamic json)
-    : item = json is Map ? _parseItem(json as Map<String, dynamic>) : null,
+    : product = json is Map ? _parseItem(json as Map<String, dynamic>) : null,
       super.fromJson(json);
 
   static Product? _parseItem(Map<String, dynamic> json) {
     final data = apiResponseData(json);
-    final itemJson = data is Map && data['item'] != null ? data['item'] : data;
-    return itemJson is Map<String, dynamic> ? Product.fromJson(itemJson) : null;
+    final productJson = data is Map && data['product'] != null
+        ? data['product']
+        : data is Map && data['item'] != null
+            ? data['item']
+            : data;
+    return productJson is Map<String, dynamic> ? Product.fromJson(productJson) : null;
   }
 }
 
@@ -44,24 +53,23 @@ class PaginationMeta {
 }
 
 class ProductListResponse extends BaseApiResponse {
-  final List<Product> items;
+  final List<Product> products;
   final PaginationMeta? meta;
 
   ProductListResponse({
-    super.success,
     super.status,
+    super.statusCode,
     super.message,
-    required this.items,
+    required this.products,
     this.meta,
   });
 
   factory ProductListResponse.fromJson(dynamic json) {
     if (json is List) {
       return ProductListResponse(
-        success: true,
-        status: 200,
+        statusCode: 200,
         message: 'Success',
-        items: json
+        products: json
             .map((e) => Product.fromJson(e as Map<String, dynamic>))
             .toList(),
       );
@@ -69,25 +77,23 @@ class ProductListResponse extends BaseApiResponse {
 
     if (json is Map<String, dynamic>) {
       final dataObj = json['data'];
-      List<dynamic>? itemsList;
+      List<dynamic>? productsList;
       Map<String, dynamic>? metaData;
 
       if (dataObj is List) {
-        itemsList = dataObj;
+        productsList = dataObj;
       } else if (dataObj is Map<String, dynamic>) {
-        itemsList = dataObj['items'] as List<dynamic>?;
+        productsList = (dataObj['products'] ?? dataObj['items']) as List<dynamic>?;
         metaData = dataObj['meta'] as Map<String, dynamic>?;
       }
 
-      itemsList ??= apiResponseDataList(json);
-
+      productsList ??= apiResponseDataList(json);
       metaData ??= json['meta'] as Map<String, dynamic>?;
 
       return ProductListResponse(
-        success: json['success'] as bool? ?? true,
-        status: (json['statusCode'] as num?)?.toInt() ?? 200,
+        statusCode: (json['statusCode'] as num?)?.toInt() ?? 200,
         message: json['message'] as String? ?? 'Success',
-        items: itemsList
+        products: productsList
             .map((e) => Product.fromJson(e as Map<String, dynamic>))
             .toList(),
         meta: metaData != null ? PaginationMeta.fromJson(metaData) : null,
@@ -95,10 +101,9 @@ class ProductListResponse extends BaseApiResponse {
     }
 
     return ProductListResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
-      items: [],
+      products: const [],
     );
   }
 }

@@ -5,7 +5,12 @@ import 'package:nearvendorapp/models/data_models/wishlist_model.dart';
 class CreateWishlistResponse extends BaseApiResponse {
   WishlistItem? wishlist;
 
-  CreateWishlistResponse({super.message, super.status, this.wishlist});
+  CreateWishlistResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    this.wishlist,
+  });
 
   CreateWishlistResponse.fromJson(dynamic json)
     : super.fromJson(json) {
@@ -25,8 +30,9 @@ class GetWishlistsResponse extends BaseApiResponse {
   int? currentPage;
 
   GetWishlistsResponse({
-    super.message,
     super.status,
+    super.statusCode,
+    super.message,
     List<WishlistItem>? wishlists,
     this.totalPages,
     this.currentPage,
@@ -61,7 +67,11 @@ class GetWishlistsResponse extends BaseApiResponse {
 
 /// Generic response for delete / complete / patch operations.
 class WishlistActionResponse extends BaseApiResponse {
-  WishlistActionResponse({super.message, super.status});
+  WishlistActionResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+  });
 
   WishlistActionResponse.fromJson(dynamic json)
     : super.fromJson(json);
@@ -72,8 +82,9 @@ class ExploreDemandResponse extends BaseApiResponse {
   List<WishlistItem> demands = [];
 
   ExploreDemandResponse({
-    super.message,
     super.status,
+    super.statusCode,
+    super.message,
     List<WishlistItem>? demands,
   }) {
     if (demands != null) {

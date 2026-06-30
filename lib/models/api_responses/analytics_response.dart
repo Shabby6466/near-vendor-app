@@ -3,13 +3,17 @@ import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 class AnalyticsStatsResponse extends BaseApiResponse {
   final List<AnalyticsStatEntry> data;
 
-  AnalyticsStatsResponse({super.success, super.status, super.message, required this.data});
+  AnalyticsStatsResponse({
+    super.status,
+    super.statusCode,
+    super.message,
+    required this.data,
+  });
 
   factory AnalyticsStatsResponse.fromJson(dynamic json) {
     if (json is Map) {
       return AnalyticsStatsResponse(
-        success: json['success'] as bool? ?? false,
-        status: json['statusCode'] as int? ?? 0,
+        statusCode: json['statusCode'] as int? ?? 0,
         message: json['message'] as String?,
         data: (json['data'] as List? ?? [])
             .map((e) => AnalyticsStatEntry.fromJson(e as Map<String, dynamic>))
@@ -17,8 +21,7 @@ class AnalyticsStatsResponse extends BaseApiResponse {
       );
     }
     return AnalyticsStatsResponse(
-      success: false,
-      status: 500,
+      statusCode: 500,
       message: 'Unexpected response format',
       data: const [],
     );
