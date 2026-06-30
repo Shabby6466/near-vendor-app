@@ -871,7 +871,7 @@ class _WishlistCard extends StatelessWidget {
                       : const Color(0xFFFFFBEB),
                 ),
                 child: const Text(
-                  'No matches yet — vendors near you will be notified and can add this item to their shop.',
+                  'No matches yet, vendors near you will be notified and can add this item to their shop.',
                   style: TextStyle(
                     color: Colors.grey,
                     fontSize: 11,
