@@ -29,18 +29,17 @@ class AppPinCodeField extends StatelessWidget {
     final defaultPinTheme = PinTheme(
       width: fieldWidth,
       height: fieldHeight,
-      textStyle: textStyle ??
-          const TextStyle(
+      textStyle:
+          textStyle ??
+          TextStyle(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: Colors.white,
+            color: theme.primaryColor,
           ),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.1),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: Colors.white.withValues(alpha: 0.08),
-        ),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
     );
 
@@ -65,9 +64,7 @@ class AppPinCodeField extends StatelessWidget {
     return Pinput(
       length: 6,
       controller: controller,
-      inputFormatters: [
-        FilteringTextInputFormatter.digitsOnly,
-      ],
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       defaultPinTheme: defaultPinTheme,
       focusedPinTheme: focusedPinTheme,
       submittedPinTheme: submittedPinTheme,
@@ -75,11 +72,7 @@ class AppPinCodeField extends StatelessWidget {
       onChanged: onChanged,
       onCompleted: onCompleted,
       validator: validator,
-      cursor: Container(
-        height: 24,
-        width: 2,
-        color: theme.primaryColor,
-      ),
+      cursor: Container(height: 24, width: 2, color: theme.primaryColor),
     );
   }
 }

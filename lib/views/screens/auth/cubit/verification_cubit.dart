@@ -42,7 +42,7 @@ class VerificationCubit extends Cubit<VerificationState> {
         emit(VerificationSuccess(user: response.user));
       } else if (response.status == 403) {
         emit(
-          VerificationInvalidCode(
+          VerificationFailure(
             response.message ??
                 'The verification code you entered is incorrect.',
           ),

@@ -30,16 +30,6 @@ final class VerificationSuccess extends VerificationState {
   List<Object?> get props => [user];
 }
 
-/// The OTP was wrong or expired — distinct from a generic network failure
-/// so the view can show a targeted "Try Again / Go Back" dialog.
-final class VerificationInvalidCode extends VerificationState {
-  final String message;
-  const VerificationInvalidCode(this.message);
-
-  @override
-  List<Object?> get props => [message];
-}
-
 /// Generic network or server error.
 final class VerificationFailure extends VerificationState {
   final String message;

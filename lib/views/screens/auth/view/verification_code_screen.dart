@@ -26,17 +26,6 @@ class VerificationCodeScreen extends StatelessWidget {
         listener: (context, state) {
           if (state is VerificationSuccess) {
             AppNavigator.pushAndRemoveUntil(context, const MainScreen());
-          } else if (state is VerificationInvalidCode) {
-            AppAlerts.showConfirmDialog(
-              context: context,
-              title: 'Invalid Code',
-              message: state.message,
-              confirmLabel: 'Try Again',
-              onConfirm: () {
-                context.read<VerificationCubit>().codeController.clear();
-                context.read<VerificationCubit>().onCodeChanged('');
-              },
-            );
           } else if (state is VerificationFailure) {
             AppAlerts.showError(context, state.message, isDarkBackground: true);
           }
@@ -128,12 +117,6 @@ class VerificationCodeScreen extends StatelessWidget {
                           Center(
                             child: AppPinCodeField(
                               controller: cubit.codeController,
-                              fieldWidth: 56,
-                              fieldHeight: 64,
-                              textStyle: theme.textTheme.headlineSmall?.copyWith(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                              ),
                               onChanged: cubit.onCodeChanged,
                               onCompleted: (_) => cubit.verifyOtp(),
                             ),
@@ -144,6 +127,7 @@ class VerificationCodeScreen extends StatelessWidget {
                           AppElevatedButton(
                             onPressed: isButtonEnabled ? cubit.verifyOtp : null,
                             isEnabled: isButtonEnabled,
+                            color: theme.colorScheme.secondary,
                             text: 'Verify',
                           ),
                           // Dynamic spacer for keyboard
