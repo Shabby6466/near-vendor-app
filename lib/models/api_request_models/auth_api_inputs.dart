@@ -52,22 +52,13 @@ class LoginInput {
 }
 
 class ChangePasswordInput {
-  ChangePasswordInput({
-    required this.email,
-    required this.oldPassword,
-    required this.newPassword,
-  });
+  ChangePasswordInput({required this.oldPassword, required this.newPassword});
 
-  final String email;
   final String oldPassword;
   final String newPassword;
 
   Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'oldPassword': oldPassword,
-      'newPassword': newPassword,
-    };
+    return {'oldPassword': oldPassword, 'newPassword': newPassword};
   }
 }
 
