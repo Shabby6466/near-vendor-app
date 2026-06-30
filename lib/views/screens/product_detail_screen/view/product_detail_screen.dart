@@ -247,86 +247,82 @@ class ProductDetailScreen extends StatelessWidget {
     }
 
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24),
-      child: SafeArea(
-        top: false,
-        child: Container(
-          height: 70,
-          padding: const EdgeInsets.symmetric(horizontal: 8),
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2C2C34) : Colors.black87,
-            borderRadius: BorderRadius.circular(35),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.3),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
+      child: Container(
+        height: 70,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.6),
+          borderRadius: BorderRadius.circular(35),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.3),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            if (shop.shopContactPhone?.isNotEmpty ?? false)
+              _buildPillIconButton(
+                context,
+                icon: Icons.call_rounded,
+                color: theme.colorScheme.primary,
+                onTap: () => launchCaller(shop.shopContactPhone!, context),
               ),
-            ],
-          ),
-          child: Row(
-            children: [
-              if (shop.shopContactPhone?.isNotEmpty ?? false)
-                _buildPillIconButton(
-                  context,
-                  icon: Icons.call_rounded,
-                  color: Colors.white,
-                  onTap: () => launchCaller(shop.shopContactPhone!, context),
-                ),
-              if (shop.whatsappNumber?.isNotEmpty ?? false)
-                _buildPillIconButton(
-                  context,
-                  icon: Icons.chat_rounded,
-                  color: Colors.white,
-                  onTap: () => launchWhatsApp(shop.whatsappNumber!, context),
-                ),
-              if (shop.shopLatitude != null &&
-                  shop.shopLongitude != null &&
-                  shop.shopName != null) ...[
-                const SizedBox(width: 8),
-                Expanded(
-                  child: GestureDetector(
-                    onTap: () => launchMap(
-                      shop.shopLatitude!,
-                      shop.shopLongitude!,
-                      shop.shopName!,
-                      context,
+            if (shop.whatsappNumber?.isNotEmpty ?? false)
+              _buildPillIconButton(
+                context,
+                icon: Icons.chat_rounded,
+                color: theme.colorScheme.primary,
+                onTap: () => launchWhatsApp(shop.whatsappNumber!, context),
+              ),
+            if (shop.shopLatitude != null &&
+                shop.shopLongitude != null &&
+                shop.shopName != null) ...[
+              const SizedBox(width: 8),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () => launchMap(
+                    shop.shopLatitude!,
+                    shop.shopLongitude!,
+                    shop.shopName!,
+                    context,
+                  ),
+                  child: Container(
+                    height: 54,
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
+                      borderRadius: BorderRadius.circular(27),
                     ),
-                    child: Container(
-                      height: 54,
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.primary,
-                        borderRadius: BorderRadius.circular(27),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.directions_rounded,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.directions_rounded,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Directions',
+                          style: theme.textTheme.labelLarge?.copyWith(
                             color: Colors.white,
-                            size: 20,
+                            fontWeight: FontWeight.w900,
+                            fontSize: 16,
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Directions',
-                            style: theme.textTheme.labelLarge?.copyWith(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w900,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-                const SizedBox(width: 4),
-              ],
+              ),
+              const SizedBox(width: 4),
             ],
-          ),
+          ],
         ),
       ),
     );

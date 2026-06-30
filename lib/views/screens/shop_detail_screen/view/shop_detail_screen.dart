@@ -517,11 +517,13 @@ class ShopDetailScreen extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 45,
                   backgroundColor: theme.cardColor,
-                  backgroundImage: fullShop.storeLogoUrl != null &&
+                  backgroundImage:
+                      fullShop.storeLogoUrl != null &&
                           fullShop.storeLogoUrl!.isNotEmpty
                       ? CachedNetworkImageProvider(fullShop.storeLogoUrl!)
                       : null,
-                  child: fullShop.storeLogoUrl == null ||
+                  child:
+                      fullShop.storeLogoUrl == null ||
                           fullShop.storeLogoUrl!.isEmpty
                       ? Icon(
                           Icons.storefront_rounded,
@@ -715,7 +717,6 @@ class ShopDetailScreen extends StatelessWidget {
 
   Widget _buildFloatingActionPill(BuildContext context, Shop shop) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final isLocationValid = _isValidLatLng(
       shop.shopLatitude,
       shop.shopLongitude,
@@ -727,7 +728,7 @@ class ShopDetailScreen extends StatelessWidget {
         height: 70,
         padding: const EdgeInsets.symmetric(horizontal: 8),
         decoration: BoxDecoration(
-          color: isDark ? const Color(0xFF2C2C34) : Colors.black87,
+          color: Colors.white.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(35),
           boxShadow: [
             BoxShadow(
@@ -743,14 +744,14 @@ class ShopDetailScreen extends StatelessWidget {
               _buildPillIconButton(
                 context,
                 icon: Icons.call_rounded,
-                color: Colors.white,
+                color: theme.colorScheme.primary,
                 onTap: () => launchCaller(shop.shopContactPhone!, context),
               ),
             if (shop.whatsappNumber?.isNotEmpty ?? false)
               _buildPillIconButton(
                 context,
                 icon: Icons.chat_rounded,
-                color: Colors.white,
+                color: theme.colorScheme.primary,
                 onTap: () => launchWhatsApp(shop.whatsappNumber!, context),
               ),
             const SizedBox(width: 8),
