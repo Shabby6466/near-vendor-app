@@ -72,30 +72,30 @@ class ShopDetailScreen extends StatelessWidget {
         final shopId = shop.id ?? '';
         return ShopDetailCubit()..loadShopData(shopId, initialShop: shop);
       },
-      child: Scaffold(
-        extendBodyBehindAppBar: true,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 12.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.white,
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back_ios_new_rounded,
-                  color: Colors.black,
-                  size: 18,
+      child: BlocBuilder<ShopDetailCubit, ShopDetailState>(
+        builder: (context, state) {
+          final fullShop = state is ShopDetailSuccess ? state.shop : null;
+
+          return Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 12.0),
+                child: CircleAvatar(
+                  backgroundColor: Colors.white,
+                  child: IconButton(
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.black,
+                      size: 18,
+                    ),
+                    onPressed: () => AppNavigator.pop(context),
+                  ),
                 ),
-                onPressed: () => AppNavigator.pop(context),
               ),
-            ),
-          ),
-          actions: [
-            BlocBuilder<ShopDetailCubit, ShopDetailState>(
-              builder: (context, state) {
-                if (state is ShopDetailSuccess) {
-                  return Padding(
+              actions: [
+                if (fullShop != null)
+                  Padding(
                     padding: const EdgeInsets.only(right: 12.0),
                     child: CircleAvatar(
                       backgroundColor: Colors.white,
@@ -105,79 +105,68 @@ class ShopDetailScreen extends StatelessWidget {
                           color: Colors.black,
                           size: 20,
                         ),
-                        onPressed: () =>
-                            _handleSafetyAction(context, state.shop),
-                      ),
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-          ],
-        ),
-        body: BlocBuilder<ShopDetailCubit, ShopDetailState>(
-          builder: (context, state) {
-            if (state is ShopDetailLoading) {
-              return const ShopDetailShimmerLoading();
-            }
-
-            if (state is ShopDetailFailure) {
-              return AnimatedErrorState(
-                message: state.message,
-                onRetry: () =>
-                    context.read<ShopDetailCubit>().loadShopData(shop.id ?? ''),
-              );
-            }
-
-            if (state is ShopDetailSuccess) {
-              final fullShop = state.shop;
-              final inventory = state.inventory;
-
-              return Stack(
-                children: [
-                  RefreshIndicator(
-                    onRefresh: () async {
-                      await context.read<ShopDetailCubit>().loadShopData(
-                        fullShop.id ?? '',
-                      );
-                    },
-                    child: SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(
-                        parent: BouncingScrollPhysics(),
-                      ),
-                      padding: const EdgeInsets.only(bottom: 120),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildHeaderImage(context, fullShop),
-                          _buildSellerCard(context, fullShop),
-                          SizedBox(
-                            height: AppSpacing.mediumVerticalSpacing(context),
-                          ),
-                          _buildReviewsSection(context, fullShop),
-                          SizedBox(
-                            height: AppSpacing.mediumVerticalSpacing(context),
-                          ),
-                          _buildMapSection(context, fullShop),
-                          SizedBox(
-                            height: AppSpacing.mediumVerticalSpacing(context),
-                          ),
-                          _buildShopAds(context, fullShop, inventory),
-                        ],
+                        onPressed: () => _handleSafetyAction(context, fullShop),
                       ),
                     ),
                   ),
-                  _buildFloatingActionPill(context, fullShop),
-                ],
-              );
-            }
-
-            return const SizedBox.shrink();
-          },
-        ),
+              ],
+            ),
+            body: _buildBody(context, state),
+            floatingActionButton: fullShop != null
+                ? _buildFloatingActionPill(context, fullShop)
+                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+          );
+        },
       ),
     );
+  }
+
+  Widget _buildBody(BuildContext context, ShopDetailState state) {
+    if (state is ShopDetailLoading) {
+      return const ShopDetailShimmerLoading();
+    }
+
+    if (state is ShopDetailFailure) {
+      return AnimatedErrorState(
+        message: state.message,
+        onRetry: () =>
+            context.read<ShopDetailCubit>().loadShopData(shop.id ?? ''),
+      );
+    }
+
+    if (state is ShopDetailSuccess) {
+      final fullShop = state.shop;
+      final inventory = state.inventory;
+
+      return RefreshIndicator(
+        onRefresh: () async {
+          await context.read<ShopDetailCubit>().loadShopData(fullShop.id ?? '');
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(
+            parent: BouncingScrollPhysics(),
+          ),
+          padding: const EdgeInsets.only(bottom: 120),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderImage(context, fullShop),
+              _buildSellerCard(context, fullShop),
+              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+              _buildReviewsSection(context, fullShop),
+              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+              _buildMapSection(context, fullShop),
+              SizedBox(height: AppSpacing.mediumVerticalSpacing(context)),
+              _buildShopAds(context, fullShop, inventory),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 
   Widget _buildReviewsSection(BuildContext context, Shop fullShop) {
@@ -361,9 +350,48 @@ class ShopDetailScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildHeaderPlaceholder(BuildContext context, String shopName) {
+    final theme = Theme.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            theme.primaryColor.withValues(alpha: 0.15),
+            theme.primaryColor.withValues(alpha: 0.05),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.storefront_rounded,
+              size: 64,
+              color: theme.primaryColor.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              shopName,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: theme.textTheme.titleMedium?.color?.withValues(
+                  alpha: 0.6,
+                ),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildHeaderImage(BuildContext context, Shop fullShop) {
     final theme = Theme.of(context);
     final coverUrl = fullShop.coverImageUrl ?? shop.coverImageUrl;
+    final shopName = fullShop.shopName ?? shop.shopName ?? 'Shop';
     return SizedBox(
       height: AppSpacing.screenHeight(context) * 0.35,
       width: double.infinity,
@@ -376,18 +404,18 @@ class ShopDetailScreen extends StatelessWidget {
             );
           }
         },
-        child: CachedNetworkImage(
-          imageUrl: coverUrl ?? '',
-          fit: BoxFit.cover,
-          placeholder: (context, url) => ColoredBox(
-            color: theme.dividerColor.withValues(alpha: 0.1),
-            child: const Center(child: LoadingAnimation()),
-          ),
-          errorWidget: (context, error, stackTrace) => ColoredBox(
-            color: theme.dividerColor.withValues(alpha: 0.1),
-            child: const Icon(Icons.store, size: 50),
-          ),
-        ),
+        child: coverUrl != null && coverUrl.isNotEmpty
+            ? CachedNetworkImage(
+                imageUrl: coverUrl,
+                fit: BoxFit.cover,
+                placeholder: (context, url) => ColoredBox(
+                  color: theme.dividerColor.withValues(alpha: 0.1),
+                  child: const Center(child: LoadingAnimation()),
+                ),
+                errorWidget: (context, error, stackTrace) =>
+                    _buildHeaderPlaceholder(context, shopName),
+              )
+            : _buildHeaderPlaceholder(context, shopName),
       ),
     );
   }
@@ -489,10 +517,18 @@ class ShopDetailScreen extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 45,
                   backgroundColor: theme.cardColor,
-                  backgroundImage: CachedNetworkImageProvider(
-                    fullShop.storeLogoUrl ??
-                        'https://i.pravatar.cc/150?u=a042581f4e29026704d',
-                  ),
+                  backgroundImage: fullShop.storeLogoUrl != null &&
+                          fullShop.storeLogoUrl!.isNotEmpty
+                      ? CachedNetworkImageProvider(fullShop.storeLogoUrl!)
+                      : null,
+                  child: fullShop.storeLogoUrl == null ||
+                          fullShop.storeLogoUrl!.isEmpty
+                      ? Icon(
+                          Icons.storefront_rounded,
+                          size: 45,
+                          color: theme.primaryColor.withValues(alpha: 0.5),
+                        )
+                      : null,
                 ),
               ),
             ),
@@ -657,7 +693,7 @@ class ShopDetailScreen extends StatelessWidget {
             GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              padding: EdgeInsets.zero,
+              padding: const EdgeInsets.only(bottom: 20),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
                 crossAxisSpacing: 16,
@@ -685,10 +721,8 @@ class ShopDetailScreen extends StatelessWidget {
       shop.shopLongitude,
     );
 
-    return Positioned(
-      bottom: 30,
-      left: 24,
-      right: 24,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Container(
         height: 70,
         padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -811,56 +845,59 @@ class ShopDetailScreen extends StatelessWidget {
   void _showSafetyMenu(BuildContext context, Shop shop) {
     AppBottomSheet.showBottomSheet(
       context: context,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 4),
-          ListTile(
-            leading: const Icon(Icons.flag_outlined, color: Colors.orange),
-            title: const Text('Report Shop'),
-            subtitle: const Text('Report inappropriate content or behavior'),
-            onTap: () {
-              AppNavigator.pop(context);
-              AppBottomSheet.showBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                child: SafetyReportBottomSheet(
-                  targetId: shop.id ?? '',
-                  targetType: ReportTargetType.shop,
-                  targetName: shop.shopName ?? 'Shop',
-                ),
-              );
-            },
-          ),
-          ListTile(
-            leading: const Icon(Icons.block_flipped, color: Colors.red),
-            title: const Text('Block Shop'),
-            subtitle: Text(
-              'Stop seeing content from ${shop.shopName ?? 'Shop'}',
+      child: Material(
+        color: Colors.transparent,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 4),
+            ListTile(
+              leading: const Icon(Icons.flag_outlined, color: Colors.orange),
+              title: const Text('Report Shop'),
+              subtitle: const Text('Report inappropriate content or behavior'),
+              onTap: () {
+                AppNavigator.pop(context);
+                AppBottomSheet.showBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  child: SafetyReportBottomSheet(
+                    targetId: shop.id ?? '',
+                    targetType: ReportTargetType.shop,
+                    targetName: shop.shopName ?? 'Shop',
+                  ),
+                );
+              },
             ),
-            onTap: () async {
-              AppNavigator.pop(context);
-              if (shop.id == null) return;
-              final result = await SafetyServices().blockShop(
-                blockedShopId: shop.id!,
-              );
-              if (context.mounted) {
-                if (result.success == true) {
-                  AppAlerts.showSuccess(
-                    context,
-                    '${shop.shopName ?? 'Shop'} has been blocked.',
-                  );
-                  AppNavigator.pop(context);
-                } else {
-                  AppAlerts.showError(
-                    context,
-                    result.message ?? 'Failed to block shop',
-                  );
+            ListTile(
+              leading: const Icon(Icons.block_flipped, color: Colors.red),
+              title: const Text('Block Shop'),
+              subtitle: Text(
+                'Stop seeing content from ${shop.shopName ?? 'Shop'}',
+              ),
+              onTap: () async {
+                AppNavigator.pop(context);
+                if (shop.id == null) return;
+                final result = await SafetyServices().blockShop(
+                  blockedShopId: shop.id!,
+                );
+                if (context.mounted) {
+                  if (result.success == true) {
+                    AppAlerts.showSuccess(
+                      context,
+                      '${shop.shopName ?? 'Shop'} has been blocked.',
+                    );
+                    AppNavigator.pop(context);
+                  } else {
+                    AppAlerts.showError(
+                      context,
+                      result.message ?? 'Failed to block shop',
+                    );
+                  }
                 }
-              }
-            },
-          ),
-        ],
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

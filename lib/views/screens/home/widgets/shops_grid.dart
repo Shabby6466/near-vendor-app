@@ -259,6 +259,51 @@ class ShopCard extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (shop.storeLogoUrl != null && shop.storeLogoUrl!.isNotEmpty)
+                  Positioned(
+                    left: 8,
+                    bottom: 8,
+                    child: CachedNetworkImage(
+                      imageUrl: shop.storeLogoUrl!,
+                      imageBuilder: (context, imageProvider) => Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.15),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                          image: DecorationImage(
+                            image: imageProvider,
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      placeholder: (context, url) => Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: theme.cardColor,
+                          border: Border.all(color: Colors.white, width: 1.5),
+                        ),
+                        child: const Center(
+                          child: SizedBox(
+                            width: 12,
+                            height: 12,
+                            child: CircularProgressIndicator(strokeWidth: 1.5),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, error, stackTrace) =>
+                          const SizedBox.shrink(),
+                    ),
+                  ),
                 ValueListenableBuilder<AppLocation?>(
                   valueListenable: AppData().locationNotifier,
                   builder: (context, userLocation, _) {
@@ -274,7 +319,9 @@ class ShopCard extends StatelessWidget {
                       );
                     }
 
-                    if (calculatedDistance == null) return const SizedBox.shrink();
+                    if (calculatedDistance == null) {
+                      return const SizedBox.shrink();
+                    }
 
                     return Positioned(
                       top: 8,
@@ -379,7 +426,9 @@ class ShopCard extends StatelessWidget {
                     Icon(
                       Icons.location_on_rounded,
                       size: 11,
-                      color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.4),
+                      color: theme.textTheme.bodySmall?.color?.withValues(
+                        alpha: 0.4,
+                      ),
                     ),
                     const SizedBox(width: 2),
                     Expanded(

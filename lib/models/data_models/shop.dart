@@ -99,8 +99,7 @@ class Shop extends Equatable {
       storeEmail: json['storeEmail'] as String?,
       coverImageUrl:
           json['coverImageUrl'] as String? ??
-          json['shopImageUrl'] as String? ??
-          json['shopLogoUrl'] as String?,
+          json['shopImageUrl'] as String?,
       storeLogoUrl:
           json['storeLogoUrl'] as String? ?? json['shopLogoUrl'] as String?,
       isActive: json['isActive'] as bool?,
