@@ -1,3 +1,4 @@
+import 'package:app_badge_plus/app_badge_plus.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:nearvendorapp/services/auth_services.dart';
@@ -24,6 +25,9 @@ class PushNotificationController {
       badge: true,
       sound: true,
     );
+
+    await clearBadge();
+    WidgetsBinding.instance.addObserver(_BadgeLifecycleObserver());
 
     firebaseMessaging.getInitialMessage().then((message) {
       if (message != null) {
@@ -78,6 +82,7 @@ class PushNotificationController {
       final AuthServices authServices = AuthServices();
       await authServices.deleteNotificationToken();
       await FirebaseMessaging.instance.deleteToken();
+      await clearBadge();
     } catch (e) {
       debugPrint('onLogout() error: $e');
     }
@@ -118,5 +123,24 @@ class PushNotificationController {
 
   static void onChatScreenClosed() {
     _openedChatScreen = null;
+  }
+
+  static Future<void> clearBadge() async {
+    try {
+      if (await AppBadgePlus.isSupported()) {
+        await AppBadgePlus.updateBadge(0);
+      }
+    } catch (e) {
+      debugPrint('clearBadge() error: $e');
+    }
+  }
+}
+
+class _BadgeLifecycleObserver extends WidgetsBindingObserver {
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      PushNotificationController.clearBadge();
+    }
   }
 }
