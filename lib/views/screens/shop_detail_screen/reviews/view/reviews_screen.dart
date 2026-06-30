@@ -58,18 +58,19 @@ class ReviewsScreen extends StatelessWidget {
         ),
         floatingActionButton: BlocBuilder<ReviewsCubit, ReviewsState>(
           builder: (context, state) {
-            if (state is ReviewsLoaded && state.hasUserReview) {
-              return const SizedBox.shrink();
+            if (state is ReviewsLoaded &&
+                (!state.hasUserReview && state.reviews.isNotEmpty)) {
+              return _buildWriteReviewFab(context);
             }
-            return _buildWriteReviewFab(context) ?? const SizedBox.shrink();
+            return const SizedBox.shrink();
           },
         ),
       ),
     );
   }
 
-  Widget? _buildWriteReviewFab(BuildContext context) {
-    if (!AppData().isLoggedIn) return null;
+  Widget _buildWriteReviewFab(BuildContext context) {
+    if (!AppData().isLoggedIn) return const SizedBox.shrink();
     return FloatingActionButton.extended(
       onPressed: () {
         AppNavigator.push(context, AddEditReviewScreen(shop: shop)).then((_) {
@@ -102,9 +103,11 @@ class ReviewsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   RatingSummaryWidget(stats: state.stats),
-                  const SizedBox(height: 16),
-                  _buildSortChips(context, state.sort),
-                  const SizedBox(height: 8),
+                  if (state.reviews.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    _buildSortChips(context, state.sort),
+                    const SizedBox(height: 8),
+                  ],
                 ],
               ),
             ),
