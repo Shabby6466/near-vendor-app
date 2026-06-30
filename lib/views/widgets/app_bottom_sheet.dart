@@ -12,7 +12,7 @@ class AppBottomSheet {
     required BuildContext context,
     required Widget child,
     bool isDismissible = true,
-    EdgeInsets padding = const EdgeInsets.all(24),
+    EdgeInsets padding = const EdgeInsets.fromLTRB(24, 24, 24, 0),
     bool isScrollControlled = false,
   }) {
     return showModalBottomSheet<T>(
