@@ -7,7 +7,6 @@ class ReviewListResponse extends BaseApiResponse {
   final int? total;
 
   ReviewListResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.reviews,
@@ -79,7 +78,6 @@ class ReviewStatsResponse extends BaseApiResponse {
   final ReviewStats? stats;
 
   ReviewStatsResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.stats,
@@ -108,7 +106,6 @@ class CommentListResponse extends BaseApiResponse {
   final int? total;
 
   CommentListResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.comments,

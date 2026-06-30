@@ -1,27 +1,22 @@
 class BaseApiResponse {
-  final int statusCode;
-  final String message;
+  final int? statusCode;
+  final String? message;
 
   BaseApiResponse({
-    int? status,
-    int? statusCode,
-    String? message,
-  })  : statusCode = (statusCode ?? status ?? 200).toInt(),
-        message = message ?? 'Success';
+    this.statusCode,
+    this.message,
+  });
 
-  bool get isSuccess => statusCode >= 200 && statusCode < 300;
+  bool get isSuccess => statusCode != null && statusCode! >= 200 && statusCode! < 300;
 
-  // Keep compatibility for any callers checking success or status properties
+  // Keep compatibility for any callers checking success property
   bool get success => isSuccess;
-  int get status => statusCode;
 
   BaseApiResponse.fromJson(dynamic json)
       : statusCode = json is Map
-            ? (json['statusCode'] as num? ?? json['status'] as num? ?? 200).toInt()
-            : 500,
-        message = json is Map
-            ? (json['message'] as String? ?? 'Success')
-            : 'Request failed';
+            ? (json['statusCode'] as num?)?.toInt()
+            : null,
+        message = json is Map ? json['message'] as String? : null;
 
   Map<String, dynamic> toJson() {
     return {'statusCode': statusCode, 'message': message};

@@ -6,7 +6,6 @@ class CreateWishlistResponse extends BaseApiResponse {
   WishlistItem? wishlist;
 
   CreateWishlistResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.wishlist,
@@ -30,7 +29,6 @@ class GetWishlistsResponse extends BaseApiResponse {
   int? currentPage;
 
   GetWishlistsResponse({
-    super.status,
     super.statusCode,
     super.message,
     List<WishlistItem>? wishlists,
@@ -68,7 +66,6 @@ class GetWishlistsResponse extends BaseApiResponse {
 /// Generic response for delete / complete / patch operations.
 class WishlistActionResponse extends BaseApiResponse {
   WishlistActionResponse({
-    super.status,
     super.statusCode,
     super.message,
   });
@@ -82,7 +79,6 @@ class ExploreDemandResponse extends BaseApiResponse {
   List<WishlistItem> demands = [];
 
   ExploreDemandResponse({
-    super.status,
     super.statusCode,
     super.message,
     List<WishlistItem>? demands,

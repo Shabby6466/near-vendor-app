@@ -2,7 +2,6 @@ import 'package:nearvendorapp/models/api_responses/base_api_response.dart';
 
 class ForgotPasswordResponse extends BaseApiResponse {
   ForgotPasswordResponse({
-    super.status,
     super.statusCode,
     super.message,
   });
@@ -14,7 +13,6 @@ class VerifyResetOtpResponse extends BaseApiResponse {
   String? resetToken;
 
   VerifyResetOtpResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.resetToken,
@@ -31,7 +29,6 @@ class VerifyResetOtpResponse extends BaseApiResponse {
 
 class ResetPasswordResponse extends BaseApiResponse {
   ResetPasswordResponse({
-    super.status,
     super.statusCode,
     super.message,
   });

@@ -42,7 +42,10 @@ class SafetyServices {
     try {
       final response = await Server.post(
         ApiConstants.blockShop,
-        data: {'blockedShopId': blockedShopId, if (reason != null) 'reason': reason},
+        data: {
+          'blockedShopId': blockedShopId,
+          if (reason != null) 'reason': reason,
+        },
       );
       return GenericApiResponse.fromJson(response.data);
     } catch (e) {
@@ -77,19 +80,17 @@ class SafetyServices {
 
   Future<BlockedShopsResponse> getBlockedShops() async {
     try {
-      final response = await Server.get(
-        ApiConstants.blockedShops,
-      );
+      final response = await Server.get(ApiConstants.blockedShops);
       return BlockedShopsResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {
         if (e.response?.data != null) {
           return BlockedShopsResponse.fromJson(e.response?.data);
         } else {
-          return BlockedShopsResponse(success: false, message: e.message, shops: []);
+          return BlockedShopsResponse(message: e.message, shops: []);
         }
       }
-      return BlockedShopsResponse(success: false, message: e.toString(), shops: []);
+      return BlockedShopsResponse(message: e.toString(), shops: []);
     }
   }
 }

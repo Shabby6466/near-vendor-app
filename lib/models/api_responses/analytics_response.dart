@@ -4,7 +4,6 @@ class AnalyticsStatsResponse extends BaseApiResponse {
   final List<AnalyticsStatEntry> data;
 
   AnalyticsStatsResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.data,
@@ -13,7 +12,7 @@ class AnalyticsStatsResponse extends BaseApiResponse {
   factory AnalyticsStatsResponse.fromJson(dynamic json) {
     if (json is Map) {
       return AnalyticsStatsResponse(
-        statusCode: json['statusCode'] as int? ?? 0,
+        statusCode: json['statusCode'] as int?,
         message: json['message'] as String?,
         data: (json['data'] as List? ?? [])
             .map((e) => AnalyticsStatEntry.fromJson(e as Map<String, dynamic>))

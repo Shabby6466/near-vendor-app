@@ -164,9 +164,9 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
       }
 
       if (response.isSuccess ||
-          response.status == 410 ||
-          response.status == 404) {
-        _apiMessage = (response.status == 410 || response.status == 404)
+          response.statusCode == 410 ||
+          response.statusCode == 404) {
+        _apiMessage = (response.statusCode == 410 || response.statusCode == 404)
             ? response.message
             : null;
         _isGlobalFallback = response.isGlobalFallback;
@@ -255,9 +255,9 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
       }
 
       if (response.isSuccess ||
-          response.status == 410 ||
-          response.status == 404) {
-        _apiMessage = (response.status == 410 || response.status == 404)
+          response.statusCode == 410 ||
+          response.statusCode == 404) {
+        _apiMessage = (response.statusCode == 410 || response.statusCode == 404)
             ? response.message
             : null;
         _isGlobalFallback = response.isGlobalFallback;

@@ -4,7 +4,6 @@ class MediaUploadResponse extends BaseApiResponse {
   String? url;
 
   MediaUploadResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.url,

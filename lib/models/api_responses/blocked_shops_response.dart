@@ -5,7 +5,6 @@ class BlockedShopsResponse extends BaseApiResponse {
   final List<BlockedShop> shops;
 
   BlockedShopsResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.shops,

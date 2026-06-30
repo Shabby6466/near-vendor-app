@@ -5,7 +5,6 @@ class ProductResponse extends BaseApiResponse {
   final Product? product;
 
   ProductResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.product,
@@ -57,7 +56,6 @@ class ProductListResponse extends BaseApiResponse {
   final PaginationMeta? meta;
 
   ProductListResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.products,

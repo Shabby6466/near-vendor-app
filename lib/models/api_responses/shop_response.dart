@@ -6,7 +6,6 @@ class ShopResponse extends BaseApiResponse {
   final Shop? shop;
 
   ShopResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.shop,
@@ -37,7 +36,6 @@ class ShopListResponse extends BaseApiResponse {
   final String? rangeMessage;
 
   ShopListResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.shops,

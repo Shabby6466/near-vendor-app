@@ -10,7 +10,6 @@ class SearchItemResponse extends BaseApiResponse {
   final bool hasMoreBeyondRadius;
 
   SearchItemResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.products,

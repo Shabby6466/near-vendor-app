@@ -18,10 +18,10 @@ class SearchServices {
         if (e.response?.data != null) {
           return SearchItemResponse.fromJson(e.response?.data);
         } else {
-          return SearchItemResponse(message: e.message, items: []);
+          return SearchItemResponse(message: e.message, products: []);
         }
       }
-      return SearchItemResponse(message: e.toString(), items: []);
+      return SearchItemResponse(message: e.toString(), products: []);
     }
   }
 
@@ -34,10 +34,10 @@ class SearchServices {
         if (e.response?.data != null) {
           return SearchItemResponse.fromJson(e.response?.data);
         } else {
-          return SearchItemResponse(message: e.message, items: []);
+          return SearchItemResponse(message: e.message, products: []);
         }
       }
-      return SearchItemResponse(message: e.toString(), items: []);
+      return SearchItemResponse(message: e.toString(), products: []);
     }
   }
 
@@ -76,10 +76,10 @@ class SearchServices {
         if (e.response?.data != null) {
           return SearchItemResponse.fromJson(e.response?.data);
         } else {
-          return SearchItemResponse(message: e.message, items: []);
+          return SearchItemResponse(message: e.message, products: []);
         }
       }
-      return SearchItemResponse(message: e.toString(), items: []);
+      return SearchItemResponse(message: e.toString(), products: []);
     }
   }
 }

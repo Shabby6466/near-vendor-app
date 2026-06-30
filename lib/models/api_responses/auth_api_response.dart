@@ -8,7 +8,6 @@ class VerifyOtpResponse extends BaseApiResponse {
   bool? mustChangePassword;
 
   VerifyOtpResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.token,
@@ -42,7 +41,6 @@ class LoginResponse extends BaseApiResponse {
   User? user;
 
   LoginResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.token,
@@ -71,7 +69,6 @@ class MeResponse extends BaseApiResponse {
   User? user;
 
   MeResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.user,

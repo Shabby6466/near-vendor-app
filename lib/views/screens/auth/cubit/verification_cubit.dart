@@ -40,7 +40,7 @@ class VerificationCubit extends Cubit<VerificationState> {
           );
         }
         emit(VerificationSuccess(user: response.user));
-      } else if (response.status == 403) {
+      } else if (response.statusCode == 403) {
         emit(
           VerificationFailure(
             response.message ??

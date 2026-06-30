@@ -52,7 +52,7 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
         return;
       }
 
-      final item = productResponse.item;
+      final item = productResponse.product;
       if (item == null) {
         if (state is! ProductDetailSuccess) {
           emit(const ProductDetailFailure('Product details not found'));

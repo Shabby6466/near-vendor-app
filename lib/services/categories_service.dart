@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:nearvendorapp/models/api_responses/category_response.dart';
 import 'package:nearvendorapp/services/server.dart';
 import 'package:nearvendorapp/utils/constants/api_constants.dart';
@@ -20,12 +21,20 @@ final class CategoriesService {
       _cachedCategories = categories;
       return categories;
     } catch (e) {
-      return CategoryListResponse(success: false, message: e.toString());
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return CategoryListResponse.fromJson(e.response?.data);
+        } else {
+          return CategoryListResponse(message: e.message);
+        }
+      }
+      return CategoryListResponse(message: e.toString());
     }
   }
 
   static Future<CategoryListResponse> getProductCategories() async {
-    if (_cachedProductCategories != null && _cachedProductCategories!.categories.isNotEmpty) {
+    if (_cachedProductCategories != null &&
+        _cachedProductCategories!.categories.isNotEmpty) {
       return _cachedProductCategories!;
     }
 
@@ -35,7 +44,14 @@ final class CategoriesService {
       _cachedProductCategories = categories;
       return categories;
     } catch (e) {
-      return CategoryListResponse(success: false, message: e.toString());
+      if (e is DioException) {
+        if (e.response?.data != null) {
+          return CategoryListResponse.fromJson(e.response?.data);
+        } else {
+          return CategoryListResponse(message: e.message);
+        }
+      }
+      return CategoryListResponse(message: e.toString());
     }
   }
 

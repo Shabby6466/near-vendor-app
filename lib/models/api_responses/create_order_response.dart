@@ -5,7 +5,6 @@ class CreateOrderResponse extends BaseApiResponse {
   final Order? order;
 
   CreateOrderResponse({
-    super.status,
     super.statusCode,
     super.message,
     this.order,
@@ -13,7 +12,7 @@ class CreateOrderResponse extends BaseApiResponse {
 
   factory CreateOrderResponse.fromJson(Map<String, dynamic> json) {
     return CreateOrderResponse(
-      statusCode: json['statusCode'] as int? ?? 0,
+      statusCode: json['statusCode'] as int?,
       message: json['message'] as String? ?? '',
       order: json['data'] != null
           ? Order.fromJson(json['data'] as Map<String, dynamic>)
@@ -28,7 +27,6 @@ class OrderListResponse extends BaseApiResponse {
   final List<Order> orders;
 
   OrderListResponse({
-    super.status,
     super.statusCode,
     super.message,
     required this.orders,

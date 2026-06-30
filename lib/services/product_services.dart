@@ -16,10 +16,10 @@ class ProductServices {
         if (e.response?.data != null) {
           return ProductListResponse.fromJson(e.response?.data);
         } else {
-          return ProductListResponse(message: e.message, items: []);
+          return ProductListResponse(message: e.message, products: []);
         }
       }
-      return ProductListResponse(message: e.toString(), items: []);
+      return ProductListResponse(message: e.toString(), products: []);
     }
   }
 
