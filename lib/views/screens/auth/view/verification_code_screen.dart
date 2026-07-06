@@ -95,7 +95,7 @@ class VerificationCodeScreen extends StatelessWidget {
                                 TextSpan(
                                   text: ' $email',
                                   style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: theme.primaryColor,
+                                    color: theme.colorScheme.secondary,
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),

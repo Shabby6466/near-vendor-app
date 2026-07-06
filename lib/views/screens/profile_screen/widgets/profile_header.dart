@@ -127,13 +127,16 @@ class ProfileHeader extends StatelessWidget {
                 size: 14,
               ),
               const SizedBox(width: 4),
-              Text(
-                userLocation,
-                style: theme.textTheme.labelSmall?.copyWith(
-                  fontSize: 12,
-                  color: theme.iconTheme.color,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.5,
+              Flexible(
+                child: Text(
+                  userLocation,
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.labelSmall?.copyWith(
+                    fontSize: 12,
+                    color: theme.iconTheme.color,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.5,
+                  ),
                 ),
               ),
             ],
