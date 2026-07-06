@@ -6,8 +6,7 @@ import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/cubit/profile_cubit.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/blocked_shops_screen/view/blocked_shops_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/change_password_screen/view/change_password_screen.dart';
-import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/cubit/delete_account_cubit.dart';
-import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_confirmation_sheet/view/delete_account_confirmation_sheet.dart';
+import 'package:nearvendorapp/views/screens/profile_screen/view/delete_account_screen/view/delete_account_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/view/edit_profile_screen/view/edit_profile_screen.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_header.dart';
 import 'package:nearvendorapp/views/screens/profile_screen/widgets/profile_menu_item.dart';
@@ -125,6 +124,14 @@ class ProfileScreen extends StatelessWidget {
                   initialValue: cubit.reviewNotifications,
                   onToggle: cubit.toggleReviewNotifications,
                 ),
+                const _SectionDivider(),
+                ProfileMenuItem(
+                  icon: Icons.block_flipped,
+                  title: 'Blocked Shops',
+                  subtitle: 'Manage shops you have blocked',
+                  onTap: () =>
+                      AppNavigator.push(context, const BlockedShopsScreen()),
+                ),
               ],
             ],
           ),
@@ -150,12 +157,14 @@ class ProfileScreen extends StatelessWidget {
                       AppNavigator.push(context, const ChangePasswordScreen()),
                 ),
                 const _SectionDivider(),
+
                 ProfileMenuItem(
-                  icon: Icons.block_flipped,
-                  title: 'Blocked Shops',
-                  subtitle: 'Manage shops you have blocked',
+                  icon: Icons.delete_outline_rounded,
+                  title: 'Delete Account',
+                  subtitle: 'Permanently remove your account and data',
+                  color: Colors.red.shade600,
                   onTap: () =>
-                      AppNavigator.push(context, const BlockedShopsScreen()),
+                      AppNavigator.push(context, const DeleteAccountScreen()),
                 ),
               ],
             ),
@@ -191,9 +200,7 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildActionButtons(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
     final redColor = Colors.red.withValues(alpha: 0.8);
-    final borderColor = Colors.red.withValues(alpha: isDark ? 0.25 : 0.15);
     final borderRadius = BorderRadius.circular(20);
 
     return Padding(
@@ -220,43 +227,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: double.infinity,
-            child: OutlinedButton.icon(
-              onPressed: () => _showDeleteAccountDialog(context),
-              icon: Icon(
-                Icons.delete_forever_rounded,
-                color: redColor,
-                size: 20,
-              ),
-              label: Text(
-                'Delete Account',
-                style: TextStyle(
-                  color: redColor,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              style: OutlinedButton.styleFrom(
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                side: BorderSide(color: borderColor),
-                shape: RoundedRectangleBorder(borderRadius: borderRadius),
-              ),
-            ),
-          ),
         ],
-      ),
-    );
-  }
-
-  void _showDeleteAccountDialog(BuildContext context) {
-    AppBottomSheet.showBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      child: BlocProvider(
-        create: (_) => DeleteAccountCubit(),
-        child: const DeleteAccountConfirmationSheet(),
       ),
     );
   }

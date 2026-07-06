@@ -108,13 +108,29 @@ class Server {
   );
 
   static Completer<String?>? _refreshCompleter;
+  static int _refreshCount = 0;
+
+  static void resetRefreshCount() {
+    _refreshCount = 0;
+  }
 
   static Future<Response> _handle401(
     DioException e,
     String? refreshToken,
     Future<Response> Function() retry,
   ) async {
+    if (_refreshCount >= 3) {
+      _refreshCount = 0;
+      await logoutUser();
+      final ctx = navigatorKey.currentContext;
+      if (ctx != null && ctx.mounted) {
+        AppAlerts.showError(ctx, AppStrings.pleaseLoginAgain);
+      }
+      throw AppStrings.pleaseLoginAgain;
+    }
+
     if (refreshToken == null) {
+      _refreshCount = 0;
       await logoutUser();
       final ctx = navigatorKey.currentContext;
       if (ctx != null && ctx.mounted) {
@@ -126,7 +142,9 @@ class Server {
     if (_refreshCompleter != null) {
       final newToken = await _refreshCompleter!.future;
       if (newToken != null) {
-        return await retry();
+        final res = await retry();
+        _refreshCount = 0;
+        return res;
       } else {
         throw AppStrings.pleaseLoginAgain;
       }
@@ -134,6 +152,8 @@ class Server {
 
     final completer = Completer<String?>();
     _refreshCompleter = completer;
+
+    _refreshCount++;
 
     try {
       final dio = Dio();
@@ -157,7 +177,9 @@ class Server {
           );
           completer.complete(newToken);
           _refreshCompleter = null;
-          return await retry();
+          final res = await retry();
+          _refreshCount = 0;
+          return res;
         }
       }
 
