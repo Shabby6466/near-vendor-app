@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/analytics_mixin.dart';
+import 'package:nearvendorapp/analytics/analytics_controller.dart';
+import 'package:nearvendorapp/analytics/analytics_event.dart';
 import 'package:nearvendorapp/models/api_request_models/search_api_inputs.dart';
 import 'package:nearvendorapp/models/api_responses/search_api_responses.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
@@ -11,12 +12,11 @@ import 'package:nearvendorapp/utils/hive/search_storage.dart';
 
 part 'search_state.dart';
 
-class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
+class SearchCubit extends Cubit<SearchState> {
   final SearchServices _searchServices = SearchServices();
 
   SearchCubit() : super(const SearchInitial()) {
     loadInitialData();
-    initAnalytics('search_screen');
   }
 
   Future<void> loadInitialData() async {
@@ -80,7 +80,11 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
       final response = await _searchServices.searchItems(input);
 
       if (response.isSuccess) {
-        updateAnalyticsMetadata({'lat': lat, 'lon': lon, 'query': query});
+        AnalyticsController.instance.recordEvent(
+          BuyerAnalyticsEvent.searchPerformed,
+          targetId: query,
+          data: {'lat': lat, 'lon': lon},
+        );
         emit(
           SearchSuccess(
             products: response.products,
@@ -123,11 +127,5 @@ class SearchCubit extends Cubit<SearchState> with AnalyticsMixin<SearchState> {
   Future<void> clearHistory() async {
     await SearchStorage.clearRecentSearches();
     loadInitialData();
-  }
-
-  @override
-  Future<void> close() async {
-    await closeAnalytics();
-    await super.close();
   }
 }

@@ -1,7 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/analytics_mixin.dart';
+import 'package:nearvendorapp/analytics/analytics_controller.dart';
+import 'package:nearvendorapp/analytics/analytics_event.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/product_services.dart';
@@ -9,8 +10,7 @@ import 'package:nearvendorapp/services/shop_services.dart';
 
 part 'product_detail_state.dart';
 
-class ProductDetailCubit extends Cubit<ProductDetailState>
-    with AnalyticsMixin<ProductDetailState> {
+class ProductDetailCubit extends Cubit<ProductDetailState> {
   final ProductServices _productServices = ProductServices();
   final ShopServices _shopServices = ShopServices();
 
@@ -28,14 +28,18 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
                 shop: Shop.fromJson(initialProduct.shop!),
               )
             : ProductDetailInitial(),
-      ) {
-    initAnalytics('product_detail_screen');
-  }
+      );
 
   Future<void> fetchDetails(String itemId) async {
     if (state is! ProductDetailSuccess) {
       emit(ProductDetailLoading());
     }
+
+    AnalyticsController.instance.recordEvent(
+      BuyerAnalyticsEvent.itemViewed,
+      targetId: itemId,
+    );
+
     try {
       // 1. Fetch Product Details
       final productResponse = await _productServices.getProductById(itemId);
@@ -47,7 +51,9 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
             ),
           );
         } else {
-          debugPrint('Silent product refresh failure: ${productResponse.message}');
+          debugPrint(
+            'Silent product refresh failure: ${productResponse.message}',
+          );
         }
         return;
       }
@@ -57,7 +63,9 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
         if (state is! ProductDetailSuccess) {
           emit(const ProductDetailFailure('Product details not found'));
         } else {
-          debugPrint('Silent product refresh failure: Product details not found');
+          debugPrint(
+            'Silent product refresh failure: Product details not found',
+          );
         }
         return;
       }
@@ -83,11 +91,5 @@ class ProductDetailCubit extends Cubit<ProductDetailState>
         debugPrint('Silent product refresh exception: $e');
       }
     }
-  }
-
-  @override
-  Future<void> close() async {
-    await closeAnalytics();
-    await super.close();
   }
 }

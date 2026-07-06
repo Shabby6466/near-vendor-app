@@ -1,12 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/analytics/analytics_controller.dart';
+import 'package:nearvendorapp/analytics/analytics_event.dart';
 import 'package:nearvendorapp/models/data_models/product_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
-import 'package:nearvendorapp/views/screens/home/cubit/explore_screen_cubit.dart';
 import 'package:nearvendorapp/views/screens/product_detail_screen/view/product_detail_screen.dart';
-import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
-import 'package:nearvendorapp/views/screens/shop_detail_screen/cubit/shop_detail_cubit.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class ItemCard extends StatelessWidget {
@@ -23,28 +21,15 @@ class ItemCard extends StatelessWidget {
       key: Key('item-${item.id}'),
       onVisibilityChanged: (info) {
         if (info.visibleFraction > 0.5) {
-          // Try to find a cubit that has AnalyticsMixin
-          try {
-            context.read<SearchCubit>().trackImpression(item.id);
-          } catch (_) {
-            try {
-              context.read<ExploreScreenCubit>().trackImpression(item.id);
-            } catch (_) {
-              try {
-                context.read<ShopDetailCubit>().trackImpression(item.id);
-              } catch (_) {
-                // No compatible cubit found
-              }
-            }
-          }
+          AnalyticsController.instance.recordEvent(
+            BuyerAnalyticsEvent.itemImpression,
+            targetId: item.id,
+          );
         }
       },
       child: GestureDetector(
         onTap: () {
-          AppNavigator.push(
-            context,
-            ProductDetailScreen(product: item),
-          );
+          AppNavigator.push(context, ProductDetailScreen(product: item));
         },
         child: Container(
           width: width,

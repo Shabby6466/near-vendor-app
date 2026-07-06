@@ -2,7 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:nearvendorapp/cubits/analytics_mixin.dart';
+import 'package:nearvendorapp/analytics/analytics_controller.dart';
+import 'package:nearvendorapp/analytics/analytics_event.dart';
 import 'package:nearvendorapp/models/api_responses/product_response.dart';
 import 'package:nearvendorapp/models/api_responses/review_response.dart';
 import 'package:nearvendorapp/models/api_responses/shop_response.dart';
@@ -13,14 +14,11 @@ import 'package:nearvendorapp/services/shop_services.dart';
 
 part 'shop_detail_state.dart';
 
-class ShopDetailCubit extends Cubit<ShopDetailState>
-    with AnalyticsMixin<ShopDetailState> {
+class ShopDetailCubit extends Cubit<ShopDetailState> {
   final ShopServices _shopServices = ShopServices();
   final ProductServices _productServices = ProductServices();
 
-  ShopDetailCubit() : super(ShopDetailInitial()) {
-    initAnalytics('shop_detail_screen');
-  }
+  ShopDetailCubit() : super(ShopDetailInitial());
 
   Future<void> loadShopData(String shopId, {Shop? initialShop}) async {
     if (initialShop != null) {
@@ -37,16 +35,18 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
     }
 
     try {
-      // Try to get current position for analytics
       try {
         final position = await Geolocator.getCurrentPosition();
-        updateAnalyticsMetadata({
-          'lat': position.latitude,
-          'lon': position.longitude,
-          'shopId': shopId,
-        });
+        AnalyticsController.instance.recordEvent(
+          BuyerAnalyticsEvent.shopViewed,
+          targetId: shopId,
+          data: {'lat': position.latitude, 'lon': position.longitude},
+        );
       } catch (_) {
-        updateAnalyticsMetadata({'shopId': shopId});
+        AnalyticsController.instance.recordEvent(
+          BuyerAnalyticsEvent.shopViewed,
+          targetId: shopId,
+        );
       }
 
       // Fetch full shop details (which now includes reviewStats and userReview) and inventory
@@ -119,11 +119,5 @@ class ShopDetailCubit extends Cubit<ShopDetailState>
         debugPrint('Silent shop detail refresh exception: $e');
       }
     }
-  }
-
-  @override
-  Future<void> close() async {
-    await closeAnalytics();
-    await super.close();
   }
 }

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:nearvendorapp/analytics/analytics_controller.dart';
+import 'package:nearvendorapp/analytics/analytics_event.dart';
 import 'package:nearvendorapp/enums/report_target_type.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/opening_hours.dart';
@@ -745,24 +747,42 @@ class ShopDetailScreen extends StatelessWidget {
                 context,
                 icon: Icons.call_rounded,
                 color: theme.colorScheme.primary,
-                onTap: () => launchCaller(shop.shopContactPhone!, context),
+                onTap: () {
+                  AnalyticsController.instance.recordEvent(
+                    BuyerAnalyticsEvent.callTapped,
+                    targetId: shop.id ?? '',
+                  );
+                  launchCaller(shop.shopContactPhone!, context);
+                },
               ),
             if (shop.whatsappNumber?.isNotEmpty ?? false)
               _buildPillIconButton(
                 context,
                 icon: Icons.chat_rounded,
                 color: theme.colorScheme.primary,
-                onTap: () => launchWhatsApp(shop.whatsappNumber!, context),
+                onTap: () {
+                  AnalyticsController.instance.recordEvent(
+                    BuyerAnalyticsEvent.chatTapped,
+                    targetId: shop.id ?? '',
+                  );
+                  launchWhatsApp(shop.whatsappNumber!, context);
+                },
               ),
             const SizedBox(width: 8),
             Expanded(
               child: GestureDetector(
                 onTap: isLocationValid
-                    ? () => _launchMap(
-                        shop.shopLatitude!,
-                        shop.shopLongitude!,
-                        shop.shopName ?? 'Shop',
-                      )
+                    ? () {
+                        AnalyticsController.instance.recordEvent(
+                          BuyerAnalyticsEvent.directionsRequested,
+                          targetId: shop.id ?? '',
+                        );
+                        _launchMap(
+                          shop.shopLatitude!,
+                          shop.shopLongitude!,
+                          shop.shopName ?? '',
+                        );
+                      }
                     : () {
                         AppAlerts.showError(
                           context,
@@ -919,7 +939,10 @@ class _ShopProductCard extends StatelessWidget {
       key: Key('item-shop-details-${item.id}'),
       onVisibilityChanged: (info) {
         if (info.visibleFraction > 0.5) {
-          context.read<ShopDetailCubit>().trackImpression(item.id);
+          AnalyticsController.instance.recordEvent(
+            BuyerAnalyticsEvent.itemImpression,
+            targetId: item.id,
+          );
         }
       },
       child: GestureDetector(

@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:nearvendorapp/cubits/analytics_mixin.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/services/shop_services.dart';
@@ -26,13 +25,11 @@ class CategoryCacheEntry {
   });
 }
 
-class ExploreScreenCubit extends Cubit<ExploreScreenState>
-    with AnalyticsMixin<ExploreScreenState> {
+class ExploreScreenCubit extends Cubit<ExploreScreenState> {
   final ShopServices _shopServices = ShopServices();
 
   ExploreScreenCubit() : super(ExploreScreenInitial()) {
     _initialize();
-    initAnalytics('explore_screen');
   }
 
   // Variables stored in the Cubit
@@ -65,7 +62,9 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
 
   Future<void> _initialize({bool isRefreshing = false}) async {
     if (!isRefreshing || _allShops.isEmpty) {
-      emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
+      emit(
+        ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch),
+      );
     }
     _isLoadingFirstPage = true;
     try {
@@ -80,8 +79,11 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
 
   Future<void> loadShops({bool isRefreshing = false}) async {
     if (!isRefreshing || _allShops.isEmpty) {
-      emit(ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch));
-      _allShops.clear(); // Clear old shops immediately to prevent stale data display and duplicate appends
+      emit(
+        ExploreScreenLoading(timestamp: DateTime.now().millisecondsSinceEpoch),
+      );
+      _allShops
+          .clear(); // Clear old shops immediately to prevent stale data display and duplicate appends
     }
     _currentPage = 1;
     _hasReachedMax = false;
@@ -133,7 +135,11 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
         _rangeMessage = entry.rangeMessage;
 
         if (sessionId == _loadSessionId) {
-          emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+          emit(
+            ExploreScreenSuccess(
+              timestamp: DateTime.now().millisecondsSinceEpoch,
+            ),
+          );
         }
         return;
       }
@@ -195,7 +201,11 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
           );
         }
 
-        emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+        emit(
+          ExploreScreenSuccess(
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
       } else {
         emit(ExploreScreenFailure(response.message ?? 'An error occurred'));
       }
@@ -221,7 +231,9 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
     }
 
     _isLoadingNextPage = true;
-    emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+    emit(
+      ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch),
+    );
 
     _currentPage++;
     final requestedPage = _currentPage;
@@ -290,7 +302,11 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
     } finally {
       if (currentSession == _loadSessionId && requestedPage == _currentPage) {
         _isLoadingNextPage = false;
-        emit(ExploreScreenSuccess(timestamp: DateTime.now().millisecondsSinceEpoch));
+        emit(
+          ExploreScreenSuccess(
+            timestamp: DateTime.now().millisecondsSinceEpoch,
+          ),
+        );
       }
     }
   }
@@ -318,11 +334,5 @@ class ExploreScreenCubit extends Cubit<ExploreScreenState>
   Future<void> refreshShops() async {
     _shopCache.clear();
     await _initialize(isRefreshing: true);
-  }
-
-  @override
-  Future<void> close() async {
-    await closeAnalytics();
-    await super.close();
   }
 }

@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:nearvendorapp/analytics/analytics_controller.dart';
+import 'package:nearvendorapp/analytics/analytics_event.dart';
 import 'package:nearvendorapp/models/data_models/app_location.dart';
 import 'package:nearvendorapp/models/data_models/shop.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
@@ -144,7 +146,10 @@ class ShopsGrid extends StatelessWidget {
                         key: Key('shop-${shop.id ?? index}'),
                         onVisibilityChanged: (info) {
                           if (info.visibleFraction > 0.5) {
-                            cubit.trackImpression(shop.id ?? '');
+                            AnalyticsController.instance.recordEvent(
+                              BuyerAnalyticsEvent.shopImpression,
+                              targetId: shop.id ?? '',
+                            );
                           }
                         },
                         child: ShopCard(shop: shop),
