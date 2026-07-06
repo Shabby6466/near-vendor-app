@@ -12,7 +12,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart' as _svg;
-import 'package:lottie/lottie.dart' as _lottie;
 import 'package:vector_graphics/vector_graphics.dart' as _vg;
 
 class $AssetsAppIconsGen {
@@ -29,21 +28,15 @@ class $AssetsAppIconsGen {
 class $AssetsFontsGen {
   const $AssetsFontsGen();
 
-  /// File path: assets/fonts/inter_regular.ttf
-  String get interRegular => 'assets/fonts/inter_regular.ttf';
-
   /// File path: assets/fonts/poppins.ttf
   String get poppins => 'assets/fonts/poppins.ttf';
 
   /// List of all assets
-  List<String> get values => [interRegular, poppins];
+  List<String> get values => [poppins];
 }
 
 class $AssetsIconsGen {
   const $AssetsIconsGen();
-
-  /// File path: assets/icons/app_icon.svg
-  SvgGenImage get appIcon => const SvgGenImage('assets/icons/app_icon.svg');
 
   /// File path: assets/icons/camera.svg
   SvgGenImage get camera => const SvgGenImage('assets/icons/camera.svg');
@@ -51,10 +44,6 @@ class $AssetsIconsGen {
   /// File path: assets/icons/electronics.svg
   SvgGenImage get electronics =>
       const SvgGenImage('assets/icons/electronics.svg');
-
-  /// File path: assets/icons/everything_near_you_text.svg
-  SvgGenImage get everythingNearYouText =>
-      const SvgGenImage('assets/icons/everything_near_you_text.svg');
 
   /// File path: assets/icons/explore.svg
   SvgGenImage get explore => const SvgGenImage('assets/icons/explore.svg');
@@ -66,41 +55,18 @@ class $AssetsIconsGen {
   /// File path: assets/icons/furniture.svg
   SvgGenImage get furniture => const SvgGenImage('assets/icons/furniture.svg');
 
-  /// File path: assets/icons/graph1.svg
-  SvgGenImage get graph1 => const SvgGenImage('assets/icons/graph1.svg');
-
   /// File path: assets/icons/grocery.svg
   SvgGenImage get grocery => const SvgGenImage('assets/icons/grocery.svg');
 
   /// File path: assets/icons/health.svg
   SvgGenImage get health => const SvgGenImage('assets/icons/health.svg');
 
-  /// File path: assets/icons/hearts.svg
-  SvgGenImage get hearts => const SvgGenImage('assets/icons/hearts.svg');
-
-  /// File path: assets/icons/home_icon.svg
-  SvgGenImage get homeIcon => const SvgGenImage('assets/icons/home_icon.svg');
-
-  /// File path: assets/icons/inventory.svg
-  SvgGenImage get inventory => const SvgGenImage('assets/icons/inventory.svg');
-
-  /// File path: assets/icons/location_marker.svg
-  SvgGenImage get locationMarker =>
-      const SvgGenImage('assets/icons/location_marker.svg');
-
   /// File path: assets/icons/map.svg
   SvgGenImage get map => const SvgGenImage('assets/icons/map.svg');
-
-  /// File path: assets/icons/map_icon.svg
-  SvgGenImage get mapIcon => const SvgGenImage('assets/icons/map_icon.svg');
 
   /// File path: assets/icons/near_vendor_Text.svg
   SvgGenImage get nearVendorText =>
       const SvgGenImage('assets/icons/near_vendor_Text.svg');
-
-  /// File path: assets/icons/near_vendor_blue_text.svg
-  SvgGenImage get nearVendorBlueText =>
-      const SvgGenImage('assets/icons/near_vendor_blue_text.svg');
 
   /// File path: assets/icons/profile_icon.svg
   SvgGenImage get profileIcon =>
@@ -109,9 +75,6 @@ class $AssetsIconsGen {
   /// File path: assets/icons/search_icon.svg
   SvgGenImage get searchIcon =>
       const SvgGenImage('assets/icons/search_icon.svg');
-
-  /// File path: assets/icons/support.svg
-  SvgGenImage get support => const SvgGenImage('assets/icons/support.svg');
 
   /// File path: assets/icons/wishlist.svg
   SvgGenImage get wishlist => const SvgGenImage('assets/icons/wishlist.svg');
@@ -122,27 +85,17 @@ class $AssetsIconsGen {
 
   /// List of all assets
   List<SvgGenImage> get values => [
-    appIcon,
     camera,
     electronics,
-    everythingNearYouText,
     explore,
     fashionIcon,
     furniture,
-    graph1,
     grocery,
     health,
-    hearts,
-    homeIcon,
-    inventory,
-    locationMarker,
     map,
-    mapIcon,
     nearVendorText,
-    nearVendorBlueText,
     profileIcon,
     searchIcon,
-    support,
     wishlist,
     wishlistAdd,
   ];
@@ -151,9 +104,6 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/cover.jpg
-  AssetGenImage get cover => const AssetGenImage('assets/images/cover.jpg');
-
   /// File path: assets/images/header_img.png
   AssetGenImage get headerImg =>
       const AssetGenImage('assets/images/header_img.png');
@@ -161,14 +111,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/items_art.png
   AssetGenImage get itemsArt =>
       const AssetGenImage('assets/images/items_art.png');
-
-  /// File path: assets/images/near_vendor_right_cut.png
-  AssetGenImage get nearVendorRightCut =>
-      const AssetGenImage('assets/images/near_vendor_right_cut.png');
-
-  /// File path: assets/images/near_vendor_side_cut.png
-  AssetGenImage get nearVendorSideCut =>
-      const AssetGenImage('assets/images/near_vendor_side_cut.png');
 
   /// File path: assets/images/onboarding_0.png
   AssetGenImage get onboarding0 =>
@@ -182,47 +124,14 @@ class $AssetsImagesGen {
   AssetGenImage get onboarding2 =>
       const AssetGenImage('assets/images/onboarding_2.png');
 
-  /// File path: assets/images/onboarding_offers.png
-  AssetGenImage get onboardingOffers =>
-      const AssetGenImage('assets/images/onboarding_offers.png');
-
-  /// File path: assets/images/onboarding_proximity.png
-  AssetGenImage get onboardingProximity =>
-      const AssetGenImage('assets/images/onboarding_proximity.png');
-
-  /// File path: assets/images/onboarding_search.png
-  AssetGenImage get onboardingSearch =>
-      const AssetGenImage('assets/images/onboarding_search.png');
-
   /// List of all assets
   List<AssetGenImage> get values => [
-    cover,
     headerImg,
     itemsArt,
-    nearVendorRightCut,
-    nearVendorSideCut,
     onboarding0,
     onboarding1,
     onboarding2,
-    onboardingOffers,
-    onboardingProximity,
-    onboardingSearch,
   ];
-}
-
-class $AssetsLottieGen {
-  const $AssetsLottieGen();
-
-  /// File path: assets/lottie/success.json
-  LottieGenImage get success =>
-      const LottieGenImage('assets/lottie/success.json');
-
-  /// File path: assets/lottie/wallet_created.json
-  LottieGenImage get walletCreated =>
-      const LottieGenImage('assets/lottie/wallet_created.json');
-
-  /// List of all assets
-  List<LottieGenImage> get values => [success, walletCreated];
 }
 
 class Assets {
@@ -233,7 +142,6 @@ class Assets {
   static const $AssetsFontsGen fonts = $AssetsFontsGen();
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
-  static const $AssetsLottieGen lottie = $AssetsLottieGen();
 
   /// List of all assets
   static List<String> get values => [aEnv];
@@ -393,73 +301,6 @@ class SvgGenImage {
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,
-    );
-  }
-
-  String get path => _assetName;
-
-  String get keyName => _assetName;
-}
-
-class LottieGenImage {
-  const LottieGenImage(this._assetName, {this.flavors = const {}});
-
-  final String _assetName;
-  final Set<String> flavors;
-
-  _lottie.LottieBuilder lottie({
-    Animation<double>? controller,
-    bool? animate,
-    _lottie.FrameRate? frameRate,
-    bool? repeat,
-    bool? reverse,
-    _lottie.LottieDelegates? delegates,
-    _lottie.LottieOptions? options,
-    void Function(_lottie.LottieComposition)? onLoaded,
-    _lottie.LottieImageProviderFactory? imageProviderFactory,
-    Key? key,
-    AssetBundle? bundle,
-    Widget Function(BuildContext, Widget, _lottie.LottieComposition?)?
-    frameBuilder,
-    ImageErrorWidgetBuilder? errorBuilder,
-    double? width,
-    double? height,
-    BoxFit? fit,
-    AlignmentGeometry? alignment,
-    String? package,
-    bool? addRepaintBoundary,
-    FilterQuality? filterQuality,
-    void Function(String)? onWarning,
-    _lottie.LottieDecoder? decoder,
-    _lottie.RenderCache? renderCache,
-    bool? backgroundLoading,
-  }) {
-    return _lottie.Lottie.asset(
-      _assetName,
-      controller: controller,
-      animate: animate,
-      frameRate: frameRate,
-      repeat: repeat,
-      reverse: reverse,
-      delegates: delegates,
-      options: options,
-      onLoaded: onLoaded,
-      imageProviderFactory: imageProviderFactory,
-      key: key,
-      bundle: bundle,
-      frameBuilder: frameBuilder,
-      errorBuilder: errorBuilder,
-      width: width,
-      height: height,
-      fit: fit,
-      alignment: alignment,
-      package: package,
-      addRepaintBoundary: addRepaintBoundary,
-      filterQuality: filterQuality,
-      onWarning: onWarning,
-      decoder: decoder,
-      renderCache: renderCache,
-      backgroundLoading: backgroundLoading,
     );
   }
 
