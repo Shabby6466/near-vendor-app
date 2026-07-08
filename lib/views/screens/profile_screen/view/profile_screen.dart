@@ -162,7 +162,7 @@ class ProfileScreen extends StatelessWidget {
                   icon: Icons.delete_outline_rounded,
                   title: 'Delete Account',
                   subtitle: 'Permanently remove your account and data',
-                  color: Colors.red.shade600,
+
                   onTap: () =>
                       AppNavigator.push(context, const DeleteAccountScreen()),
                 ),

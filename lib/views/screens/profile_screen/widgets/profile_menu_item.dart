@@ -7,7 +7,6 @@ class ProfileMenuItem extends StatelessWidget {
   final String subtitle;
   final VoidCallback? onTap;
   final Widget? trailing;
-  final Color? color;
 
   const ProfileMenuItem({
     super.key,
@@ -17,7 +16,6 @@ class ProfileMenuItem extends StatelessWidget {
     required this.subtitle,
     this.onTap,
     this.trailing,
-    this.color,
   });
 
   @override
@@ -31,23 +29,25 @@ class ProfileMenuItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: onTap,
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 8,
+          ),
           leading:
               leading ??
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: color?.withValues(alpha: 0.1) ?? theme.primaryColor.withValues(alpha: 0.1),
+                  color: theme.primaryColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: Icon(icon, color: color ?? theme.iconTheme.color, size: 22),
+                child: Icon(icon, color: theme.iconTheme.color, size: 22),
               ),
           title: Text(
             title,
             style: theme.textTheme.bodyLarge?.copyWith(
               fontWeight: FontWeight.w700,
               fontSize: 15,
-              color: color,
             ),
           ),
           subtitle: Padding(
@@ -55,7 +55,7 @@ class ProfileMenuItem extends StatelessWidget {
             child: Text(
               subtitle,
               style: theme.textTheme.bodySmall?.copyWith(
-                color: color?.withValues(alpha: 0.7) ?? theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
+                color: theme.textTheme.bodySmall?.color?.withValues(alpha: 0.5),
                 fontSize: 12,
               ),
             ),
@@ -65,7 +65,7 @@ class ProfileMenuItem extends StatelessWidget {
               Icon(
                 Icons.chevron_right_rounded,
                 size: 20,
-                color: color?.withValues(alpha: 0.5) ?? theme.iconTheme.color?.withValues(alpha: 0.3),
+                color: theme.iconTheme.color?.withValues(alpha: 0.3),
               ),
         ),
       ),
