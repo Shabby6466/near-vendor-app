@@ -491,7 +491,6 @@ class _WishlistCard extends StatelessWidget {
         ? DateFormat('MMM d').format(wish.createdAt!)
         : null;
 
-    // Group matches by barcode or name to display duplicates only once
     final Map<String, List<Product>> groupedMatches = {};
     for (final item in wish.matchedItems) {
       final key = item.barcode?.trim().isNotEmpty == true
@@ -527,12 +526,10 @@ class _WishlistCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Main content row ──
           Padding(
             padding: const EdgeInsets.fromLTRB(14, 14, 10, 14),
             child: Row(
               children: [
-                // Status indicator dot
                 Container(
                   width: 36,
                   height: 36,
@@ -559,7 +556,7 @@ class _WishlistCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                // Title + meta
+
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

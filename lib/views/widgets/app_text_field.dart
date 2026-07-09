@@ -53,77 +53,20 @@ class _AppTextFieldState extends State<AppTextField> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    final border = widget.showBorder
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: 0.3),
-            ),
-          )
-        : widget.isMultiline
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          )
+    final borderRadius = widget.isMultiline
+        ? BorderRadius.circular(10)
+        : widget.showBorder
+        ? BorderRadius.circular(100)
         : null;
 
-    final enabledBorder = widget.showBorder
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: 0.3),
-            ),
-          )
-        : widget.isMultiline
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          )
-        : null;
-
-    final focusedBorder = widget.showBorder
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(
-              color: theme.colorScheme.primary,
-              width: 1.5,
-            ),
-          )
-        : widget.isMultiline
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          )
-        : null;
-
-    final errorBorder = widget.showBorder
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(color: theme.colorScheme.error),
-          )
-        : null;
-
-    final focusedErrorBorder = widget.showBorder
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(color: theme.colorScheme.error, width: 1.5),
-          )
-        : null;
-
-    final disabledBorder = widget.showBorder
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(100),
-            borderSide: BorderSide(
-              color: theme.colorScheme.outline.withValues(alpha: 0.1),
-            ),
-          )
-        : widget.isMultiline
-        ? OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
-            borderSide: BorderSide.none,
-          )
-        : null;
+    OutlineInputBorder createBorder(Color color, {double width = 1.0}) {
+      return borderRadius == null
+          ? InputBorder.none as OutlineInputBorder
+          : OutlineInputBorder(
+              borderRadius: borderRadius,
+              borderSide: BorderSide(color: color, width: width),
+            );
+    }
 
     final defaultStyle = theme.textTheme.bodyMedium?.copyWith(
       fontWeight: FontWeight.w600,
@@ -172,12 +115,30 @@ class _AppTextFieldState extends State<AppTextField> {
               )
               .applyDefaults(theme.inputDecorationTheme)
               .copyWith(
-                border: border,
-                enabledBorder: enabledBorder,
-                focusedBorder: focusedBorder,
-                errorBorder: errorBorder,
-                focusedErrorBorder: focusedErrorBorder,
-                disabledBorder: disabledBorder,
+                border: borderRadius != null
+                    ? createBorder(
+                        theme.colorScheme.outline.withValues(alpha: 0.3),
+                      )
+                    : null,
+                enabledBorder: borderRadius != null
+                    ? createBorder(
+                        theme.colorScheme.outline.withValues(alpha: 0.3),
+                      )
+                    : null,
+                focusedBorder: borderRadius != null
+                    ? createBorder(theme.colorScheme.primary, width: 1.5)
+                    : null,
+                errorBorder: borderRadius != null
+                    ? createBorder(theme.colorScheme.error)
+                    : null,
+                focusedErrorBorder: borderRadius != null
+                    ? createBorder(theme.colorScheme.error, width: 1.5)
+                    : null,
+                disabledBorder: borderRadius != null
+                    ? createBorder(
+                        theme.colorScheme.outline.withValues(alpha: 0.1),
+                      )
+                    : null,
               ),
     );
   }

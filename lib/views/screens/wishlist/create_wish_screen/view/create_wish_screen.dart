@@ -3,26 +3,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/gen/colors.gen.dart';
 import 'package:nearvendorapp/models/data_models/category_model.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
+import 'package:nearvendorapp/utils/theme/app_spacing.dart';
 import 'package:nearvendorapp/utils/ui/app_alerts.dart';
-import 'package:nearvendorapp/views/screens/wishlist/create_wish_sheet/cubit/create_wish_cubit.dart';
+import 'package:nearvendorapp/views/screens/wishlist/create_wish_screen/cubit/create_wish_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
 import 'package:nearvendorapp/views/widgets/app_bottom_sheet.dart';
-import 'package:nearvendorapp/views/widgets/loading_animation.dart';
+import 'package:nearvendorapp/views/widgets/app_elevated_button.dart';
+import 'package:nearvendorapp/views/widgets/app_text_field.dart';
+import 'package:nearvendorapp/views/widgets/loading_screen_view.dart';
 
-class CreateWishSheet extends StatelessWidget {
-  const CreateWishSheet({super.key});
+class CreateWishScreen extends StatelessWidget {
+  const CreateWishScreen({super.key});
 
-  static Future<void> show(BuildContext context) {
+  static Future<void> push(BuildContext context) {
     UserWishlistCubit? userWishlistCubit;
     try {
       userWishlistCubit = context.read<UserWishlistCubit>();
     } catch (_) {}
 
-    return AppBottomSheet.showBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      padding: EdgeInsets.zero,
-      child: MultiBlocProvider(
+    return AppNavigator.push(
+      context,
+      MultiBlocProvider(
         providers: [
           if (userWishlistCubit != null)
             BlocProvider.value(value: userWishlistCubit),
@@ -30,13 +31,15 @@ class CreateWishSheet extends StatelessWidget {
             create: (context) => CreateWishCubit()..loadCategories(),
           ),
         ],
-        child: const CreateWishSheet(),
+        child: const CreateWishScreen(),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocConsumer<CreateWishCubit, CreateWishState>(
       listener: (context, state) {
         if (state is CreateWishSuccess) {
@@ -56,138 +59,106 @@ class CreateWishSheet extends StatelessWidget {
       },
       builder: (context, state) {
         final cubit = context.read<CreateWishCubit>();
-        final theme = Theme.of(context);
-        final isDark = theme.brightness == Brightness.dark;
-        final isLoading = state is CreateWishSubmitting;
+        final isSubmitting = state is CreateWishSubmitting;
 
-        return Container(
-          decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF171D25) : Colors.white,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-            left: 24,
-            right: 24,
-            top: 16,
-          ),
-          child: Form(
-            key: cubit.formKey,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Center(
-                  child: Container(
-                    width: 40,
-                    height: 4,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                Row(
+        return LoadingScreenView(
+          isLoading: isSubmitting,
+          child: Scaffold(
+            appBar: AppBar(title: const Text('Make a Wish')),
+            body: SingleChildScrollView(
+              padding: AppSpacing.screenPadding(context),
+              child: Form(
+                key: cubit.formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        color: ColorName.primary.withValues(alpha: 0.1),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.auto_awesome,
-                        color: ColorName.primary,
+                    const SizedBox(height: 24),
+
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
+                      child: Text(
+                        'Product Name',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: theme.textTheme.bodyLarge?.color?.withValues(
+                            alpha: 0.8,
+                          ),
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 16),
-                    Text(
-                      'Make a Wish',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: isDark ? Colors.white : Colors.black,
+                    AppTextField(
+                      controller: cubit.nameController,
+                      hint: 'e.g. Organic Raw Honey 1L',
+                      showBorder: true,
+                      prefixIcon: const Icon(Icons.shopping_bag_outlined),
+                      validator: (v) => v == null || v.trim().isEmpty
+                          ? 'Product name is required'
+                          : null,
+                    ),
+                    const SizedBox(height: 20),
+
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
+                      child: Text(
+                        'Category',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: theme.textTheme.bodyLarge?.color?.withValues(
+                            alpha: 0.8,
+                          ),
+                        ),
                       ),
+                    ),
+                    GestureDetector(
+                      onTap: state is! CreateWishCategoriesLoaded
+                          ? null
+                          : () => _showCategorySheet(context, cubit),
+                      child: AbsorbPointer(
+                        child: AppTextField(
+                          controller: TextEditingController(
+                            text: cubit.selectedCategory?.name ?? '',
+                          ),
+                          hint: state is! CreateWishCategoriesLoaded
+                              ? 'Loading categories...'
+                              : 'Select Category (Optional)',
+                          showBorder: true,
+                          prefixIcon: const Icon(Icons.category_outlined),
+                          suffixIcon: const Icon(Icons.arrow_drop_down),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
+                      child: Text(
+                        'Description (Optional)',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: theme.textTheme.bodyLarge?.color?.withValues(
+                            alpha: 0.8,
+                          ),
+                        ),
+                      ),
+                    ),
+                    AppTextField(
+                      controller: cubit.descriptionController,
+                      hint: 'Any specific brand, color, or detail?',
+                      showBorder: true,
+                      isMultiline: true,
+                    ),
+                    const SizedBox(height: 48),
+
+                    AppElevatedButton(
+                      onPressed: () => cubit.submit(context),
+                      text: 'Submit Wish',
                     ),
                   ],
                 ),
-                const SizedBox(height: 24),
-                TextFormField(
-                  controller: cubit.nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Product Name',
-                    hintText: 'e.g. Organic Raw Honey 1L',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    prefixIcon: const Icon(Icons.shopping_bag_outlined),
-                  ),
-                  validator: (v) => v!.trim().isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 16),
-                InkWell(
-                  onTap: state is! CreateWishCategoriesLoaded
-                      ? null
-                      : () => _showCategorySheet(context, cubit),
-                  borderRadius: BorderRadius.circular(12),
-                  child: InputDecorator(
-                    decoration: InputDecoration(
-                      labelText: 'Category',
-                      hintText: state is! CreateWishCategoriesLoaded
-                          ? 'Loading categories...'
-                          : 'Select Category (Optional)',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      prefixIcon: const Icon(Icons.category_outlined),
-                      suffixIcon: const Icon(Icons.arrow_drop_down),
-                    ),
-                    isEmpty: cubit.selectedCategory == null,
-                    child: Text(
-                      cubit.selectedCategory?.name ?? '',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: isDark ? Colors.white : Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: cubit.descriptionController,
-                  maxLines: 3,
-                  decoration: InputDecoration(
-                    labelText: 'Description (Optional)',
-                    hintText: 'Any specific brand, color, or detail?',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    alignLabelWithHint: true,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: isLoading ? null : () => cubit.submit(context),
-                  style: ElevatedButton.styleFrom(elevation: 0),
-                  child: isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: LoadingAnimation(
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                        )
-                      : const Text(
-                          'Submit Wish',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
-              ],
+              ),
             ),
           ),
         );
@@ -195,7 +166,10 @@ class CreateWishSheet extends StatelessWidget {
     );
   }
 
-  Future<void> _showCategorySheet(BuildContext context, CreateWishCubit cubit) async {
+  Future<void> _showCategorySheet(
+    BuildContext context,
+    CreateWishCubit cubit,
+  ) async {
     final selected = await AppBottomSheet.showBottomSheet<CategoryModel>(
       context: context,
       isScrollControlled: true,
@@ -249,7 +223,10 @@ class CreateWishSheet extends StatelessWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    AppNavigator.pop(context, CategoryModel(id: '', name: 'None / Skip'));
+                    AppNavigator.pop(
+                      context,
+                      CategoryModel(id: '', name: 'None / Skip'),
+                    );
                   },
                   style: TextButton.styleFrom(
                     foregroundColor: cubit.selectedCategory == null
@@ -283,23 +260,33 @@ class CreateWishSheet extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     selected: isSelected,
-                    selectedTileColor: ColorName.primary.withValues(alpha: 0.08),
+                    selectedTileColor: ColorName.primary.withValues(
+                      alpha: 0.08,
+                    ),
                     title: Text(
                       cat.name,
                       style: TextStyle(
                         fontSize: 14,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                        fontWeight: isSelected
+                            ? FontWeight.bold
+                            : FontWeight.w600,
                         color: isSelected
                             ? ColorName.primary
                             : (isDark ? Colors.white : Colors.black87),
                       ),
                     ),
                     trailing: isSelected
-                        ? const Icon(Icons.check_circle_rounded, color: ColorName.primary, size: 20)
+                        ? const Icon(
+                            Icons.check_circle_rounded,
+                            color: ColorName.primary,
+                            size: 20,
+                          )
                         : Icon(
                             Icons.chevron_right_rounded,
                             size: 20,
-                            color: isDark ? Colors.white24 : Colors.grey.shade400,
+                            color: isDark
+                                ? Colors.white24
+                                : Colors.grey.shade400,
                           ),
                     onTap: () => AppNavigator.pop(context, cat),
                   ),

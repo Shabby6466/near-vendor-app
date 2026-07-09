@@ -8,7 +8,7 @@ import 'package:nearvendorapp/models/data_models/user.dart';
 import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/app_navigation.dart';
 import 'package:nearvendorapp/views/screens/auth/view/login_screen.dart';
-import 'package:nearvendorapp/views/screens/wishlist/create_wish_sheet/view/create_wish_sheet.dart';
+import 'package:nearvendorapp/views/screens/wishlist/create_wish_screen/view/create_wish_screen.dart';
 import 'package:nearvendorapp/views/screens/wishlist/cubit/user_wishlist_cubit.dart';
 import 'package:nearvendorapp/views/screens/wishlist/widgets/my_wishes_view.dart';
 
@@ -60,7 +60,7 @@ class WishlistMainScreen extends StatelessWidget {
                       top: false,
                       child: Builder(
                         builder: (context) => FloatingActionButton(
-                          onPressed: () => CreateWishSheet.show(context),
+                          onPressed: () => CreateWishScreen.push(context),
                           child: const Icon(Icons.add),
                         ),
                       ),
