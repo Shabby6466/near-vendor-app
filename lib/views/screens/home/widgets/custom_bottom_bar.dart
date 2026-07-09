@@ -65,112 +65,105 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
     final isDark = theme.brightness == Brightness.dark;
     final barHeight = _isDragging ? 66.0 : 65.0;
 
-    return SafeArea(
-      bottom: false,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 15, right: 15, bottom: 20),
-        child: AnimatedScale(
-          scale: _isDragging ? 1.01 : 1.0,
-          duration: const Duration(milliseconds: 600),
-          curve: Curves.elasticOut,
-          child: _GlassContainer(
-            height: barHeight,
-            borderRadius: BorderRadius.circular(32),
-            isDark: isDark,
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final totalWidth = constraints.maxWidth;
-                final itemWidth = totalWidth / 4;
-                final bool isNavSelected = widget.currentIndex < 4;
-                final baseDropletWidth = itemWidth - 16;
-                final velocityStretch = (_velocity * 0.8).clamp(0.0, 30.0);
-                final dropletWidth = baseDropletWidth + velocityStretch;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: AnimatedScale(
+        scale: _isDragging ? 1.01 : 1.0,
+        duration: const Duration(milliseconds: 600),
+        curve: Curves.elasticOut,
+        child: _GlassContainer(
+          height: barHeight,
+          borderRadius: BorderRadius.circular(32),
+          isDark: isDark,
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final totalWidth = constraints.maxWidth;
+              final itemWidth = totalWidth / 4;
+              final bool isNavSelected = widget.currentIndex < 4;
+              final baseDropletWidth = itemWidth - 16;
+              final velocityStretch = (_velocity * 0.8).clamp(0.0, 30.0);
+              final dropletWidth = baseDropletWidth + velocityStretch;
 
-                final targetLeft =
-                    (widget.currentIndex * itemWidth) +
-                    8 -
-                    (velocityStretch / 2);
-                final currentLeft = _isDragging
-                    ? (_dragX - (dropletWidth / 2)).clamp(
-                        8.0,
-                        totalWidth - dropletWidth - 8.0,
-                      )
-                    : targetLeft;
+              final targetLeft =
+                  (widget.currentIndex * itemWidth) + 8 - (velocityStretch / 2);
+              final currentLeft = _isDragging
+                  ? (_dragX - (dropletWidth / 2)).clamp(
+                      8.0,
+                      totalWidth - dropletWidth - 8.0,
+                    )
+                  : targetLeft;
 
-                return GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onHorizontalDragStart: (_) =>
-                      setState(() => _isDragging = true),
-                  onHorizontalDragUpdate: (details) => _handleInteraction(
-                    details.localPosition,
-                    totalWidth,
-                    isDragging: true,
-                  ),
-                  onHorizontalDragEnd: (_) => _handleDragEnd(),
-                  onTapDown: (details) => _handleInteraction(
-                    details.localPosition,
-                    totalWidth,
-                    isDragging: false,
-                  ),
-                  onTapUp: (_) => _handleDragEnd(),
-                  child: Stack(
-                    children: [
-                      if (isNavSelected)
-                        AnimatedPositioned(
-                          duration: _isDragging
-                              ? Duration.zero
-                              : const Duration(milliseconds: 500),
-                          curve: _isDragging
-                              ? Curves.linear
-                              : Curves.elasticOut,
-                          left: currentLeft,
-                          top: 4,
-                          bottom: 4,
-                          width: dropletWidth,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: RadialGradient(
-                                radius: 1.0,
-                                colors: [
-                                  (isDark ? Colors.white : theme.primaryColor)
-                                      .withValues(alpha: .25),
-                                  (isDark ? Colors.white : theme.primaryColor)
-                                      .withValues(alpha: .05),
-                                ],
-                              ),
-                              borderRadius: BorderRadius.circular(28),
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onHorizontalDragStart: (_) =>
+                    setState(() => _isDragging = true),
+                onHorizontalDragUpdate: (details) => _handleInteraction(
+                  details.localPosition,
+                  totalWidth,
+                  isDragging: true,
+                ),
+                onHorizontalDragEnd: (_) => _handleDragEnd(),
+                onTapDown: (details) => _handleInteraction(
+                  details.localPosition,
+                  totalWidth,
+                  isDragging: false,
+                ),
+                onTapUp: (_) => _handleDragEnd(),
+                child: Stack(
+                  children: [
+                    if (isNavSelected)
+                      AnimatedPositioned(
+                        duration: _isDragging
+                            ? Duration.zero
+                            : const Duration(milliseconds: 500),
+                        curve: _isDragging ? Curves.linear : Curves.elasticOut,
+                        left: currentLeft,
+                        top: 4,
+                        bottom: 4,
+                        width: dropletWidth,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            gradient: RadialGradient(
+                              radius: 1.0,
+                              colors: [
+                                (isDark ? Colors.white : theme.primaryColor)
+                                    .withValues(alpha: .25),
+                                (isDark ? Colors.white : theme.primaryColor)
+                                    .withValues(alpha: .05),
+                              ],
                             ),
+                            borderRadius: BorderRadius.circular(28),
                           ),
                         ),
-                      Row(
-                        children: [
-                          _NavButton(
-                            label: 'Search',
-                            icon: Assets.icons.searchIcon,
-                            isActive: widget.currentIndex == 0,
-                          ),
-                          _NavButton(
-                            label: 'Explore',
-                            icon: Assets.icons.explore,
-                            isActive: widget.currentIndex == 1,
-                          ),
-                          _NavButton(
-                            label: 'Map',
-                            icon: Assets.icons.map,
-                            isActive: widget.currentIndex == 2,
-                          ),
-                          _NavButton(
-                            label: 'Wishes',
-                            icon: Assets.icons.wishlist,
-                            isActive: widget.currentIndex == 3,
-                          ),
-                        ],
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    Row(
+                      children: [
+                        _NavButton(
+                          label: 'Search',
+                          icon: Assets.icons.searchIcon,
+                          isActive: widget.currentIndex == 0,
+                        ),
+                        _NavButton(
+                          label: 'Explore',
+                          icon: Assets.icons.explore,
+                          isActive: widget.currentIndex == 1,
+                        ),
+                        _NavButton(
+                          label: 'Map',
+                          icon: Assets.icons.map,
+                          isActive: widget.currentIndex == 2,
+                        ),
+                        _NavButton(
+                          label: 'Wishes',
+                          icon: Assets.icons.wishlist,
+                          isActive: widget.currentIndex == 3,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),

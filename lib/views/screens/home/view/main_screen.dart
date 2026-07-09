@@ -80,9 +80,6 @@ class _MainScreenState extends State<MainScreen> {
               ],
             ),
             bottomNavigationBar: SafeArea(
-              top: false,
-              left: false,
-              right: false,
               child: CustomBottomBar(
                 currentIndex: currentIndex,
                 onTap: (index) =>
