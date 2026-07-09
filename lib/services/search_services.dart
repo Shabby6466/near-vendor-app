@@ -41,6 +41,15 @@ class SearchServices {
     }
   }
 
+  Future<bool> clearRecentItems() async {
+    try {
+      await Server.delete(ApiConstants.clearRecentItems);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<SearchItemResponse> visualSearch({
     required String imagePath,
     required double lat,

@@ -126,6 +126,22 @@ class SearchCubit extends Cubit<SearchState> {
 
   Future<void> clearHistory() async {
     await SearchStorage.clearRecentSearches();
-    loadInitialData();
+    reloadRecentSearches();
+  }
+
+  /// Clears the recently viewed products both locally (UI) and on the server.
+  /// The UI is updated optimistically before the API call completes.
+  Future<void> clearRecentItems() async {
+    final current = state;
+    if (current is SearchInitial) {
+      // Optimistic update — hide items immediately
+      emit(
+        SearchInitial(
+          recentSearches: current.recentSearches,
+          recentProducts: [],
+        ),
+      );
+    }
+    await _searchServices.clearRecentItems();
   }
 }

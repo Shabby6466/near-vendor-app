@@ -35,6 +35,7 @@ class ApiConstants {
   static const String searchShops = 'api/explore/shops/search';
   static const String getShopById = 'api/shops/';
   static const String getRecentItems = 'api/explore/recent-items';
+  static const String clearRecentItems = 'api/explore/recent-items';
   static const String batchAnalytics = 'api/analytics/batch';
   static const String updateUserLocation = 'api/users/location';
   static const String visualSearch = 'api/explore/search/visual';

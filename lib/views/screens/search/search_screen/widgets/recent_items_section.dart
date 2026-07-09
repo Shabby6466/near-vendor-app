@@ -15,7 +15,10 @@ class RecentItemsSection extends StatelessWidget {
     final theme = Theme.of(context);
 
     return BlocBuilder<SearchCubit, SearchState>(
-      buildWhen: (previous, current) => current is SearchInitial,
+      buildWhen: (previous, current) =>
+          current is SearchInitial &&
+          (previous is! SearchInitial ||
+              previous.recentProducts != current.recentProducts),
       builder: (context, state) {
         if (state is! SearchInitial || state.recentProducts.isEmpty) {
           return const SizedBox.shrink();
@@ -31,7 +34,7 @@ class RecentItemsSection extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    'Recent searches',
+                    'Recently viewed',
                     style: theme.textTheme.headlineSmall?.copyWith(
                       fontSize: 18,
                       fontWeight: FontWeight.w900,
@@ -54,6 +57,17 @@ class RecentItemsSection extends StatelessWidget {
                       fontSize: 10,
                       color: theme.primaryColor.withValues(alpha: 0.6),
                       letterSpacing: 1.2,
+                    ),
+                  ),
+                  const Spacer(),
+                  GestureDetector(
+                    onTap: () => context.read<SearchCubit>().clearRecentItems(),
+                    child: Text(
+                      'Clear',
+                      style: theme.textTheme.labelLarge?.copyWith(
+                        fontSize: 12,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
