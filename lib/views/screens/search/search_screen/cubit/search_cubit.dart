@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/analytics/analytics_controller.dart';
@@ -14,6 +15,7 @@ part 'search_state.dart';
 
 class SearchCubit extends Cubit<SearchState> {
   final SearchServices _searchServices = SearchServices();
+  Timer? _debounceTimer;
 
   SearchCubit() : super(const SearchInitial()) {
     loadInitialData();
@@ -48,16 +50,19 @@ class SearchCubit extends Cubit<SearchState> {
     int? radius,
     int page = 1,
     int limit = 10,
+    bool saveToHistory = true,
   }) async {
     if (query.isEmpty && categoryId == null && shopId == null) {
       loadInitialData();
       return;
     }
 
-    emit(SearchLoading());
+    if (state is! SearchSuccess) {
+      emit(SearchLoading());
+    }
 
-    // Save search history if query is not empty
-    if (query.isNotEmpty) {
+    // Save search history if query is not empty and requested
+    if (query.isNotEmpty && saveToHistory) {
       await SearchStorage.addRecentSearch(query);
     }
 
@@ -143,5 +148,36 @@ class SearchCubit extends Cubit<SearchState> {
       );
     }
     await _searchServices.clearRecentItems();
+  }
+
+  /// Debounces typing before triggering a search.
+  /// Uses stale-while-reloading to avoid jarring screen blanking.
+  void onQueryChanged(String query, {required double lat, required double lon}) {
+    _debounceTimer?.cancel();
+    final trimmed = query.trim();
+
+    if (trimmed.isEmpty) {
+      clearSearch();
+      return;
+    }
+
+    if (trimmed.length < 2) {
+      return;
+    }
+
+    _debounceTimer = Timer(const Duration(milliseconds: 400), () {
+      searchItems(
+        lat: lat,
+        lon: lon,
+        query: trimmed,
+        saveToHistory: false,
+      );
+    });
+  }
+
+  @override
+  Future<void> close() {
+    _debounceTimer?.cancel();
+    return super.close();
   }
 }

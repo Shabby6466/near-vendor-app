@@ -179,7 +179,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              'Type what you need and press search to see matches from local vendors.',
+              'Type what you need to see matches from local vendors.',
               textAlign: TextAlign.center,
               style: theme.textTheme.bodySmall?.copyWith(
                 color: isDark ? Colors.white54 : Colors.black54,

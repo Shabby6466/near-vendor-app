@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nearvendorapp/utils/app_data.dart';
 import 'package:nearvendorapp/utils/navigation/location_picker_launcher.dart';
 import 'package:nearvendorapp/views/screens/search/search_screen/cubit/search_cubit.dart';
 import 'package:nearvendorapp/views/screens/search/visual_search/widgets/visual_search_launcher.dart';
@@ -75,7 +76,14 @@ class SearchBarFieldState extends State<SearchBarField> {
       onSearch: _onSearch,
       onChanged: (value) {
         setState(() {});
-        if (value.isEmpty) {
+        final location = AppData().location;
+        if (location != null) {
+          context.read<SearchCubit>().onQueryChanged(
+            value,
+            lat: location.latitude,
+            lon: location.longitude,
+          );
+        } else if (value.isEmpty) {
           context.read<SearchCubit>().clearSearch();
         }
       },
