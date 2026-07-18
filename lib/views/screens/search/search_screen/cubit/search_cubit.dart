@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nearvendorapp/analytics/analytics_controller.dart';
@@ -140,19 +141,18 @@ class SearchCubit extends Cubit<SearchState> {
     final current = state;
     if (current is SearchInitial) {
       // Optimistic update — hide items immediately
-      emit(
-        SearchInitial(
-          recentSearches: current.recentSearches,
-          recentProducts: [],
-        ),
-      );
+      emit(SearchInitial(recentSearches: current.recentSearches));
     }
     await _searchServices.clearRecentItems();
   }
 
   /// Debounces typing before triggering a search.
   /// Uses stale-while-reloading to avoid jarring screen blanking.
-  void onQueryChanged(String query, {required double lat, required double lon}) {
+  void onQueryChanged(
+    String query, {
+    required double lat,
+    required double lon,
+  }) {
     _debounceTimer?.cancel();
     final trimmed = query.trim();
 
@@ -166,12 +166,7 @@ class SearchCubit extends Cubit<SearchState> {
     }
 
     _debounceTimer = Timer(const Duration(milliseconds: 400), () {
-      searchItems(
-        lat: lat,
-        lon: lon,
-        query: trimmed,
-        saveToHistory: false,
-      );
+      searchItems(lat: lat, lon: lon, query: trimmed, saveToHistory: false);
     });
   }
 

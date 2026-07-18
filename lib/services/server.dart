@@ -210,6 +210,12 @@ class Server {
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) async {
+    if (_refreshCompleter != null) {
+      final token = await _refreshCompleter!.future;
+      if (token == null) {
+        throw AppStrings.pleaseLoginAgain;
+      }
+    }
     if (await isInternetAvailable()) {
       String? token;
       try {
@@ -293,6 +299,12 @@ class Server {
     Map<String, String>? headers,
     CancelToken? cancelToken,
   }) async {
+    if (_refreshCompleter != null) {
+      final token = await _refreshCompleter!.future;
+      if (token == null) {
+        throw AppStrings.pleaseLoginAgain;
+      }
+    }
     if (await isInternetAvailable()) {
       String? token;
       try {
