@@ -44,7 +44,7 @@ class ApiConstants {
   static const String createWishlist = 'api/wishlist';
   static const String getMyWishlists = 'api/wishlist/me';
   static const String deleteWishlist = 'api/wishlist/';
-  static const String completeWishlist = 'api/wishlist/'; // + id + '/complete'
+  static const String completeWishlist = 'api/wishlist/';
   static const String exploreWishlists = 'api/wishlist/explore';
 
   // Analytics

@@ -25,7 +25,7 @@ class ProductServices {
 
   Future<ProductResponse> getProductById(String id) async {
     try {
-      final response = await Server.get('${ApiConstants.getItemById}/$id');
+      final response = await Server.get('${ApiConstants.getItemById}$id');
       return ProductResponse.fromJson(response.data);
     } catch (e) {
       if (e is DioException) {

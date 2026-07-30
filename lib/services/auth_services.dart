@@ -165,7 +165,7 @@ class AuthServices {
 
   Future<GenericApiResponse> updateUserLocation(double lat, double lon) async {
     try {
-      final response = await Server.post(
+      final response = await Server.patch(
         ApiConstants.updateUserLocation,
         data: {
           'latitude': double.parse(lat.toStringAsFixed(7)),

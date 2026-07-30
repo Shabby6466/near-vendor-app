@@ -29,7 +29,6 @@ class SearchItemInput {
       'query': query,
     };
     if (categoryId != null) data['categoryId'] = categoryId;
-    if (shopId != null) data['shopId'] = shopId;
     return data;
   }
 }

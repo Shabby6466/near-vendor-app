@@ -233,10 +233,13 @@ class Server {
             return client;
           },
         );
+        final hasAuthorizationHeader =
+            headers?.keys.any((key) => key.toLowerCase() == 'authorization') ??
+            false;
         headers?.forEach((key, value) => dio.options.headers[key] = value);
         dio.options.headers['Accept'] = 'application/json';
         token = AppData().token;
-        if (token != null) {
+        if (token != null && !hasAuthorizationHeader) {
           dio.options.headers['Authorization'] = 'Bearer $token';
         }
 
@@ -322,10 +325,13 @@ class Server {
             return client;
           },
         );
+        final hasAuthorizationHeader =
+            headers?.keys.any((key) => key.toLowerCase() == 'authorization') ??
+            false;
         headers?.forEach((key, value) => dio.options.headers[key] = value);
         dio.options.headers['Accept'] = 'application/json';
         token = AppData().token;
-        if (token != null) {
+        if (token != null && !hasAuthorizationHeader) {
           dio.options.headers['Authorization'] = 'Bearer $token';
         }
 
